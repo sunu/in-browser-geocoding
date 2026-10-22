@@ -23,7 +23,8 @@ export interface Bundle {
 
 export async function loadBundle(url: string): Promise<Bundle> {
   if (typeof window === "undefined") {
-    const fs = await import("node:fs/promises");
+    const name = "node:fs/promises";
+    const fs = await import(/* @vite-ignore */ name);
     return JSON.parse(await fs.readFile(url, "utf8"));
   }
   const r = await fetch(url);

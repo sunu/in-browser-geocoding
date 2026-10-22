@@ -83,6 +83,10 @@ uv sync --extra ner --extra ui
 uv run streamlit run app/streamlit_app.py
 ```
 
+## Browser version
+
+`web/` is a TypeScript version that runs entirely in the browser (T5 and the local decision model in ONNX Runtime Web, DuckDB-WASM for the data). See `web/README.md`.
+
 ## Configuration
 
 All policy decisions are in `geoparse/data/config.yaml`. Examples:

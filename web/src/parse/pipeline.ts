@@ -179,7 +179,7 @@ export class Parser {
     }
     const jobs: Record<string, Promise<any>> = { ...this.closedJobs(dec, tpl, m, text, depth, fills) };
     let levelHint: string | null = null;
-    if (jobs.level) {
+    if ("level" in jobs) {
       const lv = await jobs.level;
       levelHint = lv.value !== "none" ? lv.value : null;
     }

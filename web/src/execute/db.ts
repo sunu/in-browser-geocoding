@@ -1,5 +1,5 @@
 // DuckDB-WASM in Node.js (tests) and in the browser (app). Loads the files of scripts/export_web.py.
-import { isNode } from "../models/runtime.ts";
+import { isNode, nodeImport } from "../models/runtime.ts";
 
 export interface Db { query(sql: string): Promise<any[]> }
 
@@ -38,8 +38,8 @@ function tables(base: string) {
 export async function openDb(dataBase: string, onProgress?: (msg: string) => void): Promise<Db> {
   const base = dataBase.replace(/\/$/, "");
   if (isNode) {
-    const { createRequire } = await import("node:module");
-    const path = await import("node:path");
+    const { createRequire } = await nodeImport("node:module");
+    const path = await nodeImport("node:path");
     const require = createRequire(import.meta.url);
     const duckdb = require("@duckdb/duckdb-wasm/dist/duckdb-node-blocking.cjs");
     const DIST = path.dirname(require.resolve("@duckdb/duckdb-wasm/dist/duckdb-eh.wasm"));
@@ -55,6 +55,9 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
   const workerUrl = URL.createObjectURL(new Blob([`importScripts("${bundle.mainWorker}");`], { type: "text/javascript" }));
   const db = new duckdb.AsyncDuckDB(new duckdb.ConsoleLogger(duckdb.LogLevel.WARNING), new Worker(workerUrl));
   await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+  // Read remote Parquet files with HTTP range requests only. Without this, DuckDB-WASM can download
+  // the whole places file (281 MB) on the first query.
+  await db.open({ filesystem: { reliableHeadRequests: true, allowFullHTTPReads: false, forceFullHTTPReads: false } });
   const c = await db.connect();
   const abs = new URL(base, location.href).href;
   for (const s of [...SETUP, ...tables(abs)]) { onProgress?.(s.slice(0, 60)); await c.query(s); }
