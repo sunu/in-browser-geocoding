@@ -7,11 +7,11 @@ templates:
     slots:
       pred: {type: predicate, options_ref: predicates}
       level: {type: admin_level, options_ref: admin_levels}
-      parent: {type: region}
+      parent: {type: region, optional: true, default: country}
     patterns:
+      - "{head:pred,level}"
       - "{head:pred,level} (in|of|within|inside|across) {parent}"
-      - "{level} (in|of|within) {parent} (that are|which are|that is|which is|that lie|which lie|lying) {pred}"
-      - "{level} (in|of|within) {parent} (on|along|by) the {pred}"
+      - "{head:pred,level} (in|of|within|inside|across) {parent} [that are|which are|that is|which is|that lie|which lie|that have|which have|that has|which has|with|having] {head:pred,level}"
       - "{parent} {head:pred,level}"
     dag: "Filter(Children(${parent}, level=${level}), ${pred})"
 

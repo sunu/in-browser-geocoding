@@ -6,8 +6,9 @@ templates:
     examples: ["districts of Karnataka", "states in India", "Kerala districts"]
     slots:
       level: {type: admin_level, options_ref: admin_levels}
-      parent: {type: region}
+      parent: {type: region, optional: true, default: country}
     patterns:
+      - "{level}"
       - "{level} (of|in|within|inside|under|across) {parent}"
       - "{parent} {level}"
     dag: "Children(${parent}, level=${level})"

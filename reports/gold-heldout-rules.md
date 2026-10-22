@@ -6,9 +6,9 @@ Records: 30. Depth 0: 27. Depth 1 (two levels): 3.
 
 | Decision | Accuracy | Depth 0 | Depth 1 | Coverage misses | Mean confidence |
 |---|---|---|---|---|---|
-| pick_family | 100% (33/33) | 100% (30/30) | 100% (3/3) | 0 | 0.97 |
+| pick_family | 100% (33/33) | 100% (30/30) | 100% (3/3) | 0 | 0.94 |
 | pick_template | 100% (33/33) | 100% (30/30) | 100% (3/3) | 0 | 0.98 |
-| pick_template_flat | 100% (33/33) | 100% (30/30) | 100% (3/3) | 0 | 0.97 |
+| pick_template_flat | 100% (33/33) | 100% (30/30) | 100% (3/3) | 0 | 0.94 |
 | pick_split | 100% (33/33) | 100% (30/30) | 100% (3/3) | 0 | 1.00 |
 | is_subquery | 100% (36/36) | 100% (33/33) | 100% (3/3) | 0 | 0.89 |
 | select_source | 100% (9/9) | 100% (9/9) | - | 0 | 0.80 |
@@ -37,8 +37,8 @@ Records: 30. Depth 0: 27. Depth 1 (two levels): 3.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 100% (27/27) | 0.09 s | 3.5 | 1.9 |
-| 1 | 100% (3/3) | 0.10 s | 7.3 | 4.0 |
+| 0 | 100% (27/27) | 0.10 s | 3.9 | 2.1 |
+| 1 | 100% (3/3) | 0.10 s | 7.7 | 4.3 |
 
 ### Nested template pairs in the gold suite
 

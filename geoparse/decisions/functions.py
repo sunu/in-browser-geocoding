@@ -44,6 +44,8 @@ IS_SUBQUERY_CRITERIA = {
              "'Bengaluru Urban', 'MG Road, Bangalore', or 'Gateway of India'.",
 }
 
+NONE_OPTION = "The text does not name any of the other options"
+
 SOURCE_OPTIONS = {
     "overture": "An administrative area: a country, state, district, city, town, village, or neighbourhood",
     "photon": "Something else: a street, a road, an address, a building, a landmark, a monument, a business, "
@@ -176,12 +178,16 @@ class Decider:
 
     def fill_closed_slot(self, text: str, slot_type: str, options_ref: str, *, depth: int = 0,
                          query: str = "", allow_none: bool = False) -> Decision[str]:
+        none_desc = NONE_OPTION
         if slot_type == "category":
+            groups = option_descriptions("categories")
+            if allow_none:
+                groups["none"] = none_desc
             g = self._choose("fill_closed_slot.category.group", depth, {"text": text},
-                             option_descriptions("categories"),
+                             groups,
                              {"options_ref": "categories", "segment": text, "step": "group"},
                              {"text": text, "slot_type": slot_type, "query": query})
-            if self.below("fill_closed_slot", g):
+            if self.below("fill_closed_slot", g) or g.value == "none":
                 return g
             from geoparse.options import categories
 
@@ -192,9 +198,9 @@ class Decider:
             conf = min(g.confidence, leaf.confidence)
             return Decision[str](value=leaf.value, confidence=conf, impl=leaf.impl,
                                  trace={"group": g.value, "group_confidence": g.confidence})
-        opts = option_descriptions(options_ref)
-        if not allow_none:
-            opts = {k: v for k, v in opts.items() if k != "none"}
+        opts = {k: v for k, v in option_descriptions(options_ref).items() if k != "none"}
+        if allow_none:
+            opts["none"] = none_desc if options_ref != "admin_levels" else option_descriptions(options_ref)["none"]
         return self._choose(f"fill_closed_slot.{slot_type}", depth, {"text": text}, opts,
                             {"options_ref": options_ref, "segment": text},
                             {"text": text, "slot_type": slot_type, "query": query})

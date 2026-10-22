@@ -6,10 +6,10 @@ Records: 98. Depth 0: 85. Depth 1 (two levels): 13.
 
 | Decision | Accuracy | Depth 0 | Depth 1 | Coverage misses | Mean confidence |
 |---|---|---|---|---|---|
-| pick_family | 97% (108/111) | 97% (95/98) | 100% (13/13) | 0 | 0.95 |
+| pick_family | 95% (105/111) | 94% (92/98) | 100% (13/13) | 0 | 0.93 |
 | pick_template | 100% (111/111) | 100% (98/98) | 100% (13/13) | 0 | 0.97 |
-| pick_template_flat | 97% (108/111) | 97% (95/98) | 100% (13/13) | 0 | 0.95 |
-| pick_split | 100% (111/111) | 100% (98/98) | 100% (13/13) | 0 | 1.00 |
+| pick_template_flat | 95% (105/111) | 94% (92/98) | 100% (13/13) | 0 | 0.93 |
+| pick_split | 98% (109/111) | 98% (96/98) | 100% (13/13) | 0 | 1.00 |
 | is_subquery | 100% (114/114) | 100% (101/101) | 100% (13/13) | 0 | 0.88 |
 | select_source | 100% (24/24) | 100% (24/24) | - | 0 | 0.80 |
 | fill_closed_slot.admin_level | 100% (48/48) | 100% (37/37) | 100% (11/11) | 0 | 0.99 |
@@ -25,10 +25,18 @@ Records: 98. Depth 0: 85. Depth 1 (two levels): 13.
 |---|---|---|---|---|---|
 | g004 | pick_family | 0 | lookup | set_algebra | 1.0 |
 | g004 | pick_template_flat | 0 | lookup_place | union | 1.0 |
+| g008 | pick_family | 0 | lookup | features | 0.5 |
+| g008 | pick_template_flat | 0 | lookup_place | features_in | 0.5 |
 | g010 | pick_family | 0 | lookup | modifier | 1.0 |
 | g010 | pick_template_flat | 0 | lookup_place | direction_part | 1.0 |
 | g015 | pick_family | 0 | modifier | features | 0.5 |
 | g015 | pick_template_flat | 0 | buffer | features_in | 0.5 |
+| g042 | pick_family | 0 | predicate_filter | hierarchy | 0.5 |
+| g042 | pick_template_flat | 0 | children_with_predicate | children | 0.5 |
+| g042 | pick_split | 0 | {"head": "districts ... on the coast", "parent": "Maharashtra"} | {"head": "districts", "parent": "Maharashtra on the coast"} | 1.0 |
+| g077 | pick_split | 0 | {"level": "districts", "parent": "Kerala", "opseg": "more than", "v... | {"level": "districts", "parent": "Kerala", "opseg": "more than", "v... | 1.0 |
+| g090 | pick_family | 0 | hierarchy | predicate_filter | 1.0 |
+| g090 | pick_template_flat | 0 | children | children_touching | 1.0 |
 
 ## Full pipeline
 
@@ -36,27 +44,30 @@ Records: 98. Depth 0: 85. Depth 1 (two levels): 13.
 |---|---|---|---|---|---|
 | attribute | 100% (11/11) | 100% (11/11) | 100% (11/11) | 0 | 100% (11/11) |
 | features | 100% (12/12) | 100% (12/12) | 100% (12/12) | 0 | - |
-| hierarchy | 100% (15/15) | 100% (15/15) | 100% (15/15) | 0 | 100% (15/15) |
-| lookup | 91% (10/11) | 91% (10/11) | 91% (10/11) | 1 | 100% (8/8) |
+| hierarchy | 93% (14/15) | 93% (14/15) | 93% (14/15) | 0 | 93% (14/15) |
+| lookup | 82% (9/11) | 82% (9/11) | 82% (9/11) | 2 | 100% (8/8) |
 | modifier | 93% (13/14) | 93% (13/14) | 93% (13/14) | 0 | 100% (11/11) |
-| predicate_filter | 100% (12/12) | 100% (12/12) | 100% (12/12) | 0 | 100% (12/12) |
+| predicate_filter | 92% (11/12) | 92% (11/12) | 92% (11/12) | 1 | 92% (11/12) |
 | relational | 100% (11/11) | 100% (11/11) | 100% (11/11) | 0 | 100% (11/11) |
 | set_algebra | 100% (12/12) | 100% (12/12) | 100% (12/12) | 0 | 100% (12/12) |
-| ALL | 98% (96/98) | 98% (96/98) | 98% (96/98) | 1 | 100% (80/80) |
+| ALL | 95% (93/98) | 95% (93/98) | 95% (93/98) | 3 | 98% (78/80) |
 
 ### By depth
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 98% (83/85) | 0.09 s | 3.6 | 2.0 |
-| 1 | 100% (13/13) | 0.10 s | 7.0 | 4.5 |
+| 0 | 95% (81/85) | 0.09 s | 4.3 | 2.3 |
+| 1 | 92% (12/13) | 0.11 s | 7.5 | 4.8 |
 
 ### Pipeline errors
 
 | Gold id | Query | Got template | Problem |
 |---|---|---|---|
 | g004 | MG Road, Bangalore | None | cannot resolve 'MG Road' in the local extract |
+| g008 | Gateway of India | None | the text 'Gateway' names no known category |
 | g015 | 500m around Indiranagar metro station | features_in | template |
+| g042 | districts of Maharashtra on the coast | None | no split of the text gives valid values for the slots of children_with_predicate |
+| g090 | districts of states that border Goa | children_touching | template |
 
 ### Nested template pairs in the gold suite
 

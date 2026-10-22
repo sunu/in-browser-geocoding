@@ -100,7 +100,7 @@ class Store:
                 WHERE d.subtype IN ('country', 'region', 'county', 'locality', 'macrohood', 'neighborhood')
                   AND coalesce(d.class, '') NOT IN ('hamlet')
                   AND n.name_norm[1] = ?[1]
-                  AND jaro_winkler_similarity(n.name_norm, ?) >= 0.9
+                  AND jaro_winkler_similarity(n.name_norm, ?) >= 0.85
                   AND damerau_levenshtein(n.name_norm, ?) <= CASE WHEN length(?) >= 10 THEN 2 ELSE 1 END
                 GROUP BY n.id ORDER BY s DESC LIMIT 50
             """, [n, n, n, n, n]).fetchall()

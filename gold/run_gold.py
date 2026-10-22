@@ -94,6 +94,11 @@ def gold_match(parser: Parser, text: str, t: str, slots: dict[str, Any]) -> dict
         ok = True
         for name, sd in tpl.slots.items():
             if sd.type in OPEN_TYPES:
+                if name not in seg_of or slots.get(name) is None:
+                    if (name in seg_of) != (slots.get(name) is not None):
+                        ok = False
+                        break
+                    continue
                 if ntext(m["segments"][seg_of[name]]) != ntext(open_text(slots[name])):
                     ok = False
                     break

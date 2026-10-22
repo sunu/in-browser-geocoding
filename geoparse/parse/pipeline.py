@@ -38,14 +38,10 @@ LEADING_FILLERS = [
 ]
 
 
-FILLER_WORDS = ["the", "all", "a", "an", "any", "some", "of the"]
-
-
-def _generic_words() -> list[str]:
-    words = list(FILLER_WORDS) + ["of", "in", "and", "that", "which", "with"]
-    for ref in ("admin_levels", "predicates"):
-        words += sum(option_keywords(ref).values(), [])
-    return words
+# Structural limits for split candidates. These are not vocabulary lists of slot values.
+MAX_CLOSED_WORDS = 6
+CLAUSE_WORDS = {"of", "in", "that", "which", "and", "or", "except", "between", "who"}
+STOP_WORDS = {"the", "a", "an", "all", "any", "some", "of", "in", "and", "that", "which", "with", "me", "show"}
 
 
 class Unsupported(BaseModel):
@@ -153,21 +149,24 @@ class Parser:
 
     # ------------------------------------------------------------ one level
 
-    def candidates(self, text: str) -> dict[str, list[dict[str, Any]]]:
-        """Template id -> list of valid split matches."""
+    def candidates(self, text: str, spans: list[Span] | None = None) -> dict[str, list[dict[str, Any]]]:
+        """Template id -> list of valid split matches. `spans` (from extract_spans) mark place names."""
+        places = tuple(norm(s.text) for s in (spans or [])
+                       if s.label in ("location", "landmark", "street") and s.score >= 0.5 and norm(s.text))
         out: dict[str, list[dict[str, Any]]] = {}
         for t in self.templates.values():
             seen = set()
-            for pat in t.patterns:
-                for m in match_pattern(pat, text):
-                    if not self._valid(t, m):
-                        continue
-                    key = tuple(sorted(m["segments"].items()))
-                    if key in seen:
-                        continue
-                    seen.add(key)
-                    m["score"] = self._score(t, m)
-                    out.setdefault(t.id, []).append(m)
+            literal = [m for pat in t.patterns for m in match_pattern(pat, text)]
+            for m in literal:
+                m["_places"] = places
+                if not self._valid(t, m):
+                    continue
+                key = tuple(sorted(m["segments"].items()))
+                if key in seen:
+                    continue
+                seen.add(key)
+                m["score"] = self._score(t, m)
+                out.setdefault(t.id, []).append(m)
         # Splits that differ only in the grouping of closed slots are the same split. Keep the best one.
         for tid, ms in out.items():
             t = self.templates[tid]
@@ -193,14 +192,19 @@ class Parser:
                 w = norm(text).split()
                 if not w or w[0] in ("and", "or", "of", "in", "with", "except") or w[-1] in ("and", "or", "of", "in", "with"):
                     return False
-                # A place cannot be only level, predicate, and stop words ("states", "coastal districts").
-                if keyword_hits(text, _generic_words()) >= len(w) and not lexicon_match(text):
+                if all(x in STOP_WORDS for x in w):
                     return False
             closed = [t.slots[s] for s in fed if s in t.slots and t.slots[s].type in CLOSED_TYPES]
             if closed:
-                # Every word of a closed-slot segment must be a keyword of its options (or a filler word).
-                kws = sum((sum(option_keywords(sd.options_ref).values(), []) for sd in closed), []) + FILLER_WORDS
-                if keyword_hits(text, kws) < len(norm(text).split()):
+                # Structural check only. The decision model judges the meaning of the words.
+                # A closed-slot segment is a short phrase, not a clause with its own place or relation.
+                w = norm(text).split()
+                if w and w[0] in ("which", "what"):
+                    w = w[1:]
+                if len(w) > MAX_CLOSED_WORDS or any(x in CLAUSE_WORDS for x in w):
+                    return False
+                # A closed-slot segment must not contain a place name found by the NER model.
+                if any(p in norm(text) for p in m.get("_places", ())):
                     return False
         return True
 
@@ -228,7 +232,7 @@ class Parser:
             return ({"op": "LexiconSet", "args": {"key": lex}},
                     {"family": "lookup", "template": "lookup_place", "slots": {"anchor": {"lex": lex, "text": text}}})
         spans = dec.extract_spans(text, depth=depth).value
-        cands = self.candidates(text)
+        cands = self.candidates(text, spans)
         if not self.prune:
             cands = {tid: cands.get(tid, []) for tid in self.templates}
         if not any(cands.values()):
@@ -263,6 +267,12 @@ class Parser:
         if not matches:
             raise _Stop(Unsupported(reason=f"template {tpl.id} has no valid split", decision="pick_split", depth=depth, text=text))
 
+        fills: dict[tuple, Any] = {}
+        if len(matches) > 1:
+            matches = self._viable_splits(dec, tpl, matches, text, depth, fills)
+            if not matches:
+                raise _Stop(Unsupported(reason=f"no split of the text gives valid values for the slots of {tpl.id}",
+                                        decision="fill_closed_slot", depth=depth, text=text))
         splits = [Split(parts=m["segments"]) for m in matches]
         sd = dec.pick_split(text, tpl.description, splits, depth=depth, labels=self._labels(tpl, matches[0]),
                             context={"split_scores": {f"s{i}": m["score"] for i, m in enumerate(matches)}})
@@ -270,7 +280,7 @@ class Parser:
             raise _Stop(Unsupported(reason=f"low confidence for pick_split ({sd.confidence:.2f})", decision="pick_split", depth=depth, text=text))
         match = next(m for m in matches if m["segments"] == sd.value.parts)
 
-        values, slots = self._fill(dec, tpl, match, text, spans, depth)
+        values, slots = self._fill(dec, tpl, match, text, spans, depth, fills)
         dag = substitute(tpl.dag_json, values)
         return dag, {"family": tpl.family, "template": tpl.id, "slots": slots}
 
@@ -294,8 +304,44 @@ class Parser:
 
     # ------------------------------------------------------------ slot filling
 
+    def _closed_jobs(self, dec: Decider, tpl: Template, match: dict[str, Any], text: str, depth: int,
+                     fills: dict[tuple, Any]) -> dict[str, Any]:
+        """Submit (or reuse) the closed-slot decisions of one split. Returns slot name -> future."""
+        seg_of = {s: seg for seg, fed in match["feeds"].items() for s in fed}
+        jobs = {}
+        for name, sd in tpl.slots.items():
+            if sd.type not in CLOSED_TYPES or name not in seg_of:
+                continue
+            seg_text = match["segments"][seg_of[name]]
+            key = (seg_text, sd.type, sd.options_ref)
+            if key not in fills:
+                fills[key] = self.pool.submit(dec.fill_closed_slot, seg_text, sd.type, sd.options_ref, depth=depth,
+                                              query=text, allow_none=True)
+            jobs[name] = fills[key]
+        return jobs
+
+    def _viable_splits(self, dec: Decider, tpl: Template, matches: list[dict[str, Any]], text: str, depth: int,
+                       fills: dict[tuple, Any]) -> list[dict[str, Any]]:
+        """Keep the splits where the model finds a value for every required closed slot.
+
+        The closed-slot decisions of all candidate splits run in parallel. A split is not viable if a
+        required slot gets "none" or a confidence below the threshold. The results are cached in `fills`.
+        """
+        per_match = [self._closed_jobs(dec, tpl, m, text, depth, fills) for m in matches]
+        viable = []
+        for m, jobs in zip(matches, per_match):
+            ok = True
+            for name, fut in jobs.items():
+                r = fut.result()
+                if dec.below("fill_closed_slot", r) or (r.value == "none" and not tpl.slots[name].optional):
+                    ok = False
+                    break
+            if ok:
+                viable.append(m)
+        return viable
+
     def _fill(self, dec: Decider, tpl: Template, match: dict[str, Any], text: str, spans: list[Span],
-              depth: int) -> tuple[dict[str, Any], dict[str, Any]]:
+              depth: int, fills: dict[tuple, Any] | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
         seg_of = {s: seg for seg, fed in match["feeds"].items() for s in fed}
         values: dict[str, Any] = {}
         slots: dict[str, Any] = {}
@@ -316,14 +362,17 @@ class Parser:
                     slots[name] = sd.default
                     values[name] = None if sd.type == "admin_level" and sd.default == "none" else sd.default
                     continue
-                jobs[name] = self.pool.submit(dec.fill_closed_slot, seg_text, sd.type, sd.options_ref, depth=depth,
-                                              query=text, allow_none=sd.optional)
+        jobs.update(self._closed_jobs(dec, tpl, match, text, depth, fills if fills is not None else {}))
 
         # The admin level of the query is a type hint for the anchors of some templates.
         if "level" in jobs:
             lv = jobs["level"].result()
             level_hint = lv.value if lv.value != "none" else None
         for name, sd in tpl.slots.items():
+            if sd.type in OPEN_TYPES and name not in seg_of:
+                # Optional open slot without text: the default is the country of the extract.
+                values[name], slots[name] = self._default_region(sd), None
+                continue
             if sd.type in OPEN_TYPES:
                 seg_text = match["segments"][seg_of[name]]
                 hint = level_hint if tpl.id in ("neighbors",) else None
@@ -343,7 +392,14 @@ class Parser:
             if dec.below("fill_closed_slot", r):
                 raise _Stop(Unsupported(reason=f"low confidence for slot {name} ({r.confidence:.2f})",
                                         decision="fill_closed_slot", depth=depth, text=text))
+            if r.value == "none" and not sd.optional:
+                raise _Stop(Unsupported(reason=f"the text {match['segments'][seg_of[name]]!r} names no known {sd.type}",
+                                        decision="fill_closed_slot", depth=depth, text=text))
             slots[name] = r.value
+            if r.value == "none":
+                values[name] = None if sd.type == "admin_level" else sd.default
+                slots[name] = sd.default
+                continue
             if sd.type == "predicate":
                 values[name] = PREDICATE_DAGS[r.value]
             elif sd.type == "admin_level" and r.value == "none":
@@ -351,6 +407,16 @@ class Parser:
             else:
                 values[name] = r.value
         return values, slots
+
+    def _default_region(self, sd) -> dict[str, Any]:
+        if sd.default != "country":
+            raise _Stop(Unsupported(reason=f"no default for open slot ({sd.default!r})"))
+        code = self.cfg["data"]["country"]
+        row = self.store.cursor().execute(
+            "SELECT id, name FROM divisions WHERE subtype = 'country' AND country = ?", [code]).fetchone()
+        if not row:
+            raise _Stop(Unsupported(reason=f"country {code} is not in the extract"))
+        return {"op": "Resolve", "args": {"name": row[1], "source": "overture", "id": row[0]}}
 
     def _region(self, dec: Decider, tpl: Template, text: str, spans: list[Span], query: str, depth: int,
                 type_hint: str | None) -> tuple[dict[str, Any], Any]:

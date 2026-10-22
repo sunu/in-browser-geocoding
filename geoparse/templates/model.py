@@ -6,6 +6,10 @@ Pattern syntax (one string, matched against the words of the query, case-insensi
   word               a literal word
   (a|b c|d)          one of the alternatives; an alternative can have more than one word
   [a|b]              optional: one of the alternatives, or nothing
+
+A segment name can occur twice, for example "{head:pred,level} in {parent} {head:pred,level}".
+The two parts are joined with " ... " and feed the same closed slots. The decision model reads the
+joined text, so a description can be on both sides of the place ("districts in Kerala away from the sea").
 """
 from __future__ import annotations
 
@@ -132,9 +136,13 @@ def match_pattern(pattern: str, text: str, max_results: int = 50) -> list[dict[s
             return
         if si == len(segs):
             if wi == len(toks):
+                # A segment name can occur more than once in a pattern. Its parts are joined with " ... ".
+                merged: dict[str, list[str]] = {}
+                for k, (a, b) in sorted(acc.items(), key=lambda kv: kv[1][0]):
+                    merged.setdefault(k.split("#")[0], []).append(span_text(a, b))
                 results.append({
-                    "segments": {k: span_text(a, b) for k, (a, b) in acc.items()},
-                    "feeds": {s.name: s.feeds for s in segs if s.kind == "slot" and s.name in acc},
+                    "segments": {k: " ... ".join(v) for k, v in merged.items()},
+                    "feeds": {s.name: s.feeds for s in segs if s.kind == "slot" and s.name in merged},
                     "literals": lits,
                 })
             return
@@ -147,9 +155,10 @@ def match_pattern(pattern: str, text: str, max_results: int = 50) -> list[dict[s
                 rec(si + 1, wi, acc, lits)
             return
         # slot: one or more words
+        key = seg.name if seg.name not in acc else f"{seg.name}#{si}"
         for end in range(wi + 1, len(toks) + 1):
             acc2 = dict(acc)
-            acc2[seg.name] = (wi, end)
+            acc2[key] = (wi, end)
             rec(si + 1, end, acc2, lits)
 
     rec(0, 0, {}, 0)

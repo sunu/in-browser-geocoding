@@ -50,7 +50,9 @@ def fill_closed_slot(text, q: Question, options_: dict[str, str]) -> Decision[st
         from geoparse.options import categories
 
         scores = {g: max((keyword_hits(seg, item["keywords"]) for item in categories()[g]["items"].values()), default=0)
-                  for g in options_}
+                  for g in options_ if g != "none"}
+        if "none" in options_:
+            scores["none"] = 0
     elif ref == "categories":
         kws = option_keywords("categories")
         scores = {k: keyword_hits(seg, kws.get(k, [])) for k in options_}

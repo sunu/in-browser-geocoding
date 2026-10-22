@@ -6,11 +6,12 @@ templates:
     examples: ["cities in Maharashtra with population over 1 million", "districts of Kerala with more than 30 lakh people"]
     slots:
       level: {type: admin_level, options_ref: admin_levels}
-      parent: {type: region}
+      parent: {type: region, optional: true, default: country}
       attr: {type: attr, options_ref: attrs}
       op: {type: op, options_ref: ops}
       value: {type: value}
     patterns:
+      - "{level} (with|having|where|whose|with a|with an) {head:attr,op} {value}"
       - "{level} (in|of|within) {parent} (with|having|where|whose|with a|with an) {head:attr,op} {value}"
       - "{level} (in|of|within) {parent} (with|having|that have|which have|that has) {opseg:op} {value} {attrseg:attr}"
       - "{level} with {head:attr,op} {value} (in|of|within) {parent}"

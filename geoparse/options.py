@@ -156,6 +156,8 @@ def parse_value(text: str) -> float | None:
     if not m:
         return None
     n = m.group(1).lower()
+    if n == "a" and not m.group(2):
+        return None  # "a" is a number only with a scale word ("a million")
     base = float(_NUM_WORDS[n]) if n in _NUM_WORDS else float(n.replace(",", ""))
     return base * _SCALE.get((m.group(2) or "").lower(), 1)
 

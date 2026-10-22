@@ -15,7 +15,7 @@ admin_levels:
     description: "Districts, the level of division inside a state"
     keywords: [district, districts, dist, dists, zilla, zillas, county, counties]
   city:
-    description: "Cities and towns"
+    description: "Cities and towns (also metros, big cities, urban centres)"
     keywords: [city, cities, town, towns, urban areas, municipalities]
   none:
     description: "The text does not name a level of division"
@@ -23,10 +23,10 @@ admin_levels:
 
 predicates:
   coastal:
-    description: "On the sea coast"
+    description: "On the sea coast (touches the sea or the ocean)"
     keywords: [coastal, seaside, coast, sea-facing, maritime, littoral, on the coast, by the sea]
   landlocked:
-    description: "Not on the sea coast (landlocked, inland)"
+    description: "Not on the sea coast (landlocked, inland, no access to the sea)"
     keywords: [landlocked, land-locked, inland, non-coastal, noncoastal, interior]
   border:
     description: "On the international border of the country"
@@ -37,16 +37,16 @@ predicates:
 
 directions:
   north:
-    description: "North"
+    description: "North (northern, upper, top)"
     keywords: [north, northern, n, northward, upper]
   south:
-    description: "South"
+    description: "South (southern, lower, bottom)"
     keywords: [south, southern, s, southward, lower]
   east:
-    description: "East"
+    description: "East (eastern)"
     keywords: [east, eastern, e, eastward]
   west:
-    description: "West"
+    description: "West (western)"
     keywords: [west, western, w, westward]
   northeast:
     description: "North-east"

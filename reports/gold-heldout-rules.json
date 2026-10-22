@@ -8,8 +8,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "h001",
@@ -30,8 +30,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "h001",
@@ -67,8 +67,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "h002",
@@ -89,8 +89,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "h002",
@@ -126,8 +126,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 5
   },
   {
    "id": "h003",
@@ -148,8 +148,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 5
   },
   {
    "id": "h003",
@@ -185,8 +185,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 5
   },
   {
    "id": "h004",
@@ -207,8 +207,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 5
   },
   {
    "id": "h004",
@@ -245,7 +245,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h005",
@@ -256,7 +256,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "h005",
@@ -267,7 +267,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 8
   },
   {
    "id": "h005",
@@ -317,7 +317,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h006",
@@ -328,7 +328,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 3
   },
   {
    "id": "h006",
@@ -339,7 +339,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 9
   },
   {
    "id": "h006",
@@ -389,7 +389,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h007",
@@ -411,7 +411,7 @@
    "got": "direction_part",
    "gold": "direction_part",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h007",
@@ -472,7 +472,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h008",
@@ -494,7 +494,7 @@
    "got": "direction_outside",
    "gold": "direction_outside",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "h008",
@@ -555,7 +555,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h009",
@@ -566,7 +566,7 @@
    "got": "centroid",
    "gold": "centroid",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "h009",
@@ -577,7 +577,7 @@
    "got": "centroid",
    "gold": "centroid",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "h009",
@@ -625,7 +625,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 0.5,
-   "n_options": 3
+   "n_options": 4
   },
   {
    "id": "h010",
@@ -647,7 +647,7 @@
    "got": "children",
    "gold": "children",
    "conf": 0.5,
-   "n_options": 3
+   "n_options": 4
   },
   {
    "id": "h010",
@@ -697,7 +697,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 0.5,
-   "n_options": 4
+   "n_options": 5
   },
   {
    "id": "h011",
@@ -719,7 +719,7 @@
    "got": "children",
    "gold": "children",
    "conf": 0.5,
-   "n_options": 5
+   "n_options": 7
   },
   {
    "id": "h011",
@@ -841,7 +841,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h013",
@@ -852,7 +852,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "h013",
@@ -863,7 +863,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "h013",
@@ -913,7 +913,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h014",
@@ -924,7 +924,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "h014",
@@ -935,7 +935,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "h014",
@@ -985,7 +985,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h015",
@@ -1007,7 +1007,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "h015",
@@ -1068,7 +1068,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h016",
@@ -1090,7 +1090,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h016",
@@ -1107,7 +1107,7 @@
     "parent": "Tamil Nadu"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 3
   },
   {
    "id": "h016",
@@ -1151,7 +1151,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h017",
@@ -1173,7 +1173,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "h017",
@@ -1234,7 +1234,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 5
   },
   {
    "id": "h018",
@@ -1256,7 +1256,7 @@
    "got": "children_touching",
    "gold": "children_touching",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 7
   },
   {
    "id": "h018",
@@ -1391,7 +1391,7 @@
    "got": "set_algebra",
    "gold": "set_algebra",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "h020",
@@ -1413,7 +1413,7 @@
    "got": "union3",
    "gold": "union3",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 7
   },
   {
    "id": "h020",
@@ -1476,7 +1476,7 @@
    "got": "set_algebra",
    "gold": "set_algebra",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "h021",
@@ -1498,7 +1498,7 @@
    "got": "difference",
    "gold": "difference",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "h021",
@@ -1548,7 +1548,7 @@
    "got": "set_algebra",
    "gold": "set_algebra",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "h022",
@@ -1570,7 +1570,7 @@
    "got": "difference",
    "gold": "difference",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "h022",
@@ -1681,7 +1681,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "h024",
@@ -1703,7 +1703,7 @@
    "got": "along_coast",
    "gold": "along_coast",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 8
   },
   {
    "id": "h024",
@@ -1742,7 +1742,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 4
   },
   {
    "id": "h025",
@@ -1764,7 +1764,7 @@
    "got": "features_in",
    "gold": "features_in",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 4
   },
   {
    "id": "h025",
@@ -1814,7 +1814,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h026",
@@ -1825,7 +1825,7 @@
    "got": "features_near",
    "gold": "features_near",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "h026",
@@ -1836,7 +1836,7 @@
    "got": "features_near",
    "gold": "features_near",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "h026",
@@ -1886,7 +1886,7 @@
    "got": "attribute",
    "gold": "attribute",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 6
   },
   {
    "id": "h027",
@@ -1908,7 +1908,7 @@
    "got": "children_attr",
    "gold": "children_attr",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 6
   },
   {
    "id": "h027",
@@ -1931,7 +1931,7 @@
     "value": "1 million"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "h027",
@@ -1986,7 +1986,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h028",
@@ -1997,7 +1997,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "h028",
@@ -2008,7 +2008,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 8
   },
   {
    "id": "h028",
@@ -2025,7 +2025,7 @@
     "parent": "states bordering Kerala"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 5
   },
   {
    "id": "h028",
@@ -2069,7 +2069,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h028",
@@ -2080,7 +2080,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "h028",
@@ -2091,7 +2091,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "h028",
@@ -2141,7 +2141,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 4
   },
   {
    "id": "h029",
@@ -2163,7 +2163,7 @@
    "got": "features_in",
    "gold": "features_in",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 4
   },
   {
    "id": "h029",
@@ -2213,7 +2213,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h029",
@@ -2235,7 +2235,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "h029",
@@ -2368,7 +2368,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "h030",
@@ -2390,7 +2390,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "h030",
@@ -2451,7 +2451,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.13266587257385254,
+   "latency_s": 0.1345529556274414,
    "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2470,7 +2470,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.13046908378601074,
+   "latency_s": 0.13608598709106445,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2489,9 +2489,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10125589370727539,
-   "model_calls": 2,
-   "requests_in_sequence": 1,
+   "latency_s": 0.09639501571655273,
+   "model_calls": 3,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -2508,9 +2508,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0649569034576416,
-   "model_calls": 2,
-   "requests_in_sequence": 1,
+   "latency_s": 0.06987380981445312,
+   "model_calls": 3,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -2527,9 +2527,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09690475463867188,
-   "model_calls": 4,
-   "requests_in_sequence": 2,
+   "latency_s": 0.09943008422851562,
+   "model_calls": 5,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "buffer",
    "path": "simple",
@@ -2546,9 +2546,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.057190895080566406,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.06061077117919922,
+   "model_calls": 4,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "buffer",
    "path": "simple",
@@ -2565,7 +2565,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09177899360656738,
+   "latency_s": 0.08434700965881348,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2584,7 +2584,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09292411804199219,
+   "latency_s": 0.08959388732910156,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2603,9 +2603,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08532309532165527,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.08193087577819824,
+   "model_calls": 4,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "centroid",
    "path": "simple",
@@ -2622,7 +2622,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08509993553161621,
+   "latency_s": 0.09236812591552734,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2641,7 +2641,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0881340503692627,
+   "latency_s": 0.09263491630554199,
    "model_calls": 4,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -2660,7 +2660,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08737802505493164,
+   "latency_s": 0.09317827224731445,
    "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2679,7 +2679,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08445596694946289,
+   "latency_s": 0.08812499046325684,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2698,7 +2698,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08347105979919434,
+   "latency_s": 0.09891891479492188,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2717,7 +2717,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08676791191101074,
+   "latency_s": 0.11797213554382324,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2736,9 +2736,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09072399139404297,
-   "model_calls": 4,
-   "requests_in_sequence": 2,
+   "latency_s": 0.11360406875610352,
+   "model_calls": 9,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -2755,7 +2755,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08859896659851074,
+   "latency_s": 0.09837508201599121,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2774,7 +2774,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08969688415527344,
+   "latency_s": 0.09458708763122559,
    "model_calls": 5,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -2793,7 +2793,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08060622215270996,
+   "latency_s": 0.10399794578552246,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2812,7 +2812,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09578275680541992,
+   "latency_s": 0.10537481307983398,
    "model_calls": 5,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -2831,7 +2831,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0841360092163086,
+   "latency_s": 0.10454702377319336,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2850,7 +2850,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07817411422729492,
+   "latency_s": 0.1008458137512207,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2869,7 +2869,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.11644315719604492,
+   "latency_s": 0.13758420944213867,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2888,7 +2888,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08588433265686035,
+   "latency_s": 0.10041213035583496,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2907,7 +2907,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08108806610107422,
+   "latency_s": 0.0946958065032959,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2926,7 +2926,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0889291763305664,
+   "latency_s": 0.10113382339477539,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2945,8 +2945,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08562183380126953,
-   "model_calls": 5,
+   "latency_s": 0.09429097175598145,
+   "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_attr",
@@ -2964,9 +2964,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10139799118041992,
-   "model_calls": 7,
-   "requests_in_sequence": 4,
+   "latency_s": 0.10453605651855469,
+   "model_calls": 8,
+   "requests_in_sequence": 5,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -2983,7 +2983,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10856795310974121,
+   "latency_s": 0.11140680313110352,
    "model_calls": 8,
    "requests_in_sequence": 4,
    "unsupported": null,
@@ -3002,7 +3002,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10251498222351074,
+   "latency_s": 0.10257577896118164,
    "model_calls": 7,
    "requests_in_sequence": 4,
    "unsupported": null,

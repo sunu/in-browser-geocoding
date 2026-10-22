@@ -8,8 +8,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "g001",
@@ -30,8 +30,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "g001",
@@ -67,8 +67,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "g002",
@@ -89,8 +89,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "g002",
@@ -126,8 +126,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "g003",
@@ -148,8 +148,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "g003",
@@ -186,7 +186,7 @@
    "got": "set_algebra",
    "gold": "lookup",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g004",
@@ -208,7 +208,7 @@
    "got": "union",
    "gold": "lookup_place",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g004",
@@ -244,8 +244,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "g005",
@@ -266,8 +266,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "g005",
@@ -303,8 +303,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "g006",
@@ -325,8 +325,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "g006",
@@ -362,8 +362,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "g007",
@@ -384,8 +384,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "g007",
@@ -418,11 +418,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup",
+   "correct": false,
+   "got": "features",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.5,
+   "n_options": 5
   },
   {
    "id": "g008",
@@ -440,11 +440,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup_place",
+   "correct": false,
+   "got": "features_in",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.5,
+   "n_options": 6
   },
   {
    "id": "g008",
@@ -480,8 +480,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "g009",
@@ -502,8 +502,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 3
   },
   {
    "id": "g009",
@@ -540,7 +540,7 @@
    "got": "modifier",
    "gold": "lookup",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g010",
@@ -562,7 +562,7 @@
    "got": "direction_part",
    "gold": "lookup_place",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g010",
@@ -587,8 +587,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 5
   },
   {
    "id": "g011",
@@ -609,8 +609,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.75,
+   "n_options": 5
   },
   {
    "id": "g011",
@@ -636,7 +636,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g012",
@@ -647,7 +647,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g012",
@@ -658,7 +658,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 8
   },
   {
    "id": "g012",
@@ -708,7 +708,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g013",
@@ -719,7 +719,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 3
   },
   {
    "id": "g013",
@@ -730,7 +730,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 9
   },
   {
    "id": "g013",
@@ -780,7 +780,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g014",
@@ -791,7 +791,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g014",
@@ -802,7 +802,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g014",
@@ -850,7 +850,7 @@
    "got": "features",
    "gold": "modifier",
    "conf": 0.5,
-   "n_options": 3
+   "n_options": 5
   },
   {
    "id": "g015",
@@ -861,7 +861,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g015",
@@ -872,7 +872,7 @@
    "got": "features_in",
    "gold": "buffer",
    "conf": 0.5,
-   "n_options": 3
+   "n_options": 8
   },
   {
    "id": "g015",
@@ -922,7 +922,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g016",
@@ -933,7 +933,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g016",
@@ -944,7 +944,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 8
   },
   {
    "id": "g016",
@@ -994,7 +994,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g017",
@@ -1005,7 +1005,7 @@
    "got": "centroid",
    "gold": "centroid",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g017",
@@ -1016,7 +1016,7 @@
    "got": "centroid",
    "gold": "centroid",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g017",
@@ -1064,7 +1064,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g018",
@@ -1075,7 +1075,7 @@
    "got": "centroid",
    "gold": "centroid",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g018",
@@ -1086,7 +1086,7 @@
    "got": "centroid",
    "gold": "centroid",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g018",
@@ -1134,7 +1134,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g019",
@@ -1156,7 +1156,7 @@
    "got": "direction_part",
    "gold": "direction_part",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g019",
@@ -1217,7 +1217,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g020",
@@ -1239,7 +1239,7 @@
    "got": "direction_part",
    "gold": "direction_part",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g020",
@@ -1300,7 +1300,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g021",
@@ -1311,7 +1311,7 @@
    "got": "direction_part",
    "gold": "direction_part",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g021",
@@ -1322,7 +1322,7 @@
    "got": "direction_part",
    "gold": "direction_part",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g021",
@@ -1383,7 +1383,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g022",
@@ -1405,7 +1405,7 @@
    "got": "direction_outside",
    "gold": "direction_outside",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g022",
@@ -1466,7 +1466,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g023",
@@ -1488,7 +1488,7 @@
    "got": "direction_outside",
    "gold": "direction_outside",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g023",
@@ -1549,7 +1549,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 0.5,
-   "n_options": 3
+   "n_options": 5
   },
   {
    "id": "g024",
@@ -1571,7 +1571,7 @@
    "got": "children",
    "gold": "children",
    "conf": 0.5,
-   "n_options": 4
+   "n_options": 6
   },
   {
    "id": "g024",
@@ -1621,7 +1621,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 0.5,
-   "n_options": 3
+   "n_options": 4
   },
   {
    "id": "g025",
@@ -1643,7 +1643,7 @@
    "got": "children",
    "gold": "children",
    "conf": 0.5,
-   "n_options": 3
+   "n_options": 4
   },
   {
    "id": "g025",
@@ -1693,7 +1693,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 0.5,
-   "n_options": 3
+   "n_options": 5
   },
   {
    "id": "g026",
@@ -1715,7 +1715,7 @@
    "got": "children",
    "gold": "children",
    "conf": 0.5,
-   "n_options": 3
+   "n_options": 5
   },
   {
    "id": "g026",
@@ -1732,7 +1732,7 @@
     "level": "districts"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g026",
@@ -1765,7 +1765,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 0.5,
-   "n_options": 4
+   "n_options": 5
   },
   {
    "id": "g027",
@@ -1787,7 +1787,7 @@
    "got": "children",
    "gold": "children",
    "conf": 0.5,
-   "n_options": 4
+   "n_options": 5
   },
   {
    "id": "g027",
@@ -1804,7 +1804,7 @@
     "parent": "tamil nadu"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g027",
@@ -1837,7 +1837,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 0.5,
-   "n_options": 3
+   "n_options": 5
   },
   {
    "id": "g028",
@@ -1859,7 +1859,7 @@
    "got": "children",
    "gold": "children",
    "conf": 0.5,
-   "n_options": 4
+   "n_options": 6
   },
   {
    "id": "g028",
@@ -1909,7 +1909,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g029",
@@ -1920,7 +1920,7 @@
    "got": "parent",
    "gold": "parent",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g029",
@@ -1931,7 +1931,7 @@
    "got": "parent",
    "gold": "parent",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g029",
@@ -2053,7 +2053,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g031",
@@ -2064,7 +2064,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g031",
@@ -2075,7 +2075,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g031",
@@ -2125,7 +2125,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g032",
@@ -2136,7 +2136,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g032",
@@ -2147,7 +2147,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g032",
@@ -2197,7 +2197,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g033",
@@ -2208,7 +2208,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 3
   },
   {
    "id": "g033",
@@ -2219,7 +2219,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g033",
@@ -2256,7 +2256,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g034",
@@ -2267,7 +2267,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g034",
@@ -2278,7 +2278,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g034",
@@ -2328,7 +2328,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g035",
@@ -2350,7 +2350,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g035",
@@ -2411,7 +2411,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g036",
@@ -2433,7 +2433,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g036",
@@ -2494,7 +2494,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g037",
@@ -2516,7 +2516,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g037",
@@ -2577,7 +2577,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g038",
@@ -2599,7 +2599,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g038",
@@ -2660,7 +2660,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g039",
@@ -2682,7 +2682,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g039",
@@ -2743,7 +2743,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g040",
@@ -2765,7 +2765,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g040",
@@ -2826,7 +2826,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g041",
@@ -2848,7 +2848,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g041",
@@ -2905,11 +2905,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "predicate_filter",
-   "correct": true,
-   "got": "predicate_filter",
+   "correct": false,
+   "got": "hierarchy",
    "gold": "predicate_filter",
-   "conf": 1.0,
-   "n_options": 4
+   "conf": 0.5,
+   "n_options": 6
   },
   {
    "id": "g042",
@@ -2927,30 +2927,28 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "predicate_filter",
-   "correct": true,
-   "got": "children_with_predicate",
+   "correct": false,
+   "got": "children",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 5
+   "conf": 0.5,
+   "n_options": 7
   },
   {
    "id": "g042",
    "decision": "pick_split",
    "depth": 0,
    "family": "predicate_filter",
-   "correct": true,
+   "correct": false,
    "got": {
-    "level": "districts",
-    "parent": "Maharashtra",
-    "pred": "coast"
+    "head": "districts",
+    "parent": "Maharashtra on the coast"
    },
    "gold": {
-    "level": "districts",
-    "parent": "Maharashtra",
-    "pred": "coast"
+    "head": "districts ... on the coast",
+    "parent": "Maharashtra"
    },
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 7
   },
   {
    "id": "g042",
@@ -2960,7 +2958,7 @@
    "correct": true,
    "got": "coastal",
    "gold": "coastal",
-   "text": "coast",
+   "text": "districts ... on the coast",
    "conf": 1.0
   },
   {
@@ -2971,7 +2969,7 @@
    "correct": true,
    "got": "district",
    "gold": "district",
-   "text": "districts",
+   "text": "districts ... on the coast",
    "conf": 1.0
   },
   {
@@ -2994,7 +2992,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 5
   },
   {
    "id": "g043",
@@ -3016,7 +3014,7 @@
    "got": "children_touching",
    "gold": "children_touching",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 7
   },
   {
    "id": "g043",
@@ -3079,7 +3077,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 4
   },
   {
    "id": "g044",
@@ -3101,7 +3099,7 @@
    "got": "children_touching",
    "gold": "children_touching",
    "conf": 1.0,
-   "n_options": 4
+   "n_options": 5
   },
   {
    "id": "g044",
@@ -3164,7 +3162,7 @@
    "got": "set_algebra",
    "gold": "set_algebra",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g045",
@@ -3186,7 +3184,7 @@
    "got": "union",
    "gold": "union",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g045",
@@ -3236,7 +3234,7 @@
    "got": "set_algebra",
    "gold": "set_algebra",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g046",
@@ -3258,7 +3256,7 @@
    "got": "union",
    "gold": "union",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g046",
@@ -3308,7 +3306,7 @@
    "got": "set_algebra",
    "gold": "set_algebra",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 3
   },
   {
    "id": "g047",
@@ -3330,7 +3328,7 @@
    "got": "union3",
    "gold": "union3",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 4
   },
   {
    "id": "g047",
@@ -3393,7 +3391,7 @@
    "got": "set_algebra",
    "gold": "set_algebra",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 3
   },
   {
    "id": "g048",
@@ -3415,7 +3413,7 @@
    "got": "union3",
    "gold": "union3",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 4
   },
   {
    "id": "g048",
@@ -3478,7 +3476,7 @@
    "got": "set_algebra",
    "gold": "set_algebra",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g049",
@@ -3500,7 +3498,7 @@
    "got": "difference",
    "gold": "difference",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g049",
@@ -3550,7 +3548,7 @@
    "got": "set_algebra",
    "gold": "set_algebra",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 6
   },
   {
    "id": "g050",
@@ -3572,7 +3570,7 @@
    "got": "difference",
    "gold": "difference",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 6
   },
   {
    "id": "g050",
@@ -3611,7 +3609,7 @@
    "got": "set_algebra",
    "gold": "set_algebra",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g051",
@@ -3633,7 +3631,7 @@
    "got": "difference",
    "gold": "difference",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g051",
@@ -3683,7 +3681,7 @@
    "got": "set_algebra",
    "gold": "set_algebra",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 6
   },
   {
    "id": "g052",
@@ -3705,7 +3703,7 @@
    "got": "difference",
    "gold": "difference",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 6
   },
   {
    "id": "g052",
@@ -3744,7 +3742,7 @@
    "got": "set_algebra",
    "gold": "set_algebra",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g053",
@@ -3766,7 +3764,7 @@
    "got": "intersection",
    "gold": "intersection",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 8
   },
   {
    "id": "g053",
@@ -3816,7 +3814,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g053",
@@ -3827,7 +3825,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g053",
@@ -3838,7 +3836,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 8
   },
   {
    "id": "g053",
@@ -3877,7 +3875,7 @@
    "got": "set_algebra",
    "gold": "set_algebra",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g054",
@@ -3899,7 +3897,7 @@
    "got": "intersection",
    "gold": "intersection",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g054",
@@ -3949,7 +3947,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g054",
@@ -3960,7 +3958,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 3
   },
   {
    "id": "g054",
@@ -3971,7 +3969,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 8
   },
   {
    "id": "g054",
@@ -4082,7 +4080,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 4
   },
   {
    "id": "g056",
@@ -4104,7 +4102,7 @@
    "got": "between",
    "gold": "between",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 4
   },
   {
    "id": "g056",
@@ -4154,7 +4152,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 4
   },
   {
    "id": "g057",
@@ -4176,7 +4174,7 @@
    "got": "between",
    "gold": "between",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 4
   },
   {
    "id": "g057",
@@ -4226,7 +4224,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g058",
@@ -4248,7 +4246,7 @@
    "got": "along_coast",
    "gold": "along_coast",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 8
   },
   {
    "id": "g058",
@@ -4287,7 +4285,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g059",
@@ -4309,7 +4307,7 @@
    "got": "along_coast",
    "gold": "along_coast",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 8
   },
   {
    "id": "g059",
@@ -4346,7 +4344,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g060",
@@ -4368,7 +4366,7 @@
    "got": "along_coast",
    "gold": "along_coast",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 8
   },
   {
    "id": "g060",
@@ -4407,7 +4405,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g061",
@@ -4429,7 +4427,7 @@
    "got": "along_border",
    "gold": "along_border",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 8
   },
   {
    "id": "g061",
@@ -4468,7 +4466,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g062",
@@ -4490,7 +4488,7 @@
    "got": "along_border",
    "gold": "along_border",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 8
   },
   {
    "id": "g062",
@@ -4527,7 +4525,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g063",
@@ -4549,7 +4547,7 @@
    "got": "along_intl_border",
    "gold": "along_intl_border",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g063",
@@ -4588,7 +4586,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g064",
@@ -4610,7 +4608,7 @@
    "got": "along_intl_border",
    "gold": "along_intl_border",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 8
   },
   {
    "id": "g064",
@@ -4647,7 +4645,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 4
   },
   {
    "id": "g065",
@@ -4669,7 +4667,7 @@
    "got": "features_in",
    "gold": "features_in",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 4
   },
   {
    "id": "g065",
@@ -4719,7 +4717,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 4
   },
   {
    "id": "g066",
@@ -4741,7 +4739,7 @@
    "got": "features_in",
    "gold": "features_in",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 4
   },
   {
    "id": "g066",
@@ -4791,7 +4789,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 4
   },
   {
    "id": "g067",
@@ -4813,7 +4811,7 @@
    "got": "features_in",
    "gold": "features_in",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 4
   },
   {
    "id": "g067",
@@ -4863,7 +4861,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g068",
@@ -4885,7 +4883,7 @@
    "got": "features_in",
    "gold": "features_in",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g068",
@@ -4935,7 +4933,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g069",
@@ -4957,7 +4955,7 @@
    "got": "features_in",
    "gold": "features_in",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g069",
@@ -5007,7 +5005,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g070",
@@ -5018,7 +5016,7 @@
    "got": "features_near",
    "gold": "features_near",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g070",
@@ -5029,7 +5027,7 @@
    "got": "features_near",
    "gold": "features_near",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g070",
@@ -5079,7 +5077,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g071",
@@ -5101,7 +5099,7 @@
    "got": "features_near",
    "gold": "features_near",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 8
   },
   {
    "id": "g071",
@@ -5164,7 +5162,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g072",
@@ -5175,7 +5173,7 @@
    "got": "features_near",
    "gold": "features_near",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g072",
@@ -5186,7 +5184,7 @@
    "got": "features_near",
    "gold": "features_near",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g072",
@@ -5249,7 +5247,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g073",
@@ -5260,7 +5258,7 @@
    "got": "features_near",
    "gold": "features_near",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g073",
@@ -5271,7 +5269,7 @@
    "got": "features_near",
    "gold": "features_near",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g073",
@@ -5321,7 +5319,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g074",
@@ -5343,7 +5341,7 @@
    "got": "features_near",
    "gold": "features_near",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 8
   },
   {
    "id": "g074",
@@ -5406,7 +5404,7 @@
    "got": "attribute",
    "gold": "attribute",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 6
   },
   {
    "id": "g075",
@@ -5428,7 +5426,7 @@
    "got": "children_attr",
    "gold": "children_attr",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 6
   },
   {
    "id": "g075",
@@ -5451,7 +5449,7 @@
     "value": "1 million"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g075",
@@ -5506,7 +5504,7 @@
    "got": "attribute",
    "gold": "attribute",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 6
   },
   {
    "id": "g076",
@@ -5528,7 +5526,7 @@
    "got": "children_attr",
    "gold": "children_attr",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 6
   },
   {
    "id": "g076",
@@ -5551,7 +5549,7 @@
     "value": "1 million"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g076",
@@ -5606,7 +5604,7 @@
    "got": "attribute",
    "gold": "attribute",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 7
   },
   {
    "id": "g077",
@@ -5628,14 +5626,14 @@
    "got": "children_attr",
    "gold": "children_attr",
    "conf": 1.0,
-   "n_options": 6
+   "n_options": 8
   },
   {
    "id": "g077",
    "decision": "pick_split",
    "depth": 0,
    "family": "attribute",
-   "correct": true,
+   "correct": false,
    "got": {
     "level": "districts",
     "parent": "Kerala",
@@ -5647,11 +5645,11 @@
     "level": "districts",
     "parent": "Kerala",
     "opseg": "more than",
-    "value": "30 lakh",
-    "attrseg": "people"
+    "value": "30",
+    "attrseg": "lakh people"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g077",
@@ -5672,7 +5670,7 @@
    "correct": true,
    "got": "population",
    "gold": "population",
-   "text": "people",
+   "text": "lakh people",
    "conf": 1.0
   },
   {
@@ -5706,7 +5704,7 @@
    "got": "attribute",
    "gold": "attribute",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 6
   },
   {
    "id": "g078",
@@ -5728,7 +5726,7 @@
    "got": "children_attr",
    "gold": "children_attr",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 6
   },
   {
    "id": "g078",
@@ -5806,7 +5804,7 @@
    "got": "attribute",
    "gold": "attribute",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 6
   },
   {
    "id": "g079",
@@ -5828,7 +5826,7 @@
    "got": "children_attr",
    "gold": "children_attr",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 6
   },
   {
    "id": "g079",
@@ -5851,7 +5849,7 @@
     "value": "10 lakh"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g079",
@@ -5906,7 +5904,7 @@
    "got": "attribute",
    "gold": "attribute",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 7
   },
   {
    "id": "g080",
@@ -5928,7 +5926,7 @@
    "got": "children_attr",
    "gold": "children_attr",
    "conf": 1.0,
-   "n_options": 6
+   "n_options": 8
   },
   {
    "id": "g080",
@@ -5951,7 +5949,7 @@
     "value": "10 crore"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g080",
@@ -6006,7 +6004,7 @@
    "got": "attribute",
    "gold": "attribute",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 6
   },
   {
    "id": "g081",
@@ -6028,7 +6026,7 @@
    "got": "children_attr",
    "gold": "children_attr",
    "conf": 1.0,
-   "n_options": 6
+   "n_options": 7
   },
   {
    "id": "g081",
@@ -6051,7 +6049,7 @@
     "value": "50,000"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 3
   },
   {
    "id": "g081",
@@ -6106,7 +6104,7 @@
    "got": "attribute",
    "gold": "attribute",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g082",
@@ -6128,7 +6126,7 @@
    "got": "children_attr",
    "gold": "children_attr",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g082",
@@ -6149,7 +6147,7 @@
     "parent": "Gujarat"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g082",
@@ -6204,7 +6202,7 @@
    "got": "attribute",
    "gold": "attribute",
    "conf": 1.0,
-   "n_options": 4
+   "n_options": 6
   },
   {
    "id": "g083",
@@ -6226,7 +6224,7 @@
    "got": "children_attr",
    "gold": "children_attr",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 7
   },
   {
    "id": "g083",
@@ -6249,7 +6247,7 @@
     "value": "2 million"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g083",
@@ -6304,7 +6302,7 @@
    "got": "attribute",
    "gold": "attribute",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 7
   },
   {
    "id": "g084",
@@ -6326,7 +6324,7 @@
    "got": "children_attr",
    "gold": "children_attr",
    "conf": 1.0,
-   "n_options": 6
+   "n_options": 8
   },
   {
    "id": "g084",
@@ -6349,7 +6347,7 @@
     "value": "3 million"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g084",
@@ -6404,7 +6402,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g085",
@@ -6426,7 +6424,7 @@
    "got": "features_near",
    "gold": "features_near",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 8
   },
   {
    "id": "g085",
@@ -6478,7 +6476,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g085",
@@ -6500,7 +6498,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g085",
@@ -6561,7 +6559,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 4
   },
   {
    "id": "g086",
@@ -6583,7 +6581,7 @@
    "got": "features_in",
    "gold": "features_in",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 4
   },
   {
    "id": "g086",
@@ -6633,7 +6631,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g086",
@@ -6655,7 +6653,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g086",
@@ -6716,7 +6714,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g087",
@@ -6727,7 +6725,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 3
   },
   {
    "id": "g087",
@@ -6738,7 +6736,7 @@
    "got": "buffer",
    "gold": "buffer",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 10
   },
   {
    "id": "g087",
@@ -6777,7 +6775,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 0.5,
-   "n_options": 3
+   "n_options": 5
   },
   {
    "id": "g087",
@@ -6799,7 +6797,7 @@
    "got": "children",
    "gold": "children",
    "conf": 0.5,
-   "n_options": 4
+   "n_options": 6
   },
   {
    "id": "g087",
@@ -6921,7 +6919,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g088",
@@ -6943,7 +6941,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g088",
@@ -7065,7 +7063,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g089",
@@ -7087,7 +7085,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g089",
@@ -7144,11 +7142,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "hierarchy",
-   "correct": true,
-   "got": "hierarchy",
+   "correct": false,
+   "got": "predicate_filter",
    "gold": "hierarchy",
-   "conf": 0.5,
-   "n_options": 3
+   "conf": 1.0,
+   "n_options": 5
   },
   {
    "id": "g090",
@@ -7166,11 +7164,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "hierarchy",
-   "correct": true,
-   "got": "children",
+   "correct": false,
+   "got": "children_touching",
    "gold": "children",
-   "conf": 0.5,
-   "n_options": 4
+   "conf": 1.0,
+   "n_options": 7
   },
   {
    "id": "g090",
@@ -7187,7 +7185,7 @@
     "parent": "states that border Goa"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 3
   },
   {
    "id": "g090",
@@ -7220,7 +7218,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g090",
@@ -7231,7 +7229,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g090",
@@ -7242,7 +7240,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g090",
@@ -7292,7 +7290,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g091",
@@ -7302,8 +7300,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.5,
+   "n_options": 2
   },
   {
    "id": "g091",
@@ -7313,8 +7311,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 2
+   "conf": 0.5,
+   "n_options": 8
   },
   {
    "id": "g091",
@@ -7331,7 +7329,7 @@
     "parent": "states that border Goa"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 5
   },
   {
    "id": "g091",
@@ -7375,7 +7373,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g091",
@@ -7386,7 +7384,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g091",
@@ -7397,7 +7395,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g091",
@@ -7447,7 +7445,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 3
   },
   {
    "id": "g092",
@@ -7469,7 +7467,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 3
   },
   {
    "id": "g092",
@@ -7519,7 +7517,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g092",
@@ -7541,7 +7539,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g092",
@@ -7602,7 +7600,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g093",
@@ -7613,7 +7611,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g093",
@@ -7624,7 +7622,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g093",
@@ -7663,7 +7661,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 0.5,
-   "n_options": 3
+   "n_options": 5
   },
   {
    "id": "g094",
@@ -7685,7 +7683,7 @@
    "got": "children",
    "gold": "children",
    "conf": 0.5,
-   "n_options": 4
+   "n_options": 6
   },
   {
    "id": "g094",
@@ -7702,7 +7700,7 @@
     "parent": "the seven sisters"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 3
   },
   {
    "id": "g094",
@@ -7724,7 +7722,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g095",
@@ -7746,7 +7744,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g095",
@@ -7763,7 +7761,7 @@
     "parent": "south india"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 3
   },
   {
    "id": "g095",
@@ -7796,7 +7794,7 @@
    "got": "attribute",
    "gold": "attribute",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g096",
@@ -7818,7 +7816,7 @@
    "got": "children_attr",
    "gold": "children_attr",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 8
   },
   {
    "id": "g096",
@@ -7839,7 +7837,7 @@
     "parent": "states that border Gujarat"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g096",
@@ -7894,7 +7892,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g096",
@@ -7905,7 +7903,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g096",
@@ -7916,7 +7914,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 6
   },
   {
    "id": "g096",
@@ -7966,7 +7964,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 4
   },
   {
    "id": "g097",
@@ -7988,7 +7986,7 @@
    "got": "between",
    "gold": "between",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 4
   },
   {
    "id": "g097",
@@ -8038,7 +8036,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g097",
@@ -8060,7 +8058,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g097",
@@ -8121,7 +8119,7 @@
    "got": "modifier",
    "gold": "modifier",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 5
   },
   {
    "id": "g098",
@@ -8132,7 +8130,7 @@
    "got": "direction_part",
    "gold": "direction_part",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g098",
@@ -8143,7 +8141,7 @@
    "got": "direction_part",
    "gold": "direction_part",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 7
   },
   {
    "id": "g098",
@@ -8193,7 +8191,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 0.5,
-   "n_options": 3
+   "n_options": 5
   },
   {
    "id": "g098",
@@ -8215,7 +8213,7 @@
    "got": "children",
    "gold": "children",
    "conf": 0.5,
-   "n_options": 4
+   "n_options": 6
   },
   {
    "id": "g098",
@@ -8265,7 +8263,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.1359577178955078,
+   "latency_s": 0.13820695877075195,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8284,9 +8282,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.13177204132080078,
-   "model_calls": 2,
-   "requests_in_sequence": 1,
+   "latency_s": 0.1326749324798584,
+   "model_calls": 3,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -8303,7 +8301,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.13352537155151367,
+   "latency_s": 0.1326141357421875,
    "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8322,7 +8320,7 @@
    "depth": 0,
    "template_ok": false,
    "ok": false,
-   "latency_s": 0.056185007095336914,
+   "latency_s": 0.05053281784057617,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": {
@@ -8343,7 +8341,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.056372880935668945,
+   "latency_s": 0.06601285934448242,
    "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8362,9 +8360,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.12082719802856445,
-   "model_calls": 2,
-   "requests_in_sequence": 1,
+   "latency_s": 0.14626622200012207,
+   "model_calls": 3,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -8381,7 +8379,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.3247051239013672,
+   "latency_s": 0.3591909408569336,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8398,19 +8396,21 @@
    "query": "Gateway of India",
    "family": "lookup",
    "depth": 0,
-   "template_ok": true,
-   "ok": true,
-   "latency_s": 0.0698699951171875,
+   "template_ok": false,
+   "ok": false,
+   "latency_s": 0.007710933685302734,
    "model_calls": 2,
-   "requests_in_sequence": 1,
-   "unsupported": null,
-   "got_template": "lookup_place",
-   "path": "simple",
-   "slots_ok": true,
-   "diffs": [],
-   "dag_ok": true,
-   "exec_ok": null,
-   "exec_note": "needs network"
+   "requests_in_sequence": 2,
+   "unsupported": {
+    "reason": "the text 'Gateway' names no known category",
+    "decision": "fill_closed_slot",
+    "depth": 0,
+    "text": "Gateway of India"
+   },
+   "got_template": null,
+   "path": null,
+   "slots_ok": false,
+   "dag_ok": false
   },
   {
    "id": "g009",
@@ -8419,9 +8419,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.12421512603759766,
-   "model_calls": 2,
-   "requests_in_sequence": 1,
+   "latency_s": 0.1670069694519043,
+   "model_calls": 3,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -8438,7 +8438,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 5.888938903808594e-05,
+   "latency_s": 5.602836608886719e-05,
    "model_calls": 0,
    "requests_in_sequence": 0,
    "unsupported": null,
@@ -8457,7 +8457,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 9.870529174804688e-05,
+   "latency_s": 0.00011587142944335938,
    "model_calls": 0,
    "requests_in_sequence": 0,
    "unsupported": null,
@@ -8476,9 +8476,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07572007179260254,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.06095004081726074,
+   "model_calls": 4,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "buffer",
    "path": "simple",
@@ -8495,9 +8495,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.061559200286865234,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.052954912185668945,
+   "model_calls": 4,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "buffer",
    "path": "simple",
@@ -8514,9 +8514,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.1038050651550293,
-   "model_calls": 4,
-   "requests_in_sequence": 2,
+   "latency_s": 0.09772610664367676,
+   "model_calls": 5,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "buffer",
    "path": "simple",
@@ -8533,9 +8533,9 @@
    "depth": 0,
    "template_ok": false,
    "ok": true,
-   "latency_s": 0.2520630359649658,
-   "model_calls": 8,
-   "requests_in_sequence": 5,
+   "latency_s": 0.24479198455810547,
+   "model_calls": 12,
+   "requests_in_sequence": 7,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -8554,9 +8554,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10326099395751953,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.0889139175415039,
+   "model_calls": 4,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "buffer",
    "path": "simple",
@@ -8573,9 +8573,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09843802452087402,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.09014582633972168,
+   "model_calls": 4,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "centroid",
    "path": "simple",
@@ -8592,9 +8592,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09850692749023438,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.08482718467712402,
+   "model_calls": 4,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "centroid",
    "path": "simple",
@@ -8611,7 +8611,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10024189949035645,
+   "latency_s": 0.08693933486938477,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8630,7 +8630,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09108901023864746,
+   "latency_s": 0.08603811264038086,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8649,9 +8649,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09262490272521973,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
+   "latency_s": 0.08531975746154785,
+   "model_calls": 6,
+   "requests_in_sequence": 4,
    "unsupported": null,
    "got_template": "direction_part",
    "path": "simple",
@@ -8668,7 +8668,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09581303596496582,
+   "latency_s": 0.08515501022338867,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8687,7 +8687,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0933527946472168,
+   "latency_s": 0.09044194221496582,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8706,7 +8706,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08610415458679199,
+   "latency_s": 0.0836191177368164,
    "model_calls": 4,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -8725,7 +8725,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08964991569519043,
+   "latency_s": 0.08251190185546875,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8744,9 +8744,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08848881721496582,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.08638381958007812,
+   "model_calls": 5,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -8763,8 +8763,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09241795539855957,
-   "model_calls": 3,
+   "latency_s": 0.10706090927124023,
+   "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
@@ -8782,7 +8782,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.12425518035888672,
+   "latency_s": 0.11063027381896973,
    "model_calls": 4,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -8801,7 +8801,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09780287742614746,
+   "latency_s": 0.10031986236572266,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8820,7 +8820,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10055279731750488,
+   "latency_s": 0.0922689437866211,
    "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8839,7 +8839,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08749580383300781,
+   "latency_s": 0.08522915840148926,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8858,7 +8858,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09088468551635742,
+   "latency_s": 0.09375,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8877,9 +8877,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08991694450378418,
-   "model_calls": 2,
-   "requests_in_sequence": 2,
+   "latency_s": 0.09067010879516602,
+   "model_calls": 3,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -8896,9 +8896,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08620905876159668,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.08725404739379883,
+   "model_calls": 4,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -8915,7 +8915,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08295392990112305,
+   "latency_s": 0.08757305145263672,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8934,7 +8934,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08396387100219727,
+   "latency_s": 0.08401298522949219,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8953,7 +8953,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08458685874938965,
+   "latency_s": 0.0818030834197998,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8972,7 +8972,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08369684219360352,
+   "latency_s": 0.09549212455749512,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8991,7 +8991,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08180713653564453,
+   "latency_s": 0.09195375442504883,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9010,7 +9010,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08162808418273926,
+   "latency_s": 0.09483695030212402,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9029,7 +9029,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.1862790584564209,
+   "latency_s": 0.09228205680847168,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9046,19 +9046,22 @@
    "query": "districts of Maharashtra on the coast",
    "family": "predicate_filter",
    "depth": 0,
-   "template_ok": true,
-   "ok": true,
-   "latency_s": 0.0953681468963623,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
-   "unsupported": null,
-   "got_template": "children_with_predicate",
-   "path": "complex",
-   "slots_ok": true,
-   "diffs": [],
-   "dag_ok": true,
-   "exec_ok": true,
-   "exec_note": "7 ids vs 7"
+   "template_ok": false,
+   "ok": false,
+   "latency_s": 0.03042006492614746,
+   "model_calls": 14,
+   "requests_in_sequence": 5,
+   "unsupported": {
+    "reason": "no split of the text gives valid values for the slots of children_with_predicate",
+    "decision": "fill_closed_slot",
+    "depth": 1,
+    "text": "Maharashtra on the coast"
+   },
+   "got_template": null,
+   "path": null,
+   "slots_ok": false,
+   "dag_ok": false,
+   "exec_ok": false
   },
   {
    "id": "g043",
@@ -9067,7 +9070,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08887100219726562,
+   "latency_s": 0.1094968318939209,
    "model_calls": 5,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9086,7 +9089,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08367228507995605,
+   "latency_s": 0.10443902015686035,
    "model_calls": 5,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9105,7 +9108,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08794713020324707,
+   "latency_s": 0.1184077262878418,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9124,7 +9127,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09306907653808594,
+   "latency_s": 0.11757516860961914,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9143,7 +9146,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09607696533203125,
+   "latency_s": 0.11401176452636719,
    "model_calls": 5,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9162,7 +9165,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10093116760253906,
+   "latency_s": 0.12687206268310547,
    "model_calls": 5,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9181,7 +9184,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09227991104125977,
+   "latency_s": 0.12096691131591797,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9200,7 +9203,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08776116371154785,
+   "latency_s": 0.11453485488891602,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9219,7 +9222,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0900418758392334,
+   "latency_s": 0.11811280250549316,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9238,7 +9241,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08840084075927734,
+   "latency_s": 0.1266341209411621,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9257,9 +9260,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.11878776550292969,
-   "model_calls": 6,
-   "requests_in_sequence": 5,
+   "latency_s": 0.14463591575622559,
+   "model_calls": 7,
+   "requests_in_sequence": 6,
    "unsupported": null,
    "got_template": "intersection",
    "path": "complex",
@@ -9276,9 +9279,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.11588287353515625,
-   "model_calls": 5,
-   "requests_in_sequence": 4,
+   "latency_s": 0.17522001266479492,
+   "model_calls": 6,
+   "requests_in_sequence": 5,
    "unsupported": null,
    "got_template": "intersection",
    "path": "complex",
@@ -9295,7 +9298,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09232902526855469,
+   "latency_s": 0.13493895530700684,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9314,7 +9317,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09374690055847168,
+   "latency_s": 0.14226794242858887,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9333,7 +9336,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09214305877685547,
+   "latency_s": 0.12633204460144043,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9352,7 +9355,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08801722526550293,
+   "latency_s": 0.11322212219238281,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9371,7 +9374,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08606624603271484,
+   "latency_s": 0.1076970100402832,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9390,7 +9393,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0904541015625,
+   "latency_s": 0.1014261245727539,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9409,7 +9412,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08838796615600586,
+   "latency_s": 0.09677481651306152,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9428,7 +9431,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08274102210998535,
+   "latency_s": 0.08763885498046875,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9447,7 +9450,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08512711524963379,
+   "latency_s": 0.08624100685119629,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9466,7 +9469,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0796051025390625,
+   "latency_s": 0.08413004875183105,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9485,7 +9488,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.11436605453491211,
+   "latency_s": 0.0918891429901123,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9504,7 +9507,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.22232913970947266,
+   "latency_s": 0.2841360569000244,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9523,7 +9526,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09546113014221191,
+   "latency_s": 0.15501618385314941,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9542,7 +9545,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08685493469238281,
+   "latency_s": 0.0855860710144043,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9561,7 +9564,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08544588088989258,
+   "latency_s": 0.09064292907714844,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9580,7 +9583,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.20284700393676758,
+   "latency_s": 0.22617125511169434,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9599,7 +9602,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.058998823165893555,
+   "latency_s": 0.05579805374145508,
    "model_calls": 6,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9618,9 +9621,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.06650805473327637,
-   "model_calls": 5,
-   "requests_in_sequence": 2,
+   "latency_s": 0.059763193130493164,
+   "model_calls": 6,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "features_near",
    "path": "complex",
@@ -9637,7 +9640,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09464693069458008,
+   "latency_s": 0.11733794212341309,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9656,7 +9659,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0541691780090332,
+   "latency_s": 0.06286382675170898,
    "model_calls": 6,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9675,8 +9678,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09354329109191895,
-   "model_calls": 5,
+   "latency_s": 0.0982809066772461,
+   "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_attr",
@@ -9694,8 +9697,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08878588676452637,
-   "model_calls": 5,
+   "latency_s": 0.09417176246643066,
+   "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_attr",
@@ -9713,9 +9716,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08714890480041504,
-   "model_calls": 5,
-   "requests_in_sequence": 2,
+   "latency_s": 0.09780502319335938,
+   "model_calls": 7,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "children_attr",
    "path": "complex",
@@ -9732,7 +9735,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09026384353637695,
+   "latency_s": 0.08777117729187012,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9751,8 +9754,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08450984954833984,
-   "model_calls": 5,
+   "latency_s": 0.10346484184265137,
+   "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_attr",
@@ -9770,8 +9773,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08533191680908203,
-   "model_calls": 5,
+   "latency_s": 0.09690475463867188,
+   "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_attr",
@@ -9789,9 +9792,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10099005699157715,
-   "model_calls": 5,
-   "requests_in_sequence": 2,
+   "latency_s": 0.0934288501739502,
+   "model_calls": 9,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "children_attr",
    "path": "complex",
@@ -9808,8 +9811,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08664107322692871,
-   "model_calls": 5,
+   "latency_s": 0.08323001861572266,
+   "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_attr",
@@ -9827,8 +9830,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08694005012512207,
-   "model_calls": 5,
+   "latency_s": 0.09623384475708008,
+   "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_attr",
@@ -9846,8 +9849,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08713603019714355,
-   "model_calls": 5,
+   "latency_s": 0.09149575233459473,
+   "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_attr",
@@ -9865,7 +9868,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10884594917297363,
+   "latency_s": 0.10506486892700195,
    "model_calls": 9,
    "requests_in_sequence": 5,
    "unsupported": null,
@@ -9884,7 +9887,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.1056528091430664,
+   "latency_s": 0.10556197166442871,
    "model_calls": 8,
    "requests_in_sequence": 4,
    "unsupported": null,
@@ -9903,9 +9906,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10903692245483398,
-   "model_calls": 6,
-   "requests_in_sequence": 5,
+   "latency_s": 0.11257314682006836,
+   "model_calls": 7,
+   "requests_in_sequence": 6,
    "unsupported": null,
    "got_template": "buffer",
    "path": "simple",
@@ -9922,7 +9925,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10279035568237305,
+   "latency_s": 0.11941313743591309,
    "model_calls": 7,
    "requests_in_sequence": 4,
    "unsupported": null,
@@ -9941,7 +9944,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10194993019104004,
+   "latency_s": 0.10598397254943848,
    "model_calls": 6,
    "requests_in_sequence": 4,
    "unsupported": null,
@@ -9958,19 +9961,21 @@
    "query": "districts of states that border Goa",
    "family": "hierarchy",
    "depth": 1,
-   "template_ok": true,
+   "template_ok": false,
    "ok": true,
-   "latency_s": 0.09870791435241699,
+   "latency_s": 0.09082198143005371,
    "model_calls": 7,
    "requests_in_sequence": 5,
    "unsupported": null,
-   "got_template": "children",
+   "got_template": "children_touching",
    "path": "complex",
-   "slots_ok": true,
-   "diffs": [],
-   "dag_ok": true,
-   "exec_ok": true,
-   "exec_note": "67 ids vs 67"
+   "slots_ok": false,
+   "diffs": [
+    "template"
+   ],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "6 ids vs 67"
   },
   {
    "id": "g091",
@@ -9979,9 +9984,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09721970558166504,
-   "model_calls": 7,
-   "requests_in_sequence": 4,
+   "latency_s": 0.10691022872924805,
+   "model_calls": 8,
+   "requests_in_sequence": 5,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -9998,7 +10003,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10161805152893066,
+   "latency_s": 0.10098004341125488,
    "model_calls": 7,
    "requests_in_sequence": 4,
    "unsupported": null,
@@ -10017,9 +10022,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.006624937057495117,
-   "model_calls": 2,
-   "requests_in_sequence": 2,
+   "latency_s": 0.007659912109375,
+   "model_calls": 3,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -10036,8 +10041,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.006657838821411133,
-   "model_calls": 3,
+   "latency_s": 0.010499954223632812,
+   "model_calls": 5,
    "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "children",
@@ -10055,9 +10060,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.00656890869140625,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.00751495361328125,
+   "model_calls": 8,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -10074,8 +10079,8 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10158419609069824,
-   "model_calls": 8,
+   "latency_s": 0.10299396514892578,
+   "model_calls": 9,
    "requests_in_sequence": 4,
    "unsupported": null,
    "got_template": "children_attr",
@@ -10093,7 +10098,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10132217407226562,
+   "latency_s": 0.10224509239196777,
    "model_calls": 7,
    "requests_in_sequence": 4,
    "unsupported": null,
@@ -10112,9 +10117,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09912610054016113,
-   "model_calls": 8,
-   "requests_in_sequence": 6,
+   "latency_s": 0.10762310028076172,
+   "model_calls": 9,
+   "requests_in_sequence": 7,
    "unsupported": null,
    "got_template": "direction_part",
    "path": "simple",
@@ -10128,7 +10133,7 @@
  "summary": {
   "pick_family": {
    "n": 111,
-   "correct": 108
+   "correct": 105
   },
   "pick_template": {
    "n": 111,
@@ -10136,11 +10141,11 @@
   },
   "pick_template_flat": {
    "n": 111,
-   "correct": 108
+   "correct": 105
   },
   "pick_split": {
    "n": 111,
-   "correct": 111
+   "correct": 109
   },
   "is_subquery": {
    "n": 114,
@@ -10185,11 +10190,11 @@
    },
    "hierarchy": {
     "n": 15,
-    "dag_ok": 15
+    "dag_ok": 14
    },
    "lookup": {
     "n": 11,
-    "dag_ok": 10
+    "dag_ok": 9
    },
    "modifier": {
     "n": 14,
@@ -10197,7 +10202,7 @@
    },
    "predicate_filter": {
     "n": 12,
-    "dag_ok": 12
+    "dag_ok": 11
    },
    "relational": {
     "n": 11,
@@ -10209,7 +10214,7 @@
    },
    "ALL": {
     "n": 98,
-    "dag_ok": 96
+    "dag_ok": 93
    }
   }
  }
