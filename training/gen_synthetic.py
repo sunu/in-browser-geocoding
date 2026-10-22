@@ -94,6 +94,25 @@ CATEGORIES = ["hospitals", "hospital", "clinics", "pharmacies", "chemists", "med
               "post offices", "government offices", "temples", "mosques", "churches", "gurudwaras", "places of worship",
               "parks", "gardens", "hotels", "lodges", "places to stay", "museums", "beaches", "stadiums", "malls",
               "shopping malls", "supermarkets", "grocery stores", "markets", "hospitls", "restaraunts", "atms"]
+CAT_KEY = {
+    "hospitals": "hospital", "hospital": "hospital", "hospitls": "hospital", "clinics": "clinic", "doctors": "clinic",
+    "pharmacies": "pharmacy", "chemists": "pharmacy", "medical shops": "pharmacy", "medicine shops": "pharmacy",
+    "dentists": "dentist", "schools": "school", "colleges": "college_university", "universities": "college_university",
+    "libraries": "library", "kindergartens": "preschool", "restaurants": "restaurant", "places to eat": "restaurant",
+    "eateries": "restaurant", "restaraunts": "restaurant", "cafes": "cafe", "coffee shops": "cafe", "bars": "bar",
+    "pubs": "bar", "fast food joints": "fast_food", "railway stations": "train_station", "train stations": "train_station",
+    "metro stations": "train_station", "airports": "airport", "bus stations": "bus_station", "bus stands": "bus_station",
+    "bus stops": "bus_station", "petrol pumps": "fuel", "petrol bunks": "fuel", "fuel stations": "fuel",
+    "gas stations": "fuel", "banks": "bank", "ATMs": "atm", "cash machines": "atm", "atms": "atm",
+    "police stations": "police", "fire stations": "fire_station", "post offices": "post_office",
+    "government offices": "government_office", "temples": "temple", "mosques": "mosque", "churches": "church",
+    "gurudwaras": "gurudwara", "places of worship": "place_of_worship", "parks": "park", "gardens": "park",
+    "hotels": "hotel", "lodges": "hotel", "places to stay": "hotel", "museums": "museum", "beaches": "beach",
+    "stadiums": "stadium", "malls": "mall", "shopping malls": "mall", "supermarkets": "supermarket",
+    "grocery stores": "supermarket", "markets": "market",
+}
+assert set(CATEGORIES) <= set(CAT_KEY), set(CATEGORIES) - set(CAT_KEY)
+
 ATTR = ["population", "people", "residents", "inhabitants", "a population"]
 OP = {"gt": ["over", "more than", "above", "at least", "exceeding", "greater than", "bigger than", "upwards of"],
       "lt": ["under", "less than", "below", "fewer than", "at most", "smaller than"]}
@@ -202,6 +221,8 @@ class Gen:
     def __init__(self, rng: random.Random, places: dict[str, list[str]]):
         self.r = rng
         self.p = places
+        self.keys: dict[str, dict[str, str]] = {}  # span -> {slot type: option key}
+        self.subs: set[str] = set()  # texts of sub-queries in this example
 
     def pick(self, xs):
         return self.r.choice(xs)
@@ -229,10 +250,16 @@ class Gen:
             return self.pick(self.p["lex"])
         return self.place(("hood", "hood", "city", "district", "state"))
 
+    def note(self, surface: str, slot_type: str, key: str) -> str:
+        """Record the true option key of a closed-slot span (training labels for the local model)."""
+        self.keys.setdefault(surface, {})[slot_type] = key
+        return surface
+
     def level(self, exclude=()):
         keys = [x for x in LEVEL if x not in exclude]
         k = self.r.choices(keys, weights=[1 if x == "other" else 4 for x in keys])[0]
-        return k, self.word_typo(self.pick(LEVEL[k]))
+        lv = self.note(self.word_typo(self.pick(LEVEL[k])), "admin_level", "none" if k == "other" else k)
+        return k, lv
 
     def word_typo(self, phrase: str, p: float = 0.06) -> str:
         """Typos in words of a phrase (not only in place names)."""
@@ -263,6 +290,7 @@ class Gen:
         t = self.pick(["children", "children_with_predicate", "children_with_predicate", "neighbors", "buffer",
                        "children_touching", "direction_part"])
         q, f = getattr(self, "t_" + t)(depth=1)
+        self.subs.add(q)
         return q, f, 1
 
     # Each t_* returns (query, slots). Slot values are spans of the query (or quantities).
@@ -295,7 +323,7 @@ class Gen:
 
     def t_direction_part(self, depth=0):
         k = self.pick(list(DIR_PART))
-        d = self.word_typo(self.pick(DIR_PART[k]), 0.1)
+        d = self.note(self.word_typo(self.pick(DIR_PART[k]), 0.1), "direction", k)
         t, _ = self.region(depth, sub_ok=depth == 0)
         form = self.pick(["{d} {t}", "{d} part of {t}", "{d} {t}", "the {d} region of {t}", "{d} half of {t}",
                           "{d} side of {t}", "{d} areas of {t}"])
@@ -305,7 +333,7 @@ class Gen:
 
     def t_direction_outside(self, depth=0):
         k = self.pick(list(DIR_OUT))
-        d = self.word_typo(self.pick(DIR_OUT[k]), 0.1)
+        d = self.note(self.word_typo(self.pick(DIR_OUT[k]), 0.1), "direction", k)
         t = self.anchor()
         form = self.pick(["{d} of {t}", "area {d} of {t}", "region {d} of {t}", "just {d} of {t}", "a little {d} of {t}"])
         return form.format(d=d, t=t), {"dir": d, "target": t}
@@ -345,10 +373,10 @@ class Gen:
         pk = self.pick(list(PRED_PRE))
         p = self.parent_for(k, depth) if self.r.random() > 0.15 else None
         if self.r.random() < 0.5:
-            pr = self.word_typo(self.pick(PRED_PRE[pk]))
+            pr = self.note(self.word_typo(self.pick(PRED_PRE[pk])), "predicate", pk)
             head = f"{pr} {lv}"
         else:
-            pr = self.word_typo(self.pick(PRED_POST[pk]))
+            pr = self.note(self.word_typo(self.pick(PRED_POST[pk])), "predicate", pk)
             head = None
         if p is None:
             q = head if head else f"{lv} {pr}"
@@ -447,14 +475,16 @@ class Gen:
         return form.format(d=d, r=r), {"distance": dv, "region": r}
 
     def t_features_in(self, depth=0):
-        c = self.word_typo(self.pick(CATEGORIES))
+        c0 = self.pick(CATEGORIES)
+        c = self.note(self.word_typo(c0), "category", CAT_KEY[c0])
         r, _ = self.region(depth) if self.r.random() < 0.4 else (self.place(("hood", "hood", "city", "district")), 0)
         form = self.pick(["{c} in {r}", "{c} inside {r}", "{r} {c}", "all {c} in {r}", "list of {c} in {r}",
                           "show {c} in {r}", "find {c} in {r}", "{c} located in {r}", "where are the {c} in {r}"])
         return form.format(c=c, r=r), {"category": c, "region": r}
 
     def t_features_near(self, depth=0):
-        c = self.word_typo(self.pick(CATEGORIES))
+        c0 = self.pick(CATEGORIES)
+        c = self.note(self.word_typo(c0), "category", CAT_KEY[c0])
         r, _ = self.region(depth) if self.r.random() < 0.2 else (self.anchor(), 0)
         if self.r.random() < 0.3:
             form = self.pick(["{c} near {r}", "{c} around {r}", "{c} close to {r}", "{c} nearby {r}", "{c} next to {r}",
@@ -469,9 +499,9 @@ class Gen:
     def t_children_attr(self, depth=0):
         k, lv = self.level(exclude=("country", "union_territory"))
         p = self.parent_for(k, depth) if self.r.random() > 0.1 else None
-        a = self.pick(ATTR)
+        a = self.note(self.pick(ATTR), "attr", "population")
         ok = self.pick(list(OP))
-        o = self.pick(OP[ok])
+        o = self.note(self.pick(OP[ok]), "op", ok)
         v, vv = value(self.r)
         if a in ("people", "residents", "inhabitants"):
             mid = f"with {o} {v} {a}"
@@ -519,9 +549,13 @@ def generate(n: int, seed: int = 7) -> list[dict]:
         if p.exists():
             exclude |= {json.loads(l)["query"].lower().strip() for l in p.read_text().splitlines() if l.strip()}
     names, weights = zip(*TEMPLATE_WEIGHTS.items())
+    from geoparse.templates.model import all_templates
+
+    templates = all_templates()
     out, seen = [], set()
     while len(out) < n:
         t = rng.choices(names, weights=weights)[0]
+        g.keys, g.subs = {}, set()
         q, slots = g.unsupported() if t == "unsupported" else getattr(g, "t_" + t)()
         if t != "unsupported" and rng.random() < 0.18:
             q = rng.choice(["pls show ", "can u show ", "how do i see ", "i want to see ", "show me ", "find ",
@@ -535,7 +569,13 @@ def generate(n: int, seed: int = 7) -> list[dict]:
             continue
         seen.add(key)
         frame = Frame(template="unsupported") if slots is None else Frame(template=t, slots=slots)
-        out.append({"query": q, "frame": frame.to_text(), "template": frame.template, "source": "synthetic"})
+        rec = {"query": q, "frame": frame.to_text(), "template": frame.template, "source": "synthetic"}
+        if slots:
+            tpl = templates[t]
+            rec["closed_keys"] = {k: g.keys[v][tpl.slots[k].type] for k, v in slots.items()
+                                  if k in tpl.slots and v in g.keys and tpl.slots[k].type in g.keys[v]}
+            rec["sub_slots"] = sorted(k for k, v in slots.items() if v in g.subs)
+        out.append(rec)
     return out
 
 
