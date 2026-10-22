@@ -186,7 +186,7 @@ Templates:
 Answer with a JSON array only. Each item: {{"query": "...", "frame": "..."}}."""
 
 
-def run_testset(per_template: int, workers: int) -> None:
+def run_testset(per_template: int, workers: int, name: str = "llm_test") -> None:
     templates = all_templates()
     jobs = list(templates) + ["unsupported"]
 
@@ -219,8 +219,14 @@ def run_testset(per_template: int, workers: int) -> None:
         p = DATA / name
         if p.exists():
             train |= {json.loads(l)["query"].lower() for l in p.read_text().splitlines() if l.strip()}
+    for other in ("llm_test.jsonl", "llm_dev.jsonl"):
+        p = DATA / other
+        if p.exists() and other != f"{name}.jsonl":
+            train |= {json.loads(l)["query"].lower() for l in p.read_text().splitlines() if l.strip()}
     recs = [r for r in recs if r["query"].lower() not in train]
-    (DATA / "llm_test.jsonl").write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in recs))
+    for r in recs:
+        r["source"] = name
+    (DATA / f"{name}.jsonl").write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in recs))
     from collections import Counter
 
     print(len(recs), Counter(r["template"] for r in recs).most_common())
@@ -238,11 +244,12 @@ def main() -> None:
     t = sub.add_parser("testset")
     t.add_argument("--per-template", type=int, default=15)
     t.add_argument("--workers", type=int, default=8)
+    t.add_argument("--name", default="llm_test", help="llm_test (final) or llm_dev (error analysis)")
     args = ap.parse_args()
     if args.cmd == "para":
         run_para(args.n_seeds, args.per_seed, args.batch, args.workers, args.seed)
     else:
-        run_testset(args.per_template, args.workers)
+        run_testset(args.per_template, args.workers, args.name)
 
 
 if __name__ == "__main__":

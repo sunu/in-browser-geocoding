@@ -1,0 +1,172 @@
+{
+ "t5": "models/t5/t5-small-v1",
+ "t5_alone": {
+  "gold": {
+   "n": 98,
+   "top1": 0.9897959183673469,
+   "top4": 0.9897959183673469,
+   "exact": null,
+   "median_ms": 111.79447174072266,
+   "errors": [
+    [
+     "MG Road, Bangalore",
+     "union ; a = MG Road ; b = Bangalore",
+     [
+      "lookup_place",
+      [
+       "anchor",
+       "mg road bangalore"
+      ]
+     ]
+    ]
+   ]
+  },
+  "heldout": {
+   "n": 30,
+   "top1": 1.0,
+   "top4": 1.0,
+   "exact": null,
+   "median_ms": 97.46003150939941,
+   "errors": []
+  },
+  "llm_test": {
+   "n": 294,
+   "top1": 0.9115646258503401,
+   "top4": 0.9727891156462585,
+   "exact": 0.8129251700680272,
+   "median_ms": 112.326979637146,
+   "errors": [
+    [
+     "districts of Bihar where literacy rate is below 60",
+     "children_attr ; level = districts ; attr = literacy ; op = below ; value = 60 thousand ; parent = Bihar",
+     "children_attr ; level = districts ; parent = Bihar ; attr = literacy rate ; op = below ; value = 60"
+    ],
+    [
+     "villages in Wayanad with population below 500",
+     "children_attr ; level = villages ; attr = population ; op = below ; value = 500 thousand ; parent = Wayanad",
+     "children_attr ; level = villages ; parent = Wayanad ; attr = population ; op = below ; value = 500"
+    ],
+    [
+     "wards in Chennai",
+     "features_in ; category = wards ; region = Chennai",
+     "children ; level = wards ; parent = Chennai"
+    ],
+    [
+     "mandals of Telangana",
+     "features_in ; category = mandals ; region = Telangana",
+     "children ; level = mandals ; parent = Telangana"
+    ],
+    [
+     "distrcits in Kerela",
+     "features_in ; category = distrcits ; region = Kerela",
+     "children ; level = distrcits ; parent = Kerela"
+    ],
+    [
+     "tehsils of Jaipur",
+     "features_in ; category = tehsils ; region = Jaipur",
+     "children ; level = tehsils ; parent = Jaipur"
+    ],
+    [
+     "Konark Sun Temple state",
+     "children ; level = state ; parent = Konark Sun Temple",
+     "parent ; level = state ; child = Konark Sun Temple"
+    ],
+    [
+     "disrtict of Bodh Gaya",
+     "unsupported",
+     "parent ; level = disrtict ; child = Bodh Gaya"
+    ],
+    [
+     "marine drive kochi",
+     "unsupported",
+     "lookup_place ; anchor = marine drive kochi"
+    ],
+    [
+     "cente of Tamil Nadu",
+     "cente ; target = Tamil Nadu",
+     "centroid ; target = Tamil Nadu"
+    ],
+    [
+     "nortern Karnataka",
+     "lookup_place ; anchor = nortern Karnataka",
+     "direction_part ; dir = nortern ; target = Karnataka"
+    ],
+    [
+     "sothern Gujarat",
+     "difference ; a = sothern Gujarat",
+     "direction_part ; dir = sothern ; target = Gujarat"
+    ],
+    [
+     "areas souht of Hyderabad",
+     "direction_part ; dir = souht ; target = Hyderabad",
+     "direction_outside ; dir = souht ; target = Hyderabad"
+    ],
+    [
+     "pls show norht of Madurai",
+     "union ; a = norht ; b = Madurai",
+     "direction_outside ; dir = norht ; target = Madurai"
+    ],
+    [
+     "costal talukas in Karnataka",
+     "features_in ; category = talukas ; region = Karnataka",
+     "children_with_predicate ; pred = costal ; level = talukas ; parent = Karnataka"
+    ],
+    [
+     "Which Indian states are landlocked",
+     "children_with_predicate ; level = states ; pred = landlocked ; parent = Indian",
+     "children_with_predicate ; pred = landlocked ; level = states"
+    ],
+    [
+     "list all the districts of Tamil Nadu adjoining Kerala",
+     "children ; level = districts ; parent = Tamil Nadu adjoining Kerala",
+     "children_touching ; level = districts ; parent = Tamil Nadu ; other = Kerala"
+    ],
+    [
+     "blocks of Koraput district touching Andhra Pradesh",
+     "children_touching ; level = blocks ; parent = Koraput ; other = Andhra Pradesh",
+     "children_touching ; level = blocks ; parent = Koraput district ; other = Andhra Pradesh"
+    ],
+    [
+     "btwn hyderabad and secunderabad",
+     "union ; a = btwn hyderabad ; b = secunderabad",
+     "between ; a = hyderabad ; b = secunderabad"
+    ],
+    [
+     "bewteen Lucknow and Kanpur",
+     "union ; a = Lucknow ; b = Kanpur",
+     "between ; a = Lucknow ; b = Kanpur"
+    ],
+    [
+     "how do i see 8 km along the state border of West Bengal?",
+     "along_intl_border ; distance = 8 km ; region = West Bengal",
+     "along_border ; distance = 8 km ; region = West Bengal"
+    ],
+    [
+     "pls show chennai madurai n coimbatore on map",
+     "union ; a = chennai madurai ; b = coimbatore",
+     "union3 ; a = chennai ; b = madurai ; c = coimbatore"
+    ],
+    [
+     "madhya pradesh except bhopal n indore",
+     "difference ; a = madhya pradesh ; b = bhopal ; c = indore",
+     "difference ; a = madhya pradesh ; b = bhopal n indore"
+    ],
+    [
+     "coastal districts of Odisha intersect 50 km around Bhubaneswar",
+     "children_with_predicate ; level = districts ; pred = coastal ; parent = Odisha intersect 50 km around Bhubaneswar",
+     "intersection ; a = coastal districts of Odisha ; b = 50 km around Bhubaneswar"
+    ],
+    [
+     "Ernakulam intersect with 10 km along the coast of Kerala",
+     "along_coast ; distance = 10 km ; region = Kerala",
+     "intersection ; a = Ernakulam ; b = 10 km along the coast of Kerala"
+    ],
+    [
+     "only the part of Delhi that lies within 3 km around India Gate",
+     "intersection ; a = Delhi ; b = within 3 km around India Gate",
+     "intersection ; a = Delhi ; b = 3 km around India Gate"
+    ]
+   ]
+  }
+ }
+}

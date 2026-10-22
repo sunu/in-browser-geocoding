@@ -62,6 +62,8 @@ LEVEL = {
     "city": ["cities", "towns", "city", "big cities", "metros", "urban centres", "major cities", "cities and towns"],
     "union_territory": ["union territories", "UTs"],
     "country": ["countries", "nations"],
+    "other": ["wards", "mandals", "tehsils", "taluks", "talukas", "blocks", "villages", "panchayats", "municipalities",
+              "sub-districts", "circles", "localities", "neighbourhoods", "areas"],
 }
 PRED_PRE = {
     "coastal": ["coastal", "seaside", "sea-facing", "maritime", "littoral", "beach", "shoreline"],
@@ -137,7 +139,10 @@ def distance(rng: random.Random) -> tuple[str, str]:
 
 
 def value(rng: random.Random) -> tuple[str, str]:
-    kind = rng.choice(["lakh", "million", "crore", "plain", "thousand"])
+    kind = rng.choice(["lakh", "million", "crore", "plain", "thousand", "small", "small"])
+    if kind == "small":
+        n = rng.choice([20, 50, 60, 70, 100, 200, 500, 1000, 2000, 5000, 10000, 25000, 50000])
+        return (f"{n:,}" if n >= 1000 and rng.random() < 0.5 else str(n)), str(n)
     if kind == "lakh":
         n = rng.choice([1, 2, 5, 10, 15, 20, 25, 30, 40, 50])
         word = rng.choice(["lakh", "lakhs", "lac", "lacs", "Lakh"])
@@ -163,6 +168,16 @@ def value(rng: random.Random) -> tuple[str, str]:
 def typo(rng: random.Random, s: str) -> str:
     if len(s) < 6 or rng.random() > 0.08:
         return s
+    i = rng.randrange(1, len(s) - 1)
+    op = rng.choice(["drop", "swap", "dup"])
+    if op == "drop":
+        return s[:i] + s[i + 1:]
+    if op == "swap":
+        return s[:i] + s[i + 1] + s[i] + s[i + 2:]
+    return s[:i] + s[i] + s[i:]
+
+
+def typo_always(rng: random.Random, s: str) -> str:
     i = rng.randrange(1, len(s) - 1)
     op = rng.choice(["drop", "swap", "dup"])
     if op == "drop":
@@ -207,8 +222,14 @@ class Gen:
         return self.place(("hood", "hood", "city", "district", "state"))
 
     def level(self, exclude=()):
-        k = self.pick([x for x in LEVEL if x not in exclude])
-        return k, self.pick(LEVEL[k])
+        keys = [x for x in LEVEL if x not in exclude]
+        k = self.r.choices(keys, weights=[1 if x == "other" else 4 for x in keys])[0]
+        return k, self.word_typo(self.pick(LEVEL[k]))
+
+    def word_typo(self, phrase: str, p: float = 0.06) -> str:
+        """Typos in words of a phrase (not only in place names)."""
+        words = phrase.split(" ")
+        return " ".join(typo_always(self.r, w) if len(w) >= 5 and self.r.random() < p else w for w in words)
 
     def parent_for(self, level_key: str, depth: int) -> str:
         """A parent region that can contain divisions of the level."""
@@ -240,6 +261,8 @@ class Gen:
 
     def t_lookup_place(self, depth=0):
         a = self.anchor()
+        if self.r.random() < 0.12:
+            a = f"{self.pick(self.p['district'])} {self.pick(['district', 'dist', 'city', 'town'])}"
         form = self.pick(["{a}", "{a}", "show me {a}", "where is {a}", "map of {a}", "{a} location", "locate {a}"])
         return form.format(a=a), {"anchor": a}
 
@@ -262,7 +285,7 @@ class Gen:
 
     def t_direction_part(self, depth=0):
         k = self.pick(list(DIR_PART))
-        d = self.pick(DIR_PART[k])
+        d = self.word_typo(self.pick(DIR_PART[k]), 0.1)
         t, _ = self.region(depth, sub_ok=depth == 0)
         form = self.pick(["{d} {t}", "{d} part of {t}", "{d} {t}", "the {d} region of {t}", "{d} half of {t}",
                           "{d} side of {t}", "{d} areas of {t}"])
@@ -272,7 +295,7 @@ class Gen:
 
     def t_direction_outside(self, depth=0):
         k = self.pick(list(DIR_OUT))
-        d = self.pick(DIR_OUT[k])
+        d = self.word_typo(self.pick(DIR_OUT[k]), 0.1)
         t = self.anchor()
         form = self.pick(["{d} of {t}", "area {d} of {t}", "region {d} of {t}", "just {d} of {t}", "a little {d} of {t}"])
         return form.format(d=d, t=t), {"dir": d, "target": t}
@@ -312,10 +335,10 @@ class Gen:
         pk = self.pick(list(PRED_PRE))
         p = self.parent_for(k, depth) if self.r.random() > 0.15 else None
         if self.r.random() < 0.5:
-            pr = self.pick(PRED_PRE[pk])
+            pr = self.word_typo(self.pick(PRED_PRE[pk]))
             head = f"{pr} {lv}"
         else:
-            pr = self.pick(PRED_POST[pk])
+            pr = self.word_typo(self.pick(PRED_POST[pk]))
             head = None
         if p is None:
             q = head if head else f"{lv} {pr}"
@@ -341,12 +364,14 @@ class Gen:
         a, _ = self.region(depth)
         b, _ = self.region(depth, sub_ok=False)
         form = self.pick(["{a} and {b}", "{a} & {b}", "{a} plus {b}", "both {a} and {b}", "{a} as well as {b}",
-                          "{a}, {b}", "{a} together with {b}", "{a} or {b}"])
+                          "{a}, {b}", "{a} together with {b}", "{a} or {b}", "{a} n {b}", "{a}+{b}", "{a} + {b}",
+                          "{a} and {b} together", "{a} along with {b}"])
         return form.format(a=a, b=b), {"a": a, "b": b}
 
     def t_union3(self, depth=0):
         a, b, c = self.area(), self.area(), self.area()
-        form = self.pick(["{a}, {b} and {c}", "{a}, {b}, {c}", "{a}, {b} & {c}", "{a}, {b}, and {c}"])
+        form = self.pick(["{a}, {b} and {c}", "{a}, {b}, {c}", "{a}, {b} & {c}", "{a}, {b}, and {c}", "{a} {b} n {c}",
+                          "{a}, {b} n {c}", "{a}+{b}+{c}", "{a}, {b} as well as {c}"])
         return form.format(a=a, b=b, c=c), {"a": a, "b": b, "c": c}
 
     def t_difference(self, depth=0):
@@ -412,14 +437,14 @@ class Gen:
         return form.format(d=d, r=r), {"distance": dv, "region": r}
 
     def t_features_in(self, depth=0):
-        c = self.pick(CATEGORIES)
+        c = self.word_typo(self.pick(CATEGORIES))
         r, _ = self.region(depth) if self.r.random() < 0.4 else (self.place(("hood", "hood", "city", "district")), 0)
         form = self.pick(["{c} in {r}", "{c} inside {r}", "{r} {c}", "all {c} in {r}", "list of {c} in {r}",
                           "show {c} in {r}", "find {c} in {r}", "{c} located in {r}", "where are the {c} in {r}"])
         return form.format(c=c, r=r), {"category": c, "region": r}
 
     def t_features_near(self, depth=0):
-        c = self.pick(CATEGORIES)
+        c = self.word_typo(self.pick(CATEGORIES))
         r, _ = self.region(depth) if self.r.random() < 0.2 else (self.anchor(), 0)
         if self.r.random() < 0.3:
             form = self.pick(["{c} near {r}", "{c} around {r}", "{c} close to {r}", "{c} nearby {r}", "{c} next to {r}",
@@ -456,6 +481,10 @@ class Gen:
         "train from {a} to {b}", "flights to {a}", "history of {a}", "best time to visit {a}", "how to reach {a}",
         "is {a} safe", "news from {a}", "{a} temperature today", "translate {a}", "hello", "what can you do",
         "book a cab to {a}", "{a} ka mausam", "{a} mein hospital kahan hai", "cheapest flight {a} {b}",
+        "is {a} open on sunday", "ticket price for {a}", "how many people live in {a}", "area of {a} in sq km",
+        "what is {a} famous for", "best hotels in {a} under 2000 rupees per night", "traffic near {a} now",
+        "petrol price in {a} today", "which language is spoken in {a}", "{a} vs {b} which is better",
+        "how old is {a}", "elevation of {a}", "aqi in {a}", "rent prices in {a}",
     ]
 
     def unsupported(self):
@@ -484,6 +513,10 @@ def generate(n: int, seed: int = 7) -> list[dict]:
     while len(out) < n:
         t = rng.choices(names, weights=weights)[0]
         q, slots = g.unsupported() if t == "unsupported" else getattr(g, "t_" + t)()
+        if t != "unsupported" and rng.random() < 0.18:
+            q = rng.choice(["pls show ", "can u show ", "how do i see ", "i want to see ", "show me ", "find ",
+                            "map of ", "can you find ", "", ""]) + q + rng.choice(
+                [" on map", " on the map", "?", " pls", " please", "", "", " all in one view"])
         q = re.sub(r"\s+", " ", q).strip()
         if slots:
             slots = {k: re.sub(r"\s+", " ", v).strip() for k, v in slots.items()}

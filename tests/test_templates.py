@@ -38,17 +38,19 @@ def test_every_example_matches_its_own_template():
     p.families = load_families()
     p.templates = {t.id: t for f in p.families.values() for t in f.templates}
     p._store = _NoStore()
+    p.t5, p.use_patterns, p.t5_cfg = None, "always", {}
     for t in p.templates.values():
         for ex in t.examples:
             cands = p.candidates(ex)
             assert t.id in cands, f"{t.id}: example {ex!r} has no valid split"
 
 
-def test_closed_segment_must_be_keywords():
+def test_closed_segment_has_no_clause_words():
     p = Parser.__new__(Parser)
     p.families = load_families()
     p.templates = {t.id: t for f in p.families.values() for t in f.templates}
+    p.t5, p.use_patterns, p.t5_cfg = None, "always", {}
     cands = p.candidates("districts of states that border Goa")
-    # "districts of states" is not a level, so the neighbors template has no split here.
+    # "districts of states" has the clause word "of", so it cannot be a level segment.
     assert "neighbors" not in cands
     assert "children" in cands

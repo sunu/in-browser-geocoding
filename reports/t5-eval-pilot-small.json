@@ -1,0 +1,275 @@
+{
+ "t5": "models/t5/pilot-small",
+ "t5_alone": {
+  "gold": {
+   "n": 98,
+   "top1": 0.9591836734693877,
+   "top4": 0.9795918367346939,
+   "exact": null,
+   "median_ms": 113.06393146514893,
+   "errors": [
+    [
+     "MG Road, Bangalore",
+     "union ; a = MG Road ; b = Bangalore",
+     [
+      "lookup_place",
+      [
+       "anchor",
+       "mg road bangalore"
+      ]
+     ]
+    ],
+    [
+     "Gateway of India",
+     "lookup_place ; anchor = India",
+     [
+      "lookup_place",
+      [
+       "anchor",
+       "gateway of india"
+      ]
+     ]
+    ],
+    [
+     "Kerala and coastal districts of Karnataka",
+     "children_with_predicate ; level = districts ; pred = coastal ; parent = Kerala ; other = Karnataka",
+     [
+      "union",
+      [
+       "a",
+       "kerala"
+      ],
+      [
+       "b",
+       "coastal districts of karnataka"
+      ]
+     ]
+    ],
+    [
+     "districts of states that border Goa",
+     "children_touching ; level = districts ; parent = states ; other = Goa",
+     [
+      "children",
+      [
+       "parent",
+       "states that border goa"
+      ]
+     ]
+    ]
+   ]
+  },
+  "heldout": {
+   "n": 30,
+   "top1": 0.9666666666666667,
+   "top4": 1.0,
+   "exact": null,
+   "median_ms": 95.58546543121338,
+   "errors": [
+    [
+     "Karnataka and landlocked districts of Kerala",
+     "children_with_predicate ; level = districts ; pred = landlocked ; parent = Kerala",
+     [
+      "union",
+      [
+       "a",
+       "karnataka"
+      ],
+      [
+       "b",
+       "landlocked districts of kerala"
+      ]
+     ]
+    ]
+   ]
+  },
+  "llm_test": {
+   "n": 294,
+   "top1": 0.8775510204081632,
+   "top4": 0.9455782312925171,
+   "exact": 0.782312925170068,
+   "median_ms": 113.69407176971436,
+   "errors": [
+    [
+     "districts of Bihar where literacy rate is below 60",
+     "children_attr ; level = districts ; attr = literacy ; op = below ; value = 60 thousand ; parent = Bihar",
+     "children_attr ; level = districts ; parent = Bihar ; attr = literacy rate ; op = below ; value = 60"
+    ],
+    [
+     "villages in Wayanad with population below 500",
+     "children_attr ; level = villages ; attr = population ; op = below ; value = 500 thousand ; parent = Wayanad",
+     "children_attr ; level = villages ; parent = Wayanad ; attr = population ; op = below ; value = 500"
+    ],
+    [
+     "wards in Chennai",
+     "features_in ; category = wards ; region = Chennai",
+     "children ; level = wards ; parent = Chennai"
+    ],
+    [
+     "mandals of Telangana",
+     "features_in ; category = mandals ; region = Telangana",
+     "children ; level = mandals ; parent = Telangana"
+    ],
+    [
+     "distrcits in Kerela",
+     "features_in ; category = distrcits ; region = Kerela",
+     "children ; level = distrcits ; parent = Kerela"
+    ],
+    [
+     "tehsils of Jaipur",
+     "features_in ; category = tehsils ; region = Jaipur",
+     "children ; level = tehsils ; parent = Jaipur"
+    ],
+    [
+     "Konark Sun Temple state",
+     "children ; level = state ; parent = Konark Sun Temple",
+     "parent ; level = state ; child = Konark Sun Temple"
+    ],
+    [
+     "disrtict of Bodh Gaya",
+     "unsupported",
+     "parent ; level = disrtict ; child = Bodh Gaya"
+    ],
+    [
+     "bordering districts of Ganjam",
+     "children_with_predicate ; level = districts ; pred = bordering ; parent = Ganjam",
+     "neighbors ; level = districts ; of = Ganjam"
+    ],
+    [
+     "pls show Kozhikode district",
+     "children ; level = district ; parent = Kozhikode",
+     "lookup_place ; anchor = Kozhikode district"
+    ],
+    [
+     "Gateway of India",
+     "lookup_place ; anchor = India",
+     "lookup_place ; anchor = Gateway of India"
+    ],
+    [
+     "how far does 7 km around Sector 62 Noida extend",
+     "along_coast ; distance = 7 km ; region = Sector 62 Noida",
+     "buffer ; distance = 7 km ; target = Sector 62 Noida"
+    ],
+    [
+     "cente of Tamil Nadu",
+     "cente ; target = Tamil Nadu",
+     "centroid ; target = Tamil Nadu"
+    ],
+    [
+     "which areas are in north Delhi?",
+     "children ; level = areas ; parent = north Delhi",
+     "direction_part ; dir = north ; target = Delhi"
+    ],
+    [
+     "nortern Karnataka",
+     "unsupported",
+     "direction_part ; dir = nortern ; target = Karnataka"
+    ],
+    [
+     "sothern Gujarat",
+     "lookup_place ; anchor = sothern Gujarat",
+     "direction_part ; dir = sothern ; target = Gujarat"
+    ],
+    [
+     "areas souht of Hyderabad",
+     "buffer ; target = Hyderabad",
+     "direction_outside ; dir = souht ; target = Hyderabad"
+    ],
+    [
+     "pls show norht of Madurai",
+     "unsupported",
+     "direction_outside ; dir = norht ; target = Madurai"
+    ],
+    [
+     "Which Indian states are landlocked",
+     "children_with_predicate ; level = states ; pred = landlocked ; parent = India",
+     "children_with_predicate ; pred = landlocked ; level = states"
+    ],
+    [
+     "blocks of Koraput district touching Andhra Pradesh",
+     "intersection ; a = Koraput district ; b = Andhra Pradesh",
+     "children_touching ; level = blocks ; parent = Koraput district ; other = Andhra Pradesh"
+    ],
+    [
+     "pls show districts in Sikkim bordring Bhutan",
+     "children ; level = districts ; parent = Sikkim bordring Bhutan",
+     "children_touching ; level = districts ; parent = Sikkim ; other = Bhutan"
+    ],
+    [
+     "btwn hyderabad and secunderabad",
+     "union ; a = btwn hyderabad ; b = secunderabad",
+     "between ; a = hyderabad ; b = secunderabad"
+    ],
+    [
+     "bewteen Lucknow and Kanpur",
+     "union ; a = Lucknow ; b = Kanpur",
+     "between ; a = Lucknow ; b = Kanpur"
+    ],
+    [
+     "coastline buffer gujrat 15 km",
+     "along_coast ; distance = 15 km ; region = buffer gujrat",
+     "along_coast ; distance = 15 km ; region = gujrat"
+    ],
+    [
+     "how do i see 8 km along the state border of West Bengal?",
+     "along_intl_border ; distance = 8 km ; region = West Bengal",
+     "along_border ; distance = 8 km ; region = West Bengal"
+    ],
+    [
+     "can u show hampi and badami on map",
+     "lookup_place ; anchor = hampi and badami",
+     "union ; a = hampi ; b = badami"
+    ],
+    [
+     "pls show chennai madurai n coimbatore on map",
+     "union ; a = chennai madurai ; b = coimbatore",
+     "union3 ; a = chennai ; b = madurai ; c = coimbatore"
+    ],
+    [
+     "coastal districts of Odisha, Puri and Bhubaneswar all in one view",
+     "children_with_predicate ; level = districts ; pred = coastal ; parent = Odisha, Puri and Bhubaneswar",
+     "union3 ; a = coastal districts of Odisha ; b = Puri ; c = Bhubaneswar"
+    ],
+    [
+     "Kerala exept Wayanad",
+     "lookup_place ; anchor = Kerala ; other = Wayanad",
+     "difference ; a = Kerala ; b = Wayanad"
+    ],
+    [
+     "all the districts of West Bengal except Kolkata",
+     "difference ; a = all the districts of West Bengal ; b = Kolkata",
+     "difference ; a = districts of West Bengal ; b = Kolkata"
+    ],
+    [
+     "madhya pradesh except bhopal n indore",
+     "difference ; a = madhya pradesh ; b = bhopal ; c = indore",
+     "difference ; a = madhya pradesh ; b = bhopal n indore"
+    ],
+    [
+     "area common to Thane and 10 km along the coast of Maharashtra",
+     "along_coast ; distance = 10 km ; region = Thane",
+     "intersection ; a = Thane ; b = 10 km along the coast of Maharashtra"
+    ],
+    [
+     "coastal districts of Odisha intersect 50 km around Bhubaneswar",
+     "children_with_predicate ; level = districts ; pred = coastal ; parent = Odisha ; other = 50 km around Bhubaneswar",
+     "intersection ; a = coastal districts of Odisha ; b = 50 km around Bhubaneswar"
+    ],
+    [
+     "common area between Nashik district and western Maharashtra",
+     "between ; a = Nashik district ; b = western Maharashtra",
+     "intersection ; a = Nashik district ; b = western Maharashtra"
+    ],
+    [
+     "only the part of Delhi that lies within 3 km around India Gate",
+     "intersection ; a = Delhi ; b = within 3 km around India Gate",
+     "intersection ; a = Delhi ; b = 3 km around India Gate"
+    ],
+    [
+     "Is Charminar open on Fridays and what are the ticket prices?",
+     "features_in ; category = ticket prices ; region = Charminar",
+     "unsupported"
+    ]
+   ]
+  }
+ }
+}
