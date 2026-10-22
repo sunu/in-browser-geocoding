@@ -235,3 +235,11 @@ def test_policy_union_territories(world, world_config):
 def test_invalid_dag_is_rejected(world):
     res = world.execute({"op": "Children", "args": {"of": R("c_tl"), "level": "galaxy"}})
     assert not res.ok and "admin_levels" in res.error
+
+
+def test_features_on_empty_region(world, fake_geocoder):
+    empty = {"op": "Filter", "args": {"set": {"op": "Children", "args": {"of": R("st_e"), "level": "district"}},
+                                      "pred": PREDICATE_DAGS["coastal"]}}
+    res = run(world, {"op": "Features", "args": {"category": "amenity:hospital", "within": empty}})
+    assert res.features == [] and any("empty" in n for n in res.notes)
+    assert fake_geocoder.calls == []

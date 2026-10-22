@@ -492,6 +492,9 @@ class _Run:
         if row is None or row[0] is None:
             return self.empty_rel()
         geom = shapely.from_wkb(bytes(row[0]))
+        if geom.is_empty:
+            self.notes.append("features: the region is empty, so the result is empty")
+            return self.empty_rel()
         tiles = _tiles(geom.bounds, int(self.ex.cfg["geocoder"]["max_tiles"]))
         gc = self.ex.geocoder_or_default()
         limit = int(self.ex.cfg["geocoder"]["limit"])
