@@ -100,8 +100,9 @@ def needs_network(dag: Any) -> bool:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-execute", action="store_true")
+    ap.add_argument("--set", default="gold", help="gold or heldout")
     args = ap.parse_args()
-    src = yaml.safe_load((GOLD_DIR / "gold_src.yaml").read_text())
+    src = yaml.safe_load((GOLD_DIR / f"{args.set}_src.yaml").read_text())
     templates = all_templates()
     ex = Executor()
     out = []
@@ -109,7 +110,7 @@ def main() -> None:
         t = r["t"]
         dag = gold_dag(t, r["s"], r.get("src"))
         rec = {
-            "id": f"g{i + 1:03d}", "query": r["q"], "lang": "en", "family": templates[t].family, "template": t,
+            "id": f"{'g' if args.set == 'gold' else 'h'}{i + 1:03d}", "query": r["q"], "lang": "en", "family": templates[t].family, "template": t,
             "slots": r["s"], "src": r.get("src", {}), "depth": depth_of(r["s"]), "dag": dag,
             "expected_ids": None, "notes": r.get("n", ""),
         }
@@ -123,7 +124,7 @@ def main() -> None:
                 rec["expected_geometry"] = geometry_summary(ex.execute(dag, with_geometry=True))
         out.append(rec)
         print(f"{rec['id']} d{rec['depth']} {t:24s} {r['q']!r:60s} n={len(rec['expected_ids']) if rec['expected_ids'] is not None else '-'}")
-    with (GOLD_DIR / "gold.jsonl").open("w") as f:
+    with (GOLD_DIR / f"{args.set}.jsonl").open("w") as f:
         for rec in out:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
     print(f"{len(out)} records")

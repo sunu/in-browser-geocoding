@@ -1,0 +1,34 @@
+# Held-out gold set. Written on 2026-10-22 before the second round of tuning.
+# Do not tune templates, rules, or descriptions on these records. Use them only to report.
+# Same format as gold_src.yaml.
+
+- {q: "Whitefield", t: lookup_place, s: {anchor: "Whitefield"}, src: {anchor: overture}}
+- {q: "Hyderabad", t: lookup_place, s: {anchor: "Hyderabad"}, src: {anchor: overture}}
+- {q: "Qutub Minar", t: lookup_place, s: {anchor: "Qutub Minar"}, src: {anchor: photon}}
+- {q: "Brigade Road", t: lookup_place, s: {anchor: "Brigade Road"}, src: {anchor: photon}}
+- {q: "3 km around Jayanagar", t: buffer, s: {distance: 3000, target: "Jayanagar"}, src: {target: overture}}
+- {q: "within 1 km of Bangalore Palace", t: buffer, s: {distance: 1000, target: "Bangalore Palace"}, src: {target: photon}}
+- {q: "eastern Rajasthan", t: direction_part, s: {dir: east, target: "Rajasthan"}, src: {target: overture}}
+- {q: "south of Hyderabad", t: direction_outside, s: {dir: south, target: "Hyderabad"}, src: {target: overture}}
+- {q: "centre of Telangana", t: centroid, s: {target: "Telangana"}, src: {target: overture}}
+- {q: "districts in Gujarat", t: children, s: {level: district, parent: "Gujarat"}}
+- {q: "all states of india", t: children, s: {level: state, parent: "india"}}
+- {q: "which state is Mysuru in", t: parent, s: {level: state, child: "Mysuru"}}
+- {q: "states bordering Maharashtra", t: neighbors, s: {level: state, of: "Maharashtra"}}
+- {q: "districts that touch Thrissur", t: neighbors, s: {level: district, of: "Thrissur"}}
+- {q: "coastal districts of Gujarat", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Gujarat"}}
+- {q: "landlocked districts in Tamil Nadu", t: children_with_predicate, s: {pred: landlocked, level: district, parent: "Tamil Nadu"}}
+- {q: "border districts of Rajasthan", t: children_with_predicate, s: {pred: border, level: district, parent: "Rajasthan"}}
+- {q: "districts of Kerala that border Tamil Nadu", t: children_touching, s: {level: district, parent: "Kerala", other: "Tamil Nadu"}}
+- {q: "Punjab and Haryana", t: union, s: {a: "Punjab", b: "Haryana"}}
+- {q: "Goa, Kerala and Tamil Nadu", t: union3, s: {a: "Goa", b: "Kerala", c: "Tamil Nadu"}}
+- {q: "Tamil Nadu except Chennai", t: difference, s: {a: "Tamil Nadu", b: "Chennai"}}
+- {q: "seven sisters excluding Assam", t: difference, s: {a: {lex: seven_sisters, text: "seven sisters"}, b: "Assam"}}
+- {q: "between Delhi and Agra", t: between, s: {a: "Delhi", b: "Agra"}}
+- {q: "10 km along the coast of Goa", t: along_coast, s: {distance: 10000, region: "Goa"}}
+- {q: "schools in Whitefield", t: features_in, s: {category: "amenity:school", region: "Whitefield"}}
+- {q: "pharmacies near Jayanagar", t: features_near, s: {category: "amenity:pharmacy", distance: null, region: "Jayanagar"}}
+- {q: "cities in Uttar Pradesh with population over 1 million", t: children_attr, s: {level: city, parent: "Uttar Pradesh", attr: population, op: gt, value: 1000000}}
+- {q: "coastal districts of states bordering Kerala", t: children_with_predicate, s: {pred: coastal, level: district, parent: {q: "states bordering Kerala", t: neighbors, s: {level: state, of: "Kerala"}}}}
+- {q: "hospitals in coastal districts of Goa", t: features_in, s: {category: "amenity:hospital", region: {q: "coastal districts of Goa", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Goa"}}}}
+- {q: "Karnataka and landlocked districts of Kerala", t: union, s: {a: "Karnataka", b: {q: "landlocked districts of Kerala", t: children_with_predicate, s: {pred: landlocked, level: district, parent: "Kerala"}}}}

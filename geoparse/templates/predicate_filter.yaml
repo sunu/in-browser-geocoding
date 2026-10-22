@@ -1,5 +1,5 @@
 family: predicate_filter
-description: "The divisions of one level inside a place that have a property, for example coastal states of a country, or districts of a state that border another place"
+description: "The divisions of one level inside a place that have a yes-or-no property (coastal, landlocked, on the international border) or that share a border with another place, for example coastal states of a country"
 templates:
   - id: children_with_predicate
     description: "Divisions of one level inside a place that have a property such as coastal or landlocked"

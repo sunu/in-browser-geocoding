@@ -37,6 +37,16 @@ LEADING_FILLERS = [
 ]
 
 
+FILLER_WORDS = ["the", "all", "a", "an", "any", "some", "of the"]
+
+
+def _generic_words() -> list[str]:
+    words = list(FILLER_WORDS) + ["of", "in", "and", "that", "which", "with"]
+    for ref in ("admin_levels", "predicates"):
+        words += sum(option_keywords(ref).values(), [])
+    return words
+
+
 class Unsupported(BaseModel):
     reason: str
     decision: str | None = None
@@ -182,10 +192,14 @@ class Parser:
                 w = norm(text).split()
                 if not w or w[0] in ("and", "or", "of", "in", "with", "except") or w[-1] in ("and", "or", "of", "in", "with"):
                     return False
+                # A place cannot be only level, predicate, and stop words ("states", "coastal districts").
+                if keyword_hits(text, _generic_words()) >= len(w) and not lexicon_match(text):
+                    return False
             closed = [t.slots[s] for s in fed if s in t.slots and t.slots[s].type in CLOSED_TYPES]
             if closed:
-                kws = sum((sum(option_keywords(sd.options_ref).values(), []) for sd in closed), [])
-                if keyword_hits(text, kws) == 0:
+                # Every word of a closed-slot segment must be a keyword of its options (or a filler word).
+                kws = sum((sum(option_keywords(sd.options_ref).values(), []) for sd in closed), []) + FILLER_WORDS
+                if keyword_hits(text, kws) < len(norm(text).split()):
                     return False
         return True
 
@@ -379,6 +393,7 @@ class Parser:
         cands = self.store.search(name, type_hint=type_hint, context=ctx_text, limit=6)
         if not cands:
             raise _Stop(Unsupported(reason=f"cannot resolve {name!r} in the local extract", depth=depth, text=text))
+        cands = merge_nested(cands)
         chosen = cands[0]
         if len(cands) > 1 and cands[0].score - cands[1].score < 0.15:
             close = [c for c in cands if cands[0].score - c.score < 0.3]
@@ -393,6 +408,17 @@ class Parser:
         if ctx_text:
             args["context"] = ctx_text
         return {"op": "Resolve", "args": args}
+
+
+def merge_nested(cands: list) -> list:
+    """Merge candidates with the same name where one contains the other (a city and its district, a
+    locality and its macrohood). The choice between them is a policy (subtype prior), not a decision."""
+    out = []
+    for c in cands:
+        same = [o for o in out if norm(o.name) == norm(c.name) and (o.id in c.ancestors or c.id in o.ancestors)]
+        if not same:
+            out.append(c)
+    return out
 
 
 def _plain_anchors(dag: dict[str, Any]) -> bool:

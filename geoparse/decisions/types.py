@@ -37,6 +37,7 @@ class Candidate(BaseModel):
     subtype: str | None = None
     description: str = ""  # text that the decision model sees
     score: float = 0.0  # ranking score from the gazetteer
+    ancestors: list[str] = Field(default_factory=list)  # Overture IDs of the divisions that contain it
 
 
 class Question(BaseModel):

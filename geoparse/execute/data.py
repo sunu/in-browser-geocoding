@@ -61,13 +61,14 @@ class Store:
                         (SELECT list(struct_pack(id := x.id, name := x.name, subtype := x.subtype))
                          FROM divisions x WHERE list_contains(d.ancestors, x.id) AND x.id <> d.id),
                         lambda h: h.subtype IN ('region', 'county', 'locality', 'macrohood'))] AS anc,
-                   EXISTS (SELECT 1 FROM areas a WHERE a.id = d.id) AS has_area
+                   EXISTS (SELECT 1 FROM areas a WHERE a.id = d.id) AS has_area, d.ancestors
             FROM divisions d WHERE d.id IN (SELECT unnest(?))
         """, [ids]).fetchall()
         out = {}
-        for id_, name, subtype, cls, region, country, pop, anc, has_area in rows:
+        for id_, name, subtype, cls, region, country, pop, anc, has_area, anc_ids in rows:
             out[id_] = {"name": name, "subtype": subtype, "class": cls, "region": region, "country": country,
-                        "population": pop, "ancestors": anc or [], "has_area": has_area}
+                        "population": pop, "ancestors": anc or [], "has_area": has_area,
+                        "ancestor_ids": [a for a in (anc_ids or []) if a != id_]}
         return out
 
     def search(self, name: str, *, type_hint: str | None = None, context: str | None = None,
@@ -137,7 +138,7 @@ class Store:
             kind = d["subtype"] if not d["class"] else f"{d['subtype']} ({d['class']})"
             desc = f"{d['name']}: {kind}" + (f" in {where}" if where else "") + ("" if d["country"] == "IN" else f", country {d['country']}")
             cands.append(Candidate(id=id_, name=d["name"], source="overture", subtype=d["subtype"],
-                                   description=desc, score=round(score, 4)))
+                                   description=desc, score=round(score, 4), ancestors=d["ancestor_ids"]))
         cands.sort(key=lambda c: (-c.score, c.id))
         return cands[:limit]
 

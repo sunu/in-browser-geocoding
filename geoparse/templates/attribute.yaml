@@ -1,5 +1,5 @@
 family: attribute
-description: "The divisions of one level inside a place filtered by a number, for example cities with a population over 1 million"
+description: "The divisions of one level inside a place where a number (population or area) is above or below a value, for example cities with a population over 1 million"
 templates:
   - id: children_attr
     description: "Divisions of one level inside a place where a number such as population is above or below a value"

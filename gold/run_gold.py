@@ -228,9 +228,11 @@ def main() -> None:
     ap.add_argument("--no-ner", action="store_true")
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--tag", default="")
+    ap.add_argument("--set", default="gold", help="gold or heldout")
     args = ap.parse_args()
 
-    recs = [json.loads(l) for l in GOLD.read_text().splitlines() if l.strip()]
+    path = GOLD.parent / f"{args.set}.jsonl"
+    recs = [json.loads(l) for l in path.read_text().splitlines() if l.strip()]
     if args.only:
         keep = set(args.only.split(","))
         recs = [r for r in recs if r["id"] in keep]
@@ -292,7 +294,7 @@ def main() -> None:
         pipe = list(pool.map(one_pipe, recs))
 
     report = summarize(iso, pipe, recs, args)
-    tag = args.provider + (f"-{args.tag}" if args.tag else "")
+    tag = (f"{args.set}-" if args.set != "gold" else "") + args.provider + (f"-{args.tag}" if args.tag else "")
     REPORTS.mkdir(exist_ok=True)
     (REPORTS / f"gold-{tag}.json").write_text(json.dumps({"isolated": iso, "pipeline": pipe, "summary": report["summary"]},
                                                          indent=1, default=str))
@@ -313,7 +315,7 @@ def sequential_requests(trace: list[dict[str, Any]]) -> int:
 
 
 def summarize(iso, pipe, recs, args) -> dict[str, Any]:
-    lines = [f"# Gold suite: provider `{args.provider}`", ""]
+    lines = [f"# Gold suite `{args.set}`: provider `{args.provider}`", ""]
     lines.append(f"Records: {len(recs)}. Depth 0: {sum(r['depth'] == 0 for r in recs)}. Depth 1 (two levels): "
                  f"{sum(r['depth'] == 1 for r in recs)}.")
     lines.append("")
