@@ -61,8 +61,11 @@ def fake_geocoder():
 
 @pytest.fixture
 def world(world_store, world_config, fake_geocoder, monkeypatch):
-    import geoparse.execute.executor as ex_mod
-    import geoparse.options as opt_mod
+    import importlib
+
+    # geoparse.execute is also the name of a public function, so import the module by its path.
+    ex_mod = importlib.import_module("geoparse.execute.executor")
+    opt_mod = importlib.import_module("geoparse.options")
 
     monkeypatch.setattr(ex_mod, "lexicon", lambda: fixture_world.LEXICON)
     monkeypatch.setattr(opt_mod, "lexicon", lambda: fixture_world.LEXICON)
