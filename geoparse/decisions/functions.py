@@ -38,8 +38,9 @@ INSTRUCTIONS = {
 }
 
 IS_SUBQUERY_CRITERIA = {
-    "true": "The text describes places by a property, a level, a distance, or a relation, for example "
-            "'coastal districts of Odisha', 'states that border Nepal', or '10 km around Whitefield'.",
+    "true": "The text describes places by a property, a level, a distance, or a relation, or it lists more than "
+            "one place, for example 'coastal districts of Odisha', 'states that border Nepal', '10 km around "
+            "Whitefield', or 'Kolkata and Howrah'.",
     "false": "The text is the name of one place, with or without its city or state, for example 'Odisha', "
              "'Bengaluru Urban', 'MG Road, Bangalore', or 'Gateway of India'.",
 }

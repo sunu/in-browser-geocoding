@@ -8,6 +8,9 @@ admin_levels:
   state:
     description: "States or union territories, the first level of division inside a country"
     keywords: [state, states, province, provinces, region, regions]
+  village:
+    description: "Villages and hamlets"
+    keywords: [village, villages, gaon, hamlets]
   union_territory:
     description: "Union territories only"
     keywords: [ut, uts, union territory, union territories]

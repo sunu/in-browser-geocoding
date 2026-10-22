@@ -1,0 +1,226 @@
+{
+ "t5": "models/t5/flan-t5-base-v2",
+ "t5_alone": {
+  "gold": {
+   "n": 98,
+   "top1": 0.9897959183673469,
+   "top4": 0.9897959183673469,
+   "exact": null,
+   "median_ms": 314.6895170211792,
+   "errors": [
+    [
+     "MG Road, Bangalore",
+     "union ; a = MG Road ; b = Bangalore",
+     [
+      "lookup_place",
+      [
+       "anchor",
+       "mg road bangalore"
+      ]
+     ]
+    ]
+   ]
+  },
+  "heldout": {
+   "n": 30,
+   "top1": 1.0,
+   "top4": 1.0,
+   "exact": null,
+   "median_ms": 258.0695152282715,
+   "errors": []
+  },
+  "llm_dev": {
+   "n": 279,
+   "top1": 0.9354838709677419,
+   "top4": 0.974910394265233,
+   "exact": 0.8387096774193549,
+   "median_ms": 326.51495933532715,
+   "errors": [
+    [
+     "district of Lonavala",
+     "children ; level = district ; parent = Lonavala",
+     "parent ; level = district ; child = Lonavala"
+    ],
+    [
+     "state of Tirupati",
+     "children ; level = state ; parent = Tirupati",
+     "parent ; level = state ; child = Tirupati"
+    ],
+    [
+     "Gateway of India Mumbai",
+     "union ; a = Gateway of India ; b = Mumbai",
+     "lookup_place ; anchor = Gateway of India Mumbai"
+    ],
+    [
+     "banglore airport",
+     "features_in ; category = airport ; region = banglore",
+     "lookup_place ; anchor = banglore airport"
+    ],
+    [
+     "15 kms aroud Jaipur airport",
+     "features_near ; category = airport ; distance = 15 km ; region = Jaipur",
+     "buffer ; distance = 15 km ; target = Jaipur airport"
+    ],
+    [
+     "what is the exact middle point of Pune district?",
+     "centroid ; target = Pune",
+     "centroid ; target = Pune district"
+    ],
+    [
+     "centrr of Kolkata",
+     "direction_outside ; dir = centrr ; target = Kolkata",
+     "centroid ; target = Kolkata"
+    ],
+    [
+     "i want to find the central location of Nashik district in Maharashtra",
+     "direction_part ; dir = central ; target = Nashik district in Maharashtra",
+     "centroid ; target = Nashik district in Maharashtra"
+    ],
+    [
+     "i want to see the upper northern portion of West Bengal on map",
+     "direction_part ; dir = upper ; target = northern portion of West Bengal",
+     "direction_part ; dir = northern ; target = West Bengal"
+    ],
+    [
+     "states in India that touch Pakistan",
+     "children_with_predicate ; level = states ; pred = touch Pakistan ; parent = India",
+     "children_touching ; level = states ; parent = India ; other = Pakistan"
+    ],
+    [
+     "tehsils in Kutch bordering Pakistan",
+     "children_with_predicate ; level = tehsils ; pred = bordering Pakistan ; parent = Kutch",
+     "children_touching ; level = tehsils ; parent = Kutch ; other = Pakistan"
+    ],
+    [
+     "can u show both Jaipur and Udaipur districts on the map?",
+     "union ; a = Jaipur ; b = Udaipur districts",
+     "union ; a = Jaipur ; b = Udaipur"
+    ],
+    [
+     "West Bengal without Kolkata and Howrah",
+     "union3 ; a = West Bengal ; b = Kolkata ; c = Howrah",
+     "difference ; a = West Bengal ; b = Kolkata and Howrah"
+    ],
+    [
+     "Himachal Pradesh minus Shimla and Kullu",
+     "difference ; a = Himachal Pradesh ; b = Shimla ; c = Kullu",
+     "difference ; a = Himachal Pradesh ; b = Shimla and Kullu"
+    ],
+    [
+     "Whole Andhra Pradesh barring Visakhapatnam",
+     "difference ; a = Whole Andhra Pradesh ; b = Visakhapatnam",
+     "difference ; a = Andhra Pradesh ; b = Visakhapatnam"
+    ],
+    [
+     "20 km along the international border in Punjab intersect Amritsar district",
+     "along_intl_border ; distance = 20 km ; region = Punjab intersect Amritsar district",
+     "intersection ; a = 20 km along the international border in Punjab ; b = Amritsar district"
+    ],
+    [
+     "Mumbai Suburban intersetion with 3 km around Bandra Kurla Complex",
+     "intersection ; a = Mumbai Suburban intersetion ; b = 3 km around Bandra Kurla Complex",
+     "intersection ; a = Mumbai Suburban ; b = 3 km around Bandra Kurla Complex"
+    ],
+    [
+     "which is the longest river in India and where does it originate? I need it for my school project on geography",
+     "direction_part ; dir = origin ; target = longest river in India",
+     "unsupported"
+    ]
+   ]
+  },
+  "llm_test": {
+   "n": 294,
+   "top1": 0.9421768707482994,
+   "top4": 0.9863945578231292,
+   "exact": 0.8401360544217688,
+   "median_ms": 312.25407123565674,
+   "errors": [
+    [
+     "Konark Sun Temple state",
+     "children ; level = state ; parent = Konark Sun Temple",
+     "parent ; level = state ; child = Konark Sun Temple"
+    ],
+    [
+     "disrtict of Bodh Gaya",
+     "children ; level = disrtict ; parent = Bodh Gaya",
+     "parent ; level = disrtict ; child = Bodh Gaya"
+    ],
+    [
+     "bordering districts of Ganjam",
+     "children_with_predicate ; level = districts ; pred = bordering ; parent = Ganjam",
+     "neighbors ; level = districts ; of = Ganjam"
+    ],
+    [
+     "bandra west mumbai",
+     "direction_part ; dir = west ; target = mumbai",
+     "lookup_place ; anchor = bandra west mumbai"
+    ],
+    [
+     "Tirupathi temple",
+     "features_in ; category = temple ; region = Tirupathi",
+     "lookup_place ; anchor = Tirupathi temple"
+    ],
+    [
+     "where exactly is the Rann of Kutch",
+     "direction_outside ; dir = Rann ; target = Kutch",
+     "lookup_place ; anchor = Rann of Kutch"
+    ],
+    [
+     "cente of Tamil Nadu",
+     "cente ; target = Tamil Nadu",
+     "centroid ; target = Tamil Nadu"
+    ],
+    [
+     "which areas are in north Delhi?",
+     "children ; level = areas ; parent = north Delhi",
+     "direction_part ; dir = north ; target = Delhi"
+    ],
+    [
+     "Which Indian states are landlocked",
+     "children_with_predicate ; level = states ; pred = landlocked ; parent = Indian",
+     "children_with_predicate ; pred = landlocked ; level = states"
+    ],
+    [
+     "tehsils in Kutch which touch Pakistan",
+     "children_with_predicate ; level = tehsils ; pred = touch Pakistan ; parent = Kutch",
+     "children_touching ; level = tehsils ; parent = Kutch ; other = Pakistan"
+    ],
+    [
+     "bewteen Lucknow and Kanpur",
+     "union ; a = Lucknow ; b = Kanpur",
+     "between ; a = Lucknow ; b = Kanpur"
+    ],
+    [
+     "how do i see 8 km along the state border of West Bengal?",
+     "along_state ; distance = 8 km ; region = West Bengal",
+     "along_border ; distance = 8 km ; region = West Bengal"
+    ],
+    [
+     "Rajasthan, Gujarat and Madhya Pradesh",
+     "union3 ; a = Madhya Pradesh ; b = Gujarat ; c = Rajasthan",
+     "union3 ; a = Rajasthan ; b = Gujarat ; c = Madhya Pradesh"
+    ],
+    [
+     "all the districts of West Bengal except Kolkata",
+     "difference ; a = all the districts of West Bengal ; b = Kolkata",
+     "difference ; a = districts of West Bengal ; b = Kolkata"
+    ],
+    [
+     "madhya pradesh except bhopal n indore",
+     "difference ; a = madhya pradesh ; b = bhopal ; c = indore",
+     "difference ; a = madhya pradesh ; b = bhopal n indore"
+    ],
+    [
+     "temprature in Shimla today",
+     "features_in ; category = temprature ; region = Shimla",
+     "unsupported"
+    ],
+    [
+     "which is the cheapest petrol pump near Salt Lake Kolkata right now",
+     "features_in ; category = petrol pump ; region = Salt Lake Kolkata",
+     "unsupported"
+    ]
+   ]
+  }
+ }
+}

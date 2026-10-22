@@ -1,0 +1,399 @@
+{
+ "t5": "models/t5/t5-small-v2",
+ "t5_alone": {
+  "gold": {
+   "n": 98,
+   "top1": 0.9897959183673469,
+   "top4": 0.9897959183673469,
+   "exact": null,
+   "median_ms": 108.9165210723877,
+   "errors": [
+    [
+     "MG Road, Bangalore",
+     "union ; a = MG Road ; b = Bangalore",
+     [
+      "lookup_place",
+      [
+       "anchor",
+       "mg road bangalore"
+      ]
+     ]
+    ]
+   ]
+  },
+  "heldout": {
+   "n": 30,
+   "top1": 0.9666666666666667,
+   "top4": 1.0,
+   "exact": null,
+   "median_ms": 99.94304180145264,
+   "errors": [
+    [
+     "Karnataka and landlocked districts of Kerala",
+     "children_with_predicate ; level = districts ; pred = landlocked ; parent = Kerala",
+     [
+      "union",
+      [
+       "a",
+       "karnataka"
+      ],
+      [
+       "b",
+       "landlocked districts of kerala"
+      ]
+     ]
+    ]
+   ]
+  },
+  "llm_dev": {
+   "n": 279,
+   "top1": 0.942652329749104,
+   "top4": 0.989247311827957,
+   "exact": 0.8387096774193549,
+   "median_ms": 120.09310722351074,
+   "errors": [
+    [
+     "gram panchayats in Nashik district Maharashtra",
+     "features_in ; category = gram panchayats ; region = Nashik district Maharashtra",
+     "children ; level = gram panchayats ; parent = Nashik district Maharashtra"
+    ],
+    [
+     "district of Lonavala",
+     "children ; level = district ; parent = Lonavala",
+     "parent ; level = district ; child = Lonavala"
+    ],
+    [
+     "which all states touch madhya pradesh border pls",
+     "children_touching ; level = states ; parent = all states ; other = madhya pradesh",
+     "neighbors ; level = states ; of = madhya pradesh"
+    ],
+    [
+     "talukas bordering Mysuru taluk",
+     "children_touching ; level = talukas ; parent = bordering Mysuru taluk",
+     "neighbors ; level = talukas ; of = Mysuru taluk"
+    ],
+    [
+     "banglore airport",
+     "features_in ; category = airport ; region = banglore",
+     "lookup_place ; anchor = banglore airport"
+    ],
+    [
+     "15 kms aroud Jaipur airport",
+     "features_near ; category = airport ; distance = 15 km ; region = aroud Jaipur",
+     "buffer ; distance = 15 km ; target = Jaipur airport"
+    ],
+    [
+     "i want to find the central location of Nashik district in Maharashtra",
+     "direction_part ; dir = central ; target = Nashik district in Maharashtra",
+     "centroid ; target = Nashik district in Maharashtra"
+    ],
+    [
+     "nothern Gujarat",
+     "lookup_place ; anchor = nothern Gujarat",
+     "direction_part ; dir = nothern ; target = Gujarat"
+    ],
+    [
+     "btw Chennai n Pondicherry",
+     "union ; a = btw Chennai ; b = Pondicherry",
+     "between ; a = Chennai ; b = Pondicherry"
+    ],
+    [
+     "can u show both Jaipur and Udaipur districts on the map?",
+     "union ; a = Jaipur ; b = Udaipur districts",
+     "union ; a = Jaipur ; b = Udaipur"
+    ],
+    [
+     "West Bengal without Kolkata and Howrah",
+     "difference ; a = West Bengal ; b = Kolkata ; c = Howrah",
+     "difference ; a = West Bengal ; b = Kolkata and Howrah"
+    ],
+    [
+     "Whole Andhra Pradesh barring Visakhapatnam",
+     "difference ; a = Whole Andhra Pradesh ; b = Visakhapatnam",
+     "difference ; a = Andhra Pradesh ; b = Visakhapatnam"
+    ],
+    [
+     "which part of Jaipur lies within 5 km around Amber Fort",
+     "intersection ; a = Jaipur ; b = within 5 km around Amber Fort",
+     "intersection ; a = Jaipur ; b = 5 km around Amber Fort"
+    ],
+    [
+     "20 km along the international border in Punjab intersect Amritsar district",
+     "along_intl_border ; distance = 20 km ; region = Amritsar district",
+     "intersection ; a = 20 km along the international border in Punjab ; b = Amritsar district"
+    ],
+    [
+     "which is the longest river in India and where does it originate? I need it for my school project on geography",
+     "children_with_predicate ; level = river ; pred = originate ; parent = my school project on geography",
+     "unsupported"
+    ],
+    [
+     "convert 500 rupees to dollars",
+     "convert ; a = 500 rupees ; b = dollars",
+     "unsupported"
+    ]
+   ]
+  },
+  "llm_test": {
+   "n": 294,
+   "top1": 0.9455782312925171,
+   "top4": 0.9795918367346939,
+   "exact": 0.8435374149659864,
+   "median_ms": 113.51978778839111,
+   "errors": [
+    [
+     "Konark Sun Temple state",
+     "lookup_place ; anchor = Konark Sun Temple state",
+     "parent ; level = state ; child = Konark Sun Temple"
+    ],
+    [
+     "disrtict of Bodh Gaya",
+     "children ; level = disrtict ; parent = Bodh Gaya",
+     "parent ; level = disrtict ; child = Bodh Gaya"
+    ],
+    [
+     "which districts share a border with Pune district?",
+     "neighbors ; level = districts ; of = Pune",
+     "neighbors ; level = districts ; of = Pune district"
+    ],
+    [
+     "pls show Kozhikode district",
+     "children ; level = district ; parent = Kozhikode",
+     "lookup_place ; anchor = Kozhikode district"
+    ],
+    [
+     "where exactly is the Rann of Kutch",
+     "direction_part ; dir = Rann ; target = Kutch",
+     "lookup_place ; anchor = Rann of Kutch"
+    ],
+    [
+     "cente of Tamil Nadu",
+     "cente ; target = Tamil Nadu",
+     "centroid ; target = Tamil Nadu"
+    ],
+    [
+     "which areas are in north Delhi?",
+     "children ; level = areas ; parent = north Delhi",
+     "direction_part ; dir = north ; target = Delhi"
+    ],
+    [
+     "areas souht of Hyderabad",
+     "children ; level = areas ; parent = Hyderabad",
+     "direction_outside ; dir = souht ; target = Hyderabad"
+    ],
+    [
+     "Which Indian states are landlocked",
+     "children_with_predicate ; level = states ; pred = landlocked ; parent = Indian",
+     "children_with_predicate ; pred = landlocked ; level = states"
+    ],
+    [
+     "btwn hyderabad and secunderabad",
+     "union ; a = btwn hyderabad ; b = secunderabad",
+     "between ; a = hyderabad ; b = secunderabad"
+    ],
+    [
+     "bewteen Lucknow and Kanpur",
+     "union ; a = Lucknow ; b = Kanpur",
+     "between ; a = Lucknow ; b = Kanpur"
+    ],
+    [
+     "5 kms along the bordar of Himachal Pradesh",
+     "along_coast ; distance = 5 km ; region = Himachal Pradesh",
+     "along_border ; distance = 5 km ; region = Himachal Pradesh"
+    ],
+    [
+     "how do i see 8 km along the state border of West Bengal?",
+     "along_intl_border ; distance = 8 km ; region = West Bengal",
+     "along_border ; distance = 8 km ; region = West Bengal"
+    ],
+    [
+     "coastal districts of Odisha intersect 50 km around Bhubaneswar",
+     "children_with_predicate ; level = districts ; pred = coastal ; parent = Odisha ; other = 50 km around Bhubaneswar",
+     "intersection ; a = coastal districts of Odisha ; b = 50 km around Bhubaneswar"
+    ],
+    [
+     "Ernakulam intersect with 10 km along the coast of Kerala",
+     "along_coast ; distance = 10 km ; region = Kerala",
+     "intersection ; a = Ernakulam ; b = 10 km along the coast of Kerala"
+    ],
+    [
+     "only the part of Delhi that lies within 3 km around India Gate",
+     "intersection ; a = Delhi ; b = within 3 km around India Gate",
+     "intersection ; a = Delhi ; b = 3 km around India Gate"
+    ]
+   ]
+  }
+ },
+ "pipeline_llm_dev": {
+  "n": 279,
+  "acc": 0.921146953405018,
+  "by_template": {
+   "along_border": "11/13",
+   "along_coast": "13/13",
+   "along_intl_border": "14/14",
+   "between": "11/12",
+   "buffer": "12/13",
+   "centroid": "11/11",
+   "children": "6/9",
+   "children_attr": "13/14",
+   "children_touching": "13/15",
+   "children_with_predicate": "12/12",
+   "difference": "12/13",
+   "direction_outside": "12/13",
+   "direction_part": "14/14",
+   "features_in": "11/11",
+   "features_near": "15/15",
+   "intersection": "9/13",
+   "lookup_place": "12/12",
+   "neighbors": "10/11",
+   "parent": "12/13",
+   "union": "12/13",
+   "union3": "12/14",
+   "unsupported": "10/11"
+  },
+  "median_s": 1.2470958232879639,
+  "errors": [
+   [
+    "wards in Mumbai with population greater than 50,000",
+    "children_attr ; level = wards ; parent = Mumbai ; attr = population ; op = greater than ; value = 50000",
+    null,
+    "the text 'wards' names no known admin_level"
+   ],
+   [
+    "blocks in Ranchi",
+    "children ; level = blocks ; parent = Ranchi",
+    null,
+    "the text 'blocks' names no known admin_level"
+   ],
+   [
+    "what are the sub-districts in Kamrup?",
+    "children ; level = sub-districts ; parent = Kamrup",
+    null,
+    "the text 'sub-districts' names no known admin_level"
+   ],
+   [
+    "gram panchayats in Nashik district Maharashtra",
+    "children ; level = gram panchayats ; parent = Nashik district Maharashtra",
+    null,
+    "low confidence for pick_family (0.20)"
+   ],
+   [
+    "city that contains Salt Lake Sector V",
+    "parent ; level = city ; child = Salt Lake Sector V",
+    null,
+    "cannot resolve 'Salt Lake Sector V' in the local extract"
+   ],
+   [
+    "I want to see all the states which share boundary with Telangana",
+    "neighbors ; level = states ; of = Telangana",
+    null,
+    "low confidence for pick_family (0.00)"
+   ],
+   [
+    "15 kms aroud Jaipur airport",
+    "buffer ; distance = 15 km ; target = Jaipur airport",
+    null,
+    "low confidence for pick_family (0.28)"
+   ],
+   [
+    "i want to see the area north of Connaught Place Delhi",
+    "direction_outside ; dir = north ; target = Connaught Place Delhi",
+    null,
+    "low confidence for select_source (0.18)"
+   ],
+   [
+    "wards of Bengaluru adjacent to Whitefield",
+    "children_touching ; level = wards ; parent = Bengaluru ; other = Whitefield",
+    null,
+    "the text 'wards' names no known admin_level"
+   ],
+   [
+    "blocks of Assam next to Meghalaya",
+    "children_touching ; level = blocks ; parent = Assam ; other = Meghalaya",
+    null,
+    "the text 'blocks' names no known admin_level"
+   ],
+   [
+    "btw Chennai n Pondicherry",
+    "between ; a = Chennai ; b = Pondicherry",
+    "union",
+    {
+     "a": "Chennai",
+     "b": "Pondicherry"
+    }
+   ],
+   [
+    "how much land is within 500 m along the Bengaluru Urban boundary?",
+    "along_border ; distance = 500 m ; region = Bengaluru Urban",
+    null,
+    "low confidence for is_subquery (0.08)"
+   ],
+   [
+    "boundary strip Mumbai Suburban 4 km",
+    "along_border ; distance = 4 km ; region = Mumbai Suburban",
+    null,
+    "low confidence for is_subquery (0.20)"
+   ],
+   [
+    "Mumbai Suburban and Thane",
+    "union ; a = Mumbai Suburban ; b = Thane",
+    null,
+    "low confidence for is_subquery (0.20)"
+   ],
+   [
+    "Goa, Daman and Diu and Dadra and Nagar Haveli together",
+    "union3 ; a = Goa ; b = Daman and Diu ; c = Dadra and Nagar Haveli",
+    null,
+    "the text is not one place name, and no other template matches"
+   ],
+   [
+    "coastal districts of Odisha, Andhra Pradesh and West Bengal",
+    "union3 ; a = coastal districts of Odisha ; b = Andhra Pradesh ; c = West Bengal",
+    null,
+    "low confidence for pick_family (0.14)"
+   ],
+   [
+    "area of Pune district excluding Pimpri Chinchwad",
+    "difference ; a = Pune district ; b = Pimpri Chinchwad",
+    null,
+    "low confidence for is_subquery (0.16)"
+   ],
+   [
+    "which part of Jaipur lies within 5 km around Amber Fort",
+    "intersection ; a = Jaipur ; b = 5 km around Amber Fort",
+    null,
+    "low confidence for pick_split (0.08)"
+   ],
+   [
+    "20 km along the international border in Punjab intersect Amritsar district",
+    "intersection ; a = 20 km along the international border in Punjab ; b = Amritsar district",
+    "along_intl_border",
+    {
+     "distance": 20000.0,
+     "region": "Amritsar district"
+    }
+   ],
+   [
+    "Bangalore Rural and 7 km around Devanahalli overlap",
+    "intersection ; a = Bangalore Rural ; b = 7 km around Devanahalli",
+    null,
+    "cannot resolve 'Bangalore Rural' in the local extract"
+   ],
+   [
+    "Mumbai Suburban intersetion with 3 km around Bandra Kurla Complex",
+    "intersection ; a = Mumbai Suburban ; b = 3 km around Bandra Kurla Complex",
+    null,
+    "low confidence for is_subquery (0.20)"
+   ],
+   [
+    "convert 500 rupees to dollars",
+    "unsupported",
+    "difference",
+    {
+     "a": "500 rupees",
+     "b": "dollars"
+    }
+   ]
+  ]
+ }
+}

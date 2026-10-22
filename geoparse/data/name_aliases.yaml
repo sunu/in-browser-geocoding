@@ -1,0 +1,35 @@
+# Short forms and old names of places in India. The gazetteer tries these when the name itself is not found.
+# Key: the alias (lower case, whole words). Value: the name in the extract.
+# Add only names that are certain.
+up: uttar pradesh
+mp: madhya pradesh
+tn: tamil nadu
+ap: andhra pradesh
+hp: himachal pradesh
+wb: west bengal
+j&k: jammu and kashmir
+jk: jammu and kashmir
+bombay: mumbai
+madras: chennai
+calcutta: kolkata
+orissa: odisha
+pondicherry: puducherry
+pondy: puducherry
+mysore: mysuru
+poona: pune
+gurgaon: gurugram
+trivandrum: thiruvananthapuram
+cochin: kochi
+calicut: kozhikode
+baroda: vadodara
+benares: varanasi
+banaras: varanasi
+simla: shimla
+allahabad: prayagraj
+mangalore: mangaluru
+belgaum: belagavi
+hubli: hubballi
+gulbarga: kalaburagi
+bellary: ballari
+tumkur: tumakuru
+shimoga: shivamogga

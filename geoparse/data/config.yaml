@@ -21,9 +21,12 @@ policy:
     union_territory: [region]
     district: [county]
     city: [locality]
+    village: [locality]
     locality: [locality, macrohood, neighborhood, microhood]
   # Locality classes that count as a "city".
   city_classes: [city, town]
+  # Locality classes that count as a "village".
+  village_classes: [village, hamlet]
   # Union territories. Overture marks them as "state", so this list is the source of truth.
   union_territories: [IN-AN, IN-CH, IN-DH, IN-DL, IN-JK, IN-LA, IN-LD, IN-PY]
   # If true, union territories count as states in "states" queries.
@@ -47,6 +50,9 @@ policy:
   output_simplify_deg: 0.0005
 
 geocoder:
+  # Which anchors can go to the geocoder (select_source decides): "simple_and_features" (lookup, modifier,
+  # and features families at depth 0) or "all" (every anchor, also landmarks in complex queries).
+  anchor_scope: all
   photon_url: "https://photon.komoot.io/api"
   min_interval_s: 1.0
   cache_dir: ".cache/photon"

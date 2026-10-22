@@ -215,8 +215,8 @@ def run_testset(per_template: int, workers: int, name: str = "llm_test") -> None
             recs += out
     # Remove queries that are in the training data.
     train = set()
-    for name in ("synthetic.jsonl", "paraphrase.jsonl"):
-        p = DATA / name
+    for fname in ("synthetic.jsonl", "paraphrase.jsonl"):
+        p = DATA / fname
         if p.exists():
             train |= {json.loads(l)["query"].lower() for l in p.read_text().splitlines() if l.strip()}
     for other in ("llm_test.jsonl", "llm_dev.jsonl"):

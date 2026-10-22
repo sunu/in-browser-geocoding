@@ -21,6 +21,16 @@ SUBTYPE_PRIOR = {
 }
 
 
+@lru_cache(maxsize=1)
+def name_aliases() -> dict[str, str]:
+    import yaml
+
+    from geoparse.config import PACKAGE_DIR
+
+    raw = yaml.safe_load((PACKAGE_DIR / "data" / "name_aliases.yaml").read_text()) or {}
+    return {norm_name(k): norm_name(v) for k, v in raw.items()}
+
+
 def norm_name(s: str) -> str:
     return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", s.lower())).strip()
 
@@ -87,6 +97,17 @@ class Store:
         q_list = [n]
         if hint_from_name:
             q_list.append(" ".join(words[:-1]))
+        # Overture names can end with a level word ("Mumbai Suburban District").
+        q_list += [f"{x} {suffix}" for x in list(q_list) for suffix in ("district", "city")]
+        # Short forms and old names (data file).
+        aliases = name_aliases()
+        for x in list(q_list):
+            ws = x.split()
+            for i, w in enumerate(ws):
+                if w in aliases:
+                    q_list.append(" ".join(ws[:i] + [aliases[w]] + ws[i + 1:]))
+            if x in aliases:
+                q_list.append(aliases[x])
         rows = cur.execute("""
             SELECT id, max(CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 ELSE 0.95 END) AS s
             FROM names WHERE name_norm IN (SELECT unnest(?)) OR name_nospace IN (SELECT replace(unnest(?), ' ', ''))

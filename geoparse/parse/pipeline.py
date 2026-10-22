@@ -19,6 +19,7 @@ from pydantic import BaseModel, Field
 
 from geoparse.config import load_config
 from geoparse.decisions.functions import Decider
+from geoparse.decisions.providers import ProviderError
 from geoparse.decisions.rules import template_score
 from geoparse.decisions.types import Span, Split
 from geoparse.dsl.schema import PREDICATE_DAGS, substitute, validate
@@ -156,6 +157,9 @@ class Parser:
         except _Stop as s:
             res.unsupported = s.u
             dec.logger.unsupported(run_id=dec.run_id, query=query, reason=s.u.reason, trace=dec.trace)
+        except ProviderError as e:
+            # A provider failure (network, quota) is not a parse decision. Report it; do not guess.
+            res.unsupported = Unsupported(reason=f"decision provider error: {e}")
         res.trace = dec.trace
         res.timings["parse_s"] = round(time.time() - t0, 3)
         return res
@@ -478,7 +482,7 @@ class Parser:
 
     def _region(self, dec: Decider, tpl: Template, text: str, spans: list[Span], query: str, depth: int,
                 type_hint: str | None) -> tuple[dict[str, Any], Any]:
-        text = re.sub(r"^(the|a|an)\s+", "", text.strip(), flags=re.I)
+        text = re.sub(r"^(the|a|an|whole|entire|all of|all of the|whole of)\s+", "", text.strip(), flags=re.I)
         lex = lexicon_match(text)
         if lex:
             return {"op": "LexiconSet", "args": {"key": lex}}, {"lex": lex, "text": text}
@@ -503,7 +507,8 @@ class Parser:
                 type_hint: str | None, exact) -> dict[str, Any]:
         # Spans inside this slot text.
         inside = [s for s in spans if s.label not in ("distance", "facility type") and s.text in text]
-        allow_geocoder = depth == 0 and tpl.family in GEOCODER_FAMILIES
+        scope = self.cfg.get("geocoder", {}).get("anchor_scope", "simple_and_features")
+        allow_geocoder = scope == "all" or (depth == 0 and tpl.family in GEOCODER_FAMILIES)
         ctx_text = None
         name = text
         if allow_geocoder:

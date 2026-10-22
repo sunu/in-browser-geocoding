@@ -168,6 +168,8 @@ class _Run:
         cond = [f"{alias}.subtype IN ({', '.join(_q(s) for s in subtypes)})"]
         if level == "city":
             cond.append(f"{alias}.class IN ({', '.join(_q(c) for c in self.policy['city_classes'])})")
+        if level == "village":
+            cond.append(f"{alias}.class IN ({', '.join(_q(c) for c in self.policy['village_classes'])})")
         if level == "union_territory":
             cond.append(f"{alias}.region IN ({', '.join(_q(u) for u in self.policy['union_territories'])})")
         if level == "state":

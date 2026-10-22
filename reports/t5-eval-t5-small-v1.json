@@ -6,7 +6,7 @@
    "top1": 0.9897959183673469,
    "top4": 0.9897959183673469,
    "exact": null,
-   "median_ms": 111.79447174072266,
+   "median_ms": 113.20090293884277,
    "errors": [
     [
      "MG Road, Bangalore",
@@ -26,15 +26,149 @@
    "top1": 1.0,
    "top4": 1.0,
    "exact": null,
-   "median_ms": 97.46003150939941,
+   "median_ms": 94.33650970458984,
    "errors": []
+  },
+  "llm_dev": {
+   "n": 279,
+   "top1": 0.910394265232975,
+   "top4": 0.956989247311828,
+   "exact": 0.8136200716845878,
+   "median_ms": 119.12202835083008,
+   "errors": [
+    [
+     "villages in Wayanad with population under 500",
+     "children_attr ; level = villages ; attr = population ; op = under ; value = 500 thousand ; parent = Wayanad",
+     "children_attr ; level = villages ; parent = Wayanad ; attr = population ; op = under ; value = 500"
+    ],
+    [
+     "can you show all the tehsils inside Jaipur district please",
+     "features_in ; category = tehsils ; region = Jaipur district",
+     "children ; level = tehsils ; parent = Jaipur district"
+    ],
+    [
+     "blocks in Ranchi",
+     "features_in ; category = blocks ; region = Ranchi",
+     "children ; level = blocks ; parent = Ranchi"
+    ],
+    [
+     "gram panchayats in Nashik district Maharashtra",
+     "features_in ; category = gram panchayats ; region = Nashik district Maharashtra",
+     "children ; level = gram panchayats ; parent = Nashik district Maharashtra"
+    ],
+    [
+     "district of Lonavala",
+     "children ; level = district ; parent = Lonavala",
+     "parent ; level = district ; child = Lonavala"
+    ],
+    [
+     "state of Tirupati",
+     "children ; level = state ; parent = Tirupati",
+     "parent ; level = state ; child = Tirupati"
+    ],
+    [
+     "Nilgiris district",
+     "children ; level = district ; parent = Nilgiris",
+     "lookup_place ; anchor = Nilgiris district"
+    ],
+    [
+     "15 kms aroud Jaipur airport",
+     "features_near ; category = airport ; distance = 15 km ; region = aroud Jaipur",
+     "buffer ; distance = 15 km ; target = Jaipur airport"
+    ],
+    [
+     "i want to find the central location of Nashik district in Maharashtra",
+     "direction_part ; dir = central ; target = Nashik district in Maharashtra",
+     "centroid ; target = Nashik district in Maharashtra"
+    ],
+    [
+     "nothern Gujarat",
+     "lookup_place ; anchor = nothern Gujarat",
+     "direction_part ; dir = nothern ; target = Gujarat"
+    ],
+    [
+     "i want to see the upper northern portion of West Bengal on map",
+     "direction_part ; dir = upper ; target = northern portion of West Bengal",
+     "direction_part ; dir = northern ; target = West Bengal"
+    ],
+    [
+     "norht of Lucknow",
+     "unsupported",
+     "direction_outside ; dir = norht ; target = Lucknow"
+    ],
+    [
+     "wards of Bengaluru adjacent to Whitefield",
+     "features_near ; category = wards ; region = Whitefield",
+     "children_touching ; level = wards ; parent = Bengaluru ; other = Whitefield"
+    ],
+    [
+     "blocks of Assam next to Meghalaya",
+     "buffer ; target = Assam next to Meghalaya",
+     "children_touching ; level = blocks ; parent = Assam ; other = Meghalaya"
+    ],
+    [
+     "btw Chennai n Pondicherry",
+     "union ; a = btw Chennai ; b = Pondicherry",
+     "between ; a = Chennai ; b = Pondicherry"
+    ],
+    [
+     "can u show both Jaipur and Udaipur districts on the map?",
+     "union ; a = Jaipur ; b = Udaipur districts",
+     "union ; a = Jaipur ; b = Udaipur"
+    ],
+    [
+     "5 km around Charminar, Hitec City and Secunderabad",
+     "buffer ; distance = 5 km ; target = Charminar, Hitec City and Secunderabad",
+     "union3 ; a = 5 km around Charminar ; b = Hitec City ; c = Secunderabad"
+    ],
+    [
+     "West Bengal without Kolkata and Howrah",
+     "difference ; a = West Bengal ; b = Kolkata ; c = Howrah",
+     "difference ; a = West Bengal ; b = Kolkata and Howrah"
+    ],
+    [
+     "Bangalore city except 2 km around Majestic",
+     "difference ; a = Bangalore ; b = 2 km around Majestic",
+     "difference ; a = Bangalore city ; b = 2 km around Majestic"
+    ],
+    [
+     "which part of Jaipur lies within 5 km around Amber Fort",
+     "intersection ; a = Jaipur ; b = within 5 km around Amber Fort",
+     "intersection ; a = Jaipur ; b = 5 km around Amber Fort"
+    ],
+    [
+     "20 km along the international border in Punjab intersect Amritsar district",
+     "along_intl_border ; distance = 20 km ; region = Punjab intersect Amritsar district",
+     "intersection ; a = 20 km along the international border in Punjab ; b = Amritsar district"
+    ],
+    [
+     "Thiruvananthapuram district intersect 5 km along the coast of Kerala",
+     "along_coast ; distance = 5 km ; region = Thiruvananthapuram district",
+     "intersection ; a = Thiruvananthapuram district ; b = 5 km along the coast of Kerala"
+    ],
+    [
+     "hotel prices near Taj Mahal Agra for next weekend",
+     "features_near ; category = hotel prices ; region = Taj Mahal Agra",
+     "unsupported"
+    ],
+    [
+     "what is the population density of Bihar compared to China",
+     "difference ; a = Bihar ; b = China",
+     "unsupported"
+    ],
+    [
+     "convert 500 rupees to dollars",
+     "convert ; a = 500 rupees ; b = dollars",
+     "unsupported"
+    ]
+   ]
   },
   "llm_test": {
    "n": 294,
    "top1": 0.9115646258503401,
    "top4": 0.9727891156462585,
    "exact": 0.8129251700680272,
-   "median_ms": 112.326979637146,
+   "median_ms": 111.74499988555908,
    "errors": [
     [
      "districts of Bihar where literacy rate is below 60",
