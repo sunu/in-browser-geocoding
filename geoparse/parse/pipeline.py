@@ -157,6 +157,17 @@ class Parser:
                     seen.add(key)
                     m["score"] = self._score(t, m)
                     out.setdefault(t.id, []).append(m)
+        # Splits that differ only in the grouping of closed slots are the same split. Keep the best one.
+        for tid, ms in out.items():
+            t = self.templates[tid]
+            best: dict[tuple, dict[str, Any]] = {}
+            for m in ms:
+                seg_of = {s: seg for seg, fed in m["feeds"].items() for s in fed}
+                key = tuple(sorted((n, norm(m["segments"][seg_of[n]])) for n, sd in t.slots.items()
+                                   if n in seg_of and sd.type not in CLOSED_TYPES))
+                if key not in best or m["score"] > best[key]["score"]:
+                    best[key] = m
+            out[tid] = list(best.values())
         return out
 
     def _valid(self, t: Template, m: dict[str, Any]) -> bool:
@@ -279,7 +290,8 @@ class Parser:
                 values[name] = slots[name] = parse_value(seg_text) if seg_text else _slot_default(sd)
             elif sd.type in CLOSED_TYPES:
                 if seg_text is None:
-                    values[name] = slots[name] = sd.default
+                    slots[name] = sd.default
+                    values[name] = None if sd.type == "admin_level" and sd.default == "none" else sd.default
                     continue
                 jobs[name] = self.pool.submit(dec.fill_closed_slot, seg_text, sd.type, sd.options_ref, depth=depth,
                                               query=text, allow_none=sd.optional)
@@ -357,7 +369,8 @@ class Parser:
                                         decision="select_source", depth=depth, text=text))
             if sd.value == "photon":
                 return {"op": "Resolve", "args": {"name": text, "source": "photon"}}
-        if len(inside) > 1 or (len(inside) == 1 and inside[0].text != text):
+        # If the whole text is an exact name in the gazetteer, it is the anchor. Else choose among the spans.
+        if not exact and (len(inside) > 1 or (len(inside) == 1 and inside[0].text != text)):
             b = dec.bind_anchor(query, text, inside, depth=depth)
             if b.value.label != "whole":
                 name = b.value.text

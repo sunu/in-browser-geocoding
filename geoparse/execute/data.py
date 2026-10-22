@@ -138,7 +138,7 @@ class Store:
             desc = f"{d['name']}: {kind}" + (f" in {where}" if where else "") + ("" if d["country"] == "IN" else f", country {d['country']}")
             cands.append(Candidate(id=id_, name=d["name"], source="overture", subtype=d["subtype"],
                                    description=desc, score=round(score, 4)))
-        cands.sort(key=lambda c: -c.score)
+        cands.sort(key=lambda c: (-c.score, c.id))
         return cands[:limit]
 
 

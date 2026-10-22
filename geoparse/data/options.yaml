@@ -59,7 +59,7 @@ directions:
     keywords: [southwest, south-west, south west, southwestern, south-western, south western, sw]
   central:
     description: "Center or middle"
-    keywords: [central, centre, center, middle, mid]
+    keywords: [central, middle, mid]
 
 attrs:
   population:
