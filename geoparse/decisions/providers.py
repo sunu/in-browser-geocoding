@@ -252,7 +252,7 @@ class LocalClassifierProvider:
     def probs(self, decision: str, instructions: str, state: Any, options: dict[str, str]) -> dict[str, float]:
         from geoparse.decisions.xenc_format import pair
 
-        pairs = [pair(decision, instructions, state, k, v) for k, v in options.items()]
+        pairs = [pair(decision, instructions, state, k, v, i) for i, (k, v) in enumerate(options.items())]
         enc = self.tok([a for a, _ in pairs], [b for _, b in pairs], return_tensors="pt", padding=True,
                        truncation=True, max_length=self.max_length).to(self.device)
         with self._lock, self.torch.no_grad():

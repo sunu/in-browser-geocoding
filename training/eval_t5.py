@@ -125,10 +125,15 @@ def eval_pipeline(provider: str, t5_dir: str, recs: list[dict], use_patterns: st
     from geoparse.decisions.log import DecisionLogger
     from geoparse.parse.pipeline import Parser
 
-    from geoparse.decisions.providers import RulesProvider
+    import copy
 
-    over = {k: RulesProvider() for k, v in (overrides or {}).items() if v == "rules"}
-    parser = Parser(Decider(default=provider, logger=DecisionLogger(), jev_mode="cached", providers=over,
+    from geoparse.config import load_config
+
+    # `provider` sets every decision; `overrides` sets single decisions (jev, local, or rules).
+    cfg = copy.deepcopy(load_config())
+    cfg["decisions"]["providers"] = {k: provider for k in cfg["decisions"]["providers"]}
+    cfg["decisions"]["providers"].update(overrides or {})
+    parser = Parser(Decider(config=cfg, logger=DecisionLogger(), jev_mode="cached",
                             jev_cache=str(REPO_ROOT / "tests" / "fixtures" / "jev_cache.jsonl")),
                     t5_dir=t5_dir, use_t5=True, use_patterns=use_patterns)
     parser.parse("Kerala")
@@ -160,7 +165,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--t5", required=True)
     ap.add_argument("--k", type=int, default=4)
-    ap.add_argument("--pipeline", choices=["jev", "rules"])
+    ap.add_argument("--pipeline", choices=["jev", "rules", "local"])
     ap.add_argument("--patterns", default="fallback")
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--out")

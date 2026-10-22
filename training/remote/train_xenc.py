@@ -49,8 +49,8 @@ def load(path: str, max_per_decision: int, seed: int):
 def encode_groups(tok, groups, max_len, device):
     a, b, sizes = [], [], []
     for g in groups:
-        for k, v in g["options"].items():
-            x, y = pair(g["decision"], g["instructions"], g["state"], k, v)
+        for i, (k, v) in enumerate(g["options"].items()):
+            x, y = pair(g["decision"], g["instructions"], g["state"], k, v, i)
             a.append(x)
             b.append(y)
         sizes.append(len(g["options"]))

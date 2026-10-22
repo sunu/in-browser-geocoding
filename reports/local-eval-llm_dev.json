@@ -1,0 +1,384 @@
+{
+ "t5": "models/t5/current",
+ "t5_alone": {},
+ "pipeline_llm_dev": {
+  "n": 279,
+  "acc": 0.8279569892473119,
+  "by_template": {
+   "along_border": "12/13",
+   "along_coast": "12/13",
+   "along_intl_border": "14/14",
+   "between": "10/12",
+   "buffer": "12/13",
+   "centroid": "10/11",
+   "children": "4/9",
+   "children_attr": "9/14",
+   "children_touching": "7/15",
+   "children_with_predicate": "11/12",
+   "difference": "12/13",
+   "direction_outside": "13/13",
+   "direction_part": "9/14",
+   "features_in": "10/11",
+   "features_near": "15/15",
+   "intersection": "8/13",
+   "lookup_place": "12/12",
+   "neighbors": "10/11",
+   "parent": "11/13",
+   "union": "8/13",
+   "union3": "11/14",
+   "unsupported": "11/11"
+  },
+  "median_s": 0.5952041149139404,
+  "errors": [
+   [
+    "tehsils in Rajasthan with pop. below 2 lakh",
+    "children_attr ; level = tehsils ; parent = Rajasthan ; attr = pop. ; op = below ; value = 2 lakh",
+    null,
+    "the text 'tehsils' names no known admin_level"
+   ],
+   [
+    "wards in Mumbai with population greater than 50,000",
+    "children_attr ; level = wards ; parent = Mumbai ; attr = population ; op = greater than ; value = 50000",
+    null,
+    "the text 'wards' names no known admin_level"
+   ],
+   [
+    "villages in Wayanad with population under 500",
+    "children_attr ; level = villages ; parent = Wayanad ; attr = population ; op = under ; value = 500",
+    null,
+    "the text 'villages' names no known admin_level"
+   ],
+   [
+    "mandals in Telangana with population more than 2 lakh",
+    "children_attr ; level = mandals ; parent = Telangana ; attr = population ; op = more than ; value = 2 lakh",
+    null,
+    "the text 'mandals' names no known admin_level"
+   ],
+   [
+    "disctricts of Odisha with population under 15 lakh",
+    "children_attr ; level = disctricts ; parent = Odisha ; attr = population ; op = under ; value = 15 lakh",
+    null,
+    "the text 'disctricts' names no known admin_level"
+   ],
+   [
+    "schools inside Pune Cantonment",
+    "features_in ; category = schools ; region = Pune Cantonment",
+    null,
+    "the text is not one place name, and no other template matches"
+   ],
+   [
+    "can you show all the tehsils inside Jaipur district please",
+    "children ; level = tehsils ; parent = Jaipur district",
+    null,
+    "no split of the text gives valid values for the slots of children"
+   ],
+   [
+    "blocks in Ranchi",
+    "children ; level = blocks ; parent = Ranchi",
+    null,
+    "the text 'blocks' names no known admin_level"
+   ],
+   [
+    "all villages of Wayanad",
+    "children ; level = villages ; parent = Wayanad",
+    null,
+    "the text 'villages' names no known admin_level"
+   ],
+   [
+    "what are the sub-districts in Kamrup?",
+    "children ; level = sub-districts ; parent = Kamrup",
+    null,
+    "the text 'sub-districts' names no known admin_level"
+   ],
+   [
+    "gram panchayats in Nashik district Maharashtra",
+    "children ; level = gram panchayats ; parent = Nashik district Maharashtra",
+    null,
+    "the text 'panchayats' names no known admin_level"
+   ],
+   [
+    "district of Lonavala",
+    "parent ; level = district ; child = Lonavala",
+    "children",
+    {
+     "level": "district",
+     "parent": "Lonavala"
+    }
+   ],
+   [
+    "state of Tirupati",
+    "parent ; level = state ; child = Tirupati",
+    null,
+    "low confidence for pick_template (0.04)"
+   ],
+   [
+    "which all states touch madhya pradesh border pls",
+    "neighbors ; level = states ; of = madhya pradesh",
+    null,
+    "low confidence for pick_family (0.16)"
+   ],
+   [
+    "15 kms aroud Jaipur airport",
+    "buffer ; distance = 15 km ; target = Jaipur airport",
+    "features_near",
+    {
+     "distance": 15000.0,
+     "category": "airport",
+     "region": "aroud Jaipur"
+    }
+   ],
+   [
+    "i want to find the central location of Nashik district in Maharashtra",
+    "centroid ; target = Nashik district in Maharashtra",
+    null,
+    "the text is not one place name, and no other template matches"
+   ],
+   [
+    "north Bangalore",
+    "direction_part ; dir = north ; target = Bangalore",
+    null,
+    "low confidence for pick_family (0.14)"
+   ],
+   [
+    "which areas are in the southern part of Mumbai?",
+    "direction_part ; dir = southern ; target = Mumbai",
+    null,
+    "low confidence for pick_family (0.20)"
+   ],
+   [
+    "nothern Gujarat",
+    "direction_part ; dir = nothern ; target = Gujarat",
+    "lookup_place",
+    {
+     "anchor": "nothern Gujarat"
+    }
+   ],
+   [
+    "i want to see the upper northern portion of West Bengal on map",
+    "direction_part ; dir = northern ; target = West Bengal",
+    null,
+    "low confidence for pick_split (0.14)"
+   ],
+   [
+    "south Kolkata",
+    "direction_part ; dir = south ; target = Kolkata",
+    "lookup_place",
+    {
+     "anchor": "south Kolkata"
+    }
+   ],
+   [
+    "coastal talukas in Maharashtra",
+    "children_with_predicate ; pred = coastal ; level = talukas ; parent = Maharashtra",
+    null,
+    "no split of the text gives valid values for the slots of children_with_predicate"
+   ],
+   [
+    "talukas in Karnataka bordering Goa",
+    "children_touching ; level = talukas ; parent = Karnataka ; other = Goa",
+    null,
+    "the text 'talukas' names no known admin_level"
+   ],
+   [
+    "UP districts adjoining Madhya Pradesh",
+    "children_touching ; level = districts ; parent = UP ; other = Madhya Pradesh",
+    "children_touching",
+    {
+     "level": "district",
+     "parent": "Madhya Pradesh",
+     "other": "Madhya Pradesh"
+    }
+   ],
+   [
+    "can you list all the districts of West Bengal which share a boundary with Bangladesh",
+    "children_touching ; level = districts ; parent = West Bengal ; other = Bangladesh",
+    null,
+    "low confidence for pick_family (0.24)"
+   ],
+   [
+    "states in India that touch Pakistan",
+    "children_touching ; level = states ; parent = India ; other = Pakistan",
+    "children_with_predicate",
+    {
+     "pred": "border",
+     "level": "state",
+     "parent": "India"
+    }
+   ],
+   [
+    "wards of Bengaluru adjacent to Whitefield",
+    "children_touching ; level = wards ; parent = Bengaluru ; other = Whitefield",
+    null,
+    "the text 'wards' names no known admin_level"
+   ],
+   [
+    "tehsils in Kutch bordering Pakistan",
+    "children_touching ; level = tehsils ; parent = Kutch ; other = Pakistan",
+    null,
+    "the text 'tehsils' names no known admin_level"
+   ],
+   [
+    "mandals in Telangana touching Maharashtra",
+    "children_touching ; level = mandals ; parent = Telangana ; other = Maharashtra",
+    null,
+    "the text 'mandals' names no known admin_level"
+   ],
+   [
+    "blocks of Assam next to Meghalaya",
+    "children_touching ; level = blocks ; parent = Assam ; other = Meghalaya",
+    null,
+    "the text 'blocks' names no known admin_level"
+   ],
+   [
+    "btw Chennai n Pondicherry",
+    "between ; a = Chennai ; b = Pondicherry",
+    null,
+    "low confidence for pick_template (0.16)"
+   ],
+   [
+    "region between Nashik district and Ahmednagar district",
+    "between ; a = Nashik district ; b = Ahmednagar district",
+    null,
+    "low confidence for pick_split (0.01)"
+   ],
+   [
+    "I want to see the 20 km along the sea coast of Dakshina Kannada for CRZ study",
+    "along_coast ; distance = 20 km ; region = Dakshina Kannada",
+    null,
+    "the text is not one place name, and no other template matches"
+   ],
+   [
+    "pls show 1 km strip along the boundary of Nagpur city",
+    "along_border ; distance = 1 km ; region = Nagpur city",
+    "along_border",
+    {
+     "distance": 1000.0,
+     "region": "Nagpur"
+    }
+   ],
+   [
+    "can u show both Jaipur and Udaipur districts on the map?",
+    "union ; a = Jaipur ; b = Udaipur",
+    "union",
+    {
+     "a": "Jaipur",
+     "b": {
+      "q": "Udaipur districts",
+      "t": "children",
+      "s": {
+       "level": "district",
+       "parent": "Udaipur"
+      }
+     }
+    }
+   ],
+   [
+    "highlight Kutch district and Jamnagar district in one view",
+    "union ; a = Kutch district ; b = Jamnagar district",
+    null,
+    "low confidence for pick_split (0.06)"
+   ],
+   [
+    "coastal districts of Odisha and coastal districts of West Bengal",
+    "union ; a = coastal districts of Odisha ; b = coastal districts of West Bengal",
+    null,
+    "low confidence for is_subquery (0.15)"
+   ],
+   [
+    "Marine Drive and Juhu Beach",
+    "union ; a = Marine Drive ; b = Juhu Beach",
+    "between",
+    {
+     "a": "Marine Drive",
+     "b": "Juhu Beach"
+    }
+   ],
+   [
+    "districts of Kerala and 20 km around Coimbatore",
+    "union ; a = districts of Kerala ; b = 20 km around Coimbatore",
+    null,
+    "low confidence for is_subquery (0.19)"
+   ],
+   [
+    "Udaipur district, Jodhpur district and Bikaner district",
+    "union3 ; a = Udaipur district ; b = Jodhpur district ; c = Bikaner district",
+    null,
+    "low confidence for pick_split (0.04)"
+   ],
+   [
+    "5 km around Charminar, Hitec City and Secunderabad",
+    "union3 ; a = 5 km around Charminar ; b = Hitec City ; c = Secunderabad",
+    "buffer",
+    {
+     "distance": 5000.0,
+     "target": {
+      "q": "Charminar, Hitec City and Secunderabad",
+      "t": "union3",
+      "s": {
+       "a": "Charminar",
+       "b": "Hitec City",
+       "c": "Secunderabad"
+      }
+     }
+    }
+   ],
+   [
+    "coastal districts of Odisha, Andhra Pradesh and West Bengal",
+    "union3 ; a = coastal districts of Odisha ; b = Andhra Pradesh ; c = West Bengal",
+    "children_with_predicate",
+    {
+     "pred": "coastal",
+     "level": "district",
+     "parent": {
+      "q": "Odisha, Andhra Pradesh and West Bengal",
+      "t": "union3",
+      "s": {
+       "a": "Odisha",
+       "b": "Andhra Pradesh",
+       "c": "West Bengal"
+      }
+     }
+    }
+   ],
+   [
+    "Whole Andhra Pradesh barring Visakhapatnam",
+    "difference ; a = Andhra Pradesh ; b = Visakhapatnam",
+    null,
+    "low confidence for pick_split (0.04)"
+   ],
+   [
+    "south delhi n 3km around saket overlap",
+    "intersection ; a = south delhi ; b = 3km around saket",
+    null,
+    "low confidence for is_subquery (0.00)"
+   ],
+   [
+    "20 km along the international border in Punjab intersect Amritsar district",
+    "intersection ; a = 20 km along the international border in Punjab ; b = Amritsar district",
+    "along_intl_border",
+    {
+     "distance": 20000.0,
+     "region": "Amritsar district"
+    }
+   ],
+   [
+    "Bangalore Rural and 7 km around Devanahalli overlap",
+    "intersection ; a = Bangalore Rural ; b = 7 km around Devanahalli",
+    null,
+    "low confidence for is_subquery (0.14)"
+   ],
+   [
+    "Mumbai Suburban intersetion with 3 km around Bandra Kurla Complex",
+    "intersection ; a = Mumbai Suburban ; b = 3 km around Bandra Kurla Complex",
+    null,
+    "the text 'intersetion' names no known admin_level"
+   ],
+   [
+    "Thiruvananthapuram district intersect 5 km along the coast of Kerala",
+    "intersection ; a = Thiruvananthapuram district ; b = 5 km along the coast of Kerala",
+    null,
+    "low confidence for pick_family (0.08)"
+   ]
+  ]
+ }
+}

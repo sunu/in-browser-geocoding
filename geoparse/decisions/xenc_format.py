@@ -33,6 +33,13 @@ def option_text(key: str, desc: str) -> str:
     return f"{key.replace('_', ' ')}: {desc}"
 
 
-def pair(decision: str, instructions: str, state: Any, key: str, desc: str) -> tuple[str, str]:
-    """(text_a, text_b) for the cross-encoder."""
-    return f"{decision} | {instructions} | {state_text(state)}", option_text(key, desc)
+# Decisions whose options are ordered by the T5 beam score. The position is part of the input.
+RANKED = ("pick_family", "pick_template", "pick_split")
+
+
+def pair(decision: str, instructions: str, state: Any, key: str, desc: str, position: int = 0) -> tuple[str, str]:
+    """(text_a, text_b) for the cross-encoder. `position` is the 0-based index of the option in the question."""
+    b = option_text(key, desc)
+    if decision.split(".")[0] in RANKED:
+        b = f"[rank {position + 1}] {b}"
+    return f"{decision} | {instructions} | {state_text(state)}", b

@@ -62,7 +62,8 @@ LEVEL = {
     "city": ["cities", "towns", "city", "big cities", "metros", "urban centres", "major cities", "cities and towns"],
     "union_territory": ["union territories", "UTs"],
     "country": ["countries", "nations"],
-    "other": ["wards", "mandals", "tehsils", "taluks", "talukas", "blocks", "villages", "panchayats", "municipalities",
+    "village": ["villages", "village", "hamlets"],
+    "other": ["wards", "mandals", "tehsils", "taluks", "talukas", "blocks", "panchayats", "municipalities",
               "sub-districts", "circles", "localities", "neighbourhoods", "areas"],
 }
 PRED_PRE = {

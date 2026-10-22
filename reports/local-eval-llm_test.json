@@ -1,0 +1,480 @@
+{
+ "t5": "models/t5/current",
+ "t5_alone": {},
+ "pipeline_llm_test": {
+  "n": 294,
+  "acc": 0.7857142857142857,
+  "by_template": {
+   "along_border": "11/13",
+   "along_coast": "14/14",
+   "along_intl_border": "13/14",
+   "between": "10/14",
+   "buffer": "13/14",
+   "centroid": "11/12",
+   "children": "3/10",
+   "children_attr": "7/14",
+   "children_touching": "7/15",
+   "children_with_predicate": "8/13",
+   "difference": "13/14",
+   "direction_outside": "13/14",
+   "direction_part": "9/13",
+   "features_in": "13/14",
+   "features_near": "13/14",
+   "intersection": "8/15",
+   "lookup_place": "10/12",
+   "neighbors": "13/13",
+   "parent": "8/14",
+   "union": "12/13",
+   "union3": "10/13",
+   "unsupported": "12/12"
+  },
+  "median_s": 0.6000540256500244,
+  "errors": [
+   [
+    "districts of Bihar where literacy rate is below 60",
+    "children_attr ; level = districts ; parent = Bihar ; attr = literacy rate ; op = below ; value = 60",
+    null,
+    "the text 'literacy rate' names no known attr"
+   ],
+   [
+    "tehsils in Rajasthan with pop. under 50 thousand",
+    "children_attr ; level = tehsils ; parent = Rajasthan ; attr = pop. ; op = under ; value = 50 thousand",
+    null,
+    "the text 'tehsils' names no known admin_level"
+   ],
+   [
+    "mandals in Telangana with population above 1 lakh",
+    "children_attr ; level = mandals ; parent = Telangana ; attr = population ; op = above ; value = 1 lakh",
+    null,
+    "the text 'mandals' names no known admin_level"
+   ],
+   [
+    "wards in Mumbai with population over 50 thousand",
+    "children_attr ; level = wards ; parent = Mumbai ; attr = population ; op = over ; value = 50 thousand",
+    null,
+    "the text 'wards' names no known admin_level"
+   ],
+   [
+    "villages in Wayanad with population below 500",
+    "children_attr ; level = villages ; parent = Wayanad ; attr = population ; op = below ; value = 500",
+    null,
+    "the text 'villages' names no known admin_level"
+   ],
+   [
+    "distrcts in Odisha with sex ratio above 950",
+    "children_attr ; level = distrcts ; parent = Odisha ; attr = sex ratio ; op = above ; value = 950",
+    null,
+    "the text 'sex ratio' names no known attr"
+   ],
+   [
+    "blocks in Jharkhand with population > 2 lakh",
+    "children_attr ; level = blocks ; parent = Jharkhand ; attr = population ; op = > ; value = 2 lakh",
+    null,
+    "the text 'blocks' names no known admin_level"
+   ],
+   [
+    "universties in Hyderabad",
+    "features_in ; category = universties ; region = Hyderabad",
+    null,
+    "low confidence for pick_family (0.08)"
+   ],
+   [
+    "metro stations around 800 m of Rajiv Chowk",
+    "features_near ; category = metro stations ; distance = 800 m ; region = Rajiv Chowk",
+    null,
+    "low confidence for pick_split (0.08)"
+   ],
+   [
+    "list all talukas in Pune district",
+    "children ; level = talukas ; parent = Pune district",
+    null,
+    "the text 'talukas' names no known admin_level"
+   ],
+   [
+    "wards in Chennai",
+    "children ; level = wards ; parent = Chennai",
+    null,
+    "the text 'wards' names no known admin_level"
+   ],
+   [
+    "mandals of Telangana",
+    "children ; level = mandals ; parent = Telangana",
+    null,
+    "the text 'mandals' names no known admin_level"
+   ],
+   [
+    "tehsils of Jaipur",
+    "children ; level = tehsils ; parent = Jaipur",
+    null,
+    "the text 'tehsils' names no known admin_level"
+   ],
+   [
+    "what are the subdivisions in Darjeeling",
+    "children ; level = subdivisions ; parent = Darjeeling",
+    null,
+    "the text 'subdivisions' names no known admin_level"
+   ],
+   [
+    "zones of Bengaluru",
+    "children ; level = zones ; parent = Bengaluru",
+    null,
+    "the text 'zones' names no known admin_level"
+   ],
+   [
+    "villages in Wayanad",
+    "children ; level = villages ; parent = Wayanad",
+    null,
+    "the text 'villages' names no known admin_level"
+   ],
+   [
+    "tehsil that has Lonavala",
+    "parent ; level = tehsil ; child = Lonavala",
+    null,
+    "the text 'tehsil' names no known admin_level"
+   ],
+   [
+    "in what state is the Gateway of India located",
+    "parent ; level = state ; child = Gateway of India",
+    "children",
+    {
+     "level": "state",
+     "parent": "Gateway of India"
+    }
+   ],
+   [
+    "Konark Sun Temple state",
+    "parent ; level = state ; child = Konark Sun Temple",
+    null,
+    "low confidence for pick_split (0.16)"
+   ],
+   [
+    "ward that contains Banjara Hills",
+    "parent ; level = ward ; child = Banjara Hills",
+    null,
+    "the text 'ward' names no known admin_level"
+   ],
+   [
+    "disrtict of Bodh Gaya",
+    "parent ; level = disrtict ; child = Bodh Gaya",
+    "direction_outside",
+    {
+     "dir": "south",
+     "target": "Bodh Gaya"
+    }
+   ],
+   [
+    "I am at Marine Drive Mumbai, which district is this",
+    "parent ; level = district ; child = Marine Drive Mumbai",
+    null,
+    "low confidence for pick_family (0.17)"
+   ],
+   [
+    "can you locate Salt Lake Sector 5 Kolkata on the map",
+    "lookup_place ; anchor = Salt Lake Sector 5 Kolkata",
+    null,
+    "the text is not one place name, and no other template matches"
+   ],
+   [
+    "where exactly is the Rann of Kutch",
+    "lookup_place ; anchor = Rann of Kutch",
+    null,
+    "low confidence for pick_template (0.17)"
+   ],
+   [
+    "how far does 7 km around Sector 62 Noida extend",
+    "buffer ; distance = 7 km ; target = Sector 62 Noida",
+    null,
+    "low confidence for pick_family (0.24)"
+   ],
+   [
+    "cente of Tamil Nadu",
+    "centroid ; target = Tamil Nadu",
+    "direction_outside",
+    {
+     "dir": "central",
+     "target": "Tamil Nadu"
+    }
+   ],
+   [
+    "which areas are in north Delhi?",
+    "direction_part ; dir = north ; target = Delhi",
+    null,
+    "the text 'areas' names no known admin_level"
+   ],
+   [
+    "nortern Karnataka",
+    "direction_part ; dir = nortern ; target = Karnataka",
+    null,
+    "the text 'nortern' names no known admin_level"
+   ],
+   [
+    "northeast Assam map",
+    "direction_part ; dir = northeast ; target = Assam",
+    null,
+    "low confidence for pick_family (0.26)"
+   ],
+   [
+    "sothern Gujarat",
+    "direction_part ; dir = sothern ; target = Gujarat",
+    "lookup_place",
+    {
+     "anchor": "sothern Gujarat"
+    }
+   ],
+   [
+    "areas souht of Hyderabad",
+    "direction_outside ; dir = souht ; target = Hyderabad",
+    null,
+    "no split of the text gives valid values for the slots of children"
+   ],
+   [
+    "costal talukas in Karnataka",
+    "children_with_predicate ; pred = costal ; level = talukas ; parent = Karnataka",
+    null,
+    "low confidence for pick_family (0.14)"
+   ],
+   [
+    "hilly districts of Uttarakhand",
+    "children_with_predicate ; pred = hilly ; level = districts ; parent = Uttarakhand",
+    null,
+    "the text 'hilly' names no known predicate"
+   ],
+   [
+    "Which Indian states are landlocked",
+    "children_with_predicate ; pred = landlocked ; level = states",
+    "children_with_predicate",
+    {
+     "pred": "landlocked",
+     "level": "state",
+     "parent": "Indian"
+    }
+   ],
+   [
+    "landlocked mandals in Telangana",
+    "children_with_predicate ; pred = landlocked ; level = mandals ; parent = Telangana",
+    null,
+    "no split of the text gives valid values for the slots of children_with_predicate"
+   ],
+   [
+    "coastal blocks in Odisha",
+    "children_with_predicate ; pred = coastal ; level = blocks ; parent = Odisha",
+    null,
+    "no split of the text gives valid values for the slots of children_with_predicate"
+   ],
+   [
+    "UP districts bordering Nepal",
+    "children_touching ; level = districts ; parent = UP ; other = Nepal",
+    "children_with_predicate",
+    {
+     "pred": "border",
+     "level": "district",
+     "parent": "UP"
+    }
+   ],
+   [
+    "districts of West Bengal touching Bangladesh",
+    "children_touching ; level = districts ; parent = West Bengal ; other = Bangladesh",
+    "children_with_predicate",
+    {
+     "pred": "border",
+     "level": "district",
+     "parent": "West Bengal"
+    }
+   ],
+   [
+    "states in India that border China",
+    "children_touching ; level = states ; parent = India ; other = China",
+    "children_with_predicate",
+    {
+     "pred": "border",
+     "level": "state",
+     "parent": "India"
+    }
+   ],
+   [
+    "tehsils in Kutch which touch Pakistan",
+    "children_touching ; level = tehsils ; parent = Kutch ; other = Pakistan",
+    null,
+    "the text 'tehsils' names no known admin_level"
+   ],
+   [
+    "talukas in Belagavi district that share a boundary with Goa",
+    "children_touching ; level = talukas ; parent = Belagavi district ; other = Goa",
+    "children_touching",
+    {
+     "level": "district",
+     "parent": "talukas",
+     "other": "Goa"
+    }
+   ],
+   [
+    "mandals of Telangana touching Maharashtra border",
+    "children_touching ; level = mandals ; parent = Telangana ; other = Maharashtra",
+    null,
+    "no split of the text gives valid values for the slots of children_touching"
+   ],
+   [
+    "blocks of Koraput district touching Andhra Pradesh",
+    "children_touching ; level = blocks ; parent = Koraput district ; other = Andhra Pradesh",
+    null,
+    "no split of the text gives valid values for the slots of children_touching"
+   ],
+   [
+    "pls show districts in Sikkim bordring Bhutan",
+    "children_touching ; level = districts ; parent = Sikkim ; other = Bhutan",
+    "children_with_predicate",
+    {
+     "pred": "border",
+     "level": "district",
+     "parent": "Sikkim"
+    }
+   ],
+   [
+    "btwn hyderabad and secunderabad",
+    "between ; a = hyderabad ; b = secunderabad",
+    "union",
+    {
+     "a": "btwn hyderabad",
+     "b": "secunderabad"
+    }
+   ],
+   [
+    "Which areas are there between Ahmedabad and Gandhinagar?",
+    "between ; a = Ahmedabad ; b = Gandhinagar",
+    null,
+    "low confidence for pick_family (0.17)"
+   ],
+   [
+    "bewteen Lucknow and Kanpur",
+    "between ; a = Lucknow ; b = Kanpur",
+    "union",
+    {
+     "a": "bewteen Lucknow",
+     "b": "Kanpur"
+    }
+   ],
+   [
+    "the area between Nashik district and Aurangabad district",
+    "between ; a = Nashik district ; b = Aurangabad district",
+    null,
+    "low confidence for pick_split (0.04)"
+   ],
+   [
+    "5 kms along the bordar of Himachal Pradesh",
+    "along_border ; distance = 5 km ; region = Himachal Pradesh",
+    null,
+    "low confidence for pick_template (0.20)"
+   ],
+   [
+    "how do i see 8 km along the state border of West Bengal?",
+    "along_border ; distance = 8 km ; region = West Bengal",
+    "along_intl_border",
+    {
+     "distance": 8000.0,
+     "region": "West Bengal"
+    }
+   ],
+   [
+    "border area with Bangladesh in Tripura 3 km along the international border",
+    "along_intl_border ; distance = 3 km ; region = Tripura",
+    "along_intl_border",
+    {
+     "distance": 3000.0,
+     "region": "Bangladesh"
+    }
+   ],
+   [
+    "coastal districts of Odisha and coastal districts of Andhra Pradesh",
+    "union ; a = coastal districts of Odisha ; b = coastal districts of Andhra Pradesh",
+    null,
+    "low confidence for is_subquery (0.15)"
+   ],
+   [
+    "Gateway of India, Marine Drive and Juhu Beach",
+    "union3 ; a = Gateway of India ; b = Marine Drive ; c = Juhu Beach",
+    "lookup_place",
+    {
+     "anchor": "Gateway of India, Marine Drive and Juhu Beach"
+    }
+   ],
+   [
+    "Sundarbans, 10 km around Kolkata and Howrah",
+    "union3 ; a = Sundarbans ; b = 10 km around Kolkata ; c = Howrah",
+    null,
+    "low confidence for pick_template (0.23)"
+   ],
+   [
+    "coastal districts of Odisha, Puri and Bhubaneswar all in one view",
+    "union3 ; a = coastal districts of Odisha ; b = Puri ; c = Bhubaneswar",
+    "children_with_predicate",
+    {
+     "pred": "coastal",
+     "level": "district",
+     "parent": {
+      "q": "Odisha, Puri and Bhubaneswar",
+      "t": "union3",
+      "s": {
+       "a": "Odisha",
+       "b": "Puri",
+       "c": "Bhubaneswar"
+      }
+     }
+    }
+   ],
+   [
+    "Goa minus 5 km around Panaji",
+    "difference ; a = Goa ; b = 5 km around Panaji",
+    null,
+    "low confidence for pick_split (0.01)"
+   ],
+   [
+    "overlap of Pune district and 15 km around Hinjewadi",
+    "intersection ; a = Pune district ; b = 15 km around Hinjewadi",
+    null,
+    "low confidence for is_subquery (0.06)"
+   ],
+   [
+    "area common to Thane and 10 km along the coast of Maharashtra",
+    "intersection ; a = Thane ; b = 10 km along the coast of Maharashtra",
+    "along_coast",
+    {
+     "distance": 10000.0,
+     "region": "Thane"
+    }
+   ],
+   [
+    "where does Gurgaon overlap with 5 km around Cyber Hub",
+    "intersection ; a = Gurgaon ; b = 5 km around Cyber Hub",
+    null,
+    "low confidence for is_subquery (0.19)"
+   ],
+   [
+    "coastal districts of Odisha intersect 50 km around Bhubaneswar",
+    "intersection ; a = coastal districts of Odisha ; b = 50 km around Bhubaneswar",
+    null,
+    "the text 'coastal' names no known admin_level"
+   ],
+   [
+    "intersction of Mysuru district and 20 km around Chamundi Hills",
+    "intersection ; a = Mysuru district ; b = 20 km around Chamundi Hills",
+    null,
+    "low confidence for pick_family (0.09)"
+   ],
+   [
+    "only the part of Delhi that lies within 3 km around India Gate",
+    "intersection ; a = Delhi ; b = 3 km around India Gate",
+    "intersection",
+    {
+     "a": "Delhi",
+     "b": "within 3 km around India Gate"
+    }
+   ],
+   [
+    "common area of Salcete and 4 km around Margao",
+    "intersection ; a = Salcete ; b = 4 km around Margao",
+    null,
+    "low confidence for is_subquery (0.08)"
+   ]
+  ]
+ }
+}

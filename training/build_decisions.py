@@ -28,6 +28,7 @@ from geoparse.options import categories, norm, option_descriptions
 from geoparse.parse.pipeline import Parser, normalize_query
 from geoparse.t5.frames import Frame, frame_to_match, group_frames
 from geoparse.templates.model import CLOSED_TYPES, OPEN_TYPES
+from training.gen_synthetic import typo_always
 
 DATA = REPO_ROOT / "training" / "data"
 CLOSED_REF = {"admin_level": "admin_levels", "predicate": "predicates", "direction": "directions",
@@ -98,6 +99,13 @@ def from_generator(parser: Parser, beams: dict[str, list], rng: random.Random) -
                 out.append(ex("fill_closed_slot.category", state, items, key, q, src))
             else:
                 out.append(ex(f"fill_closed_slot.{sd.type}", state, closed_options(CLOSED_REF[sd.type]), key, q, src))
+                # A copy with a typo, so that the model reads misspelled closed words ("disctricts").
+                if rng.random() < 0.3 and any(len(w) >= 5 for w in span.split()):
+                    words = span.split()
+                    i = rng.choice([j for j, w in enumerate(words) if len(w) >= 5])
+                    words[i] = typo_always(rng, words[i])
+                    out.append(ex(f"fill_closed_slot.{sd.type}", {"text": " ".join(words)},
+                                  closed_options(CLOSED_REF[sd.type]), key, q, src + "+typo"))
             stats["closed"] += 1
         # Region slots: sub-query or a name?
         subs = set(r.get("sub_slots") or [])
