@@ -9,3 +9,7 @@ models/
 plans/
 data/build/
 .cache/
+web/public/data/
+web/public/models/
+web/node_modules/
+web/dist/
