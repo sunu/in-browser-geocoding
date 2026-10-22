@@ -1,0 +1,49 @@
+family: modifier
+description: "A shape made from one place: an area around it, its center, a part of it on one side (northern X), or the area on one side of it (north of X)"
+templates:
+  - id: buffer
+    description: "The area within a distance around a place"
+    examples: ["2 km around MG Road Bangalore", "within 5 km of Charminar", "near Koramangala"]
+    slots:
+      distance: {type: distance}
+      target: {type: region}
+    patterns:
+      - "{distance} (around|from|of|near|radius around|radius of|radius from|buffer around|buffer of) {target}"
+      - "within [a|an] {distance} [radius] (of|from|around) {target}"
+      - "(area|region|zone) within {distance} (of|from|around) {target}"
+      - "(near|around|close to|nearby|vicinity of|surroundings of|neighbourhood of|neighborhood of|area around|area near) {target}"
+      - "{target} (surroundings|vicinity|neighbourhood|neighborhood|and around|and surroundings)"
+    dag: "Buffer(${target}, ${distance})"
+
+  - id: centroid
+    description: "The center point of a place"
+    examples: ["center of Karnataka", "centroid of Bengaluru"]
+    slots:
+      target: {type: region}
+    patterns:
+      - "(center|centre|centroid|middle point|midpoint|central point|geographic center|geographical centre|geographic centre|geographical center) of {target}"
+      - "{target} (center|centre|centroid|midpoint)"
+    dag: "Centroid(${target})"
+
+  - id: direction_part
+    description: "One side of a place, for example the northern part of a state"
+    examples: ["northern Karnataka", "south Bengaluru", "western part of Odisha"]
+    slots:
+      dir: {type: direction, options_ref: directions}
+      target: {type: region}
+    patterns:
+      - "{dir} {target}"
+      - "{dir} (part|parts|region|regions|side|half|portion|area|areas|belt) of {target}"
+      - "{target} ({dir})"
+    dag: "Direction(${target}, ${dir}, mode=part)"
+
+  - id: direction_outside
+    description: "The area on one side outside of a place, for example the area north of a city"
+    examples: ["north of Bangalore", "east of Pune", "to the south of Chennai"]
+    slots:
+      dir: {type: direction, options_ref: directions}
+      target: {type: region}
+    patterns:
+      - "{dir} of {target}"
+      - "(to the|towards the|towards|to|area|region|areas) {dir} of {target}"
+    dag: "Direction(${target}, ${dir}, mode=outside)"

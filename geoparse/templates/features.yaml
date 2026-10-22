@@ -1,0 +1,27 @@
+family: features
+description: "Points of interest of one category, for example hospitals, schools, or banks, inside or near an area"
+templates:
+  - id: features_in
+    description: "Points of one category inside an area"
+    examples: ["hospitals in Koramangala", "schools in coastal districts of Kerala", "Indiranagar cafes"]
+    slots:
+      category: {type: category, options_ref: categories}
+      region: {type: region}
+    patterns:
+      - "{category} (in|inside|within|of|at|across|located in|throughout) {region}"
+      - "{region} {category}"
+    dag: "Features(${category}, ${region})"
+
+  - id: features_near
+    description: "Points of one category within a distance of an area or near it"
+    examples: ["hospitals within 2 km of MG Road", "schools near Indiranagar", "atms 500 m from Brigade Road"]
+    slots:
+      category: {type: category, options_ref: categories}
+      distance: {type: distance}
+      region: {type: region}
+    patterns:
+      - "{category} (near|around|close to|nearby|next to|in the vicinity of|near to|surrounding) {region}"
+      - "{category} within [a] {distance} [radius] (of|from|around) {region}"
+      - "{category} {distance} (from|around|of|near) {region}"
+      - "{category} (in|within) [a] {distance} radius (of|from|around) {region}"
+    dag: "Features(${category}, Buffer(${region}, ${distance}))"

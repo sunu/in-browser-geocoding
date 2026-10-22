@@ -1,0 +1,44 @@
+family: hierarchy
+description: "The administrative divisions inside a place, the division that contains a place, or the divisions that border a place"
+templates:
+  - id: children
+    description: "All divisions of one level inside a place, for example the districts of a state"
+    examples: ["districts of Karnataka", "states in India", "Kerala districts"]
+    slots:
+      level: {type: admin_level, options_ref: admin_levels}
+      parent: {type: region}
+    patterns:
+      - "{level} (of|in|within|inside|under|across) {parent}"
+      - "{parent} {level}"
+    dag: "Children(${parent}, level=${level})"
+
+  - id: parent
+    description: "The one division of a level that contains a place, for example the state that contains a city"
+    examples: ["state that contains Koramangala", "which district is Whitefield in", "district of Palakkad town"]
+    slots:
+      level: {type: admin_level, options_ref: admin_levels}
+      child: {type: region}
+    patterns:
+      - "{level} (that|which) (contains|includes|has|covers) {child}"
+      - "{level} (containing|including|covering) {child}"
+      - "{level} of {child}"
+      - "(which|what) {level} (is|are) {child} in"
+      - "(which|what) {level} (contains|includes|has) {child}"
+      - "{level} (where|in which) {child} (is|lies|is located)"
+      - "parent {level} of {child}"
+    dag: "Parent(${child}, level=${level})"
+
+  - id: neighbors
+    description: "The divisions that share a border with a place, for example the states that border a state"
+    examples: ["states that border Karnataka", "districts adjacent to Pune", "neighbours of Kerala"]
+    slots:
+      level: {type: admin_level, options_ref: admin_levels, optional: true, default: none}
+      of: {type: region}
+    patterns:
+      - "{level} (that|which) (border|borders|touch|touches|adjoin|adjoins|surround|surrounds) {of}"
+      - "{level} (bordering|adjoining|adjacent to|next to|touching|surrounding|around|neighbouring|neighboring|sharing a border with|sharing border with) {of}"
+      - "(neighbours|neighbors|neighbouring|neighboring|adjacent|bordering|surrounding) {level} (of|to) {of}"
+      - "(neighbours|neighbors|neighbouring|neighboring|adjacent|bordering|surrounding) {level} {of}"
+      - "(neighbours|neighbors|neighbouring regions|neighboring regions) of {of}"
+      - "{of} (neighbours|neighbors|neighbouring|neighboring)"
+    dag: "Neighbors(${of}, level=${level})"

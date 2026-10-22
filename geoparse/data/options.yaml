@@ -1,0 +1,81 @@
+# Options for closed slots. Each option has a description (the text that the decision model sees)
+# and keywords (used by the rule provider and by span trimming). Keywords are lower case.
+
+admin_levels:
+  country:
+    description: "Countries"
+    keywords: [country, countries, nation, nations]
+  state:
+    description: "States or union territories, the first level of division inside a country"
+    keywords: [state, states, province, provinces, ut, uts, union territory, union territories, region, regions]
+  district:
+    description: "Districts, the level of division inside a state"
+    keywords: [district, districts, dist, dists, zilla, zillas, county, counties]
+  city:
+    description: "Cities and towns"
+    keywords: [city, cities, town, towns, urban areas, municipalities]
+  none:
+    description: "The text does not name a level of division"
+    keywords: []
+
+predicates:
+  coastal:
+    description: "On the sea coast"
+    keywords: [coastal, seaside, coast, sea-facing, maritime, littoral, on the coast, by the sea]
+  landlocked:
+    description: "Not on the sea coast (landlocked, inland)"
+    keywords: [landlocked, land-locked, inland, non-coastal, noncoastal, interior]
+  border:
+    description: "On the international border of the country"
+    keywords: [border, frontier, international border, bordering another country]
+  not_border:
+    description: "Not on the international border of the country"
+    keywords: [non-border, non border, not on the border]
+
+directions:
+  north:
+    description: "North"
+    keywords: [north, northern, n, northward, upper]
+  south:
+    description: "South"
+    keywords: [south, southern, s, southward, lower]
+  east:
+    description: "East"
+    keywords: [east, eastern, e, eastward]
+  west:
+    description: "West"
+    keywords: [west, western, w, westward]
+  northeast:
+    description: "North-east"
+    keywords: [northeast, north-east, north east, northeastern, north-eastern, north eastern, ne]
+  northwest:
+    description: "North-west"
+    keywords: [northwest, north-west, north west, northwestern, north-western, north western, nw]
+  southeast:
+    description: "South-east"
+    keywords: [southeast, south-east, south east, southeastern, south-eastern, south eastern, se]
+  southwest:
+    description: "South-west"
+    keywords: [southwest, south-west, south west, southwestern, south-western, south western, sw]
+  central:
+    description: "Center or middle"
+    keywords: [central, centre, center, middle, mid]
+
+attrs:
+  population:
+    description: "Number of people who live there (population)"
+    keywords: [population, populaton, people, inhabitants, residents, populous, pop]
+  area:
+    description: "Size of the land area"
+    keywords: [area, size, sq km, square km, km2, square kilometers, square kilometres, larger, bigger]
+
+ops:
+  gt:
+    description: "Greater than (more than, over, above, at least)"
+    keywords: [over, above, more than, greater than, at least, exceeding, ">", ">=", bigger than, larger than, plus]
+  lt:
+    description: "Less than (under, below, at most, fewer than)"
+    keywords: [under, below, less than, fewer than, at most, "<", "<=", smaller than]
+
+# Words that are never part of an anchor name. Span trimming removes them from the edges of a span.
+stopwords: [the, a, an, all, every, of, in, near, around, within, and, or, me, show, find, list, give, map]

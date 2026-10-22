@@ -1,0 +1,82 @@
+{
+  "_doc": "Two-step category tree. Level 1 is a group. Level 2 is an OSM tag (key:value) that Photon can filter on. 'q' is the search text sent to Photon with the tag filter. 'keywords' are for the rule provider.",
+  "health": {
+    "description": "Health care: hospitals, clinics, pharmacies, doctors",
+    "items": {
+      "amenity:hospital": {"description": "Hospitals", "q": "hospital", "keywords": ["hospital", "hospitals", "hospitls", "hospitel", "medical college"]},
+      "amenity:clinic": {"description": "Clinics and health centers", "q": "clinic", "keywords": ["clinic", "clinics", "health center", "health centre", "phc"]},
+      "amenity:pharmacy": {"description": "Pharmacies and chemists", "q": "pharmacy", "keywords": ["pharmacy", "pharmacies", "chemist", "chemists", "medical store", "medical shops"]},
+      "amenity:doctors": {"description": "Doctors' offices", "q": "doctor", "keywords": ["doctor", "doctors"]},
+      "amenity:dentist": {"description": "Dentists", "q": "dentist", "keywords": ["dentist", "dentists", "dental"]}
+    }
+  },
+  "education": {
+    "description": "Education: schools, colleges, universities, libraries",
+    "items": {
+      "amenity:school": {"description": "Schools", "q": "school", "keywords": ["school", "schools", "skool"]},
+      "amenity:college": {"description": "Colleges", "q": "college", "keywords": ["college", "colleges"]},
+      "amenity:university": {"description": "Universities", "q": "university", "keywords": ["university", "universities"]},
+      "amenity:library": {"description": "Libraries", "q": "library", "keywords": ["library", "libraries"]},
+      "amenity:kindergarten": {"description": "Kindergartens and preschools", "q": "kindergarten", "keywords": ["kindergarten", "preschool", "play school", "anganwadi"]}
+    }
+  },
+  "food": {
+    "description": "Food and drink: restaurants, cafes, bars",
+    "items": {
+      "amenity:restaurant": {"description": "Restaurants", "q": "restaurant", "keywords": ["restaurant", "restaurants", "eateries", "places to eat", "hotels to eat"]},
+      "amenity:cafe": {"description": "Cafes and coffee shops", "q": "cafe", "keywords": ["cafe", "cafes", "coffee", "coffee shops"]},
+      "amenity:fast_food": {"description": "Fast food", "q": "fast food", "keywords": ["fast food", "takeaway"]},
+      "amenity:bar": {"description": "Bars and pubs", "q": "bar", "keywords": ["bar", "bars", "pub", "pubs"]}
+    }
+  },
+  "transport": {
+    "description": "Transport: stations, airports, bus stops, fuel",
+    "items": {
+      "railway:station": {"description": "Railway stations", "q": "station", "keywords": ["railway station", "railway stations", "train station", "train stations", "stations"]},
+      "aeroway:aerodrome": {"description": "Airports", "q": "airport", "keywords": ["airport", "airports", "airfield"]},
+      "amenity:bus_station": {"description": "Bus stations and bus stands", "q": "bus station", "keywords": ["bus station", "bus stations", "bus stand", "bus stands", "bus depot"]},
+      "highway:bus_stop": {"description": "Bus stops", "q": "bus stop", "keywords": ["bus stop", "bus stops"]},
+      "amenity:fuel": {"description": "Fuel stations and petrol pumps", "q": "fuel", "keywords": ["petrol pump", "petrol pumps", "fuel station", "gas station", "petrol bunk", "fuel"]}
+    }
+  },
+  "finance": {
+    "description": "Money: banks and ATMs",
+    "items": {
+      "amenity:bank": {"description": "Banks", "q": "bank", "keywords": ["bank", "banks"]},
+      "amenity:atm": {"description": "ATMs and cash machines", "q": "atm", "keywords": ["atm", "atms", "cash machine"]}
+    }
+  },
+  "public": {
+    "description": "Public services: police, fire stations, post offices, government offices",
+    "items": {
+      "amenity:police": {"description": "Police stations", "q": "police", "keywords": ["police", "police station", "police stations", "thana"]},
+      "amenity:fire_station": {"description": "Fire stations", "q": "fire station", "keywords": ["fire station", "fire stations"]},
+      "amenity:post_office": {"description": "Post offices", "q": "post office", "keywords": ["post office", "post offices"]},
+      "office:government": {"description": "Government offices", "q": "office", "keywords": ["government office", "government offices", "govt office"]}
+    }
+  },
+  "religion": {
+    "description": "Places of worship: temples, mosques, churches",
+    "items": {
+      "amenity:place_of_worship": {"description": "Places of worship (temples, mosques, churches, gurudwaras)", "q": "temple", "keywords": ["temple", "temples", "mosque", "mosques", "church", "churches", "gurudwara", "place of worship", "places of worship"]}
+    }
+  },
+  "leisure": {
+    "description": "Leisure and tourism: parks, hotels, museums, beaches",
+    "items": {
+      "leisure:park": {"description": "Parks and gardens", "q": "park", "keywords": ["park", "parks", "garden", "gardens"]},
+      "tourism:hotel": {"description": "Hotels and lodges to stay", "q": "hotel", "keywords": ["hotel", "hotels", "lodge", "lodges", "resorts", "places to stay"]},
+      "tourism:museum": {"description": "Museums", "q": "museum", "keywords": ["museum", "museums"]},
+      "natural:beach": {"description": "Beaches", "q": "beach", "keywords": ["beach", "beaches"]},
+      "leisure:stadium": {"description": "Stadiums", "q": "stadium", "keywords": ["stadium", "stadiums"]}
+    }
+  },
+  "shopping": {
+    "description": "Shopping: malls, supermarkets, markets",
+    "items": {
+      "shop:mall": {"description": "Shopping malls", "q": "mall", "keywords": ["mall", "malls", "shopping mall", "shopping malls"]},
+      "shop:supermarket": {"description": "Supermarkets and grocery stores", "q": "supermarket", "keywords": ["supermarket", "supermarkets", "grocery", "groceries", "grocery store"]},
+      "amenity:marketplace": {"description": "Markets and bazaars", "q": "market", "keywords": ["market", "markets", "bazaar", "bazaars", "mandi"]}
+    }
+  }
+}

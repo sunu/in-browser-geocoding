@@ -1,0 +1,49 @@
+family: set_algebra
+description: "A combination of two or more places or sets: X and Y together, X except Y, or the overlap of X and Y"
+templates:
+  - id: union
+    description: "Two places or sets together, for example Kerala and Tamil Nadu"
+    examples: ["Kerala and Tamil Nadu", "Goa & Karnataka", "both Delhi and Haryana"]
+    slots:
+      a: {type: region}
+      b: {type: region}
+    patterns:
+      - "{a} (and|&|plus|or|,|as well as|together with|along with|with) {b}"
+      - "both {a} and {b}"
+    dag: "Union(${a}, ${b})"
+
+  - id: union3
+    description: "Three places or sets together, for example Kerala, Goa and Karnataka"
+    examples: ["Kerala, Goa and Karnataka", "Delhi, Haryana, Punjab"]
+    slots:
+      a: {type: region}
+      b: {type: region}
+      c: {type: region}
+    patterns:
+      - "{a} , {b} [,] (and|&|,|or) {c}"
+    dag: "Union(Union(${a}, ${b}), ${c})"
+
+  - id: difference
+    description: "A place or set with another place or set removed, for example Kerala except one district"
+    examples: ["Kerala except Palakkad", "South India excluding Kerala", "Karnataka without Bengaluru Urban"]
+    slots:
+      a: {type: region}
+      b: {type: region}
+    patterns:
+      - "{a} (except|excluding|without|minus|but not|other than|apart from|leaving out|not including|less|but excluding|excl|except for) {b}"
+      - "(all of|whole of|entire) {a} (except|excluding|without|but not|minus) {b}"
+      - "{a} [,] (but|and) (exclude|excluding|not|leave out|remove) {b}"
+    dag: "Difference(${a}, ${b})"
+
+  - id: intersection
+    description: "Only the area where two places or sets overlap"
+    examples: ["overlap of Bengaluru Urban and 10 km around Whitefield", "part of Karnataka within 50 km of Goa"]
+    slots:
+      a: {type: region}
+      b: {type: region}
+    patterns:
+      - "(intersection|overlap|overlapping area|common area|common part) (of|between) {a} (and|with) {b}"
+      - "(part|parts|portion|area|areas) of {a} [that is|that are|which is|which are|that lies|that lie|lying] (in|inside|within|overlapping|overlapping with|intersecting) {b}"
+      - "{a} (that|which) (overlaps|intersects|overlap|intersect) [with] {b}"
+      - "where {a} (and|meets|overlaps|overlaps with|intersects) {b} [overlap|intersect|meet]"
+    dag: "Intersect(${a}, ${b})"

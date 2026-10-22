@@ -1,0 +1,29 @@
+family: predicate_filter
+description: "The divisions of one level inside a place that have a property, for example coastal states of a country, or districts of a state that border another place"
+templates:
+  - id: children_with_predicate
+    description: "Divisions of one level inside a place that have a property such as coastal or landlocked"
+    examples: ["coastal states in India", "landlocked districts of Karnataka", "border districts of Punjab"]
+    slots:
+      pred: {type: predicate, options_ref: predicates}
+      level: {type: admin_level, options_ref: admin_levels}
+      parent: {type: region}
+    patterns:
+      - "{head:pred,level} (in|of|within|inside|across) {parent}"
+      - "{level} (in|of|within) {parent} (that are|which are|that is|which is|that lie|which lie|lying) {pred}"
+      - "{level} (in|of|within) {parent} (on|along|by) the {pred}"
+      - "{parent} {head:pred,level}"
+    dag: "Filter(Children(${parent}, level=${level}), ${pred})"
+
+  - id: children_touching
+    description: "Divisions of one level inside a place that share a border with another place"
+    examples: ["districts of Karnataka that border Goa", "districts in Odisha bordering Andhra Pradesh"]
+    slots:
+      level: {type: admin_level, options_ref: admin_levels}
+      parent: {type: region}
+      other: {type: region}
+    patterns:
+      - "{level} (of|in|within) {parent} (that|which) (border|borders|touch|touches|adjoin|adjoins) {other}"
+      - "{level} (of|in|within) {parent} (bordering|adjoining|adjacent to|next to|touching|sharing a border with|on the border with|on the border of) {other}"
+      - "{parent} {level} (bordering|adjoining|adjacent to|next to|touching|that border|that touch) {other}"
+    dag: "Filter(Children(${parent}, level=${level}), Touches(${other}))"

@@ -1,0 +1,51 @@
+family: relational
+description: "An area defined by a relation to places or lines: the land between two places, or a strip along a coast or border"
+templates:
+  - id: between
+    description: "The area between two places"
+    examples: ["between Mysore and Bengaluru", "area between Pune and Mumbai"]
+    slots:
+      a: {type: region}
+      b: {type: region}
+    patterns:
+      - "[area|region|land|zone|stretch|corridor|the area|the region] between {a} and {b}"
+      - "{a} to {b} (corridor|stretch|belt)"
+    dag: "Between(${a}, ${b})"
+
+  - id: along_coast
+    description: "A strip of land along the sea coast of a place"
+    examples: ["5 km along the coast of Kerala", "coastal belt of Odisha"]
+    slots:
+      distance: {type: distance}
+      region: {type: region}
+    patterns:
+      - "{distance} along the (coast|coastline|seashore|shore|sea coast|seacoast|beach) (of|in) {region}"
+      - "{distance} (from|of) the (coast|coastline|sea|shore|sea coast) (of|in) {region}"
+      - "(coastal strip|coastal belt|coastal zone|coastal area|coastal areas|coastal region|coastline|shoreline|sea coast|seacoast|coast) (of|in|along) {region}"
+      - "{distance} (coastal strip|coastal belt|coastal zone) (of|in) {region}"
+      - "{region} (coastal belt|coastal strip|coastline|coast|shoreline|seacoast)"
+    dag: "Along(Layer(coastline), ${distance}, within=${region})"
+
+  - id: along_border
+    description: "A strip of land along the boundary of a place"
+    examples: ["10 km along the border of Goa", "border belt of Karnataka"]
+    slots:
+      distance: {type: distance}
+      region: {type: region}
+    patterns:
+      - "{distance} along the (border|boundary|borders|boundaries) of {region}"
+      - "{distance} (from|of) the (border|boundary) of {region}"
+      - "(border|boundary) (strip|belt|area|areas|region|zone) of {region}"
+      - "{region} (border|boundary) (strip|belt|area|areas|zone)"
+    dag: "Along(${region}, ${distance})"
+
+  - id: along_intl_border
+    description: "A strip of land along the international border, inside a place"
+    examples: ["20 km along the international border in Punjab", "international border belt of Rajasthan"]
+    slots:
+      distance: {type: distance}
+      region: {type: region}
+    patterns:
+      - "{distance} (along|from|of) the (international border|international boundary|country border|national border|indian border) (in|of|within) {region}"
+      - "(international border|international boundary) (strip|belt|area|areas|region|zone) (of|in) {region}"
+    dag: "Along(Layer(country_boundary), ${distance}, within=${region})"

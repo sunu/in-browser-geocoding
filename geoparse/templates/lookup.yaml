@@ -1,0 +1,11 @@
+family: lookup
+description: "One named place, for example a city, a neighborhood, a street, a landmark, or a state"
+templates:
+  - id: lookup_place
+    description: "One named place"
+    examples: ["Koramangala", "Kerala", "MG Road, Bangalore", "Charminar"]
+    slots:
+      anchor: {type: anchor}
+    patterns:
+      - "{anchor}"
+    dag: "${anchor}"
