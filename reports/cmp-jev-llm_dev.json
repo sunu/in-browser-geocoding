@@ -1,0 +1,207 @@
+{
+ "t5": "models/t5/current",
+ "t5_alone": {},
+ "pipeline_llm_dev": {
+  "n": 279,
+  "acc": 0.9283154121863799,
+  "silent_wrong": 0.03942652329749104,
+  "by_template": {
+   "along_border": "9/13",
+   "along_coast": "13/13",
+   "along_intl_border": "14/14",
+   "between": "11/12",
+   "buffer": "12/13",
+   "centroid": "11/11",
+   "children": "8/9",
+   "children_attr": "12/14",
+   "children_touching": "12/15",
+   "children_with_predicate": "11/12",
+   "difference": "12/13",
+   "direction_outside": "13/13",
+   "direction_part": "14/14",
+   "features_in": "11/11",
+   "features_near": "15/15",
+   "intersection": "11/13",
+   "lookup_place": "12/12",
+   "neighbors": "10/11",
+   "parent": "13/13",
+   "union": "12/13",
+   "union3": "12/14",
+   "unsupported": "11/11"
+  },
+  "median_s": 0.525109052658081,
+  "errors": [
+   [
+    "tehsils in Rajasthan with pop. below 2 lakh",
+    "children_attr ; level = tehsils ; parent = Rajasthan ; attr = pop. ; op = below ; value = 2 lakh",
+    "children_attr",
+    {
+     "value": 200000.0,
+     "level": "district",
+     "attr": "population",
+     "op": "lt",
+     "parent": "Rajasthan"
+    }
+   ],
+   [
+    "mandals in Telangana with population more than 2 lakh",
+    "children_attr ; level = mandals ; parent = Telangana ; attr = population ; op = more than ; value = 2 lakh",
+    "children_attr",
+    {
+     "value": 200000.0,
+     "level": "district",
+     "attr": "population",
+     "op": "gt",
+     "parent": "Telangana"
+    }
+   ],
+   [
+    "can you show all the tehsils inside Jaipur district please",
+    "children ; level = tehsils ; parent = Jaipur district",
+    "children",
+    {
+     "level": "district",
+     "parent": "Jaipur district"
+    }
+   ],
+   [
+    "talukas bordering Mysuru taluk",
+    "neighbors ; level = talukas ; of = Mysuru taluk",
+    "neighbors",
+    {
+     "level": "district",
+     "of": "Mysuru taluk"
+    }
+   ],
+   [
+    "15 kms aroud Jaipur airport",
+    "buffer ; distance = 15 km ; target = Jaipur airport",
+    "features_near",
+    {
+     "distance": 15000.0,
+     "category": "airport",
+     "region": "Jaipur airport"
+    }
+   ],
+   [
+    "coastal talukas in Maharashtra",
+    "children_with_predicate ; pred = coastal ; level = talukas ; parent = Maharashtra",
+    "children_with_predicate",
+    {
+     "pred": "coastal",
+     "level": "district",
+     "parent": "Maharashtra"
+    }
+   ],
+   [
+    "talukas in Karnataka bordering Goa",
+    "children_touching ; level = talukas ; parent = Karnataka ; other = Goa",
+    "children_touching",
+    {
+     "level": "district",
+     "parent": "Karnataka",
+     "other": "Goa"
+    }
+   ],
+   [
+    "tehsils in Kutch bordering Pakistan",
+    "children_touching ; level = tehsils ; parent = Kutch ; other = Pakistan",
+    "children_touching",
+    {
+     "level": "district",
+     "parent": "Kutch",
+     "other": "Pakistan"
+    }
+   ],
+   [
+    "mandals in Telangana touching Maharashtra",
+    "children_touching ; level = mandals ; parent = Telangana ; other = Maharashtra",
+    "children_touching",
+    {
+     "level": "district",
+     "parent": "Telangana",
+     "other": "Maharashtra"
+    }
+   ],
+   [
+    "btw Chennai n Pondicherry",
+    "between ; a = Chennai ; b = Pondicherry",
+    "union",
+    {
+     "a": "Chennai",
+     "b": "Pondicherry"
+    }
+   ],
+   [
+    "5 km belt along Delhi border",
+    "along_border ; distance = 5 km ; region = Delhi",
+    null,
+    "low confidence for pick_split (0.10)"
+   ],
+   [
+    "stretch along Goa's border 3 km",
+    "along_border ; distance = 3 km ; region = Goa",
+    "along_border",
+    {
+     "distance": 3000.0,
+     "region": {
+      "q": "Goa's border",
+      "t": "along_border",
+      "s": {
+       "distance": null,
+       "region": "Goa"
+      }
+     }
+    }
+   ],
+   [
+    "how much land is within 500 m along the Bengaluru Urban boundary?",
+    "along_border ; distance = 500 m ; region = Bengaluru Urban",
+    null,
+    "low confidence for pick_split (0.02)"
+   ],
+   [
+    "boundary strip Mumbai Suburban 4 km",
+    "along_border ; distance = 4 km ; region = Mumbai Suburban",
+    null,
+    "low confidence for is_subquery (0.20)"
+   ],
+   [
+    "Mumbai Suburban and Thane",
+    "union ; a = Mumbai Suburban ; b = Thane",
+    null,
+    "low confidence for is_subquery (0.20)"
+   ],
+   [
+    "Goa, Daman and Diu and Dadra and Nagar Haveli together",
+    "union3 ; a = Goa ; b = Daman and Diu ; c = Dadra and Nagar Haveli",
+    null,
+    "depth limit"
+   ],
+   [
+    "coastal districts of Odisha, Andhra Pradesh and West Bengal",
+    "union3 ; a = coastal districts of Odisha ; b = Andhra Pradesh ; c = West Bengal",
+    null,
+    "low confidence for pick_family (0.14)"
+   ],
+   [
+    "area of Pune district excluding Pimpri Chinchwad",
+    "difference ; a = Pune district ; b = Pimpri Chinchwad",
+    null,
+    "low confidence for is_subquery (0.16)"
+   ],
+   [
+    "which part of Jaipur lies within 5 km around Amber Fort",
+    "intersection ; a = Jaipur ; b = 5 km around Amber Fort",
+    null,
+    "low confidence for pick_split (0.08)"
+   ],
+   [
+    "Mumbai Suburban intersetion with 3 km around Bandra Kurla Complex",
+    "intersection ; a = Mumbai Suburban ; b = 3 km around Bandra Kurla Complex",
+    null,
+    "low confidence for is_subquery (0.20)"
+   ]
+  ]
+ }
+}

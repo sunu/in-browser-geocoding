@@ -1,0 +1,313 @@
+{
+ "t5": "models/t5/current",
+ "t5_alone": {},
+ "pipeline_llm_test": {
+  "n": 294,
+  "acc": 0.891156462585034,
+  "silent_wrong": 0.06802721088435375,
+  "by_template": {
+   "along_border": "10/13",
+   "along_coast": "12/14",
+   "along_intl_border": "14/14",
+   "between": "13/14",
+   "buffer": "14/14",
+   "centroid": "10/12",
+   "children": "5/10",
+   "children_attr": "12/14",
+   "children_touching": "12/15",
+   "children_with_predicate": "10/13",
+   "difference": "13/14",
+   "direction_outside": "12/14",
+   "direction_part": "10/13",
+   "features_in": "14/14",
+   "features_near": "14/14",
+   "intersection": "14/15",
+   "lookup_place": "12/12",
+   "neighbors": "12/13",
+   "parent": "12/14",
+   "union": "13/13",
+   "union3": "12/13",
+   "unsupported": "12/12"
+  },
+  "median_s": 0.5426580905914307,
+  "errors": [
+   [
+    "tehsils in Rajasthan with pop. under 50 thousand",
+    "children_attr ; level = tehsils ; parent = Rajasthan ; attr = pop. ; op = under ; value = 50 thousand",
+    "children_attr",
+    {
+     "value": 50000.0,
+     "level": "district",
+     "attr": "population",
+     "op": "lt",
+     "parent": "Rajasthan"
+    }
+   ],
+   [
+    "mandals in Telangana with population above 1 lakh",
+    "children_attr ; level = mandals ; parent = Telangana ; attr = population ; op = above ; value = 1 lakh",
+    "children_attr",
+    {
+     "value": 100000.0,
+     "level": "district",
+     "attr": "population",
+     "op": "gt",
+     "parent": "Telangana"
+    }
+   ],
+   [
+    "list all talukas in Pune district",
+    "children ; level = talukas ; parent = Pune district",
+    "children",
+    {
+     "level": "district",
+     "parent": "Pune district"
+    }
+   ],
+   [
+    "mandals of Telangana",
+    "children ; level = mandals ; parent = Telangana",
+    "children",
+    {
+     "level": "district",
+     "parent": "Telangana"
+    }
+   ],
+   [
+    "tehsils of Jaipur",
+    "children ; level = tehsils ; parent = Jaipur",
+    "children",
+    {
+     "level": "district",
+     "parent": "Jaipur"
+    }
+   ],
+   [
+    "zones of Bengaluru",
+    "children ; level = zones ; parent = Bengaluru",
+    null,
+    "the text 'zones' names no known admin_level"
+   ],
+   [
+    "villages in Wayanad",
+    "children ; level = villages ; parent = Wayanad",
+    null,
+    "the text 'villages' names no known category"
+   ],
+   [
+    "tehsil that has Lonavala",
+    "parent ; level = tehsil ; child = Lonavala",
+    "parent",
+    {
+     "level": "district",
+     "child": "Lonavala"
+    }
+   ],
+   [
+    "Konark Sun Temple state",
+    "parent ; level = state ; child = Konark Sun Temple",
+    "lookup_place",
+    {
+     "anchor": "Konark Sun Temple"
+    }
+   ],
+   [
+    "talukas bordering Hubballi taluk",
+    "neighbors ; level = talukas ; of = Hubballi taluk",
+    "neighbors",
+    {
+     "level": "district",
+     "of": "Hubballi taluk"
+    }
+   ],
+   [
+    "cente of Tamil Nadu",
+    "centroid ; target = Tamil Nadu",
+    "direction_outside",
+    {
+     "dir": "central",
+     "target": "Tamil Nadu"
+    }
+   ],
+   [
+    "middle of Andaman and Nicobar Islands",
+    "centroid ; target = Andaman and Nicobar Islands",
+    null,
+    "the text is not one place name, and no other template matches"
+   ],
+   [
+    "which areas are in north Delhi?",
+    "direction_part ; dir = north ; target = Delhi",
+    null,
+    "low confidence for pick_family (0.26)"
+   ],
+   [
+    "northeast Assam map",
+    "direction_part ; dir = northeast ; target = Assam",
+    null,
+    "low confidence for pick_family (0.28)"
+   ],
+   [
+    "north part of Chennai city",
+    "direction_part ; dir = north ; target = Chennai city",
+    null,
+    "low confidence for pick_split (0.06)"
+   ],
+   [
+    "areas souht of Hyderabad",
+    "direction_outside ; dir = souht ; target = Hyderabad",
+    null,
+    "low confidence for pick_template (0.10)"
+   ],
+   [
+    "south-west of Delhi NCR",
+    "direction_outside ; dir = south-west ; target = Delhi NCR",
+    null,
+    "the text is not one place name, and no other template matches"
+   ],
+   [
+    "costal talukas in Karnataka",
+    "children_with_predicate ; pred = costal ; level = talukas ; parent = Karnataka",
+    "children_with_predicate",
+    {
+     "pred": "coastal",
+     "level": "district",
+     "parent": "Karnataka"
+    }
+   ],
+   [
+    "Which Indian states are landlocked",
+    "children_with_predicate ; pred = landlocked ; level = states",
+    "children_with_predicate",
+    {
+     "pred": "landlocked",
+     "level": "state",
+     "parent": "Indian"
+    }
+   ],
+   [
+    "landlocked mandals in Telangana",
+    "children_with_predicate ; pred = landlocked ; level = mandals ; parent = Telangana",
+    "children_with_predicate",
+    {
+     "pred": "landlocked",
+     "level": "district",
+     "parent": "Telangana"
+    }
+   ],
+   [
+    "tehsils in Kutch which touch Pakistan",
+    "children_touching ; level = tehsils ; parent = Kutch ; other = Pakistan",
+    "children_touching",
+    {
+     "level": "district",
+     "parent": "Kutch",
+     "other": "Pakistan"
+    }
+   ],
+   [
+    "talukas in Belagavi district that share a boundary with Goa",
+    "children_touching ; level = talukas ; parent = Belagavi district ; other = Goa",
+    "children_touching",
+    {
+     "level": "district",
+     "parent": "Belagavi district",
+     "other": "Goa"
+    }
+   ],
+   [
+    "mandals of Telangana touching Maharashtra border",
+    "children_touching ; level = mandals ; parent = Telangana ; other = Maharashtra",
+    "children_touching",
+    {
+     "level": "district",
+     "parent": "Telangana",
+     "other": "Maharashtra"
+    }
+   ],
+   [
+    "btwn hyderabad and secunderabad",
+    "between ; a = hyderabad ; b = secunderabad",
+    "union",
+    {
+     "a": "hyderabad",
+     "b": "secunderabad"
+    }
+   ],
+   [
+    "coastline buffer gujrat 15 km",
+    "along_coast ; distance = 15 km ; region = gujrat",
+    null,
+    "the text is not one place name, and no other template matches"
+   ],
+   [
+    "beach side area of Chennai",
+    "along_coast ; region = Chennai",
+    null,
+    "the text 'beach' names no known direction"
+   ],
+   [
+    "10kms along Goa border",
+    "along_border ; distance = 10 km ; region = Goa",
+    null,
+    "low confidence for pick_split (0.16)"
+   ],
+   [
+    "boundry strip of Ladakh",
+    "along_border ; region = Ladakh",
+    "along_intl_border",
+    {
+     "distance": null,
+     "region": "Ladakh"
+    }
+   ],
+   [
+    "how do i see 8 km along the state border of West Bengal?",
+    "along_border ; distance = 8 km ; region = West Bengal",
+    "along_intl_border",
+    {
+     "distance": 8000.0,
+     "region": "West Bengal"
+    }
+   ],
+   [
+    "Sundarbans, 10 km around Kolkata and Howrah",
+    "union3 ; a = Sundarbans ; b = 10 km around Kolkata ; c = Howrah",
+    "union",
+    {
+     "a": {
+      "q": "Sundarbans, 10 km around Kolkata",
+      "t": "buffer",
+      "s": {
+       "distance": 10000.0,
+       "target": "Kolkata"
+      }
+     },
+     "b": "Howrah"
+    }
+   ],
+   [
+    "Delhi NCR but not Gurgaon",
+    "difference ; a = Delhi NCR ; b = Gurgaon",
+    null,
+    "the text is not one place name, and no other template matches"
+   ],
+   [
+    "only the part of Delhi that lies within 3 km around India Gate",
+    "intersection ; a = Delhi ; b = 3 km around India Gate",
+    "intersection",
+    {
+     "a": "Delhi",
+     "b": {
+      "q": "within 3 km around India Gate",
+      "t": "buffer",
+      "s": {
+       "distance": 3000.0,
+       "target": "India Gate"
+      }
+     }
+    }
+   ]
+  ]
+ }
+}

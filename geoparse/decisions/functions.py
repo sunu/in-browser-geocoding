@@ -106,7 +106,17 @@ class Decider:
                 elif name == "rules":
                     self._impls[name] = RulesProvider()
                 elif name == "local":
-                    self._impls[name] = LocalClassifierProvider.from_config(dcfg.get("local", {}))
+                    try:
+                        self._impls[name] = LocalClassifierProvider.from_config(dcfg.get("local", {}))
+                    except (FileNotFoundError, ImportError) as e:
+                        # No local model (for example a fresh clone): use Jev and say so.
+                        import warnings
+
+                        warnings.warn(f"local decision model not available ({e}); using jev instead")
+                        j = dcfg["jev"]
+                        self._impls[name] = JevProvider(model=j["model"], url=j["url"], timeout_s=j["timeout_s"],
+                                                        mode=self._make_args["jev_mode"],
+                                                        cache_path=self._make_args["jev_cache"])
                 else:
                     raise ValueError(f"unknown provider {name}")
             return self._impls[name]

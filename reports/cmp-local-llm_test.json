@@ -1,0 +1,244 @@
+{
+ "t5": "models/t5/current",
+ "t5_alone": {},
+ "pipeline_llm_test": {
+  "n": 294,
+  "acc": 0.9115646258503401,
+  "silent_wrong": 0.04421768707482993,
+  "by_template": {
+   "along_border": "12/13",
+   "along_coast": "13/14",
+   "along_intl_border": "13/14",
+   "between": "13/14",
+   "buffer": "13/14",
+   "centroid": "11/12",
+   "children": "9/10",
+   "children_attr": "12/14",
+   "children_touching": "15/15",
+   "children_with_predicate": "12/13",
+   "difference": "14/14",
+   "direction_outside": "13/14",
+   "direction_part": "11/13",
+   "features_in": "14/14",
+   "features_near": "14/14",
+   "intersection": "8/15",
+   "lookup_place": "10/12",
+   "neighbors": "12/13",
+   "parent": "12/14",
+   "union": "13/13",
+   "union3": "12/13",
+   "unsupported": "12/12"
+  },
+  "median_s": 0.6338920593261719,
+  "errors": [
+   [
+    "districts of Bihar where literacy rate is below 60",
+    "children_attr ; level = districts ; parent = Bihar ; attr = literacy rate ; op = below ; value = 60",
+    "children_attr",
+    {
+     "value": 60.0,
+     "level": "district",
+     "attr": "population",
+     "op": "lt",
+     "parent": "Bihar"
+    }
+   ],
+   [
+    "distrcts in Odisha with sex ratio above 950",
+    "children_attr ; level = distrcts ; parent = Odisha ; attr = sex ratio ; op = above ; value = 950",
+    "children_attr",
+    {
+     "value": 950.0,
+     "level": "district",
+     "attr": "population",
+     "op": "gt",
+     "parent": "Odisha"
+    }
+   ],
+   [
+    "zones of Bengaluru",
+    "children ; level = zones ; parent = Bengaluru",
+    null,
+    "the text 'zones' names no known admin_level"
+   ],
+   [
+    "Konark Sun Temple state",
+    "parent ; level = state ; child = Konark Sun Temple",
+    "lookup_place",
+    {
+     "anchor": "Konark Sun Temple state"
+    }
+   ],
+   [
+    "disrtict of Bodh Gaya",
+    "parent ; level = disrtict ; child = Bodh Gaya",
+    "children",
+    {
+     "level": "district",
+     "parent": "Bodh Gaya"
+    }
+   ],
+   [
+    "talukas bordering Hubballi taluk",
+    "neighbors ; level = talukas ; of = Hubballi taluk",
+    "neighbors",
+    {
+     "level": "none",
+     "of": "Hubballi taluk"
+    }
+   ],
+   [
+    "Tirupathi temple",
+    "lookup_place ; anchor = Tirupathi temple",
+    "features_in",
+    {
+     "category": "temple",
+     "region": "Tirupathi"
+    }
+   ],
+   [
+    "where exactly is the Rann of Kutch",
+    "lookup_place ; anchor = Rann of Kutch",
+    null,
+    "the text is not one place name, and no other template matches"
+   ],
+   [
+    "bufer 15 km Jaipur",
+    "buffer ; distance = 15 km ; target = Jaipur",
+    null,
+    "low confidence for pick_family (0.28)"
+   ],
+   [
+    "cente of Tamil Nadu",
+    "centroid ; target = Tamil Nadu",
+    null,
+    "low confidence for pick_family (0.12)"
+   ],
+   [
+    "which areas are in north Delhi?",
+    "direction_part ; dir = north ; target = Delhi",
+    null,
+    "the text 'areas' names no known admin_level"
+   ],
+   [
+    "nortern Karnataka",
+    "direction_part ; dir = nortern ; target = Karnataka",
+    "children",
+    {
+     "level": "city",
+     "parent": "Karnataka"
+    }
+   ],
+   [
+    "areas souht of Hyderabad",
+    "direction_outside ; dir = souht ; target = Hyderabad",
+    null,
+    "no split of the text gives valid values for the slots of children"
+   ],
+   [
+    "Which Indian states are landlocked",
+    "children_with_predicate ; pred = landlocked ; level = states",
+    "children_with_predicate",
+    {
+     "pred": "landlocked",
+     "level": "state",
+     "parent": "Indian"
+    }
+   ],
+   [
+    "btwn hyderabad and secunderabad",
+    "between ; a = hyderabad ; b = secunderabad",
+    "union",
+    {
+     "a": "btwn hyderabad",
+     "b": "secunderabad"
+    }
+   ],
+   [
+    "coastline buffer gujrat 15 km",
+    "along_coast ; distance = 15 km ; region = gujrat",
+    null,
+    "the text is not one place name, and no other template matches"
+   ],
+   [
+    "how do i see 8 km along the state border of West Bengal?",
+    "along_border ; distance = 8 km ; region = West Bengal",
+    "along_intl_border",
+    {
+     "distance": 8000.0,
+     "region": "West Bengal"
+    }
+   ],
+   [
+    "border area with Bangladesh in Tripura 3 km along the international border",
+    "along_intl_border ; distance = 3 km ; region = Tripura",
+    null,
+    "the T5 model classifies the text as unsupported"
+   ],
+   [
+    "Sundarbans, 10 km around Kolkata and Howrah",
+    "union3 ; a = Sundarbans ; b = 10 km around Kolkata ; c = Howrah",
+    "union",
+    {
+     "a": {
+      "q": "Sundarbans, 10 km around Kolkata",
+      "t": "buffer",
+      "s": {
+       "distance": 10000.0,
+       "target": "Kolkata"
+      }
+     },
+     "b": "Howrah"
+    }
+   ],
+   [
+    "overlap of Pune district and 15 km around Hinjewadi",
+    "intersection ; a = Pune district ; b = 15 km around Hinjewadi",
+    null,
+    "low confidence for is_subquery (0.09)"
+   ],
+   [
+    "intersection of Kolkata and North 24 Parganas",
+    "intersection ; a = Kolkata ; b = North 24 Parganas",
+    null,
+    "the text is not one place name, and no other template matches"
+   ],
+   [
+    "coastal districts of Odisha intersect 50 km around Bhubaneswar",
+    "intersection ; a = coastal districts of Odisha ; b = 50 km around Bhubaneswar",
+    null,
+    "low confidence for is_subquery (0.02)"
+   ],
+   [
+    "Varanasi district and 5 km around Assi Ghat, only the overlapping part",
+    "intersection ; a = Varanasi district ; b = 5 km around Assi Ghat",
+    null,
+    "low confidence for is_subquery (0.04)"
+   ],
+   [
+    "Ernakulam intersect with 10 km along the coast of Kerala",
+    "intersection ; a = Ernakulam ; b = 10 km along the coast of Kerala",
+    "along_coast",
+    {
+     "distance": 10000.0,
+     "region": "Kerala"
+    }
+   ],
+   [
+    "only the part of Delhi that lies within 3 km around India Gate",
+    "intersection ; a = Delhi ; b = 3 km around India Gate",
+    "intersection",
+    {
+     "a": "Delhi",
+     "b": "within 3 km around India Gate"
+    }
+   ],
+   [
+    "common area of Salcete and 4 km around Margao",
+    "intersection ; a = Salcete ; b = 4 km around Margao",
+    null,
+    "low confidence for is_subquery (0.18)"
+   ]
+  ]
+ }
+}

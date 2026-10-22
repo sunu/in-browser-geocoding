@@ -250,7 +250,9 @@ def main() -> None:
         recs = recs[: args.limit]
 
     logger = DecisionLogger()
-    base = Decider(default=args.provider, logger=logger, use_ner=not args.no_ner, jev_mode=args.jev_mode,
+    # "config" uses the provider of each decision from the config file.
+    base = Decider(default=None if args.provider == "config" else args.provider, logger=logger,
+                   use_ner=not args.no_ner, jev_mode=args.jev_mode,
                    jev_cache=args.jev_cache)
     parser = Parser(base, prune_by_pattern=not args.no_prune)
     # Warm up GLiNER and the store so that the first query does not carry the load time.

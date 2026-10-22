@@ -91,13 +91,14 @@ decisions:
   # Provider for each decision: jev (TypeSafe Jev), local (local cross-encoder), or rules (code and data).
   # A key can be a decision name or a decision with its slot type, for example
   # "fill_closed_slot.category" or "fill_closed_slot.category.group". The most specific key wins.
+  # Defaults from the plan-006 evaluation (reports/local-model-report.md).
   providers:
-    pick_family: jev
-    pick_template: jev
-    pick_split: jev
-    fill_closed_slot: jev
-    bind_anchor: jev
-    is_subquery: jev
+    pick_family: local
+    pick_template: local
+    pick_split: local
+    fill_closed_slot: local
+    is_subquery: local
+    bind_anchor: rules
     select_source: rules
     disambiguate: rules
   # Local cross-encoder (plan-006).

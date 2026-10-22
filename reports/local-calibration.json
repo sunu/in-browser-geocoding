@@ -1,0 +1,72 @@
+{
+ "disambiguate": {
+  "n": 2,
+  "acc": 0.0,
+  "ece": 0.2732
+ },
+ "fill_closed_slot.admin_level": {
+  "n": 670,
+  "acc": 0.9925,
+  "ece": 0.0033
+ },
+ "fill_closed_slot.attr": {
+  "n": 131,
+  "acc": 1.0,
+  "ece": 0.0
+ },
+ "fill_closed_slot.category": {
+  "n": 289,
+  "acc": 0.9862,
+  "ece": 0.0088
+ },
+ "fill_closed_slot.category.group": {
+  "n": 298,
+  "acc": 0.9631,
+  "ece": 0.0173
+ },
+ "fill_closed_slot.direction": {
+  "n": 153,
+  "acc": 0.9869,
+  "ece": 0.0095
+ },
+ "fill_closed_slot.op": {
+  "n": 121,
+  "acc": 0.9917,
+  "ece": 0.0117
+ },
+ "fill_closed_slot.predicate": {
+  "n": 191,
+  "acc": 1.0,
+  "ece": 0.0
+ },
+ "is_subquery": {
+  "n": 2317,
+  "acc": 0.9741,
+  "ece": 0.0066
+ },
+ "pick_family": {
+  "n": 138,
+  "acc": 0.9783,
+  "ece": 0.005
+ },
+ "pick_split": {
+  "n": 436,
+  "acc": 0.9702,
+  "ece": 0.0084
+ },
+ "pick_template": {
+  "n": 345,
+  "acc": 0.9797,
+  "ece": 0.0112
+ },
+ "select_source": {
+  "n": 13,
+  "acc": 0.9231,
+  "ece": 0.1068
+ },
+ "all": {
+  "n": 5104,
+  "acc": 0.9786,
+  "ece": 0.0039
+ }
+}

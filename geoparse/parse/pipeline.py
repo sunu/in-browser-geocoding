@@ -304,15 +304,20 @@ class Parser:
         ctx = {"template_scores": tscores, "template_family": tfam}
 
         if self.two_step:
-            fams = {f: self.families[f].description for f in self.families if any(tfam[t] == f for t in cands)}
+            # Options in rank order (best candidate score first). The local model reads the rank.
+            fam_score = {}
+            for t in cands:
+                fam_score[tfam[t]] = max(fam_score.get(tfam[t], -1e9), tscores.get(t, -1e9))
+            fams = {f: self.families[f].description for f in sorted(fam_score, key=lambda f: -fam_score[f])}
             fd = dec.pick_family(text, spans, fams, depth=depth, context=ctx)
             if dec.below("pick_family", fd):
                 raise _Stop(Unsupported(reason=f"low confidence for pick_family ({fd.confidence:.2f})", decision="pick_family", depth=depth, text=text))
             family = fd.value
-            topts = {tid: self._template_option(tid) for tid in cands if tfam[tid] == family}
+            topts = {tid: self._template_option(tid)
+                     for tid in sorted(cands, key=lambda t: -tscores.get(t, -1e9)) if tfam[tid] == family}
             td = dec.pick_template(text, spans, family, topts, depth=depth, context=ctx)
         else:
-            topts = {tid: self._template_option(tid) for tid in cands}
+            topts = {tid: self._template_option(tid) for tid in sorted(cands, key=lambda t: -tscores.get(t, -1e9))}
             td = dec.pick_template_flat(text, spans, topts, depth=depth, context=ctx)
         if dec.below("pick_template", td):
             raise _Stop(Unsupported(reason=f"low confidence for pick_template ({td.confidence:.2f})", decision="pick_template", depth=depth, text=text))
@@ -325,7 +330,7 @@ class Parser:
             if g.value or dec.below("is_subquery", g):
                 raise _Stop(Unsupported(reason="the text is not one place name, and no other template matches",
                                         decision="is_subquery", depth=depth, text=text))
-        matches = cands.get(tpl.id, [])
+        matches = sorted(cands.get(tpl.id, []), key=lambda m: -m["score"])
         if not matches:
             raise _Stop(Unsupported(reason=f"template {tpl.id} has no valid split", decision="pick_split", depth=depth, text=text))
 

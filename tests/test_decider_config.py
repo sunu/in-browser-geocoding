@@ -44,3 +44,34 @@ def test_rules_provider_dispatches_on_full_decision_name():
     p = RulesProvider({"fill_closed_slot": lambda t, q, o: seen.append(q.id) or Decision[str](value="a", confidence=1, impl="r")})
     p.choose("x", Question(id="fill_closed_slot.category.group", instructions="?"), {"a": "A", "b": "B"})
     assert seen == ["fill_closed_slot.category.group"]
+
+
+def test_local_falls_back_to_jev_without_model(monkeypatch, tmp_path):
+    import warnings
+
+    monkeypatch.setenv("GEOPARSE_LOCAL_DIR", str(tmp_path / "missing"))
+    d = _decider({"pick_family": "local"})
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        p = d.provider("pick_family")
+    assert isinstance(p, JevProvider) and any("local decision model" in str(x.message) for x in w)
+
+
+def _local_available():
+    from geoparse.config import REPO_ROOT
+
+    return (REPO_ROOT / "models" / "local" / "current").exists()
+
+
+import pytest  # noqa: E402
+
+
+@pytest.mark.skipif(not _local_available(), reason="local model not built")
+def test_local_provider_answers_closed_slots():
+    from geoparse.decisions.functions import Decider as D
+
+    d = _decider({"fill_closed_slot": "local"})
+    r = d.fill_closed_slot("near the sea", "predicate", "predicates", allow_none=True)
+    assert r.value == "coastal" and r.impl.startswith("local:")
+    r = d.fill_closed_slot("petrol bunks", "category", "categories", allow_none=True)
+    assert r.value == "fuel"

@@ -82,6 +82,23 @@ def core_of_parse(p) -> tuple:
     return tuple(parts)
 
 
+# Level and attribute words that the data does not support. A query with one of them must be refused.
+UNSUPPORTED_WORDS = ["tehsil", "taluk", "taluka", "mandal", "block", "ward", "panchayat", "sub-district",
+                     "subdistrict", "subdivision", "circle", "literacy", "sex ratio", "gdp", "income", "elevation",
+                     "rainfall", "hilly", "forest cover"]
+
+
+def expects_refusal(frame_text: str) -> bool:
+    f = Frame.from_text(frame_text)
+    if f is None or f.template == "unsupported":
+        return False
+    for k in ("level", "attr", "pred"):
+        v = (f.slots.get(k) or "").lower()
+        if any(w in v for w in UNSUPPORTED_WORDS):
+            return True
+    return False
+
+
 def load_sets() -> dict[str, list[dict]]:
     sets = {}
     for name in ("gold", "heldout"):
@@ -92,8 +109,9 @@ def load_sets() -> dict[str, list[dict]]:
         if not p.exists():
             continue
         recs = [json.loads(l) for l in p.read_text().splitlines() if l.strip()]
-        sets[name] = [{"query": r["query"], "core": core_of_frame(Frame.from_text(r["frame"])), "frame": r["frame"],
-                       "template": r["template"]} for r in recs]
+        sets[name] = [{"query": r["query"], "core": ("unsupported",) if expects_refusal(r["frame"])
+                       else core_of_frame(Frame.from_text(r["frame"])), "frame": r["frame"],
+                       "template": r["template"], "refusal": expects_refusal(r["frame"])} for r in recs]
     return sets
 
 
@@ -147,6 +165,7 @@ def eval_pipeline(provider: str, t5_dir: str, recs: list[dict], use_patterns: st
     errors = []
     lat = []
     ok = 0
+    wrong = 0
     with ThreadPoolExecutor(workers) as pool:
         for r, p, dt in pool.map(one, recs):
             c = core_of_parse(p)
@@ -157,7 +176,9 @@ def eval_pipeline(provider: str, t5_dir: str, recs: list[dict], use_patterns: st
             lat.append(dt)
             if not hit:
                 errors.append((r["query"], r.get("frame"), p.template, p.slots if p.ok else p.unsupported.reason))
-    return {"n": len(recs), "acc": ok / len(recs), "by_template": {k: f"{a}/{b}" for k, (a, b) in sorted(by_t.items())},
+                if p.ok:
+                    wrong += 1
+    return {"n": len(recs), "acc": ok / len(recs), "silent_wrong": wrong / len(recs), "by_template": {k: f"{a}/{b}" for k, (a, b) in sorted(by_t.items())},
             "median_s": statistics.median(lat), "errors": errors}
 
 
@@ -184,7 +205,7 @@ def main() -> None:
         pr = eval_pipeline(args.pipeline, args.t5, sets[args.set], args.patterns, args.workers, overrides)
         report[f"pipeline_{args.set}"] = pr
         print(f"pipeline ({args.pipeline}, patterns={args.patterns}, override={args.override or '-'}) {args.set} "
-              f"acc={pr['acc']:.3f} median={pr['median_s']:.2f}s")
+              f"acc={pr['acc']:.3f} silent_wrong={pr['silent_wrong']:.3f} median={pr['median_s']:.2f}s")
         print(json.dumps(pr["by_template"]))
     out = Path(args.out or REPO_ROOT / "reports" / f"t5-eval-{Path(args.t5).name}{'-' + args.pipeline + '-' + args.set if args.pipeline else ''}.json")
     out.write_text(json.dumps(report, indent=1, default=str))
