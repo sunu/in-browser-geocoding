@@ -23,5 +23,5 @@ def test_parse_value(text, value):
 def test_keywords_allow_one_typo():
     assert best_keyword_option("coastl states", "predicates")[0] == "coastal"
     assert best_keyword_option("populaton over", "attrs")[0] == "population"
-    assert best_keyword_option("hospitls", "categories")[0] == "amenity:hospital"
+    assert best_keyword_option("hospitls", "categories")[0] == "hospital"
     assert keyword_hits("north-east", ["north-east"]) == 1

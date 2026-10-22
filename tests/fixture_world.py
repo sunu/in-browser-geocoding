@@ -28,6 +28,15 @@ LEXICON = {
 }
 
 
+# Overture-style places: id, name, basic_category, cats, confidence, lon, lat
+PLACES = [
+    ("p1", "Alpha Hospital", "hospital", ["health_care", "hospital"], 0.9, 76.5, 11.0),
+    ("p2", "Low Confidence Hospital", "hospital", ["health_care", "hospital"], 0.2, 76.6, 11.1),
+    ("p3", "Far Hospital", "hospital", ["health_care", "hospital"], 0.9, 79.5, 13.5),
+    ("p4", "Alpha School", "place_of_learning", ["education", "place_of_learning", "school"], 0.8, 76.45, 10.98),
+]
+
+
 def box(x0, y0, x1, y1):
     return f"POLYGON(({x0} {y0}, {x1} {y0}, {x1} {y1}, {x0} {y1}, {x0} {y0}))"
 
@@ -79,6 +88,9 @@ def build(path: Path) -> Path:
         CREATE TABLE names AS
         SELECT id, lower(name) AS name_norm, replace(lower(name), ' ', '') AS name_nospace, 'primary' AS kind FROM divisions
     """)
+    con.execute("CREATE TABLE places (id VARCHAR, name VARCHAR, basic_category VARCHAR, cats VARCHAR[], confidence DOUBLE, lon DOUBLE, lat DOUBLE)")
+    for row in PLACES:
+        con.execute("INSERT INTO places VALUES (?, ?, ?, ?, ?, ?, ?)", list(row))
     con.execute("CREATE TABLE layers (name VARCHAR, geometry GEOMETRY('OGC:CRS84'))")
     con.execute("INSERT INTO layers VALUES ('coastline', ST_SetCRS(ST_GeomFromText('MULTILINESTRING((76 10, 76 14))'), 'OGC:CRS84'))")
     con.execute("INSERT INTO layers VALUES ('country_boundary', ST_SetCRS(ST_GeomFromText('MULTILINESTRING((80 10, 80 14))'), 'OGC:CRS84'))")

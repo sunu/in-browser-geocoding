@@ -117,8 +117,9 @@ class _Run:
         for m in MACROS:
             self.con.execute(m)
         self.n = 0
-        self.has_layer_dist = bool(self.con.execute(
-            "SELECT count(*) FROM information_schema.tables WHERE table_name = 'layer_dist'").fetchone()[0])
+        tables = {r[0] for r in self.con.execute("SELECT table_name FROM information_schema.tables").fetchall()}
+        self.has_layer_dist = "layer_dist" in tables
+        self.has_places = "places" in tables
         self.sql: list[str] = []
         self.notes: list[str] = []
 
@@ -488,7 +489,65 @@ class _Run:
     # ------------------------------------------------------------ features
 
     def op_Features(self, category: str, within: Any) -> str:
+        source = self.ex.cfg["geocoder"].get("features_source", "places")
+        if source == "places" and self.has_places:
+            return self._features_places(category, within)
+        return self._features_photon(category, within)
+
+    def _features_places(self, category: str, within: Any) -> str:
+        """Features from the local Overture places table (plan-004 section 2)."""
         leaf = category_leaves()[category]
+        rw = self.area_of(self.eval(within))
+        g = self.union_geom(rw, "gs")
+        row = self.run(f"SELECT ST_XMin(g), ST_YMin(g), ST_XMax(g), ST_YMax(g), ST_IsEmpty(g) FROM (SELECT {g} AS g)").fetchone()
+        if row is None or row[0] is None or row[4]:
+            self.notes.append("features: the region is empty, so the result is empty")
+            return self.empty_rel()
+        x0, y0, x1, y1 = row[:4]
+        min_conf = float(self.policy.get("places_min_confidence", 0.0))
+        limit = int(self.policy.get("max_features", 10000))
+        rel = self.new_rel(f"""
+            WITH r AS (SELECT {g} AS g)
+            SELECT p.id, p.name, ? AS subtype, 'overture_places' AS source,
+                   crs84(ST_Point(p.lon, p.lat)) AS geometry, crs84(ST_Point(p.lon, p.lat)) AS gs
+            FROM places p, r
+            WHERE p.lon BETWEEN {x0} AND {x1} AND p.lat BETWEEN {y0} AND {y1}
+              AND p.confidence >= {min_conf}
+              AND list_has_any(p.cats, ?)
+              AND ST_Intersects(r.g, crs84(ST_Point(p.lon, p.lat)))
+            LIMIT {limit + 1}
+        """, [category, leaf["match"]])
+        n = self.run(f"SELECT count(*) FROM {rel}").fetchone()[0]
+        if n > limit:
+            self.notes.append(f"features: more than {limit} results; the result is cut at {limit + 1}")
+        return rel
+
+    def area_of(self, rel: str) -> str:
+        """A relation with areas. Point rows (places without an area polygon) get a buffer whose radius is
+        set by subtype in the policy config (`point_area_radius_m`)."""
+        n_points = self.run(f"SELECT count(*) FROM {rel} WHERE ST_GeometryType(gs) IN ('POINT', 'MULTIPOINT')").fetchone()[0]
+        if not n_points:
+            return rel
+        radii = self.policy.get("point_area_radius_m", {})
+        default = float(radii.get("default", 1000))
+        case = " ".join(f"WHEN {_q(k)} THEN {float(v)}" for k, v in radii.items() if k != "default")
+        r_expr = f"(CASE subtype {case} ELSE {default} END)" if case else str(default)
+        self.notes.append(f"{n_points} place(s) have no area polygon; a radius from the policy config is used")
+        return self.new_rel(f"""
+            SELECT id, name, subtype, source,
+                   CASE WHEN ST_GeometryType(gs) IN ('POINT', 'MULTIPOINT')
+                        THEN from_m(ST_Buffer(to_m(gs, utm(gs)), {r_expr}, 16), utm(gs)) ELSE geometry END AS geometry,
+                   CASE WHEN ST_GeometryType(gs) IN ('POINT', 'MULTIPOINT')
+                        THEN from_m(ST_Buffer(to_m(gs, utm(gs)), {r_expr}, 16), utm(gs)) ELSE gs END AS gs
+            FROM {rel}
+        """)
+
+    def _features_photon(self, category: str, within: Any) -> str:
+        leaf = category_leaves()[category]
+        if not leaf.get("photon_tag"):
+            raise ExecutionError(f"category {category} has no Photon tag")
+        osm_tag = leaf["photon_tag"]
+        q_text = leaf["description"].split(" ")[0].lower()
         rw = self.eval(within)
         row = self.run(f"SELECT ST_AsWKB({self.union_geom(rw, 'gs')})").fetchone()
         if row is None or row[0] is None:
@@ -505,7 +564,7 @@ class _Run:
         for t in tiles:
             if not geom.intersects(shapely.box(*t)):
                 continue
-            for f in gc.search(leaf["q"], limit=limit, bbox=t, osm_tag=category):
+            for f in gc.search(q_text, limit=limit, bbox=t, osm_tag=osm_tag):
                 if f.id not in seen and geom.contains(shapely.Point(f.lon, f.lat)):
                     seen[f.id] = f
         if len(tiles) > 1:

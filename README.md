@@ -13,8 +13,8 @@ Examples:
 
 ## How it works
 
-1. The parser finds the templates whose split patterns match the query.
-2. Decision functions choose the template family, the template, and the split.
+1. A fine-tuned T5 model (t5-small) gives the best parse frames for the query: template, slot texts, and quantities. If T5 gives no usable frame, the parser uses the literal split patterns of the templates.
+2. Decision functions choose the template family, the template, and the frame (split).
 3. Each region slot is a place name or a sub-query. A sub-query starts at step 1 again. The depth limit is 2.
 4. The decision functions fill the closed slots (level, predicate, direction, category, attribute, comparison).
 5. The parser builds a DAG (JSON). The executor compiles each DAG node to DuckDB SQL over the local extract.
@@ -38,6 +38,7 @@ If a decision has a confidence below its threshold, the parser returns `Unsuppor
 | Source | Use |
 |---|---|
 | Overture divisions (release `2026-10-21.0`) | Countries, states, districts, cities, localities, neighborhoods |
+| Overture places (slim extract, 5.4 million rows) | Points of interest for the `Features` operator |
 | Natural Earth 10m coastline | The `coastline` layer |
 | Photon (`photon.komoot.io`) | Streets, landmarks, addresses, and points of interest |
 
@@ -57,7 +58,8 @@ If a decision has a confidence below its threshold, the parser returns `Unsuppor
    uv run python -m geoparse.data.build_extract
    ```
 
-   The output is in `data/build/`. The main file is `geoparse.duckdb` (approximately 380 MB).
+   The output is in `data/build/`. The main file is `geoparse.duckdb` (approximately 700 MB, with the places table). The places step takes approximately 9 minutes.
+5. Get the T5 model and put it in `models/t5/current` (a directory or a link). To train one, see `training/`. Without the model, the parser uses the literal patterns only.
 
 ## Usage
 
@@ -90,6 +92,17 @@ All policy decisions are in `geoparse/data/config.yaml`. Examples:
 - `admin_levels`: the Overture subtypes for each level name.
 - `decisions.providers` and `decisions.thresholds`: the provider and the threshold for each decision.
 
+## T5 training
+
+```sh
+uv run python -m training.gen_synthetic --n 24000          # synthetic pairs
+uv run python -m training.paraphrase para --n-seeds 4000    # LLM paraphrases (OpenRouter)
+uv run python -m training.paraphrase testset --name llm_dev # dev set for error analysis
+# On a GPU machine, in training/remote/:
+uv run python train_t5.py --model t5-small --out runs/t5-small --epochs 8
+uv run python -m training.eval_t5 --t5 models/t5/current --pipeline jev --set llm_dev
+```
+
 ## Repository layout
 
 ```
@@ -99,8 +112,10 @@ geoparse/
   parse/       Pipeline, recursion, span extraction (GLiNER ONNX)
   dsl/         DAG schema, text form parser, validator
   execute/     DuckDB executor, gazetteer, Photon geocoder
-  data/        Extract build script, config, options, categories, lexicon
+  data/        Extract build script, config, options, categories, lexicon, name aliases
+  t5/          T5 frame format and inference
 gold/          Gold suite, held-out set, builder, runner
+training/      Synthetic data, LLM paraphrases, LLM dev and test sets, T5 training and evaluation
 reports/       Spike and evaluation reports
 scripts/       Spikes, latency measurement, informal stress queries
 tests/         Unit tests, operator tests on a synthetic world, recorded fixtures

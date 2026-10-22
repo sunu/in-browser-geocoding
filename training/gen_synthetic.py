@@ -98,6 +98,9 @@ ATTR = ["population", "people", "residents", "inhabitants", "a population"]
 OP = {"gt": ["over", "more than", "above", "at least", "exceeding", "greater than", "bigger than", "upwards of"],
       "lt": ["under", "less than", "below", "fewer than", "at most", "smaller than"]}
 
+MAJOR_CITIES = ["Bangalore", "Bengaluru", "Mumbai", "Bombay", "Delhi", "New Delhi", "Chennai", "Hyderabad", "Kolkata",
+                "Pune", "Ahmedabad", "Jaipur", "Lucknow", "Kochi", "Mysore", "Goa", "Noida", "Gurgaon"]
+
 NUM_WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine",
              10: "ten", 15: "fifteen", 20: "twenty", 25: "twenty five", 50: "fifty", 100: "hundred"}
 
@@ -216,7 +219,12 @@ class Gen:
     def anchor(self) -> str:
         r = self.r.random()
         if r < 0.3:
-            return case(self.r, self.pick(self.p["poi"]))
+            poi = case(self.r, self.pick(self.p["poi"]))
+            if self.r.random() < 0.35:
+                # A place with its city or state as context: one anchor, not two places.
+                ctx = self.pick(self.p["city"] + MAJOR_CITIES * 20)
+                poi = poi + self.pick([", ", " ", ", ", " "]) + case(self.r, ctx)
+            return poi
         if r < 0.35:
             return self.pick(self.p["lex"])
         return self.place(("hood", "hood", "city", "district", "state"))
@@ -263,6 +271,8 @@ class Gen:
         a = self.anchor()
         if self.r.random() < 0.12:
             a = f"{self.pick(self.p['district'])} {self.pick(['district', 'dist', 'city', 'town'])}"
+        elif self.r.random() < 0.25:
+            a = case(self.r, self.pick(self.p["poi"])) + self.pick([", ", " "]) + case(self.r, self.pick(MAJOR_CITIES))
         form = self.pick(["{a}", "{a}", "show me {a}", "where is {a}", "map of {a}", "{a} location", "locate {a}"])
         return form.format(a=a), {"anchor": a}
 

@@ -91,7 +91,11 @@ def depth_of(s: dict[str, Any]) -> int:
 
 def needs_network(dag: Any) -> bool:
     if isinstance(dag, dict):
-        if dag.get("op") == "Features" or (dag.get("op") == "Resolve" and dag["args"].get("source") == "photon"):
+        from geoparse.config import load_config
+
+        local_features = load_config()["geocoder"].get("features_source", "places") == "places"
+        if (dag.get("op") == "Features" and not local_features) or (
+                dag.get("op") == "Resolve" and dag["args"].get("source") == "photon"):
             return True
         return any(needs_network(v) for v in dag.get("args", {}).values())
     return False

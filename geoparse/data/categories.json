@@ -1,208 +1,341 @@
 {
-  "_doc": "Two-step category tree. Level 1 is a group. Level 2 is an OSM tag (key:value) that Photon can filter on. 'q' is the search text sent to Photon with the tag filter. 'keywords' are for the rule provider.",
+  "_doc": "Two-step category tree on Overture places categories. Level 1 is a group. Level 2 is an item. 'match' lists Overture category ids; a place matches if its basic_category or any level of its taxonomy hierarchy is in the list. 'keywords' are for the rule provider. 'photon_tag' is used only if features_source is photon.",
   "health": {
-    "description": "Health care: hospitals, clinics, pharmacies and medicines, doctors, dentists",
+    "description": "Health care: hospitals, clinics, pharmacies and medicines, labs, doctors, dentists",
     "items": {
-      "amenity:hospital": {
+      "hospital": {
         "description": "Hospitals",
-        "q": "hospital",
+        "match": [
+          "hospital",
+          "specialty_hospital",
+          "emergency_department"
+        ],
         "keywords": [
           "hospital",
           "hospitals",
           "hospitls",
           "hospitel",
           "medical college"
-        ]
+        ],
+        "photon_tag": "amenity:hospital"
       },
-      "amenity:clinic": {
-        "description": "Clinics and health centers",
-        "q": "clinic",
+      "clinic": {
+        "description": "Clinics, doctors and health centres",
+        "match": [
+          "outpatient_care_facility",
+          "primary_care_or_general_clinic",
+          "walk_in_clinic",
+          "doctors_office",
+          "pediatric_clinic",
+          "medical_service"
+        ],
         "keywords": [
           "clinic",
           "clinics",
           "health center",
           "health centre",
-          "phc"
-        ]
+          "phc",
+          "doctor",
+          "doctors"
+        ],
+        "photon_tag": "amenity:clinic"
       },
-      "amenity:pharmacy": {
+      "pharmacy": {
         "description": "Pharmacies and chemists (medicines, medical shops)",
-        "q": "pharmacy",
+        "match": [
+          "pharmacy_and_drug_store",
+          "pharmacy"
+        ],
         "keywords": [
           "pharmacy",
           "pharmacies",
           "chemist",
           "chemists",
           "medical store",
-          "medical shops"
-        ]
+          "medical shops",
+          "medicines"
+        ],
+        "photon_tag": "amenity:pharmacy"
       },
-      "amenity:doctors": {
-        "description": "Doctors' offices",
-        "q": "doctor",
+      "diagnostic_lab": {
+        "description": "Diagnostic labs and scan centres",
+        "match": [
+          "diagnostics_imaging_or_lab_service"
+        ],
         "keywords": [
-          "doctor",
-          "doctors"
+          "lab",
+          "labs",
+          "diagnostic",
+          "scan centre",
+          "pathology"
         ]
       },
-      "amenity:dentist": {
+      "dentist": {
         "description": "Dentists",
-        "q": "dentist",
+        "match": [
+          "dental_clinic"
+        ],
         "keywords": [
           "dentist",
           "dentists",
           "dental"
+        ],
+        "photon_tag": "amenity:dentist"
+      },
+      "eye_clinic": {
+        "description": "Eye clinics and opticians",
+        "match": [
+          "vision_or_eye_care_clinic"
+        ],
+        "keywords": [
+          "eye clinic",
+          "eye hospital",
+          "optician"
         ]
       }
     }
   },
   "education": {
-    "description": "Education: schools, colleges, universities, libraries",
+    "description": "Education: schools, colleges, universities, coaching, libraries",
     "items": {
-      "amenity:school": {
+      "school": {
         "description": "Schools",
-        "q": "school",
+        "match": [
+          "school",
+          "high_school",
+          "elementary_school",
+          "middle_school"
+        ],
         "keywords": [
           "school",
           "schools",
           "skool"
-        ]
+        ],
+        "photon_tag": "amenity:school"
       },
-      "amenity:college": {
-        "description": "Colleges",
-        "q": "college",
+      "college_university": {
+        "description": "Colleges and universities",
+        "match": [
+          "college_university"
+        ],
         "keywords": [
           "college",
-          "colleges"
-        ]
-      },
-      "amenity:university": {
-        "description": "Universities",
-        "q": "university",
-        "keywords": [
+          "colleges",
           "university",
           "universities"
+        ],
+        "photon_tag": "amenity:college"
+      },
+      "preschool": {
+        "description": "Preschools, play schools and kindergartens",
+        "match": [
+          "preschool",
+          "day_care_preschool"
+        ],
+        "keywords": [
+          "preschool",
+          "play school",
+          "kindergarten",
+          "anganwadi"
+        ],
+        "photon_tag": "amenity:kindergarten"
+      },
+      "coaching": {
+        "description": "Coaching and tuition centres",
+        "match": [
+          "tutoring_service",
+          "educational_service"
+        ],
+        "keywords": [
+          "coaching",
+          "tuition",
+          "tutoring"
         ]
       },
-      "amenity:library": {
+      "library": {
         "description": "Libraries",
-        "q": "library",
+        "match": [
+          "library"
+        ],
         "keywords": [
           "library",
           "libraries"
-        ]
-      },
-      "amenity:kindergarten": {
-        "description": "Kindergartens and preschools",
-        "q": "kindergarten",
-        "keywords": [
-          "kindergarten",
-          "preschool",
-          "play school",
-          "anganwadi"
-        ]
+        ],
+        "photon_tag": "amenity:library"
       }
     }
   },
   "food": {
-    "description": "Food and drink: restaurants, places to eat, cafes, bars",
+    "description": "Food and drink: restaurants, places to eat, cafes, bakeries, bars",
     "items": {
-      "amenity:restaurant": {
-        "description": "Restaurants",
-        "q": "restaurant",
+      "restaurant": {
+        "description": "Restaurants (places to eat)",
+        "match": [
+          "restaurant"
+        ],
         "keywords": [
           "restaurant",
           "restaurants",
           "eateries",
-          "places to eat",
-          "hotels to eat"
-        ]
+          "places to eat"
+        ],
+        "photon_tag": "amenity:restaurant"
       },
-      "amenity:cafe": {
-        "description": "Cafes and coffee shops",
-        "q": "cafe",
+      "cafe": {
+        "description": "Cafes, coffee shops and tea shops",
+        "match": [
+          "cafe",
+          "coffee_shop",
+          "tea_room",
+          "non_alcoholic_beverage_venue"
+        ],
         "keywords": [
           "cafe",
           "cafes",
           "coffee",
-          "coffee shops"
-        ]
+          "coffee shops",
+          "tea"
+        ],
+        "photon_tag": "amenity:cafe"
       },
-      "amenity:fast_food": {
-        "description": "Fast food",
-        "q": "fast food",
+      "fast_food": {
+        "description": "Fast food and casual eateries",
+        "match": [
+          "fast_food_restaurant",
+          "casual_eatery",
+          "food_court",
+          "food_truck_stand"
+        ],
         "keywords": [
           "fast food",
-          "takeaway"
+          "takeaway",
+          "eatery"
+        ],
+        "photon_tag": "amenity:fast_food"
+      },
+      "bakery": {
+        "description": "Bakeries and sweet shops",
+        "match": [
+          "bakery"
+        ],
+        "keywords": [
+          "bakery",
+          "bakeries",
+          "sweet shop"
         ]
       },
-      "amenity:bar": {
-        "description": "Bars and pubs",
-        "q": "bar",
+      "bar": {
+        "description": "Bars, pubs and lounges",
+        "match": [
+          "bar",
+          "lounge",
+          "brewery",
+          "alcoholic_beverage_venue"
+        ],
         "keywords": [
           "bar",
           "bars",
           "pub",
-          "pubs"
-        ]
+          "pubs",
+          "lounge"
+        ],
+        "photon_tag": "amenity:bar"
       }
     }
   },
   "transport": {
-    "description": "Transport: stations, airports, bus stops, fuel",
+    "description": "Transport: railway and metro stations, bus stations and stops, airports, fuel, EV charging, parking",
     "items": {
-      "railway:station": {
-        "description": "Railway stations",
-        "q": "station",
+      "train_station": {
+        "description": "Railway and metro stations",
+        "match": [
+          "train_station",
+          "rail_facility_or_service"
+        ],
         "keywords": [
           "railway station",
-          "railway stations",
           "train station",
-          "train stations",
           "stations",
-          "metro station",
-          "metro stations",
-          "metro"
-        ]
+          "metro station"
+        ],
+        "photon_tag": "railway:station"
       },
-      "aeroway:aerodrome": {
+      "bus_station": {
+        "description": "Bus stations, bus stands and bus stops",
+        "match": [
+          "bus_station",
+          "public_transit_facility_or_service"
+        ],
+        "keywords": [
+          "bus station",
+          "bus stand",
+          "bus stop",
+          "bus stops",
+          "bus depot"
+        ],
+        "photon_tag": "amenity:bus_station"
+      },
+      "airport": {
         "description": "Airports",
-        "q": "airport",
+        "match": [
+          "airport"
+        ],
         "keywords": [
           "airport",
           "airports",
           "airfield"
-        ]
+        ],
+        "photon_tag": "aeroway:aerodrome"
       },
-      "amenity:bus_station": {
-        "description": "Bus stations and bus stands",
-        "q": "bus station",
-        "keywords": [
-          "bus station",
-          "bus stations",
-          "bus stand",
-          "bus stands",
-          "bus depot"
-        ]
-      },
-      "highway:bus_stop": {
-        "description": "Bus stops",
-        "q": "bus stop",
-        "keywords": [
-          "bus stop",
-          "bus stops"
-        ]
-      },
-      "amenity:fuel": {
+      "fuel": {
         "description": "Fuel stations and petrol pumps",
-        "q": "fuel",
+        "match": [
+          "gas_station",
+          "fueling_station"
+        ],
         "keywords": [
           "petrol pump",
           "petrol pumps",
           "fuel station",
           "gas station",
-          "petrol bunk",
-          "fuel"
+          "petrol bunk"
+        ],
+        "photon_tag": "amenity:fuel"
+      },
+      "ev_charging": {
+        "description": "EV charging stations",
+        "match": [
+          "ev_charging_station"
+        ],
+        "keywords": [
+          "ev charging",
+          "charging station",
+          "charging stations"
+        ],
+        "photon_tag": "amenity:charging_station"
+      },
+      "parking": {
+        "description": "Parking",
+        "match": [
+          "parking",
+          "park_and_ride"
+        ],
+        "keywords": [
+          "parking",
+          "car park"
+        ],
+        "photon_tag": "amenity:parking"
+      },
+      "taxi": {
+        "description": "Taxi stands and services",
+        "match": [
+          "taxi_or_ride_share_service"
+        ],
+        "keywords": [
+          "taxi",
+          "taxis",
+          "cab",
+          "auto stand"
         ]
       }
     }
@@ -210,170 +343,358 @@
   "finance": {
     "description": "Money: banks and ATMs",
     "items": {
-      "amenity:bank": {
+      "bank": {
         "description": "Banks",
-        "q": "bank",
+        "match": [
+          "bank_or_credit_union",
+          "bank"
+        ],
         "keywords": [
           "bank",
           "banks"
-        ]
+        ],
+        "photon_tag": "amenity:bank"
       },
-      "amenity:atm": {
+      "atm": {
         "description": "ATMs and cash machines",
-        "q": "atm",
+        "match": [
+          "atm"
+        ],
         "keywords": [
           "atm",
           "atms",
           "cash machine"
-        ]
+        ],
+        "photon_tag": "amenity:atm"
       }
     }
   },
   "public": {
-    "description": "Public services: police, fire stations, post offices, government offices",
+    "description": "Public services: police, fire stations, post offices, government offices, courts",
     "items": {
-      "amenity:police": {
+      "police": {
         "description": "Police stations",
-        "q": "police",
+        "match": [
+          "police_station"
+        ],
         "keywords": [
           "police",
           "police station",
           "police stations",
           "thana"
-        ]
+        ],
+        "photon_tag": "amenity:police"
       },
-      "amenity:fire_station": {
+      "fire_station": {
         "description": "Fire stations",
-        "q": "fire station",
+        "match": [
+          "fire_station"
+        ],
         "keywords": [
           "fire station",
           "fire stations"
-        ]
+        ],
+        "photon_tag": "amenity:fire_station"
       },
-      "amenity:post_office": {
-        "description": "Post offices",
-        "q": "post office",
+      "post_office": {
+        "description": "Post offices and courier services",
+        "match": [
+          "post_office",
+          "shipping_or_delivery_service"
+        ],
         "keywords": [
           "post office",
-          "post offices"
-        ]
+          "post offices",
+          "courier"
+        ],
+        "photon_tag": "amenity:post_office"
       },
-      "office:government": {
-        "description": "Government offices",
-        "q": "office",
+      "government_office": {
+        "description": "Government offices and courts",
+        "match": [
+          "government_office",
+          "government_department",
+          "courthouse"
+        ],
         "keywords": [
           "government office",
-          "government offices",
-          "govt office"
-        ]
+          "govt office",
+          "court",
+          "collectorate"
+        ],
+        "photon_tag": "office:government"
       }
     }
   },
   "religion": {
-    "description": "Places of worship: temples, mosques, churches",
+    "description": "Places of worship: temples, mosques, churches, gurudwaras",
     "items": {
-      "amenity:place_of_worship": {
-        "description": "Places of worship (temples, mosques, churches, gurudwaras)",
-        "q": "temple",
+      "place_of_worship": {
+        "description": "Places of worship of any religion",
+        "match": [
+          "place_of_worship"
+        ],
+        "keywords": [
+          "place of worship",
+          "places of worship"
+        ],
+        "photon_tag": "amenity:place_of_worship"
+      },
+      "temple": {
+        "description": "Hindu and Buddhist temples",
+        "match": [
+          "hindu_place_of_worship",
+          "buddhist_place_of_worship"
+        ],
         "keywords": [
           "temple",
           "temples",
+          "mandir"
+        ]
+      },
+      "mosque": {
+        "description": "Mosques",
+        "match": [
+          "muslim_place_of_worship"
+        ],
+        "keywords": [
           "mosque",
           "mosques",
+          "masjid"
+        ]
+      },
+      "church": {
+        "description": "Churches",
+        "match": [
+          "christian_place_of_worship"
+        ],
+        "keywords": [
           "church",
-          "churches",
+          "churches"
+        ]
+      },
+      "gurudwara": {
+        "description": "Gurudwaras",
+        "match": [
+          "sikh_place_of_worship"
+        ],
+        "keywords": [
           "gurudwara",
-          "place of worship",
-          "places of worship"
+          "gurdwara"
         ]
       }
     }
   },
   "leisure": {
-    "description": "Leisure and tourism: parks, hotels, museums, beaches",
+    "description": "Leisure and tourism: parks, hotels, museums, beaches, stadiums, cinemas, gyms, monuments",
     "items": {
-      "leisure:park": {
+      "park": {
         "description": "Parks and gardens",
-        "q": "park",
+        "match": [
+          "park",
+          "garden",
+          "playground",
+          "national_park",
+          "dog_park"
+        ],
         "keywords": [
           "park",
           "parks",
           "garden",
           "gardens"
-        ]
+        ],
+        "photon_tag": "leisure:park"
       },
-      "tourism:hotel": {
-        "description": "Hotels and lodges to stay",
-        "q": "hotel",
+      "hotel": {
+        "description": "Hotels, resorts and places to stay",
+        "match": [
+          "hotel",
+          "lodging",
+          "resort",
+          "inn",
+          "bed_and_breakfast"
+        ],
         "keywords": [
           "hotel",
           "hotels",
           "lodge",
-          "lodges",
           "resorts",
           "places to stay"
-        ]
+        ],
+        "photon_tag": "tourism:hotel"
       },
-      "tourism:museum": {
-        "description": "Museums",
-        "q": "museum",
+      "museum": {
+        "description": "Museums and art galleries",
+        "match": [
+          "museum",
+          "art_gallery"
+        ],
         "keywords": [
           "museum",
-          "museums"
-        ]
+          "museums",
+          "gallery"
+        ],
+        "photon_tag": "tourism:museum"
       },
-      "natural:beach": {
+      "beach": {
         "description": "Beaches",
-        "q": "beach",
+        "match": [
+          "beach"
+        ],
         "keywords": [
           "beach",
           "beaches"
-        ]
+        ],
+        "photon_tag": "natural:beach"
       },
-      "leisure:stadium": {
-        "description": "Stadiums",
-        "q": "stadium",
+      "stadium": {
+        "description": "Stadiums and sports grounds",
+        "match": [
+          "stadium_arena",
+          "sport_field"
+        ],
         "keywords": [
           "stadium",
-          "stadiums"
-        ]
+          "stadiums",
+          "ground"
+        ],
+        "photon_tag": "leisure:stadium"
+      },
+      "cinema": {
+        "description": "Cinemas and movie theatres",
+        "match": [
+          "movie_theater"
+        ],
+        "keywords": [
+          "cinema",
+          "cinemas",
+          "movie theatre",
+          "theatre",
+          "multiplex"
+        ],
+        "photon_tag": "amenity:cinema"
+      },
+      "gym": {
+        "description": "Gyms and fitness studios",
+        "match": [
+          "gym",
+          "fitness_studio"
+        ],
+        "keywords": [
+          "gym",
+          "gyms",
+          "fitness"
+        ],
+        "photon_tag": "leisure:fitness_centre"
+      },
+      "historic_site": {
+        "description": "Monuments, forts and historic sites",
+        "match": [
+          "historic_site",
+          "fort",
+          "monument",
+          "castle",
+          "memorial_site"
+        ],
+        "keywords": [
+          "monument",
+          "monuments",
+          "fort",
+          "forts",
+          "historic"
+        ],
+        "photon_tag": "historic:monument"
+      },
+      "zoo": {
+        "description": "Zoos and aquariums",
+        "match": [
+          "zoo",
+          "aquarium",
+          "animal_attraction"
+        ],
+        "keywords": [
+          "zoo",
+          "zoos",
+          "aquarium"
+        ],
+        "photon_tag": "tourism:zoo"
       }
     }
   },
   "shopping": {
-    "description": "Shopping: malls, supermarkets, markets",
+    "description": "Shopping: malls, supermarkets and grocery, markets, electronics and clothing stores",
     "items": {
-      "shop:mall": {
+      "mall": {
         "description": "Shopping malls",
-        "q": "mall",
+        "match": [
+          "shopping_mall",
+          "department_store"
+        ],
         "keywords": [
           "mall",
           "malls",
-          "shopping mall",
-          "shopping malls"
-        ]
+          "shopping mall"
+        ],
+        "photon_tag": "shop:mall"
       },
-      "shop:supermarket": {
+      "supermarket": {
         "description": "Supermarkets and grocery stores",
-        "q": "supermarket",
+        "match": [
+          "supermarket",
+          "grocery_store",
+          "convenience_store",
+          "superstore",
+          "food_and_beverage_store"
+        ],
         "keywords": [
           "supermarket",
-          "supermarkets",
           "grocery",
-          "groceries",
-          "grocery store"
-        ]
+          "grocery store",
+          "kirana"
+        ],
+        "photon_tag": "shop:supermarket"
       },
-      "amenity:marketplace": {
+      "market": {
         "description": "Markets and bazaars",
-        "q": "market",
+        "match": [
+          "market",
+          "farmers_market",
+          "public_market"
+        ],
         "keywords": [
           "market",
           "markets",
           "bazaar",
-          "bazaars",
           "mandi"
-        ]
+        ],
+        "photon_tag": "amenity:marketplace"
+      },
+      "electronics": {
+        "description": "Electronics and mobile phone shops",
+        "match": [
+          "electronics_store",
+          "mobile_phone_store"
+        ],
+        "keywords": [
+          "electronics",
+          "mobile shop",
+          "phone shop"
+        ],
+        "photon_tag": "shop:electronics"
+      },
+      "clothing": {
+        "description": "Clothing and fashion stores",
+        "match": [
+          "fashion_and_apparel_store",
+          "clothing_store"
+        ],
+        "keywords": [
+          "clothes",
+          "clothing",
+          "garments",
+          "fashion"
+        ],
+        "photon_tag": "shop:clothes"
       }
     }
   }

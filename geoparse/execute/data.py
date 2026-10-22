@@ -97,8 +97,6 @@ class Store:
         q_list = [n]
         if hint_from_name:
             q_list.append(" ".join(words[:-1]))
-        # Overture names can end with a level word ("Mumbai Suburban District").
-        q_list += [f"{x} {suffix}" for x in list(q_list) for suffix in ("district", "city")]
         # Short forms and old names (data file).
         aliases = name_aliases()
         for x in list(q_list):
@@ -114,6 +112,14 @@ class Store:
             GROUP BY id
         """, [q_list, q_list]).fetchall()
         scores = {r[0]: float(r[1]) for r in rows}
+        if not scores:
+            # Fallback: Overture names can end with a level word ("Mumbai Suburban District").
+            q2 = [f"{x} {suffix}" for x in q_list for suffix in ("district", "city")]
+            rows = cur.execute("""
+                SELECT id, max(CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 ELSE 0.95 END) AS s
+                FROM names WHERE name_norm IN (SELECT unnest(?)) GROUP BY id
+            """, [q2]).fetchall()
+            scores = {r[0]: float(r[1]) * 0.98 for r in rows}
         if fuzzy and not scores and len(n) >= 4:
             rows = cur.execute("""
                 SELECT n.id, max(jaro_winkler_similarity(n.name_norm, ?)) AS s

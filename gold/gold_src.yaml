@@ -2,7 +2,7 @@
 #
 # Fields: q (query), t (template), s (slots), n (notes, optional).
 # Slot values:
-#   closed slots: the option key, for example "coastal", "state", "amenity:hospital", "gt"
+#   closed slots: the option key, for example "coastal", "state", "hospital", "gt"
 #   distance: meters, or null for the default distance
 #   value: a number
 #   region or anchor: the exact text of the slot in the query, or
@@ -87,16 +87,16 @@
 - {q: "international border belt of Rajasthan", t: along_intl_border, s: {distance: null, region: "Rajasthan"}}
 
 # ---------------------------------------------------------------- features
-- {q: "hospitals in Koramangala", t: features_in, s: {category: "amenity:hospital", region: "Koramangala"}}
-- {q: "cafes in Indiranagar", t: features_in, s: {category: "amenity:cafe", region: "Indiranagar"}}
-- {q: "hospitls in jayanagar", t: features_in, s: {category: "amenity:hospital", region: "jayanagar"}, n: "Misspelled."}
-- {q: "police stations in Mysuru", t: features_in, s: {category: "amenity:police", region: "Mysuru"}}
-- {q: "Koramangala restaurants", t: features_in, s: {category: "amenity:restaurant", region: "Koramangala"}}
-- {q: "schools near Indiranagar", t: features_near, s: {category: "amenity:school", distance: null, region: "Indiranagar"}}
-- {q: "hospitals within 2 km of MG Road", t: features_near, s: {category: "amenity:hospital", distance: 2000, region: "MG Road"}, src: {region: photon}}
-- {q: "atms 500 m from Brigade Road", t: features_near, s: {category: "amenity:atm", distance: 500, region: "Brigade Road"}, src: {region: photon}}
-- {q: "petrol pumps near Whitefield", t: features_near, s: {category: "amenity:fuel", distance: null, region: "Whitefield"}}
-- {q: "bus stops within 1 km of Majestic", t: features_near, s: {category: "highway:bus_stop", distance: 1000, region: "Majestic"}, src: {region: photon}}
+- {q: "hospitals in Koramangala", t: features_in, s: {category: "hospital", region: "Koramangala"}}
+- {q: "cafes in Indiranagar", t: features_in, s: {category: "cafe", region: "Indiranagar"}}
+- {q: "hospitls in jayanagar", t: features_in, s: {category: "hospital", region: "jayanagar"}, n: "Misspelled."}
+- {q: "police stations in Mysuru", t: features_in, s: {category: "police", region: "Mysuru"}}
+- {q: "Koramangala restaurants", t: features_in, s: {category: "restaurant", region: "Koramangala"}}
+- {q: "schools near Indiranagar", t: features_near, s: {category: "school", distance: null, region: "Indiranagar"}}
+- {q: "hospitals within 2 km of MG Road", t: features_near, s: {category: "hospital", distance: 2000, region: "MG Road"}, src: {region: photon}}
+- {q: "atms 500 m from Brigade Road", t: features_near, s: {category: "atm", distance: 500, region: "Brigade Road"}, src: {region: photon}}
+- {q: "petrol pumps near Whitefield", t: features_near, s: {category: "fuel", distance: null, region: "Whitefield"}}
+- {q: "bus stops within 1 km of Majestic", t: features_near, s: {category: "bus_station", distance: 1000, region: "Majestic"}, src: {region: photon}}
 
 # ---------------------------------------------------------------- attribute
 - {q: "cities in Maharashtra with population over 1 million", t: children_attr, s: {level: city, parent: "Maharashtra", attr: population, op: gt, value: 1000000}}
@@ -111,8 +111,8 @@
 - {q: "districts of Rajasthan with population over 3 million", t: children_attr, s: {level: district, parent: "Rajasthan", attr: population, op: gt, value: 3000000}}
 
 # ---------------------------------------------------------------- nested (depth 2) and lexicon inside templates
-- {q: "hospitals within 2 km of coastal districts of Odisha", t: features_near, s: {category: "amenity:hospital", distance: 2000, region: {q: "coastal districts of Odisha", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Odisha"}}}}
-- {q: "schools in landlocked districts of Goa", t: features_in, s: {category: "amenity:school", region: {q: "landlocked districts of Goa", t: children_with_predicate, s: {pred: landlocked, level: district, parent: "Goa"}}}}
+- {q: "hospitals within 2 km of coastal districts of Odisha", t: features_near, s: {category: "hospital", distance: 2000, region: {q: "coastal districts of Odisha", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Odisha"}}}}
+- {q: "schools in landlocked districts of Goa", t: features_in, s: {category: "school", region: {q: "landlocked districts of Goa", t: children_with_predicate, s: {pred: landlocked, level: district, parent: "Goa"}}}}
 - {q: "5 km around districts of Goa", t: buffer, s: {distance: 5000, target: {q: "districts of Goa", t: children, s: {level: district, parent: "Goa"}}}}
 - {q: "Kerala and coastal districts of Karnataka", t: union, s: {a: "Kerala", b: {q: "coastal districts of Karnataka", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Karnataka"}}}}
 - {q: "South India except coastal states in India", t: difference, s: {a: {lex: south_india, text: "South India"}, b: {q: "coastal states in India", t: children_with_predicate, s: {pred: coastal, level: state, parent: "India"}}}}

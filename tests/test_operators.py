@@ -204,8 +204,18 @@ def test_along_entity_boundary(world):
     assert g.contains(shapely.Point(77.0, 11.0)) and not g.contains(shapely.Point(76.5, 11.0))
 
 
-def test_features(world, fake_geocoder):
-    res = run(world, {"op": "Features", "args": {"category": "amenity:hospital", "within": R("st_w")}})
+def test_features_from_places(world, fake_geocoder):
+    res = run(world, {"op": "Features", "args": {"category": "hospital", "within": R("st_w")}})
+    # p2 is below the minimum confidence; p3 is outside Westa.
+    assert res.ids == ["p1"]
+    assert fake_geocoder.calls == []
+    res = run(world, {"op": "Features", "args": {"category": "school", "within": R("d_w1")}})
+    assert res.ids == ["p4"]
+
+
+def test_features_from_photon(world, world_config, fake_geocoder):
+    world_config["geocoder"]["features_source"] = "photon"
+    res = run(world, {"op": "Features", "args": {"category": "hospital", "within": R("st_w")}})
     assert res.ids == ["osm:N1"]
     assert fake_geocoder.calls and fake_geocoder.calls[0]["osm_tag"] == "amenity:hospital"
 
@@ -240,6 +250,6 @@ def test_invalid_dag_is_rejected(world):
 def test_features_on_empty_region(world, fake_geocoder):
     empty = {"op": "Filter", "args": {"set": {"op": "Children", "args": {"of": R("st_e"), "level": "district"}},
                                       "pred": PREDICATE_DAGS["coastal"]}}
-    res = run(world, {"op": "Features", "args": {"category": "amenity:hospital", "within": empty}})
+    res = run(world, {"op": "Features", "args": {"category": "hospital", "within": empty}})
     assert res.features == [] and any("empty" in n for n in res.notes)
     assert fake_geocoder.calls == []

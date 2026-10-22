@@ -46,6 +46,18 @@ policy:
   direction_part_fraction: 0.5
   # "north of X": a box next to X. Its depth is this multiple of the size of X.
   direction_outside_scale: 1.0
+  # Minimum Overture places confidence for Features.
+  places_min_confidence: 0.5
+  # Radius (meters) that stands for the area of a place that has only a point in the extract.
+  # Used when an operator needs an area, for example "hospitals in Koramangala".
+  point_area_radius_m:
+    default: 1000
+    microhood: 500
+    neighborhood: 800
+    macrohood: 1500
+    locality: 2000
+  # Maximum number of features in one result.
+  max_features: 10000
   # Simplification tolerance (degrees) for output geometries. 0 means no simplification.
   output_simplify_deg: 0.0005
 
@@ -53,6 +65,8 @@ geocoder:
   # Which anchors can go to the geocoder (select_source decides): "simple_and_features" (lookup, modifier,
   # and features families at depth 0) or "all" (every anchor, also landmarks in complex queries).
   anchor_scope: all
+  # Source for the Features operator: "places" (local Overture places extract) or "photon".
+  features_source: places
   photon_url: "https://photon.komoot.io/api"
   min_interval_s: 1.0
   cache_dir: ".cache/photon"

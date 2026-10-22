@@ -26,9 +26,9 @@
 - {q: "seven sisters excluding Assam", t: difference, s: {a: {lex: seven_sisters, text: "seven sisters"}, b: "Assam"}}
 - {q: "between Delhi and Agra", t: between, s: {a: "Delhi", b: "Agra"}}
 - {q: "10 km along the coast of Goa", t: along_coast, s: {distance: 10000, region: "Goa"}}
-- {q: "schools in Whitefield", t: features_in, s: {category: "amenity:school", region: "Whitefield"}}
-- {q: "pharmacies near Jayanagar", t: features_near, s: {category: "amenity:pharmacy", distance: null, region: "Jayanagar"}}
+- {q: "schools in Whitefield", t: features_in, s: {category: "school", region: "Whitefield"}}
+- {q: "pharmacies near Jayanagar", t: features_near, s: {category: "pharmacy", distance: null, region: "Jayanagar"}}
 - {q: "cities in Uttar Pradesh with population over 1 million", t: children_attr, s: {level: city, parent: "Uttar Pradesh", attr: population, op: gt, value: 1000000}}
 - {q: "coastal districts of states bordering Kerala", t: children_with_predicate, s: {pred: coastal, level: district, parent: {q: "states bordering Kerala", t: neighbors, s: {level: state, of: "Kerala"}}}}
-- {q: "hospitals in coastal districts of Goa", t: features_in, s: {category: "amenity:hospital", region: {q: "coastal districts of Goa", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Goa"}}}}
+- {q: "hospitals in coastal districts of Goa", t: features_in, s: {category: "hospital", region: {q: "coastal districts of Goa", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Goa"}}}}
 - {q: "Karnataka and landlocked districts of Kerala", t: union, s: {a: "Karnataka", b: {q: "landlocked districts of Kerala", t: children_with_predicate, s: {pred: landlocked, level: district, parent: "Kerala"}}}}

@@ -84,6 +84,30 @@ def build_divisions(con, cfg, out: Path) -> None:
     con.execute(f"COPY division_area TO '{out / 'division_area.parquet'}' (FORMAT parquet, COMPRESSION zstd)")
 
 
+def build_places(con, cfg, out: Path) -> None:
+    """Slim Overture places extract (plan-004 section 2). One row per place, sorted by Hilbert curve.
+
+    cats: the basic category plus every level of the taxonomy hierarchy, for category matching.
+    """
+    d = cfg["data"]
+    src = f"{d['overture_s3']}/{d['overture_release']}/theme=places/type=place/*"
+    xmin, ymin, xmax, ymax = d["bbox"]
+    t0 = time.time()
+    con.execute(f"""
+        COPY (
+            SELECT id, names.primary AS name, basic_category,
+                   list_distinct(list_filter(list_concat([basic_category], coalesce(taxonomy.hierarchy, [])),
+                                             lambda x: x IS NOT NULL)) AS cats,
+                   confidence, ST_X(geometry) AS lon, ST_Y(geometry) AS lat
+            FROM read_parquet('{src}')
+            WHERE bbox.xmin < {xmax} AND bbox.xmax > {xmin} AND bbox.ymin < {ymax} AND bbox.ymax > {ymin}
+            ORDER BY ST_Hilbert(geometry, ST_Extent(ST_MakeEnvelope({xmin}, {ymin}, {xmax}, {ymax})))
+        ) TO '{out / 'places.parquet'}' (FORMAT parquet, COMPRESSION zstd, ROW_GROUP_SIZE 100000)
+    """)
+    n = con.execute(f"SELECT count(*) FROM read_parquet('{out / 'places.parquet'}')").fetchone()[0]
+    print(f"places: {n} rows, {time.time() - t0:.1f}s")
+
+
 def build_coastline(con, cfg, out: Path) -> None:
     d = cfg["data"]
     raw = out / "raw"
@@ -191,6 +215,10 @@ def build_db(cfg, out: Path, simplify_deg: float = 0.001) -> None:
     """)
     print(f"layer distances in {time.time() - t1:.1f}s")
     con.execute("CREATE INDEX layer_dist_id ON layer_dist (id)")
+    if (out / "places.parquet").exists():
+        t1 = time.time()
+        con.execute(f"CREATE TABLE places AS SELECT * FROM read_parquet('{out / 'places.parquet'}')")
+        print(f"places table in {time.time() - t1:.1f}s")
     con.execute("CREATE INDEX names_norm ON names (name_norm)")
     con.execute("CREATE INDEX names_nospace ON names (name_nospace)")
     con.execute("CREATE INDEX div_id ON divisions (id)")
@@ -204,6 +232,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--skip-overture", action="store_true", help="Keep the existing Overture files.")
     ap.add_argument("--db-only", action="store_true", help="Only build geoparse.duckdb from the existing files.")
+    ap.add_argument("--skip-places", action="store_true", help="Keep the existing places file.")
     args = ap.parse_args()
     cfg = load_config()
     out = build_dir(cfg)
@@ -212,6 +241,8 @@ def main() -> None:
         con = connect()
         if not args.skip_overture:
             build_divisions(con, cfg, out)
+        if not args.skip_places:
+            build_places(con, cfg, out)
         build_coastline(con, cfg, out)
         build_lexicon(con, out)
         con.close()
