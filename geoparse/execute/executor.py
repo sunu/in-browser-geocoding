@@ -489,14 +489,14 @@ class _Run:
         gc = self.ex.geocoder_or_default()
         limit = int(self.ex.cfg["geocoder"]["limit"])
         seen: dict[str, Any] = {}
-        prepared = shapely.prepared.prep(geom)
+        shapely.prepare(geom)
         for t in tiles:
-            if not prepared.intersects(shapely.box(*t)):
+            if not geom.intersects(shapely.box(*t)):
                 continue
             for f in gc.search(leaf["q"], limit=limit, bbox=t, osm_tag=category):
-                if f.id not in seen and prepared.contains(shapely.Point(f.lon, f.lat)):
+                if f.id not in seen and geom.contains(shapely.Point(f.lon, f.lat)):
                     seen[f.id] = f
-        if len(tiles) > 1 or any(True for _ in []):
+        if len(tiles) > 1:
             self.notes.append(f"features: {len(tiles)} geocoder tiles, max {limit} results each")
         if not seen:
             return self.empty_rel()

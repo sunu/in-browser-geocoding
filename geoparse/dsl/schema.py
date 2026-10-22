@@ -47,7 +47,7 @@ CATALOG: dict[str, OpSpec] = {s.name: s for s in [
            "One named place. 'id' is set when the parser has resolved the name."),
     OpSpec("LexiconSet", (_a("key", "str", True, "lexicon"),), SET, "A named set from the lexicon."),
     OpSpec("Layer", (_a("name", "str", True, "layers"),), LAYER, "A spatial layer, for example the coastline."),
-    OpSpec("Children", (_a("of", SETLIKE), _a("level", "str", True, "admin_levels")), SET),
+    OpSpec("Children", (_a("of", REGION), _a("level", "str", True, "admin_levels")), SET),
     OpSpec("Parent", (_a("of", SETLIKE), _a("level", "str", True, "admin_levels")), ENTITY),
     OpSpec("Neighbors", (_a("of", SETLIKE), _a("level", "str", False, "admin_levels")), SET),
     OpSpec("Filter", (_a("set", SETLIKE), _a("pred", PREDICATE)), SET),
