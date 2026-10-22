@@ -179,6 +179,18 @@ def build_db(cfg, out: Path, simplify_deg: float = 0.001) -> None:
             ST_Boundary((SELECT a.gs FROM areas a JOIN divisions d USING (id) WHERE d.subtype = 'country' AND d.country = '{country}')),
             ST_Buffer((SELECT ST_Union_Agg(a.gs) FROM areas a JOIN divisions d USING (id) WHERE d.subtype = 'country' AND d.country <> '{country}'), 0.05))
     """)
+    # Distance (degrees) from each admin area to the layers. The predicates compare it with the policy
+    # tolerance at query time. Neighborhoods are not included (too many, and rarely used with predicates).
+    t1 = time.time()
+    con.execute("""
+        CREATE TABLE layer_dist AS
+        SELECT a.id,
+               ST_Distance(a.gs, (SELECT geometry FROM layers WHERE name = 'coastline')) AS coastline,
+               ST_Distance(a.gs, (SELECT geometry FROM layers WHERE name = 'country_boundary')) AS country_boundary
+        FROM areas a WHERE a.subtype IN ('country', 'region', 'county', 'locality')
+    """)
+    print(f"layer distances in {time.time() - t1:.1f}s")
+    con.execute("CREATE INDEX layer_dist_id ON layer_dist (id)")
     con.execute("CREATE INDEX names_norm ON names (name_norm)")
     con.execute("CREATE INDEX names_nospace ON names (name_nospace)")
     con.execute("CREATE INDEX div_id ON divisions (id)")

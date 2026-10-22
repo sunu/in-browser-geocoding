@@ -117,6 +117,8 @@ class _Run:
         for m in MACROS:
             self.con.execute(m)
         self.n = 0
+        self.has_layer_dist = bool(self.con.execute(
+            "SELECT count(*) FROM information_schema.tables WHERE table_name = 'layer_dist'").fetchone()[0])
         self.sql: list[str] = []
         self.notes: list[str] = []
 
@@ -297,7 +299,10 @@ class _Run:
             if target["op"] == "Layer":
                 name = target["args"]["name"]
                 tol_m = self.policy["coastal_tolerance_m"] if name == "coastline" else self.policy["neighbor_tolerance_m"]
-                return f"ST_DWithin({alias}.gs, {self.layer_geom(name)}, {self.deg(float(tol_m), 20.0)})"
+                tol = self.deg(float(tol_m), 20.0)
+                # Use the distance from the build when it exists, else compute it.
+                pre = f"(SELECT ld.{name} FROM layer_dist ld WHERE ld.id = {alias}.id)" if self.has_layer_dist else "NULL"
+                return f"coalesce({pre} <= {tol}, ST_DWithin({alias}.gs, {self.layer_geom(name)}, {tol}))"
             t = self.eval(target)
             tol = self.deg(float(self.policy["neighbor_tolerance_m"]), self.lat_of(t))
             return (f"(ST_DWithin({alias}.gs, {self.union_geom(t, 'gs')}, {tol}) "
