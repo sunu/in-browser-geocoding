@@ -93,10 +93,10 @@
 - {q: "police stations in Mysuru", t: features_in, s: {category: "amenity:police", region: "Mysuru"}}
 - {q: "Koramangala restaurants", t: features_in, s: {category: "amenity:restaurant", region: "Koramangala"}}
 - {q: "schools near Indiranagar", t: features_near, s: {category: "amenity:school", distance: null, region: "Indiranagar"}}
-- {q: "hospitals within 2 km of MG Road", t: features_near, s: {category: "amenity:hospital", distance: 2000, region: "MG Road"}}
-- {q: "atms 500 m from Brigade Road", t: features_near, s: {category: "amenity:atm", distance: 500, region: "Brigade Road"}}
+- {q: "hospitals within 2 km of MG Road", t: features_near, s: {category: "amenity:hospital", distance: 2000, region: "MG Road"}, src: {region: photon}}
+- {q: "atms 500 m from Brigade Road", t: features_near, s: {category: "amenity:atm", distance: 500, region: "Brigade Road"}, src: {region: photon}}
 - {q: "petrol pumps near Whitefield", t: features_near, s: {category: "amenity:fuel", distance: null, region: "Whitefield"}}
-- {q: "bus stops within 1 km of Majestic", t: features_near, s: {category: "highway:bus_stop", distance: 1000, region: "Majestic"}}
+- {q: "bus stops within 1 km of Majestic", t: features_near, s: {category: "highway:bus_stop", distance: 1000, region: "Majestic"}, src: {region: photon}}
 
 # ---------------------------------------------------------------- attribute
 - {q: "cities in Maharashtra with population over 1 million", t: children_attr, s: {level: city, parent: "Maharashtra", attr: population, op: gt, value: 1000000}}
