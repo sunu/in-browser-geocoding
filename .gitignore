@@ -7,3 +7,5 @@ data_build/
 *.parquet
 models/
 plans/
+data/build/
+.cache/
