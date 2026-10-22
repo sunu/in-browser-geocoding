@@ -65,27 +65,12 @@ class Decider:
         self.thresholds: dict[str, float] = dcfg["thresholds"]
         self.logger = logger or DecisionLogger()
         self.use_ner = use_ner
-        self._providers: dict[str, DecisionProvider] = {}
-        impls: dict[str, DecisionProvider] = {}
-
-        def make(name: str) -> DecisionProvider:
-            if name not in impls:
-                if name == "jev":
-                    j = dcfg["jev"]
-                    impls[name] = JevProvider(model=j["model"], url=j["url"], timeout_s=j["timeout_s"],
-                                              mode=jev_mode, cache_path=jev_cache)
-                elif name == "rules":
-                    impls[name] = RulesProvider()
-                elif name == "local":
-                    impls[name] = LocalClassifierProvider()
-                else:
-                    raise ValueError(f"unknown provider {name}")
-            return impls[name]
-
-        for decision, pname in dcfg["providers"].items():
-            self._providers[decision] = make(default or pname)
-        if providers:
-            self._providers.update(providers)
+        # Provider names for each decision key, from the config. `default` replaces all of them.
+        self._names: dict[str, str] = {k: (default or v) for k, v in dcfg["providers"].items()}
+        self._impls: dict[str, DecisionProvider] = {}
+        self._overrides: dict[str, DecisionProvider] = dict(providers or {})
+        self._make_args = {"dcfg": dcfg, "jev_mode": jev_mode, "jev_cache": jev_cache}
+        self._make_lock = threading.Lock()
         self.run_id = uuid.uuid4().hex[:12]
         self.trace: list[dict[str, Any]] = []
         self._lock = threading.Lock()
@@ -100,11 +85,47 @@ class Decider:
         d._lock = threading.Lock()
         return d
 
+    @staticmethod
+    def _keys(decision: str) -> list[str]:
+        """Config keys for a decision, most specific first.
+        fill_closed_slot.category.group -> [fill_closed_slot.category.group, fill_closed_slot.category, fill_closed_slot]"""
+        parts = decision.split(".")
+        keys = [".".join(parts[:i]) for i in range(len(parts), 0, -1)]
+        if parts[0] == "pick_template_flat":
+            keys.append("pick_template")
+        return keys
+
+    def _make(self, name: str) -> DecisionProvider:
+        with self._make_lock:
+            if name not in self._impls:
+                dcfg = self._make_args["dcfg"]
+                if name == "jev":
+                    j = dcfg["jev"]
+                    self._impls[name] = JevProvider(model=j["model"], url=j["url"], timeout_s=j["timeout_s"],
+                                                    mode=self._make_args["jev_mode"], cache_path=self._make_args["jev_cache"])
+                elif name == "rules":
+                    self._impls[name] = RulesProvider()
+                elif name == "local":
+                    self._impls[name] = LocalClassifierProvider.from_config(dcfg.get("local", {}))
+                else:
+                    raise ValueError(f"unknown provider {name}")
+            return self._impls[name]
+
+    def provider_name(self, decision: str) -> str:
+        for k in self._keys(decision):
+            if k in self._overrides:
+                return getattr(self._overrides[k], "name", "custom")
+            if k in self._names:
+                return self._names[k]
+        raise KeyError(f"no provider configured for decision {decision}")
+
     def provider(self, decision: str) -> DecisionProvider:
-        base = decision.split(".")[0]
-        if base == "pick_template_flat":
-            base = "pick_template"
-        return self._providers[base]
+        for k in self._keys(decision):
+            if k in self._overrides:
+                return self._overrides[k]
+            if k in self._names:
+                return self._make(self._names[k])
+        raise KeyError(f"no provider configured for decision {decision}")
 
     def threshold(self, decision: str) -> float:
         base = decision.split(".")[0]
@@ -132,7 +153,7 @@ class Decider:
         if len(options) == 1:
             d = Decision[str](value=next(iter(options)), confidence=1.0, impl="deterministic")
         else:
-            q = Question(id=decision.split(".")[0], instructions=INSTRUCTIONS[decision], context=context)
+            q = Question(id=decision, instructions=INSTRUCTIONS[decision], context=context)
             d = self.provider(decision).choose(state, q, options)
             if d.value not in options:
                 d = Decision[str](value=d.value, confidence=0.0, impl=d.impl, trace={**d.trace, "error": "value not in options"})

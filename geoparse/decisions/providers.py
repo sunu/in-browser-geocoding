@@ -192,9 +192,12 @@ class RulesProvider:
         self.rules = rules
 
     def _rule(self, question: Question) -> RuleFn:
-        if question.id not in self.rules:
-            raise ProviderError(f"RulesProvider has no rule for decision '{question.id}'")
-        return self.rules[question.id]
+        parts = question.id.split(".")
+        for i in range(len(parts), 0, -1):
+            key = ".".join(parts[:i])
+            if key in self.rules:
+                return self.rules[key]
+        raise ProviderError(f"RulesProvider has no rule for decision '{question.id}'")
 
     def choose(self, text: State, question: Question, options: dict[str, str]) -> Decision[str]:
         return self._rule(question)(text, question, options)
@@ -207,18 +210,73 @@ class RulesProvider:
 
 
 class LocalClassifierProvider:
-    """Stub for a later local ONNX classifier trained from the decision logs."""
+    """Local cross-encoder ("local Jev", plan-006). Scores each option; softmax with a calibrated temperature.
+
+    The confidence uses the same formulas as Jev, so that the thresholds stay comparable.
+    """
 
     name = "local"
 
-    def __init__(self, model_dir: str | Path | None = None):
-        self.model_dir = model_dir
+    def __init__(self, model_dir: str | Path, device: str = "cpu", max_length: int = 128):
+        import torch
+        from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
+        self.torch = torch
+        self.dir = Path(model_dir)
+        if not self.dir.exists():
+            raise FileNotFoundError(f"local model not found: {self.dir}")
+        self.tok = AutoTokenizer.from_pretrained(str(self.dir))
+        self.model = AutoModelForSequenceClassification.from_pretrained(str(self.dir)).eval().to(device)
+        self.device = device
+        self.max_length = max_length
+        calib = self.dir / "calibration.json"
+        self.temps: dict[str, float] = json.loads(calib.read_text()) if calib.exists() else {}
+        self._lock = threading.Lock()
+
+    @classmethod
+    def from_config(cls, cfg: dict[str, Any]) -> "LocalClassifierProvider":
+        from geoparse.config import REPO_ROOT
+
+        d = Path(os.environ.get("GEOPARSE_LOCAL_DIR") or cfg.get("model_dir", "models/local/current"))
+        d = d if d.is_absolute() else REPO_ROOT / d
+        return cls(d, device=cfg.get("device", "cpu"))
+
+    def _temperature(self, decision: str) -> float:
+        parts = decision.split(".")
+        for i in range(len(parts), 0, -1):
+            k = ".".join(parts[:i])
+            if k in self.temps:
+                return float(self.temps[k])
+        return float(self.temps.get("default", 1.0))
+
+    def probs(self, decision: str, instructions: str, state: Any, options: dict[str, str]) -> dict[str, float]:
+        from geoparse.decisions.xenc_format import pair
+
+        pairs = [pair(decision, instructions, state, k, v) for k, v in options.items()]
+        enc = self.tok([a for a, _ in pairs], [b for _, b in pairs], return_tensors="pt", padding=True,
+                       truncation=True, max_length=self.max_length).to(self.device)
+        with self._lock, self.torch.no_grad():
+            logits = self.model(**enc).logits.squeeze(-1).float()
+        p = self.torch.softmax(logits / self._temperature(decision), dim=0).tolist()
+        return {k: round(float(v), 6) for k, v in zip(options, p)}
 
     def choose(self, text: State, question: Question, options: dict[str, str]) -> Decision[str]:
-        raise NotImplementedError("LocalClassifierProvider is a stub. Train a model from the decision logs first.")
+        t0 = time.time()
+        state = _state(text)
+        probs = self.probs(question.id, question.instructions, state, options)
+        best = max(probs, key=probs.get)
+        return Decision[str](value=best, confidence=choice_confidence(probs), impl=f"local:{self.dir.name}",
+                             trace={"state": state, "probabilities": probs, "latency_s": round(time.time() - t0, 4)})
 
     def predicate(self, text: State, question: Question) -> Decision[bool]:
-        raise NotImplementedError("LocalClassifierProvider is a stub.")
+        t0 = time.time()
+        state = _state(text)
+        crit = question.context.get("criteria") or {"true": "Yes", "false": "No"}
+        probs = self.probs(question.id, question.instructions, state, {"true": crit["true"], "false": crit["false"]})
+        p = probs["true"]
+        return Decision[bool](value=p >= 0.5, confidence=abs(2 * p - 1), impl=f"local:{self.dir.name}",
+                              trace={"state": state, "p_yes": p, "latency_s": round(time.time() - t0, 4)})
 
     def score(self, text: State, question: Question, scale: list[str]) -> Decision[float]:
-        raise NotImplementedError("LocalClassifierProvider is a stub.")
+        d = self.choose(text, question, {str(i): s for i, s in enumerate(scale)})
+        return Decision[float](value=float(d.value), confidence=d.confidence, impl=d.impl, trace=d.trace)

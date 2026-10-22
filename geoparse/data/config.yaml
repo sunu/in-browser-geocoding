@@ -88,16 +88,22 @@ t5:
   unsupported_p: 0.5
 
 decisions:
-  # Provider for each decision. Values: jev, rules, local.
+  # Provider for each decision: jev (TypeSafe Jev), local (local cross-encoder), or rules (code and data).
+  # A key can be a decision name or a decision with its slot type, for example
+  # "fill_closed_slot.category" or "fill_closed_slot.category.group". The most specific key wins.
   providers:
     pick_family: jev
     pick_template: jev
+    pick_split: jev
     fill_closed_slot: jev
     bind_anchor: jev
-    pick_split: jev
     is_subquery: jev
-    select_source: jev
-    disambiguate: jev
+    select_source: rules
+    disambiguate: rules
+  # Local cross-encoder (plan-006).
+  local:
+    model_dir: "models/local/current"
+    device: cpu
   # Minimum confidence for each decision. Below this value the parser returns Unsupported.
   thresholds:
     pick_family: 0.3
