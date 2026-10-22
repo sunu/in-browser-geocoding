@@ -72,6 +72,15 @@ print(rr.result.geojson())
 
 To use one provider for all decisions, give its name: `parse(query, provider="rules")`.
 
+## Test UI
+
+The Streamlit UI shows the parse result, the decision trace, the DAG, the SQL, and the result on a map. It also has a DAG editor to execute a DAG without the parser.
+
+```sh
+uv sync --extra ner --extra ui
+uv run streamlit run app/streamlit_app.py
+```
+
 ## Configuration
 
 All policy decisions are in `geoparse/data/config.yaml`. Examples:
