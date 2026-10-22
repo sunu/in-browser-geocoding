@@ -44,7 +44,8 @@ uv run python ../scripts/web_reference.py     # Python reference parses (run in 
 npx tsx scripts/parity.ts                     # JS parse = Python parse (fp32 models)
 npx tsx scripts/parity.ts --int8              # with the int8 models
 npx tsx scripts/exec_parity.ts                # JS executor = gold expected IDs
-npx tsx scripts/browser_smoke.ts              # headless Chromium: load, queries, console errors (dev server must run)
+npx tsx scripts/browser_smoke.ts [chromium|firefox|webkit] [--reload]   # headless: load, queries, console errors (dev server must run)
+npx tsx scripts/load_check.ts chromium firefox webkit chrome            # page load in several browsers
 npx tsx scripts/screenshot.ts "a query"       # screenshot to test/screenshot.png
 ```
 

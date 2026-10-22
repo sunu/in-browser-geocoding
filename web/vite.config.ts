@@ -6,7 +6,12 @@ const acceptRanges: Plugin = {
   name: "accept-ranges",
   configureServer(server) {
     server.middlewares.use((req, res, next) => {
-      if (req.url?.startsWith("/data/")) res.setHeader("Accept-Ranges", "bytes");
+      if (req.url?.startsWith("/data/")) {
+        res.setHeader("Accept-Ranges", "bytes");
+        // DuckDB-WASM cannot handle 304 answers. Never answer a conditional request for data files.
+        delete req.headers["if-none-match"];
+        delete req.headers["if-modified-since"];
+      }
       next();
     });
   },

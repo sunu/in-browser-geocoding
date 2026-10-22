@@ -1,14 +1,16 @@
 // Headless browser check of the page: load time, queries, console errors. Needs the dev server on :5173.
-import { chromium } from "playwright";
+import { chromium, firefox, webkit } from "playwright";
 
 const QUERIES = ["districts near the sea in Gujarat", "hospitals within 2 km of coastal districts of Odisha",
   "2 km around MG Road Bangalore", "Kerala except Palakkad", "what is the weather in Pune"];
-const browser = await chromium.launch();
+// Usage: npx tsx scripts/browser_smoke.ts [chromium|firefox|webkit] [--reload]
+const name = process.argv[2] ?? "chromium";
+const browser = await ({ chromium, firefox, webkit } as any)[name].launch();
 const page = await browser.newPage();
 const errors: string[] = [];
 page.on("console", (m) => { if (m.type() === "error") errors.push(m.text().slice(0, 300)); });
 page.on("pageerror", (e) => errors.push(String(e).slice(0, 300)));
-let bytes = 0;
+let bytes = 0; // eslint-disable-line prefer-const
 const byFile: Record<string, number> = {};
 page.on("requestfinished", async (req) => {
   const s = await req.sizes().catch(() => null);
@@ -19,6 +21,12 @@ page.on("requestfinished", async (req) => {
 });
 const t0 = Date.now();
 await page.goto("http://localhost:5173/");
+if (process.argv.includes("--reload")) {
+  // Second load with the files in the browser cache (the case that failed in Firefox).
+  await page.waitForFunction(() => document.getElementById("status")!.textContent!.startsWith("Ready"), null, { timeout: 600000 });
+  bytes = 0;
+  await page.reload();
+}
 await page.waitForFunction(() => document.getElementById("status")!.textContent!.startsWith("Ready") ||
   document.getElementById("status")!.textContent!.includes("failed"), null, { timeout: 600000 });
 console.log("load:", await page.textContent("#status"), `(${((Date.now() - t0) / 1000).toFixed(1)} s wall, ${(bytes / 1e6).toFixed(0)} MB transferred)`);

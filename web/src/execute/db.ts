@@ -22,8 +22,11 @@ const SETUP = [
   "INSTALL spatial", "LOAD spatial", "SET geometry_always_xy = true",
 ];
 
-function tables(base: string) {
-  const f = (n: string) => `'${base}/${n}'`;
+// Small files: loaded into memory at start-up. Large files: read with HTTP range requests.
+const SMALL = ["divisions.parquet", "names.parquet", "areas.parquet", "layers.parquet", "layer_dist.parquet"];
+
+function tables(base: string, placesUrl?: string) {
+  const f = (n: string) => (n === "places.parquet" && placesUrl ? `'${placesUrl}'` : `'${base}/${n}'`);
   return [
     `CREATE TABLE divisions AS SELECT *, ST_Point(lon, lat) AS geometry FROM read_parquet(${f("divisions.parquet")})`,
     `CREATE TABLE names AS SELECT * FROM read_parquet(${f("names.parquet")})`,
@@ -60,7 +63,22 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
   await db.open({ filesystem: { reliableHeadRequests: true, allowFullHTTPReads: false, forceFullHTTPReads: false } });
   const c = await db.connect();
   const abs = new URL(base, location.href).href;
-  for (const s of [...SETUP, ...tables(abs)]) { onProgress?.(s.slice(0, 60)); await c.query(s); }
+  // The small files go through fetch() (normal browser cache) and are given to DuckDB as buffers.
+  // DuckDB-WASM's HTTP reader fails on a 304 (Not Modified) answer, which Firefox can cause when the file
+  // is in its cache.
+  await Promise.all(SMALL.map(async (n) => {
+    const r = await fetch(`${abs}/${n}`);
+    if (!r.ok) throw new Error(`cannot load ${n}: HTTP ${r.status}`);
+    await db.registerFileBuffer(n, new Uint8Array(await r.arrayBuffer()));
+    onProgress?.(`data: ${n}`);
+  }));
+  // The places file is read with range requests. A per-session query parameter keeps the browser from
+  // sending conditional requests (304) for it.
+  const placesUrl = `${abs}/places.parquet?session=${Date.now().toString(36)}`;
+  for (const s of [...SETUP, ...tables("", placesUrl).map((t) => t.replace(/'\/(\w+\.parquet)'/g, "'$1'"))]) {
+    onProgress?.(s.slice(0, 60));
+    await c.query(s);
+  }
   return { query: async (sql: string) => rows(await c.query(sql)) };
 }
 

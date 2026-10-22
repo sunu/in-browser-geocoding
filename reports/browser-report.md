@@ -44,7 +44,8 @@ The full geocoder runs in one browser tab: the T5 frame model, the local decisio
 1. **Full download of the places file.** DuckDB-WASM sent a GET without a Range header. Fix: open the database with `reliableHeadRequests: true` and `allowFullHTTPReads: false`, and send `Accept-Ranges: bytes` from the dev server.
 2. **Concurrent model runs.** ONNX Runtime Web cannot run one session twice at the same time. Fix: a queue for each session.
 3. **Basemap.** The CARTO raster tiles now need an API key. Fix: OpenFreeMap (no key).
-4. **Bundler.** Vite followed the Node.js-only import of `onnxruntime-node`. Fix: import Node.js-only modules through a variable.
+4. **Firefox load failure (reported by the user).** Firefox revalidated a cached data file with a conditional request. The server answered 304 (Not Modified), and DuckDB-WASM cannot handle a 304. Fix: the small files are fetched with `fetch()` and given to DuckDB as buffers; the places file has a per-session URL parameter; the dev server ignores conditional headers for `/data/`. Checked in Chromium, Chrome, Firefox (also a second load from cache), and WebKit.
+5. **Bundler.** Vite followed the Node.js-only import of `onnxruntime-node`. Fix: import Node.js-only modules through a variable.
 
 ## 5. Open items
 
