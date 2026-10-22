@@ -17,7 +17,7 @@ templates:
     examples: ["hospitals within 2 km of MG Road", "schools near Indiranagar", "atms 500 m from Brigade Road"]
     slots:
       category: {type: category, options_ref: categories}
-      distance: {type: distance}
+      distance: {type: distance, default: policy.default_near_m}
       region: {type: region}
     patterns:
       - "{category} (near|around|close to|nearby|next to|in the vicinity of|near to|surrounding) {region}"

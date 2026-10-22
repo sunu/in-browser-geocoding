@@ -16,7 +16,7 @@ templates:
     description: "A strip of land along the sea coast of a place"
     examples: ["5 km along the coast of Kerala", "coastal belt of Odisha"]
     slots:
-      distance: {type: distance}
+      distance: {type: distance, default: policy.default_strip_m}
       region: {type: region}
     patterns:
       - "{distance} along the (coast|coastline|seashore|shore|sea coast|seacoast|beach) (of|in) {region}"
@@ -30,7 +30,7 @@ templates:
     description: "A strip of land along the boundary of a place"
     examples: ["10 km along the border of Goa", "border belt of Karnataka"]
     slots:
-      distance: {type: distance}
+      distance: {type: distance, default: policy.default_strip_m}
       region: {type: region}
     patterns:
       - "{distance} along the (border|boundary|borders|boundaries) of {region}"
@@ -43,7 +43,7 @@ templates:
     description: "A strip of land along the international border, inside a place"
     examples: ["20 km along the international border in Punjab", "international border belt of Rajasthan"]
     slots:
-      distance: {type: distance}
+      distance: {type: distance, default: policy.default_strip_m}
       region: {type: region}
     patterns:
       - "{distance} (along|from|of) the (international border|international boundary|country border|national border|indian border) (in|of|within) {region}"

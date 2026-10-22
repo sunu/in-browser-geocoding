@@ -131,19 +131,80 @@ def build_lexicon(con, out: Path) -> None:
     print(f"lexicon: {len(lexicon)} sets, {missing} members not in the extract")
 
 
+NAME_NORM_SQL = "trim(regexp_replace(regexp_replace(lower({x}), '[^a-z0-9]+', ' ', 'g'), '\\s+', ' ', 'g'))"
+
+
+def build_db(cfg, out: Path, simplify_deg: float = 0.001) -> None:
+    """Build data/build/geoparse.duckdb from the GeoParquet files.
+
+    Tables:
+      divisions  attributes and point geometry
+      areas      full polygon (geometry) and simplified polygon (gs) for each division
+      names      normalized names for the gazetteer
+      layers     derived layers: coastline, country_boundary (land border of the country)
+    """
+    db_path = out / "geoparse.duckdb"
+    tmp = out / "geoparse.duckdb.tmp"
+    tmp.unlink(missing_ok=True)
+    con = duckdb.connect(str(tmp))
+    con.execute("INSTALL spatial; LOAD spatial; SET geometry_always_xy = true;")
+    t0 = time.time()
+    con.execute(f"CREATE TABLE divisions AS SELECT * FROM read_parquet('{out / 'divisions.parquet'}')")
+    con.execute(f"""
+        CREATE TABLE areas AS
+        SELECT division_id AS id, subtype, geometry,
+               ST_SimplifyPreserveTopology(geometry, {simplify_deg}) AS gs
+        FROM read_parquet('{out / 'division_area.parquet'}')
+    """)
+    print(f"areas simplified in {time.time() - t0:.1f}s")
+    nn = NAME_NORM_SQL
+    con.execute(f"""
+        CREATE TABLE names AS
+        WITH raw AS (
+            SELECT id, name AS n, 'primary' AS kind FROM divisions
+            UNION ALL SELECT id, name_en, 'en' FROM divisions WHERE name_en IS NOT NULL AND name_en <> name
+            UNION ALL SELECT id, unnest(alt_names), 'alt' FROM divisions
+        )
+        SELECT DISTINCT id, {nn.format(x='n')} AS name_norm,
+               replace({nn.format(x='n')}, ' ', '') AS name_nospace, kind
+        FROM raw WHERE n IS NOT NULL
+    """)
+    country = cfg["data"]["country"]
+    con.execute(f"""
+        CREATE TABLE layers AS
+        SELECT 'coastline' AS name, ST_Union_Agg(geometry) AS geometry
+        FROM read_parquet('{out / 'coastline.parquet'}')
+        UNION ALL
+        SELECT 'country_boundary', ST_Intersection(
+            ST_Boundary((SELECT a.gs FROM areas a JOIN divisions d USING (id) WHERE d.subtype = 'country' AND d.country = '{country}')),
+            ST_Buffer((SELECT ST_Union_Agg(a.gs) FROM areas a JOIN divisions d USING (id) WHERE d.subtype = 'country' AND d.country <> '{country}'), 0.05))
+    """)
+    con.execute("CREATE INDEX names_norm ON names (name_norm)")
+    con.execute("CREATE INDEX names_nospace ON names (name_nospace)")
+    con.execute("CREATE INDEX div_id ON divisions (id)")
+    con.execute("CREATE INDEX area_id ON areas (id)")
+    con.close()
+    tmp.rename(db_path)
+    print(f"geoparse.duckdb: {db_path.stat().st_size / 1e6:.1f} MB, {time.time() - t0:.1f}s")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--skip-overture", action="store_true", help="Keep the existing Overture files.")
+    ap.add_argument("--db-only", action="store_true", help="Only build geoparse.duckdb from the existing files.")
     args = ap.parse_args()
     cfg = load_config()
     out = build_dir(cfg)
     out.mkdir(parents=True, exist_ok=True)
-    con = connect()
-    if not args.skip_overture:
-        build_divisions(con, cfg, out)
-    build_coastline(con, cfg, out)
-    build_lexicon(con, out)
-    for f in sorted(out.glob("*.parquet")):
+    if not args.db_only:
+        con = connect()
+        if not args.skip_overture:
+            build_divisions(con, cfg, out)
+        build_coastline(con, cfg, out)
+        build_lexicon(con, out)
+        con.close()
+    build_db(cfg, out)
+    for f in sorted(list(out.glob("*.parquet")) + list(out.glob("*.duckdb"))):
         print(f"{f.name:24s} {f.stat().st_size / 1e6:8.1f} MB")
 
 

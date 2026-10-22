@@ -5,7 +5,7 @@ templates:
     description: "The area within a distance around a place"
     examples: ["2 km around MG Road Bangalore", "within 5 km of Charminar", "near Koramangala"]
     slots:
-      distance: {type: distance}
+      distance: {type: distance, default: policy.default_near_m}
       target: {type: region}
     patterns:
       - "{distance} (around|from|of|near|radius around|radius of|radius from|buffer around|buffer of) {target}"

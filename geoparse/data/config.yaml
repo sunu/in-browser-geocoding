@@ -36,6 +36,14 @@ policy:
   neighbor_tolerance_m: 200
   # Default buffer distance when the query gives no distance ("near X").
   default_near_m: 2000
+  # Default strip width for "coastal belt of X" or "border belt of X".
+  default_strip_m: 5000
+  # "northern X": the part of X in the north fraction of its bounding box.
+  direction_part_fraction: 0.5
+  # "north of X": a box next to X. Its depth is this multiple of the size of X.
+  direction_outside_scale: 1.0
+  # Simplification tolerance (degrees) for output geometries. 0 means no simplification.
+  output_simplify_deg: 0.0005
 
 geocoder:
   photon_url: "https://photon.komoot.io/api"

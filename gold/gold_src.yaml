@@ -1,0 +1,127 @@
+# Gold suite source. gold/build_gold.py converts this file to gold/gold.jsonl.
+#
+# Fields: q (query), t (template), s (slots), n (notes, optional).
+# Slot values:
+#   closed slots: the option key, for example "coastal", "state", "amenity:hospital", "gt"
+#   distance: meters, or null for the default distance
+#   value: a number
+#   region or anchor: the exact text of the slot in the query, or
+#     {lex: <lexicon key>, text: <text>} for a lexicon set, or
+#     {q: <text>, t: <template>, s: {...}} for a sub-query
+# src: the expected source for each anchor on the simple path (overture or photon)
+
+# ---------------------------------------------------------------- lookup
+- {q: "Koramangala", t: lookup_place, s: {anchor: "Koramangala"}, src: {anchor: overture}}
+- {q: "Kerala", t: lookup_place, s: {anchor: "Kerala"}, src: {anchor: overture}}
+- {q: "bangalore", t: lookup_place, s: {anchor: "bangalore"}, src: {anchor: overture}, n: "Old name. Overture has it as an alternate name of Bengaluru."}
+- {q: "MG Road, Bangalore", t: lookup_place, s: {anchor: "MG Road, Bangalore"}, src: {anchor: photon}}
+- {q: "Charminar", t: lookup_place, s: {anchor: "Charminar"}, src: {anchor: photon}, n: "Landmark."}
+- {q: "Tamilnadu", t: lookup_place, s: {anchor: "Tamilnadu"}, src: {anchor: overture}, n: "Informal spelling without a space."}
+- {q: "Indiranagar", t: lookup_place, s: {anchor: "Indiranagar"}, src: {anchor: overture}}
+- {q: "Gateway of India", t: lookup_place, s: {anchor: "Gateway of India"}, src: {anchor: photon}, n: "Landmark with 'of' in its name."}
+- {q: "odisha", t: lookup_place, s: {anchor: "odisha"}, src: {anchor: overture}}
+- {q: "Northeast India", t: lookup_place, s: {anchor: {lex: northeast_india, text: "Northeast India"}}, n: "Lexicon set."}
+- {q: "seven sisters", t: lookup_place, s: {anchor: {lex: seven_sisters, text: "seven sisters"}}, n: "Lexicon set."}
+
+# ---------------------------------------------------------------- modifier
+- {q: "2 km around MG Road Bangalore", t: buffer, s: {distance: 2000, target: "MG Road Bangalore"}, src: {target: photon}}
+- {q: "within 5 km of Charminar", t: buffer, s: {distance: 5000, target: "Charminar"}, src: {target: photon}}
+- {q: "near Koramangala", t: buffer, s: {distance: null, target: "Koramangala"}, src: {target: overture}}
+- {q: "500m around Indiranagar metro station", t: buffer, s: {distance: 500, target: "Indiranagar metro station"}, src: {target: photon}}
+- {q: "10 kms around mysore", t: buffer, s: {distance: 10000, target: "mysore"}, src: {target: overture}}
+- {q: "center of Karnataka", t: centroid, s: {target: "Karnataka"}, src: {target: overture}}
+- {q: "centroid of Bengaluru", t: centroid, s: {target: "Bengaluru"}, src: {target: overture}}
+- {q: "northern Karnataka", t: direction_part, s: {dir: north, target: "Karnataka"}, src: {target: overture}}
+- {q: "south bangalore", t: direction_part, s: {dir: south, target: "bangalore"}, src: {target: overture}}
+- {q: "western part of Odisha", t: direction_part, s: {dir: west, target: "Odisha"}, src: {target: overture}}
+- {q: "north of Bangalore", t: direction_outside, s: {dir: north, target: "Bangalore"}, src: {target: overture}}
+- {q: "east of Pune", t: direction_outside, s: {dir: east, target: "Pune"}, src: {target: overture}}
+
+# ---------------------------------------------------------------- hierarchy
+- {q: "districts of Karnataka", t: children, s: {level: district, parent: "Karnataka"}}
+- {q: "states in India", t: children, s: {level: state, parent: "India"}}
+- {q: "Kerala districts", t: children, s: {level: district, parent: "Kerala"}}
+- {q: "all districts in tamil nadu", t: children, s: {level: district, parent: "tamil nadu"}}
+- {q: "dists of odisha", t: children, s: {level: district, parent: "odisha"}, n: "Informal abbreviation."}
+- {q: "state that contains Koramangala", t: parent, s: {level: state, child: "Koramangala"}}
+- {q: "which district is Whitefield in", t: parent, s: {level: district, child: "Whitefield"}}
+- {q: "states that border Karnataka", t: neighbors, s: {level: state, of: "Karnataka"}}
+- {q: "districts adjacent to Palakkad", t: neighbors, s: {level: district, of: "Palakkad"}}
+- {q: "neighbours of Kerala", t: neighbors, s: {level: none, of: "Kerala"}}
+- {q: "countries bordering India", t: neighbors, s: {level: country, of: "India"}}
+
+# ---------------------------------------------------------------- predicate_filter
+- {q: "coastal states in India", t: children_with_predicate, s: {pred: coastal, level: state, parent: "India"}, n: "Policy: union territories count as states, so the result has 9 states and 4 UTs."}
+- {q: "landlocked districts of Karnataka", t: children_with_predicate, s: {pred: landlocked, level: district, parent: "Karnataka"}}
+- {q: "coastal districts of Odisha", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Odisha"}}
+- {q: "coastl states of india", t: children_with_predicate, s: {pred: coastal, level: state, parent: "india"}, n: "Misspelled."}
+- {q: "border districts of Punjab", t: children_with_predicate, s: {pred: border, level: district, parent: "Punjab"}}
+- {q: "inland districts of Kerala", t: children_with_predicate, s: {pred: landlocked, level: district, parent: "Kerala"}}
+- {q: "landlocked states of India", t: children_with_predicate, s: {pred: landlocked, level: state, parent: "India"}}
+- {q: "districts of Maharashtra on the coast", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Maharashtra"}}
+- {q: "districts of Karnataka that border Goa", t: children_touching, s: {level: district, parent: "Karnataka", other: "Goa"}}
+- {q: "districts in Odisha bordering Andhra Pradesh", t: children_touching, s: {level: district, parent: "Odisha", other: "Andhra Pradesh"}}
+
+# ---------------------------------------------------------------- set_algebra
+- {q: "Kerala and Tamil Nadu", t: union, s: {a: "Kerala", b: "Tamil Nadu"}}
+- {q: "Goa & Karnataka", t: union, s: {a: "Goa", b: "Karnataka"}}
+- {q: "Kerala, Goa and Karnataka", t: union3, s: {a: "Kerala", b: "Goa", c: "Karnataka"}}
+- {q: "Delhi, Haryana and Punjab", t: union3, s: {a: "Delhi", b: "Haryana", c: "Punjab"}}
+- {q: "Kerala except Palakkad", t: difference, s: {a: "Kerala", b: "Palakkad"}}
+- {q: "South India excluding Kerala", t: difference, s: {a: {lex: south_india, text: "South India"}, b: "Kerala"}}
+- {q: "Karnataka without Bengaluru Urban", t: difference, s: {a: "Karnataka", b: "Bengaluru Urban"}}
+- {q: "northeast india minus assam", t: difference, s: {a: {lex: northeast_india, text: "northeast india"}, b: "assam"}}
+- {q: "overlap of Bengaluru Urban and 10 km around Whitefield", t: intersection, s: {a: "Bengaluru Urban", b: {q: "10 km around Whitefield", t: buffer, s: {distance: 10000, target: "Whitefield"}}}}
+- {q: "part of Karnataka within 50 km of Goa", t: intersection, s: {a: "Karnataka", b: {q: "50 km of Goa", t: buffer, s: {distance: 50000, target: "Goa"}}}}
+
+# ---------------------------------------------------------------- relational
+- {q: "between Mysore and Bengaluru", t: between, s: {a: "Mysore", b: "Bengaluru"}}
+- {q: "area between Pune and Mumbai", t: between, s: {a: "Pune", b: "Mumbai"}}
+- {q: "region between chennai and pondicherry", t: between, s: {a: "chennai", b: "pondicherry"}}
+- {q: "5 km along the coast of Kerala", t: along_coast, s: {distance: 5000, region: "Kerala"}}
+- {q: "coastal belt of Odisha", t: along_coast, s: {distance: null, region: "Odisha"}}
+- {q: "2 km along the coastline of Goa", t: along_coast, s: {distance: 2000, region: "Goa"}}
+- {q: "10 km along the border of Goa", t: along_border, s: {distance: 10000, region: "Goa"}}
+- {q: "border belt of Karnataka", t: along_border, s: {distance: null, region: "Karnataka"}}
+- {q: "20 km along the international border in Punjab", t: along_intl_border, s: {distance: 20000, region: "Punjab"}}
+- {q: "international border belt of Rajasthan", t: along_intl_border, s: {distance: null, region: "Rajasthan"}}
+
+# ---------------------------------------------------------------- features
+- {q: "hospitals in Koramangala", t: features_in, s: {category: "amenity:hospital", region: "Koramangala"}}
+- {q: "cafes in Indiranagar", t: features_in, s: {category: "amenity:cafe", region: "Indiranagar"}}
+- {q: "hospitls in jayanagar", t: features_in, s: {category: "amenity:hospital", region: "jayanagar"}, n: "Misspelled."}
+- {q: "police stations in Mysuru", t: features_in, s: {category: "amenity:police", region: "Mysuru"}}
+- {q: "Koramangala restaurants", t: features_in, s: {category: "amenity:restaurant", region: "Koramangala"}}
+- {q: "schools near Indiranagar", t: features_near, s: {category: "amenity:school", distance: null, region: "Indiranagar"}}
+- {q: "hospitals within 2 km of MG Road", t: features_near, s: {category: "amenity:hospital", distance: 2000, region: "MG Road"}}
+- {q: "atms 500 m from Brigade Road", t: features_near, s: {category: "amenity:atm", distance: 500, region: "Brigade Road"}}
+- {q: "petrol pumps near Whitefield", t: features_near, s: {category: "amenity:fuel", distance: null, region: "Whitefield"}}
+- {q: "bus stops within 1 km of Majestic", t: features_near, s: {category: "highway:bus_stop", distance: 1000, region: "Majestic"}}
+
+# ---------------------------------------------------------------- attribute
+- {q: "cities in Maharashtra with population over 1 million", t: children_attr, s: {level: city, parent: "Maharashtra", attr: population, op: gt, value: 1000000}}
+- {q: "cities in maharastra with populaton over 1 million", t: children_attr, s: {level: city, parent: "maharastra", attr: population, op: gt, value: 1000000}, n: "Misspelled."}
+- {q: "districts of Kerala with more than 30 lakh people", t: children_attr, s: {level: district, parent: "Kerala", attr: population, op: gt, value: 3000000}}
+- {q: "cities in Karnataka with population above 500000", t: children_attr, s: {level: city, parent: "Karnataka", attr: population, op: gt, value: 500000}}
+- {q: "districts in Odisha with population under 10 lakh", t: children_attr, s: {level: district, parent: "Odisha", attr: population, op: lt, value: 1000000}}
+- {q: "states of India with population over 10 crore", t: children_attr, s: {level: state, parent: "India", attr: population, op: gt, value: 100000000}}
+- {q: "towns in Kerala with population less than 50,000", t: children_attr, s: {level: city, parent: "Kerala", attr: population, op: lt, value: 50000}}
+- {q: "cities with population over 1 million in Gujarat", t: children_attr, s: {level: city, parent: "Gujarat", attr: population, op: gt, value: 1000000}}
+- {q: "districts of tamil nadu having population above 2 million", t: children_attr, s: {level: district, parent: "tamil nadu", attr: population, op: gt, value: 2000000}}
+- {q: "districts of Rajasthan with population over 3 million", t: children_attr, s: {level: district, parent: "Rajasthan", attr: population, op: gt, value: 3000000}}
+
+# ---------------------------------------------------------------- nested (depth 2) and lexicon inside templates
+- {q: "hospitals within 2 km of coastal districts of Odisha", t: features_near, s: {category: "amenity:hospital", distance: 2000, region: {q: "coastal districts of Odisha", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Odisha"}}}}
+- {q: "schools in landlocked districts of Goa", t: features_in, s: {category: "amenity:school", region: {q: "landlocked districts of Goa", t: children_with_predicate, s: {pred: landlocked, level: district, parent: "Goa"}}}}
+- {q: "5 km around districts of Goa", t: buffer, s: {distance: 5000, target: {q: "districts of Goa", t: children, s: {level: district, parent: "Goa"}}}}
+- {q: "Kerala and coastal districts of Karnataka", t: union, s: {a: "Kerala", b: {q: "coastal districts of Karnataka", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Karnataka"}}}}
+- {q: "South India except coastal states in India", t: difference, s: {a: {lex: south_india, text: "South India"}, b: {q: "coastal states in India", t: children_with_predicate, s: {pred: coastal, level: state, parent: "India"}}}}
+- {q: "districts of states that border Goa", t: children, s: {level: district, parent: {q: "states that border Goa", t: neighbors, s: {level: state, of: "Goa"}}}}
+- {q: "coastal districts of states that border Goa", t: children_with_predicate, s: {pred: coastal, level: district, parent: {q: "states that border Goa", t: neighbors, s: {level: state, of: "Goa"}}}}
+- {q: "districts that border coastal districts of Odisha", t: neighbors, s: {level: district, of: {q: "coastal districts of Odisha", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Odisha"}}}}
+- {q: "states bordering northeast india", t: neighbors, s: {level: state, of: {lex: northeast_india, text: "northeast india"}}}
+- {q: "districts of the seven sisters", t: children, s: {level: district, parent: {lex: seven_sisters, text: "seven sisters"}}, n: "The leading 'the' is removed from the slot text."}
+- {q: "coastal districts of south india", t: children_with_predicate, s: {pred: coastal, level: district, parent: {lex: south_india, text: "south india"}}}
+- {q: "cities with population over 1 million in states that border Gujarat", t: children_attr, s: {level: city, attr: population, op: gt, value: 1000000, parent: {q: "states that border Gujarat", t: neighbors, s: {level: state, of: "Gujarat"}}}}
+- {q: "area between Kerala and coastal districts of Karnataka", t: between, s: {a: "Kerala", b: {q: "coastal districts of Karnataka", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Karnataka"}}}}
+- {q: "northern part of districts of Goa", t: direction_part, s: {dir: north, target: {q: "districts of Goa", t: children, s: {level: district, parent: "Goa"}}}}
