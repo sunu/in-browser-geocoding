@@ -1,0 +1,518 @@
+"""DAG executor.
+
+Each DAG node compiles to one DuckDB SQL statement that creates a temp table (a relation).
+All relations have the same columns:
+  id VARCHAR, name VARCHAR, subtype VARCHAR, source VARCHAR, geometry GEOMETRY, gs GEOMETRY
+`gs` is a simplified geometry for fast predicates. All geometries are in OGC:CRS84 (lon, lat).
+
+Metric operations (buffer, centroid, metric distance) transform to the local UTM zone of the input
+centroid, compute there, and transform back. Tolerance tests (coastal, neighbors) use a distance in
+degrees that is an upper bound of the tolerance in meters at the latitude of the input.
+
+The `Features` operator calls the geocoder (Photon) with an OSM tag and a bbox, then keeps the points
+inside the region. All other operators run in DuckDB on the local extract.
+"""
+from __future__ import annotations
+
+import json
+import math
+import time
+from typing import Any
+
+import shapely
+from pydantic import BaseModel, Field
+
+from geoparse.config import load_config
+from geoparse.dsl.schema import CATALOG, validate
+from geoparse.execute.data import Store, get_store
+from geoparse.execute.geocoder import Geocoder, PhotonGeocoder
+from geoparse.options import category_leaves, choices, lexicon
+
+M_PER_DEG = 111_320.0
+
+MACROS = [
+    "CREATE OR REPLACE TEMP MACRO crs84(g) AS ST_SetCRS(g, 'OGC:CRS84')",
+    "CREATE OR REPLACE TEMP MACRO utm(g) AS 'EPSG:' || (32600 + floor((ST_X(ST_Centroid(g)) + 180) / 6) + 1)::INT",
+    "CREATE OR REPLACE TEMP MACRO to_m(g, crs) AS ST_Transform(g, 'OGC:CRS84', crs)",
+    "CREATE OR REPLACE TEMP MACRO from_m(g, crs) AS crs84(ST_Transform(g, crs, 'OGC:CRS84'))",
+]
+
+REL_COLS = "id, name, subtype, source, geometry, gs"
+
+
+class ExecutionError(RuntimeError):
+    pass
+
+
+class Feature(BaseModel):
+    id: str | None
+    name: str | None
+    subtype: str | None
+    source: str | None
+    geometry: dict[str, Any] | None
+
+
+class Result(BaseModel):
+    ok: bool
+    kind: str = "set"  # set or geometry
+    features: list[Feature] = Field(default_factory=list)
+    ids: list[str] = Field(default_factory=list)
+    error: str | None = None
+    sql: list[str] = Field(default_factory=list)
+    timings: dict[str, float] = Field(default_factory=dict)
+    notes: list[str] = Field(default_factory=list)
+
+    def geojson(self) -> dict[str, Any]:
+        return {"type": "FeatureCollection", "features": [
+            {"type": "Feature", "id": f.id, "properties": {"name": f.name, "subtype": f.subtype, "source": f.source},
+             "geometry": f.geometry} for f in self.features]}
+
+
+def _q(s: str) -> str:
+    return "'" + str(s).replace("'", "''") + "'"
+
+
+class Executor:
+    def __init__(self, store: Store | None = None, geocoder: Geocoder | None = None,
+                 resolver: Any = None, config: dict[str, Any] | None = None):
+        self.store = store or get_store()
+        self.geocoder = geocoder
+        self.resolver = resolver  # optional callable(name, type_hint, context) -> id, used for Resolve without id
+        self.cfg = config or load_config()
+        self.policy = self.cfg["policy"]
+
+    # ------------------------------------------------------------ public
+
+    def execute(self, dag: dict[str, Any], *, with_geometry: bool = True) -> Result:
+        errors = validate(dag, choices())
+        if errors:
+            return Result(ok=False, error="invalid DAG: " + "; ".join(errors))
+        run = _Run(self)
+        t0 = time.time()
+        try:
+            rel = run.eval(dag)
+            kind = "geometry" if CATALOG[dag["op"]].out == "Geometry" else "set"
+            res = run.collect(rel, with_geometry=with_geometry)
+            res.kind = kind
+        except ExecutionError as e:
+            return Result(ok=False, error=str(e), sql=run.sql, notes=run.notes)
+        finally:
+            run.close()
+        res.timings["total_s"] = round(time.time() - t0, 3)
+        return res
+
+    def geocoder_or_default(self) -> Geocoder:
+        if self.geocoder is None:
+            self.geocoder = PhotonGeocoder()
+        return self.geocoder
+
+
+class _Run:
+    """State of one execution: a DuckDB cursor with temp tables."""
+
+    def __init__(self, ex: Executor):
+        self.ex = ex
+        self.policy = ex.policy
+        self.con = ex.store.new_session()
+        for m in MACROS:
+            self.con.execute(m)
+        self.n = 0
+        self.sql: list[str] = []
+        self.notes: list[str] = []
+
+    def close(self):
+        try:
+            self.con.close()
+        except Exception:
+            pass
+
+    def run(self, sql: str, params: list[Any] | None = None):
+        self.sql.append(sql.strip())
+        try:
+            return self.con.execute(sql, params or [])
+        except Exception as e:
+            raise ExecutionError(f"SQL error: {e}\n{sql}") from e
+
+    def new_rel(self, select_sql: str, params: list[Any] | None = None) -> str:
+        self.n += 1
+        name = f"r{self.n}"
+        self.run(f"CREATE TEMP TABLE {name} AS SELECT {REL_COLS} FROM ({select_sql})", params)
+        return name
+
+    def empty_rel(self) -> str:
+        return self.new_rel("SELECT NULL::VARCHAR AS id, NULL::VARCHAR AS name, NULL::VARCHAR AS subtype, "
+                            "NULL::VARCHAR AS source, crs84(ST_GeomFromText('POINT EMPTY')) AS geometry, "
+                            "crs84(ST_GeomFromText('POINT EMPTY')) AS gs WHERE false")
+
+    # ------------------------------------------------------------ helpers
+
+    def union_geom(self, rel: str, col: str = "geometry") -> str:
+        """SQL expression for the union of all geometries of a relation."""
+        return f"(SELECT crs84(ST_Union_Agg({col})) FROM {rel})"
+
+    def lat_of(self, rel: str) -> float:
+        row = self.run(f"SELECT avg(ST_Y(ST_Centroid(gs))) FROM {rel}").fetchone()
+        return float(row[0]) if row and row[0] is not None else 20.0
+
+    def deg(self, meters: float, lat: float) -> float:
+        """Upper bound in degrees for a distance in meters at a latitude."""
+        return meters / (M_PER_DEG * max(math.cos(math.radians(abs(lat) + 1.0)), 0.2))
+
+    def ids_of(self, rel: str) -> list[str]:
+        return [r[0] for r in self.run(f"SELECT id FROM {rel} WHERE id IS NOT NULL").fetchall()]
+
+    def level_filter(self, level: str, alias: str = "d") -> str:
+        subtypes = self.policy["admin_levels"][level]
+        cond = [f"{alias}.subtype IN ({', '.join(_q(s) for s in subtypes)})"]
+        if level == "city":
+            cond.append(f"{alias}.class IN ({', '.join(_q(c) for c in self.policy['city_classes'])})")
+        if level == "state":
+            if self.policy["require_region_code"]:
+                cond.append(f"{alias}.region IS NOT NULL")
+            if not self.policy["union_territories_are_states"]:
+                cond.append(f"{alias}.region NOT IN ({', '.join(_q(u) for u in self.policy['union_territories'])})")
+        if level != "country":
+            cond.append(f"{alias}.country = {_q(self.ex.cfg['data']['country'])}")
+        return " AND ".join(cond)
+
+    def divisions_rel(self, where: str, params: list[Any] | None = None) -> str:
+        return self.new_rel(f"""
+            SELECT d.id, coalesce(d.name_en, d.name) AS name, d.subtype, 'overture' AS source,
+                   crs84(coalesce(a.geometry, d.geometry)) AS geometry, crs84(coalesce(a.gs, d.geometry)) AS gs
+            FROM divisions d LEFT JOIN areas a ON a.id = d.id
+            WHERE {where}
+        """, params)
+
+    # ------------------------------------------------------------ evaluation
+
+    def eval(self, node: Any) -> str:
+        op = node["op"]
+        fn = getattr(self, f"op_{op}", None)
+        if fn is None:
+            raise ExecutionError(f"operator {op} is not implemented")
+        return fn(**node.get("args", {}))
+
+    def collect(self, rel: str, with_geometry: bool) -> Result:
+        simp = float(self.policy.get("output_simplify_deg", 0) or 0)
+        g = f"ST_SimplifyPreserveTopology(geometry, {simp})" if simp > 0 else "geometry"
+        geom_sql = f"ST_AsGeoJSON({g})" if with_geometry else "NULL"
+        rows = self.run(f"SELECT id, name, subtype, source, {geom_sql} FROM {rel} "
+                        f"WHERE geometry IS NOT NULL AND NOT ST_IsEmpty(geometry) ORDER BY name").fetchall()
+        feats = [Feature(id=r[0], name=r[1], subtype=r[2], source=r[3],
+                         geometry=json.loads(r[4]) if isinstance(r[4], str) else r[4]) for r in rows]
+        return Result(ok=True, features=feats, ids=sorted({f.id for f in feats if f.id}), sql=self.sql, notes=self.notes)
+
+    # ------------------------------------------------------------ sources
+
+    def op_Resolve(self, name: str, type_hint: str | None = None, context: str | None = None,
+                   source: str | None = None, id: str | None = None) -> str:
+        if source == "photon":
+            return self._resolve_photon(name, id)
+        if id is None:
+            if self.ex.resolver is not None:
+                id = self.ex.resolver(name, type_hint, context)
+            else:
+                cands = self.ex.store.search(name, type_hint=type_hint, context=context)
+                id = cands[0].id if cands else None
+            if id is None:
+                raise ExecutionError(f"cannot resolve {name!r} in the local extract")
+        return self.divisions_rel("d.id = ?", [id])
+
+    def _resolve_photon(self, name: str, id: str | None) -> str:
+        feats = self.ex.geocoder_or_default().search(name, limit=5, bbox=tuple(self._bbox_xyxy()))
+        if id:
+            feats = [f for f in feats if f.id == id] or feats
+        if not feats:
+            raise ExecutionError(f"the geocoder found no result for {name!r}")
+        f = feats[0]
+        return self.new_rel("SELECT ? AS id, ? AS name, ? AS subtype, 'photon' AS source, "
+                            "crs84(ST_Point(?, ?)) AS geometry, crs84(ST_Point(?, ?)) AS gs",
+                            [f.id, f.name, f"{f.osm_key}:{f.osm_value}", f.lon, f.lat, f.lon, f.lat])
+
+    def _bbox_xyxy(self) -> list[float]:
+        return list(self.ex.cfg["data"]["bbox"])
+
+    def op_LexiconSet(self, key: str) -> str:
+        entry = lexicon()[key]
+        ids = [m["id"] for m in entry["members"] if m["id"]]
+        missing = [m["code"] for m in entry["members"] if not m["id"]]
+        if missing:
+            self.notes.append(f"lexicon {key}: members not in the extract: {', '.join(missing)}")
+        return self.divisions_rel("d.id IN (SELECT unnest(?))", [ids])
+
+    def layer_geom(self, name: str) -> str:
+        return f"(SELECT crs84(geometry) FROM layers WHERE name = {_q(name)})"
+
+    def op_Layer(self, name: str) -> str:
+        return self.new_rel(f"SELECT NULL AS id, {_q(name)} AS name, 'layer' AS subtype, 'layer' AS source, "
+                            f"{self.layer_geom(name)} AS geometry, {self.layer_geom(name)} AS gs")
+
+    # ------------------------------------------------------------ hierarchy
+
+    def op_Children(self, of: Any, level: str) -> str:
+        parent = self.eval(of)
+        if self.ids_of(parent):
+            return self.divisions_rel(
+                f"{self.level_filter(level)} AND EXISTS (SELECT 1 FROM {parent} p "
+                f"WHERE p.id IS NOT NULL AND p.id <> d.id AND list_contains(d.ancestors, p.id))")
+        # No IDs (a computed geometry): use the division point inside the geometry.
+        return self.divisions_rel(f"{self.level_filter(level)} AND ST_Intersects(crs84(d.geometry), {self.union_geom(parent, 'gs')})")
+
+    def op_Parent(self, of: Any, level: str) -> str:
+        child = self.eval(of)
+        ids = self.ids_of(child)
+        if ids and self.run(f"SELECT count(*) FROM {child} WHERE source = 'overture'").fetchone()[0]:
+            return self.divisions_rel(
+                f"{self.level_filter(level)} AND d.id IN (SELECT unnest(c.ancestors) FROM divisions c "
+                f"WHERE c.id IN (SELECT id FROM {child}))")
+        return self.divisions_rel(
+            f"{self.level_filter(level)} AND a.id IS NOT NULL AND ST_Contains(crs84(a.gs), "
+            f"(SELECT ST_PointOnSurface(crs84(ST_Union_Agg(gs))) FROM {child}))")
+
+    def op_Neighbors(self, of: Any, level: str | None = None) -> str:
+        src = self.eval(of)
+        lat = self.lat_of(src)
+        tol = self.deg(float(self.policy["neighbor_tolerance_m"]), lat)
+        if level is None or level == "none":
+            subtypes = [r[0] for r in self.run(f"SELECT DISTINCT subtype FROM {src}").fetchall()]
+            lvl = next((k for k, v in self.policy["admin_levels"].items() if set(subtypes) <= set(v)), None)
+            if lvl is None:
+                raise ExecutionError(f"cannot find a level for neighbors of subtypes {subtypes}")
+            level = lvl
+        return self.divisions_rel(
+            f"{self.level_filter(level)} AND a.id IS NOT NULL "
+            f"AND d.id NOT IN (SELECT id FROM {src} WHERE id IS NOT NULL) "
+            f"AND ST_DWithin(crs84(a.gs), {self.union_geom(src, 'gs')}, {tol})")
+
+    # ------------------------------------------------------------ filters
+
+    def pred_sql(self, pred: dict[str, Any], alias: str = "s") -> str:
+        op, args = pred["op"], pred.get("args", {})
+        if op == "Not":
+            return f"NOT ({self.pred_sql(args['pred'], alias)})"
+        target = args["target"]
+        if op == "Touches":
+            if target["op"] == "Layer":
+                name = target["args"]["name"]
+                tol_m = self.policy["coastal_tolerance_m"] if name == "coastline" else self.policy["neighbor_tolerance_m"]
+                return f"ST_DWithin({alias}.gs, {self.layer_geom(name)}, {self.deg(float(tol_m), 20.0)})"
+            t = self.eval(target)
+            tol = self.deg(float(self.policy["neighbor_tolerance_m"]), self.lat_of(t))
+            return (f"(ST_DWithin({alias}.gs, {self.union_geom(t, 'gs')}, {tol}) "
+                    f"AND coalesce({alias}.id NOT IN (SELECT id FROM {t} WHERE id IS NOT NULL), true))")
+        if op == "Within":
+            t = self.eval(target)
+            return f"ST_Intersects(ST_PointOnSurface({alias}.gs), {self.union_geom(t, 'gs')})"
+        if op == "Intersects":
+            t = self.eval(target)
+            return f"ST_Intersects({alias}.gs, {self.union_geom(t, 'gs')})"
+        if op == "WithinDistance":
+            g = self.layer_geom(target["args"]["name"]) if target["op"] == "Layer" else self.union_geom(self.eval(target), "gs")
+            d = float(args["distance_m"])
+            return f"ST_DWithin(to_m({alias}.gs, utm({alias}.gs)), to_m({g}, utm({alias}.gs)), {d})"
+        raise ExecutionError(f"unknown predicate {op}")
+
+    def op_Filter(self, set: Any, pred: dict[str, Any]) -> str:
+        src = self.eval(set)
+        cond = self.pred_sql(pred, "s")
+        return self.new_rel(f"SELECT s.* FROM {src} s WHERE {cond}")
+
+    def op_AttrFilter(self, set: Any, attr: str, op: str, value: float) -> str:
+        src = self.eval(set)
+        cmp = {"gt": ">", "lt": "<"}[op]
+        if attr == "population":
+            expr = "(SELECT d.population FROM divisions d WHERE d.id = s.id)"
+            n_null = self.run(f"SELECT count(*) FROM {src} s WHERE {expr} IS NULL").fetchone()[0]
+            if n_null:
+                self.notes.append(f"population: {n_null} entities have no population in the extract and are excluded")
+        elif attr == "area":
+            expr = "(ST_Area(to_m(s.gs, utm(s.gs))) / 1e6)"
+        else:
+            raise ExecutionError(f"unknown attribute {attr}")
+        return self.new_rel(f"SELECT s.* FROM {src} s WHERE {expr} {cmp} ?", [float(value)])
+
+    # ------------------------------------------------------------ geometry
+
+    def op_Buffer(self, of: Any, distance_m: float) -> str:
+        src = self.eval(of)
+        g = self.union_geom(src, "gs")
+        return self.new_rel(f"""
+            WITH u AS (SELECT {g} AS g)
+            SELECT NULL AS id, 'buffer' AS name, 'geometry' AS subtype, 'computed' AS source,
+                   from_m(ST_Buffer(to_m(u.g, utm(u.g)), {float(distance_m)}, 16), utm(u.g)) AS geometry,
+                   from_m(ST_Buffer(to_m(u.g, utm(u.g)), {float(distance_m)}, 16), utm(u.g)) AS gs
+            FROM u
+        """)
+
+    def op_Centroid(self, of: Any) -> str:
+        src = self.eval(of)
+        g = self.union_geom(src)
+        return self.new_rel(f"""
+            WITH u AS (SELECT {g} AS g)
+            SELECT NULL AS id, 'centroid' AS name, 'geometry' AS subtype, 'computed' AS source,
+                   from_m(ST_Centroid(to_m(u.g, utm(u.g))), utm(u.g)) AS geometry,
+                   from_m(ST_Centroid(to_m(u.g, utm(u.g))), utm(u.g)) AS gs
+            FROM u
+        """)
+
+    def op_Direction(self, of: Any, dir: str, mode: str) -> str:
+        src = self.eval(of)
+        row = self.run(f"SELECT ST_XMin(g), ST_YMin(g), ST_XMax(g), ST_YMax(g) FROM (SELECT {self.union_geom(src, 'gs')} AS g)").fetchone()
+        if row is None or row[0] is None:
+            raise ExecutionError("direction: empty input")
+        x0, y0, x1, y1 = row
+        w, h = x1 - x0, y1 - y0
+        parts = {"north": "n", "south": "s", "east": "e", "west": "w", "northeast": "ne", "northwest": "nw",
+                 "southeast": "se", "southwest": "sw", "central": "c"}[dir]
+        if mode == "part":
+            f = float(self.policy["direction_part_fraction"])
+            bx0, by0, bx1, by1 = x0, y0, x1, y1
+            if parts == "c":
+                m = (1 - f) / 2
+                bx0, bx1, by0, by1 = x0 + m * w, x1 - m * w, y0 + m * h, y1 - m * h
+            if "n" in parts:
+                by0 = y1 - f * h
+            if "s" in parts:
+                by1 = y0 + f * h
+            if "e" in parts:
+                bx0 = x1 - f * w
+            if "w" in parts:
+                bx1 = x0 + f * w
+            box = f"crs84(ST_MakeEnvelope({bx0}, {by0}, {bx1}, {by1}))"
+            return self.new_rel(f"""
+                SELECT id, name, subtype, source, ST_Intersection(geometry, {box}) AS geometry,
+                       ST_Intersection(gs, {box}) AS gs
+                FROM {src} WHERE ST_Intersects(gs, {box})
+            """)
+        # outside
+        if parts == "c":
+            raise ExecutionError("direction 'central' has no outside area")
+        s = float(self.policy["direction_outside_scale"])
+        bx0, bx1, by0, by1 = x0, x1, y0, y1
+        if "n" in parts:
+            by0, by1 = y1, y1 + s * h
+        if "s" in parts:
+            by0, by1 = y0 - s * h, y0
+        if "e" in parts:
+            bx0, bx1 = x1, x1 + s * w
+        if "w" in parts:
+            bx0, bx1 = x0 - s * w, x0
+        box = f"crs84(ST_MakeEnvelope({bx0}, {by0}, {bx1}, {by1}))"
+        g = self.union_geom(src, "gs")
+        return self.new_rel(f"""
+            SELECT NULL AS id, {_q(dir + ' of')} AS name, 'geometry' AS subtype, 'computed' AS source,
+                   ST_Difference({box}, {g}) AS geometry, ST_Difference({box}, {g}) AS gs
+        """)
+
+    # ------------------------------------------------------------ set algebra
+
+    def op_Union(self, a: Any, b: Any) -> str:
+        ra, rb = self.eval(a), self.eval(b)
+        return self.new_rel(f"""
+            SELECT * FROM {ra}
+            UNION ALL
+            SELECT * FROM {rb} WHERE id IS NULL OR id NOT IN (SELECT id FROM {ra} WHERE id IS NOT NULL)
+        """)
+
+    def op_Intersect(self, a: Any, b: Any) -> str:
+        ra, rb = self.eval(a), self.eval(b)
+        g = self.union_geom(rb)
+        gs = self.union_geom(rb, "gs")
+        return self.new_rel(f"""
+            SELECT id, name, subtype, source, ST_Intersection(geometry, {g}) AS geometry,
+                   ST_Intersection(gs, {gs}) AS gs
+            FROM {ra} WHERE ST_Intersects(gs, {gs})
+        """)
+
+    def op_Difference(self, a: Any, b: Any) -> str:
+        ra, rb = self.eval(a), self.eval(b)
+        g = self.union_geom(rb)
+        gs = self.union_geom(rb, "gs")
+        # Rows of a that are also in b are removed. The other rows lose the area of b.
+        return self.new_rel(f"""
+            SELECT id, name, subtype, source,
+                   CASE WHEN ST_Intersects(gs, {gs}) THEN ST_Difference(geometry, {g}) ELSE geometry END AS geometry,
+                   CASE WHEN ST_Intersects(gs, {gs}) THEN ST_Difference(gs, {gs}) ELSE gs END AS gs
+            FROM {ra}
+            WHERE id IS NULL OR id NOT IN (SELECT id FROM {rb} WHERE id IS NOT NULL)
+        """)
+
+    # ------------------------------------------------------------ relational
+
+    def op_Between(self, a: Any, b: Any) -> str:
+        ra, rb = self.eval(a), self.eval(b)
+        ga, gb = self.union_geom(ra, "gs"), self.union_geom(rb, "gs")
+        return self.new_rel(f"""
+            WITH u AS (SELECT {ga} AS a, {gb} AS b)
+            SELECT NULL AS id, 'between' AS name, 'geometry' AS subtype, 'computed' AS source,
+                   ST_Difference(ST_Difference(ST_ConvexHull(ST_Union(a, b)), a), b) AS geometry,
+                   ST_Difference(ST_Difference(ST_ConvexHull(ST_Union(a, b)), a), b) AS gs
+            FROM u
+        """)
+
+    def op_Along(self, line: Any, distance_m: float, within: Any = None) -> str:
+        d = float(distance_m)
+        rw = self.eval(within) if within is not None else None
+        if line["op"] == "Layer":
+            lg = self.layer_geom(line["args"]["name"])
+            if rw is None:
+                raise ExecutionError("Along a layer needs a 'within' region")
+            wg = self.union_geom(rw, "gs")
+            pad = self.deg(d, self.lat_of(rw)) * 1.5
+            # Clip the layer to the padded bbox of the region first.
+            clip = (f"ST_Intersection({lg}, crs84(ST_MakeEnvelope(ST_XMin({wg}) - {pad}, ST_YMin({wg}) - {pad}, "
+                    f"ST_XMax({wg}) + {pad}, ST_YMax({wg}) + {pad})))")
+        else:
+            rl = self.eval(line)
+            clip = f"ST_Boundary({self.union_geom(rl, 'gs')})"
+            wg = None
+        sql = f"""
+            WITH l AS (SELECT {clip} AS g),
+                 b AS (SELECT from_m(ST_Buffer(to_m(l.g, utm(l.g)), {d}, 8), utm(l.g)) AS g FROM l WHERE NOT ST_IsEmpty(l.g))
+            SELECT NULL AS id, 'along' AS name, 'geometry' AS subtype, 'computed' AS source,
+                   {f'ST_Intersection(b.g, {wg})' if wg else 'b.g'} AS geometry,
+                   {f'ST_Intersection(b.g, {wg})' if wg else 'b.g'} AS gs
+            FROM b
+        """
+        return self.new_rel(sql)
+
+    # ------------------------------------------------------------ features
+
+    def op_Features(self, category: str, within: Any) -> str:
+        leaf = category_leaves()[category]
+        rw = self.eval(within)
+        row = self.run(f"SELECT ST_AsWKB({self.union_geom(rw, 'gs')})").fetchone()
+        if row is None or row[0] is None:
+            return self.empty_rel()
+        geom = shapely.from_wkb(bytes(row[0]))
+        tiles = _tiles(geom.bounds, int(self.ex.cfg["geocoder"]["max_tiles"]))
+        gc = self.ex.geocoder_or_default()
+        limit = int(self.ex.cfg["geocoder"]["limit"])
+        seen: dict[str, Any] = {}
+        prepared = shapely.prepared.prep(geom)
+        for t in tiles:
+            if not prepared.intersects(shapely.box(*t)):
+                continue
+            for f in gc.search(leaf["q"], limit=limit, bbox=t, osm_tag=category):
+                if f.id not in seen and prepared.contains(shapely.Point(f.lon, f.lat)):
+                    seen[f.id] = f
+        if len(tiles) > 1 or any(True for _ in []):
+            self.notes.append(f"features: {len(tiles)} geocoder tiles, max {limit} results each")
+        if not seen:
+            return self.empty_rel()
+        rows = [[f.id, f.name, category, f.lon, f.lat] for f in seen.values()]
+        self.n += 1
+        tmp = f"pts{self.n}"
+        self.run(f"CREATE TEMP TABLE {tmp} (id VARCHAR, name VARCHAR, subtype VARCHAR, lon DOUBLE, lat DOUBLE)")
+        self.con.executemany(f"INSERT INTO {tmp} VALUES (?, ?, ?, ?, ?)", rows)
+        return self.new_rel(f"SELECT id, name, subtype, 'photon' AS source, crs84(ST_Point(lon, lat)) AS geometry, "
+                            f"crs84(ST_Point(lon, lat)) AS gs FROM {tmp}")
+
+
+def _tiles(bounds: tuple[float, float, float, float], max_tiles: int) -> list[tuple[float, float, float, float]]:
+    """Split a bbox into at most max_tiles tiles of about 0.05 degrees or more."""
+    x0, y0, x1, y1 = bounds
+    w, h = max(x1 - x0, 1e-6), max(y1 - y0, 1e-6)
+    n = max(1, min(int(math.sqrt(max_tiles)), math.ceil(max(w, h) / 0.05)))
+    return [(x0 + i * w / n, y0 + j * h / n, x0 + (i + 1) * w / n, y0 + (j + 1) * h / n)
+            for i in range(n) for j in range(n)]
