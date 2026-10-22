@@ -1,0 +1,322 @@
+{
+  "south_india": {
+    "aliases": [
+      "south india",
+      "southern india",
+      "southern states",
+      "south indian states",
+      "the south"
+    ],
+    "members": [
+      {
+        "code": "IN-AP",
+        "id": "d2d77b02-0c8a-4469-b678-35fd3a2673ff"
+      },
+      {
+        "code": "IN-KA",
+        "id": "94650b04-0a86-416b-9594-13e0409d1bea"
+      },
+      {
+        "code": "IN-KL",
+        "id": "dc139c38-f4ef-4348-af89-d248984dd6f3"
+      },
+      {
+        "code": "IN-TN",
+        "id": "a45ac7ba-2823-41bd-85d0-8612b21720ae"
+      },
+      {
+        "code": "IN-TS",
+        "id": "0f18d4f3-052d-47f5-b9f0-22e0eb1eef8a"
+      },
+      {
+        "code": "IN-PY",
+        "id": "37565568-eb20-4a8f-9d5a-d4ec83f75f89"
+      },
+      {
+        "code": "IN-LD",
+        "id": "1fb4e671-415d-435a-937c-0966f9cf9a91"
+      },
+      {
+        "code": "IN-AN",
+        "id": "c1d41d4d-842a-44c1-ac70-71dfaede077c"
+      }
+    ],
+    "notes": "Five states and three union territories in the Southern Zonal Council area."
+  },
+  "northeast_india": {
+    "aliases": [
+      "northeast india",
+      "north east india",
+      "north-east india",
+      "northeastern states",
+      "north eastern states",
+      "the northeast",
+      "ne india"
+    ],
+    "members": [
+      {
+        "code": "IN-AR",
+        "id": "61a3db52-e7fb-4c4a-8f25-ffc8b6b1067d"
+      },
+      {
+        "code": "IN-AS",
+        "id": "73578ee5-b9a8-418f-8916-568234e42f27"
+      },
+      {
+        "code": "IN-MN",
+        "id": "6bbb783d-6c9d-4da8-8cf3-51e33f1018ba"
+      },
+      {
+        "code": "IN-ML",
+        "id": "05717c8a-b1db-464d-abee-d0b2f08701b8"
+      },
+      {
+        "code": "IN-MZ",
+        "id": "3e488c2f-c904-4eae-87b9-631e3954faa6"
+      },
+      {
+        "code": "IN-NL",
+        "id": "e41409ac-7850-41cd-a4ec-4c6113b653a2"
+      },
+      {
+        "code": "IN-TR",
+        "id": "af417450-5b20-480d-8cc8-6076526e5a0c"
+      },
+      {
+        "code": "IN-SK",
+        "id": "5fa67e56-5de3-42df-b763-0d60f953fd9a"
+      }
+    ],
+    "notes": ""
+  },
+  "seven_sisters": {
+    "aliases": [
+      "seven sisters",
+      "the seven sisters",
+      "seven sister states"
+    ],
+    "members": [
+      {
+        "code": "IN-AR",
+        "id": "61a3db52-e7fb-4c4a-8f25-ffc8b6b1067d"
+      },
+      {
+        "code": "IN-AS",
+        "id": "73578ee5-b9a8-418f-8916-568234e42f27"
+      },
+      {
+        "code": "IN-MN",
+        "id": "6bbb783d-6c9d-4da8-8cf3-51e33f1018ba"
+      },
+      {
+        "code": "IN-ML",
+        "id": "05717c8a-b1db-464d-abee-d0b2f08701b8"
+      },
+      {
+        "code": "IN-MZ",
+        "id": "3e488c2f-c904-4eae-87b9-631e3954faa6"
+      },
+      {
+        "code": "IN-NL",
+        "id": "e41409ac-7850-41cd-a4ec-4c6113b653a2"
+      },
+      {
+        "code": "IN-TR",
+        "id": "af417450-5b20-480d-8cc8-6076526e5a0c"
+      }
+    ],
+    "notes": ""
+  },
+  "m49_southern_asia": {
+    "aliases": [
+      "southern asia",
+      "south asia"
+    ],
+    "members": [
+      {
+        "code": "AF",
+        "id": "9c99b2fd-76c4-4f41-8460-6e80cc8c48e7"
+      },
+      {
+        "code": "BD",
+        "id": "50d252ed-bfb9-414f-9ff2-b0ddd1b514b5"
+      },
+      {
+        "code": "BT",
+        "id": "e9578cf1-1cfd-43c9-bcd4-a7d934e39319"
+      },
+      {
+        "code": "IN",
+        "id": "c3edf10a-fe23-4c7e-a777-52199ac7df8e"
+      },
+      {
+        "code": "IR",
+        "id": "2a83db88-69ac-4a23-8af0-b4bddd988612"
+      },
+      {
+        "code": "LK",
+        "id": "c1dc5a8b-7b01-4f4a-9f8c-ee350141a620"
+      },
+      {
+        "code": "MV",
+        "id": "d0317ac9-82c7-4e1a-a3fc-8b7562b1690d"
+      },
+      {
+        "code": "NP",
+        "id": "05661c9d-68f5-4a26-a653-05f6ef959b50"
+      },
+      {
+        "code": "PK",
+        "id": "b952fd95-5a2e-45b9-b30c-9e83b2fd3025"
+      }
+    ],
+    "notes": "UN M49 code 034."
+  },
+  "m49_south_eastern_asia": {
+    "aliases": [
+      "south-eastern asia",
+      "southeast asia",
+      "south east asia"
+    ],
+    "members": [
+      {
+        "code": "BN",
+        "id": null
+      },
+      {
+        "code": "KH",
+        "id": null
+      },
+      {
+        "code": "ID",
+        "id": null
+      },
+      {
+        "code": "LA",
+        "id": null
+      },
+      {
+        "code": "MM",
+        "id": "e0edb43b-7021-4c72-926e-b5955658c75c"
+      },
+      {
+        "code": "MY",
+        "id": null
+      },
+      {
+        "code": "PH",
+        "id": null
+      },
+      {
+        "code": "SG",
+        "id": null
+      },
+      {
+        "code": "TH",
+        "id": null
+      },
+      {
+        "code": "TL",
+        "id": null
+      },
+      {
+        "code": "VN",
+        "id": null
+      }
+    ],
+    "notes": "UN M49 code 035. Only Myanmar is in the extract."
+  },
+  "m49_eastern_asia": {
+    "aliases": [
+      "eastern asia",
+      "east asia"
+    ],
+    "members": [
+      {
+        "code": "CN",
+        "id": "fb68fc73-3ac6-41c9-a692-22fcf20cb5be"
+      },
+      {
+        "code": "HK",
+        "id": null
+      },
+      {
+        "code": "JP",
+        "id": null
+      },
+      {
+        "code": "KP",
+        "id": null
+      },
+      {
+        "code": "KR",
+        "id": null
+      },
+      {
+        "code": "MN",
+        "id": null
+      },
+      {
+        "code": "MO",
+        "id": null
+      },
+      {
+        "code": "TW",
+        "id": null
+      }
+    ],
+    "notes": "UN M49 code 030. Only China is in the extract."
+  },
+  "m49_asia": {
+    "aliases": [
+      "asia"
+    ],
+    "members": [
+      {
+        "code": "AF",
+        "id": "9c99b2fd-76c4-4f41-8460-6e80cc8c48e7"
+      },
+      {
+        "code": "BD",
+        "id": "50d252ed-bfb9-414f-9ff2-b0ddd1b514b5"
+      },
+      {
+        "code": "BT",
+        "id": "e9578cf1-1cfd-43c9-bcd4-a7d934e39319"
+      },
+      {
+        "code": "CN",
+        "id": "fb68fc73-3ac6-41c9-a692-22fcf20cb5be"
+      },
+      {
+        "code": "IN",
+        "id": "c3edf10a-fe23-4c7e-a777-52199ac7df8e"
+      },
+      {
+        "code": "IR",
+        "id": "2a83db88-69ac-4a23-8af0-b4bddd988612"
+      },
+      {
+        "code": "LK",
+        "id": "c1dc5a8b-7b01-4f4a-9f8c-ee350141a620"
+      },
+      {
+        "code": "MM",
+        "id": "e0edb43b-7021-4c72-926e-b5955658c75c"
+      },
+      {
+        "code": "MV",
+        "id": "d0317ac9-82c7-4e1a-a3fc-8b7562b1690d"
+      },
+      {
+        "code": "NP",
+        "id": "05661c9d-68f5-4a26-a653-05f6ef959b50"
+      },
+      {
+        "code": "PK",
+        "id": "b952fd95-5a2e-45b9-b30c-9e83b2fd3025"
+      }
+    ],
+    "notes": "UN M49 code 142. Only the countries in the extract are listed."
+  }
+}

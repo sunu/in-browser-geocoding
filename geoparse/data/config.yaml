@@ -1,0 +1,75 @@
+# geoparse configuration. All policy decisions are in this file. Do not hard-code policy in SQL.
+
+data:
+  overture_release: "2026-10-21.0"
+  overture_s3: "s3://overturemaps-us-west-2/release"
+  # Build output directory, relative to the repo root.
+  build_dir: "data/build"
+  # India bounding box: xmin, ymin, xmax, ymax.
+  bbox: [68.0, 6.5, 97.5, 37.2]
+  country: "IN"
+  # Country polygons outside India that the extract keeps, so that queries such as
+  # "countries that border India" work. ISO 3166-1 alpha-2 codes.
+  extra_countries: [AF, BD, BT, CN, IR, LK, MM, MV, NP, PK]
+  natural_earth_coastline: "https://naciscdn.org/naturalearth/10m/physical/ne_10m_coastline.zip"
+
+policy:
+  # Admin level names that users say, mapped to Overture division subtypes.
+  admin_levels:
+    country: [country]
+    state: [region]
+    district: [county]
+    city: [locality]
+    locality: [locality, macrohood, neighborhood, microhood]
+  # Locality classes that count as a "city".
+  city_classes: [city, town]
+  # Union territories. Overture marks them as "state", so this list is the source of truth.
+  union_territories: [IN-AN, IN-CH, IN-DH, IN-DL, IN-JK, IN-LA, IN-LD, IN-PY]
+  # If true, union territories count as states in "states" queries.
+  union_territories_are_states: true
+  # Regions with no ISO code (disputed areas from other perspectives) are not used.
+  require_region_code: true
+  # Distance in meters to the Natural Earth coastline for an area to count as coastal.
+  # Natural Earth 10m is about 1 km from the OSM-based Overture boundaries.
+  coastal_tolerance_m: 3000
+  # Distance in meters for two areas to count as neighbors (touching boundaries).
+  neighbor_tolerance_m: 200
+  # Default buffer distance when the query gives no distance ("near X").
+  default_near_m: 2000
+
+geocoder:
+  photon_url: "https://photon.komoot.io/api"
+  min_interval_s: 1.0
+  cache_dir: ".cache/photon"
+  # Max results for one Photon request.
+  limit: 50
+  # Max tiles for one Features request. Large areas are split into tiles.
+  max_tiles: 16
+
+decisions:
+  # Provider for each decision. Values: jev, rules, local.
+  providers:
+    pick_family: jev
+    pick_template: jev
+    fill_closed_slot: jev
+    bind_anchor: jev
+    pick_split: jev
+    is_subquery: jev
+    select_source: jev
+    disambiguate: jev
+  # Minimum confidence for each decision. Below this value the parser returns Unsupported.
+  thresholds:
+    pick_family: 0.3
+    pick_template: 0.3
+    fill_closed_slot: 0.3
+    bind_anchor: 0.3
+    pick_split: 0.2
+    is_subquery: 0.2
+    select_source: 0.2
+    disambiguate: 0.2
+  jev:
+    url: "https://openrouter.ai/api/alpha/decisions"
+    model: "typesafe/jev-1.13"
+    timeout_s: 30
+  log_dir: "logs"
+  max_depth: 2

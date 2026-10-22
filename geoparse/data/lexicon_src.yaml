@@ -1,0 +1,36 @@
+# Named sets. The build script resolves each member to an Overture ID and writes lexicon.json.
+# Members are ISO 3166-2 region codes (IN-XX) or ISO 3166-1 alpha-2 country codes.
+# Countries that are not in the extract are kept as codes with "id: null".
+
+south_india:
+  aliases: ["south india", "southern india", "southern states", "south indian states", "the south"]
+  members: [IN-AP, IN-KA, IN-KL, IN-TN, IN-TS, IN-PY, IN-LD, IN-AN]
+  notes: "Five states and three union territories in the Southern Zonal Council area."
+
+northeast_india:
+  aliases: ["northeast india", "north east india", "north-east india", "northeastern states", "north eastern states", "the northeast", "ne india"]
+  members: [IN-AR, IN-AS, IN-MN, IN-ML, IN-MZ, IN-NL, IN-TR, IN-SK]
+
+seven_sisters:
+  aliases: ["seven sisters", "the seven sisters", "seven sister states"]
+  members: [IN-AR, IN-AS, IN-MN, IN-ML, IN-MZ, IN-NL, IN-TR]
+
+m49_southern_asia:
+  aliases: ["southern asia", "south asia"]
+  members: [AF, BD, BT, IN, IR, LK, MV, NP, PK]
+  notes: "UN M49 code 034."
+
+m49_south_eastern_asia:
+  aliases: ["south-eastern asia", "southeast asia", "south east asia"]
+  members: [BN, KH, ID, LA, MM, MY, PH, SG, TH, TL, VN]
+  notes: "UN M49 code 035. Only Myanmar is in the extract."
+
+m49_eastern_asia:
+  aliases: ["eastern asia", "east asia"]
+  members: [CN, HK, JP, KP, KR, MN, MO, TW]
+  notes: "UN M49 code 030. Only China is in the extract."
+
+m49_asia:
+  aliases: ["asia"]
+  members: [AF, BD, BT, CN, IN, IR, LK, MM, MV, NP, PK]
+  notes: "UN M49 code 142. Only the countries in the extract are listed."
