@@ -27,7 +27,7 @@ st.set_page_config(page_title="geoparse", layout="wide")
 
 @st.cache_resource
 def get_parser(provider: str) -> Parser:
-    return Parser(Decider(default=provider))
+    return Parser(Decider(default=None if provider == "config" else provider))
 
 
 @st.cache_resource
@@ -59,8 +59,10 @@ def canon(dag):
 gold = load_gold()
 with st.sidebar:
     st.header("Settings")
-    provider = st.radio("Decision provider", ["jev", "rules"], horizontal=True,
-                        help="jev calls OpenRouter. rules runs offline.")
+    provider = st.radio("Decision provider", ["config", "local", "jev", "rules"], horizontal=True,
+                        help="config: the provider of each decision from config.yaml (now local + rules). "
+                             "local: the local cross-encoder for every decision. jev: TypeSafe Jev through "
+                             "OpenRouter for every decision. rules: code only.")
     with_geometry = st.checkbox("Load geometry", value=True)
     st.divider()
     st.header("Examples")
@@ -164,6 +166,7 @@ with tab_query:
     if last:
         p, res = last["parse"], last["result"]
         jev = [t for t in p.trace if t["impl"] == "jev"]
+        impls = sorted({t["impl"] for t in p.trace if t["decision"] not in ("extract_spans",)})
         cost = sum((t["trace"].get("cost") or 0) for t in jev)
         c1, c2, c3, c4, c5 = st.columns(5)
         c1.metric("Status", "OK" if p.ok else "Unsupported")
@@ -171,6 +174,7 @@ with tab_query:
         c3.metric("Path", p.path or "-")
         c4.metric("Model calls", p.n_model_calls)
         c5.metric("Parse time", f"{p.timings.get('parse_s', 0):.2f} s", help=f"Jev cost ${cost:.6f}")
+        st.caption("Decision implementations used: " + ", ".join(impls))
         if not p.ok:
             u = p.unsupported
             st.error(f"Unsupported: {u.reason}" + (f" (decision: {u.decision}, depth {u.depth}, text: '{u.text}')" if u.decision or u.text else ""))
