@@ -55,6 +55,18 @@ geocoder:
   # Max tiles for one Features request. Large areas are split into tiles.
   max_tiles: 16
 
+t5:
+  # T5 candidate generator (plan-005). If the model directory does not exist, the parser uses the patterns only.
+  enabled: true
+  model_dir: "models/t5/current"
+  beams: 4
+  # Keep frame groups whose log probability is within this margin of the best frame.
+  margin: 2.0
+  # Literal split patterns: "always", "fallback" (only if T5 gives no usable frame), or "never".
+  use_patterns: fallback
+  # If the best frame is "unsupported" with at least this probability, the parser returns Unsupported.
+  unsupported_p: 0.5
+
 decisions:
   # Provider for each decision. Values: jev, rules, local.
   providers:

@@ -57,9 +57,11 @@ def value_num(text: str) -> float | None:
 
 
 def find_span(query: str, span: str) -> tuple[int, int] | None:
-    """Character range of `span` in `query` (case-insensitive). None if the span is not in the query."""
-    i = query.lower().find(span.lower())
-    return (i, i + len(span)) if i >= 0 and span.strip() else None
+    """Character range of `span` in `query` (case-insensitive, whole words). None if it is not in the query."""
+    if not span.strip():
+        return None
+    m = re.search(r"(?<!\w)" + re.escape(span.strip()) + r"(?!\w)", query, re.I)
+    return (m.start(), m.end()) if m else None
 
 
 def check_frame(frame: Frame, query: str, templates: dict[str, Any]) -> list[str]:
@@ -99,3 +101,24 @@ def frame_to_match(frame: Frame, query: str) -> dict[str, Any]:
             segments[name] = query[r[0]:r[1]] if r else value
         feeds[name] = [name]
     return {"segments": segments, "feeds": feeds, "literals": 0, "source": "t5", "t5_score": frame.score}
+
+
+def group_frames(frames: list[Frame], query: str, templates: dict[str, Any], margin: float) -> list[Frame]:
+    """Usable frames, one for each (template, open-slot spans) group, within `margin` of the best score.
+
+    Frames that differ only in closed-slot spans or quantities are one group. The best frame of the group
+    gives its closed spans and quantities. The decision model does not choose quantities.
+    """
+    best: dict[tuple, Frame] = {}
+    for f in frames:
+        if f.template == UNSUPPORTED or check_frame(f, query, templates):
+            continue
+        t = templates[f.template]
+        key = (f.template,) + tuple(sorted((k, v.lower()) for k, v in f.slots.items()
+                                           if k in t.slots and t.slots[k].type in ("region", "anchor")))
+        if key not in best or f.score > best[key].score:
+            best[key] = f
+    if not best:
+        return []
+    top = max(f.score for f in best.values())
+    return sorted([f for f in best.values() if f.score >= top - margin], key=lambda f: -f.score)

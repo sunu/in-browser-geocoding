@@ -16,6 +16,7 @@ dependencies = [
 [project.optional-dependencies]
 ner = ["onnxruntime>=1.18", "tokenizers>=0.19", "huggingface-hub>=0.23", "numpy>=1.26"]
 ui = ["streamlit>=1.40", "pydeck>=0.9"]
+t5 = ["torch>=2.5", "transformers>=4.46", "sentencepiece>=0.2"]
 
 [dependency-groups]
 dev = ["pytest>=8"]

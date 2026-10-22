@@ -1,0 +1,12 @@
+[project]
+name = "geoparse-train"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.5",
+    "transformers>=4.46",
+    "datasets>=3.0",
+    "accelerate>=1.0",
+    "sentencepiece>=0.2",
+    "protobuf>=5",
+]

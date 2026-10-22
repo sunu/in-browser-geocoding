@@ -107,7 +107,8 @@ def _slot_default(sd) -> Any:
 
 class Parser:
     def __init__(self, decider: Decider | None = None, store=None, config: dict[str, Any] | None = None,
-                 two_step: bool = True, prune_by_pattern: bool = True, max_workers: int = 32):
+                 two_step: bool = True, prune_by_pattern: bool = True, max_workers: int = 32,
+                 use_t5: bool | None = None, use_patterns: str | None = None, t5_dir: str | None = None):
         self.base_decider = decider or Decider()
         self.cfg = config or load_config()
         self.max_depth = int(self.cfg["decisions"]["max_depth"])
@@ -117,6 +118,18 @@ class Parser:
         self.templates = {t.id: t for f in self.families.values() for t in f.templates}
         self._store = store
         self.pool = ThreadPoolExecutor(max_workers=max_workers)
+        self.t5_cfg = self.cfg.get("t5", {})
+        self.use_patterns = str(self.t5_cfg.get("use_patterns", "fallback")) if use_patterns is None else use_patterns
+        self.t5 = None
+        if (self.t5_cfg.get("enabled") if use_t5 is None else use_t5):
+            try:
+                from geoparse.t5.model import get_t5
+
+                self.t5 = get_t5(t5_dir)
+            except (FileNotFoundError, ImportError):
+                self.t5 = None
+        if self.t5 is None:
+            self.use_patterns = "always"
 
     @property
     def store(self):
@@ -149,12 +162,22 @@ class Parser:
 
     # ------------------------------------------------------------ one level
 
-    def candidates(self, text: str, spans: list[Span] | None = None) -> dict[str, list[dict[str, Any]]]:
+    def candidates(self, text: str, spans: list[Span] | None = None, dec: Decider | None = None,
+                   depth: int = 0) -> dict[str, list[dict[str, Any]]]:
         """Template id -> list of valid split matches. `spans` (from extract_spans) mark place names."""
         places = tuple(norm(s.text) for s in (spans or [])
                        if s.label in ("location", "landmark", "street") and s.score >= 0.5 and norm(s.text))
         out: dict[str, list[dict[str, Any]]] = {}
+        t5_matches, t5_unsupported = self._t5_matches(text, dec, depth)
+        if t5_unsupported:
+            return {"_t5_unsupported": []}
+        for m in t5_matches:
+            out.setdefault(m["template"], []).append(m)
+        # Patterns: "always", "fallback" (only if T5 gives no usable frame), or "never".
+        patterns_on = self.use_patterns == "always" or (self.use_patterns == "fallback" and not t5_matches)
         for t in self.templates.values():
+            if not patterns_on:
+                break
             seen = set()
             literal = [m for pat in t.patterns for m in match_pattern(pat, text)]
             for m in literal:
@@ -174,11 +197,43 @@ class Parser:
             for m in ms:
                 seg_of = {s: seg for seg, fed in m["feeds"].items() for s in fed}
                 key = tuple(sorted((n, norm(m["segments"][seg_of[n]])) for n, sd in t.slots.items()
-                                   if n in seg_of and sd.type not in CLOSED_TYPES))
-                if key not in best or m["score"] > best[key]["score"]:
+                                   if n in seg_of and sd.type in OPEN_TYPES))
+                # A T5 frame wins over a pattern match with the same open spans (its spans are more precise).
+                if key not in best or (m.get("source") == "t5") > (best[key].get("source") == "t5") or (
+                        (m.get("source") == "t5") == (best[key].get("source") == "t5") and m["score"] > best[key]["score"]):
                     best[key] = m
             out[tid] = list(best.values())
         return out
+
+    def _t5_matches(self, text: str, dec: Decider | None = None, depth: int = 0) -> list[dict[str, Any]]:
+        """Candidate splits from the T5 model, as split matches. Empty if T5 is not enabled or not built."""
+        if self.t5 is None:
+            return [], False
+        from geoparse.t5.frames import UNSUPPORTED, frame_to_match, group_frames
+
+        frames, dt = self.t5.frames(text, k=int(self.t5_cfg.get("beams", 4)))
+        groups = group_frames(frames, text, self.templates, float(self.t5_cfg.get("margin", 2.0)))
+        if dec is not None:
+            import math
+
+            from geoparse.decisions.types import Decision
+
+            d = Decision[list](value=[f.to_text() for f in groups], impl=f"t5:{self.t5.dir.name}",
+                               confidence=math.exp(frames[0].score) if frames else 0.0,
+                               trace={"beam": [(f.to_text(), round(f.score, 4)) for f in frames]})
+            dec._record("generate_frames", depth, {"text": text}, None, d, dt)
+        import math
+
+        unsupported = bool(frames) and frames[0].template == UNSUPPORTED and \
+            math.exp(frames[0].score) >= float(self.t5_cfg.get("unsupported_p", 0.5))
+        out = []
+        for f in groups:
+            m = frame_to_match(f, text)
+            m["template"] = f.template
+            # Rule score: T5 frames rank above pattern matches, in beam order.
+            m["score"] = 20.0 + f.score
+            out.append(m)
+        return out, unsupported
 
     def _valid(self, t: Template, m: dict[str, Any]) -> bool:
         for seg_name, text in m["segments"].items():
@@ -232,7 +287,10 @@ class Parser:
             return ({"op": "LexiconSet", "args": {"key": lex}},
                     {"family": "lookup", "template": "lookup_place", "slots": {"anchor": {"lex": lex, "text": text}}})
         spans = dec.extract_spans(text, depth=depth).value
-        cands = self.candidates(text, spans)
+        cands = self.candidates(text, spans, dec, depth)
+        if "_t5_unsupported" in cands:
+            raise _Stop(Unsupported(reason="the T5 model classifies the text as unsupported",
+                                    decision="generate_frames", depth=depth, text=text))
         if not self.prune:
             cands = {tid: cands.get(tid, []) for tid in self.templates}
         if not any(cands.values()):

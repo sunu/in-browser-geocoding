@@ -66,15 +66,15 @@ directions:
 
 attrs:
   population:
-    description: "Number of people who live there (population)"
+    description: "Number of people who live there (population, people, residents, inhabitants)"
     keywords: [population, populaton, people, inhabitants, residents, populous, pop]
   area:
-    description: "Size of the land area"
+    description: "Size of the land area (area, size, square kilometres)"
     keywords: [area, size, sq km, square km, km2, square kilometers, square kilometres, larger, bigger]
 
 ops:
   gt:
-    description: "Greater than (more than, over, above, at least)"
+    description: "Greater than (more than, over, above, at least, exceeding)"
     keywords: [over, above, more than, greater than, at least, exceeding, ">", ">=", bigger than, larger than, plus]
   lt:
     description: "Less than (under, below, at most, fewer than)"
