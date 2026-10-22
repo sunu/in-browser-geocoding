@@ -119,12 +119,16 @@ def eval_t5(model: T5Parser, sets: dict[str, list[dict]], k: int) -> dict:
     return res
 
 
-def eval_pipeline(provider: str, t5_dir: str, recs: list[dict], use_patterns: str, workers: int) -> dict:
+def eval_pipeline(provider: str, t5_dir: str, recs: list[dict], use_patterns: str, workers: int,
+                  overrides: dict[str, str] | None = None) -> dict:
     from geoparse.decisions.functions import Decider
     from geoparse.decisions.log import DecisionLogger
     from geoparse.parse.pipeline import Parser
 
-    parser = Parser(Decider(default=provider, logger=DecisionLogger(), jev_mode="cached",
+    from geoparse.decisions.providers import RulesProvider
+
+    over = {k: RulesProvider() for k, v in (overrides or {}).items() if v == "rules"}
+    parser = Parser(Decider(default=provider, logger=DecisionLogger(), jev_mode="cached", providers=over,
                             jev_cache=str(REPO_ROOT / "tests" / "fixtures" / "jev_cache.jsonl")),
                     t5_dir=t5_dir, use_t5=True, use_patterns=use_patterns)
     parser.parse("Kerala")
@@ -161,17 +165,21 @@ def main() -> None:
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--out")
     ap.add_argument("--set", default="llm_test", help="set for the pipeline evaluation")
+    ap.add_argument("--override", default="", help="decision=provider list, for example select_source=rules")
+    ap.add_argument("--no-t5-alone", action="store_true")
     args = ap.parse_args()
     sets = load_sets()
     model = T5Parser(args.t5)
-    report = {"t5": args.t5, "t5_alone": eval_t5(model, sets, args.k)}
+    report = {"t5": args.t5, "t5_alone": {} if args.no_t5_alone else eval_t5(model, sets, args.k)}
     for name, r in report["t5_alone"].items():
         print(f"T5 alone {name:9s} n={r['n']:4d} top1={r['top1']:.3f} top{args.k}={r[f'top{args.k}']:.3f} "
               f"exact={r['exact']} median={r['median_ms']:.0f} ms")
     if args.pipeline:
-        pr = eval_pipeline(args.pipeline, args.t5, sets[args.set], args.patterns, args.workers)
+        overrides = dict(x.split("=") for x in args.override.split(",") if x)
+        pr = eval_pipeline(args.pipeline, args.t5, sets[args.set], args.patterns, args.workers, overrides)
         report[f"pipeline_{args.set}"] = pr
-        print(f"pipeline ({args.pipeline}, patterns={args.patterns}) {args.set} acc={pr['acc']:.3f} median={pr['median_s']:.2f}s")
+        print(f"pipeline ({args.pipeline}, patterns={args.patterns}, override={args.override or '-'}) {args.set} "
+              f"acc={pr['acc']:.3f} median={pr['median_s']:.2f}s")
         print(json.dumps(pr["by_template"]))
     out = Path(args.out or REPO_ROOT / "reports" / f"t5-eval-{Path(args.t5).name}{'-' + args.pipeline + '-' + args.set if args.pipeline else ''}.json")
     out.write_text(json.dumps(report, indent=1, default=str))

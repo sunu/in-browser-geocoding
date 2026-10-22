@@ -19,7 +19,7 @@ ui = ["streamlit>=1.40", "pydeck>=0.9"]
 t5 = ["torch>=2.5", "transformers>=4.46", "sentencepiece>=0.2"]
 
 [dependency-groups]
-dev = ["pytest>=8"]
+dev = ["pytest>=8", "geoparse[ner,ui,t5]"]
 
 [build-system]
 requires = ["hatchling"]

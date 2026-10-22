@@ -377,6 +377,7 @@ ui = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "geoparse", extra = ["ner", "t5", "ui"] },
     { name = "pytest" },
 ]
 
@@ -402,7 +403,10 @@ requires-dist = [
 provides-extras = ["ner", "ui", "t5"]
 
 [package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=8" }]
+dev = [
+    { name = "geoparse", extras = ["ner", "ui", "t5"] },
+    { name = "pytest", specifier = ">=8" },
+]
 
 [[package]]
 name = "h11"
