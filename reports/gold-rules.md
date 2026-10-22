@@ -1,4 +1,4 @@
-# Gold suite: provider `rules`
+# Gold suite `gold`: provider `rules`
 
 Records: 98. Depth 0: 85. Depth 1 (two levels): 13.
 
@@ -38,25 +38,25 @@ Records: 98. Depth 0: 85. Depth 1 (two levels): 13.
 | features | 100% (12/12) | 100% (12/12) | 100% (12/12) | 0 | - |
 | hierarchy | 100% (15/15) | 100% (15/15) | 100% (15/15) | 0 | 100% (15/15) |
 | lookup | 91% (10/11) | 91% (10/11) | 91% (10/11) | 1 | 100% (8/8) |
-| modifier | 93% (13/14) | 93% (13/14) | 93% (13/14) | 1 | 100% (11/11) |
+| modifier | 93% (13/14) | 93% (13/14) | 93% (13/14) | 0 | 100% (11/11) |
 | predicate_filter | 100% (12/12) | 100% (12/12) | 100% (12/12) | 0 | 100% (12/12) |
 | relational | 100% (11/11) | 100% (11/11) | 100% (11/11) | 0 | 100% (11/11) |
 | set_algebra | 100% (12/12) | 100% (12/12) | 100% (12/12) | 0 | 100% (12/12) |
-| ALL | 98% (96/98) | 98% (96/98) | 98% (96/98) | 2 | 100% (80/80) |
+| ALL | 98% (96/98) | 98% (96/98) | 98% (96/98) | 1 | 100% (80/80) |
 
 ### By depth
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 98% (83/85) | 0.09 s | 3.5 | 2.0 |
-| 1 | 100% (13/13) | 0.11 s | 7.0 | 4.5 |
+| 0 | 98% (83/85) | 0.09 s | 3.6 | 2.0 |
+| 1 | 100% (13/13) | 0.10 s | 7.0 | 4.5 |
 
 ### Pipeline errors
 
 | Gold id | Query | Got template | Problem |
 |---|---|---|---|
 | g004 | MG Road, Bangalore | None | cannot resolve 'MG Road' in the local extract |
-| g015 | 500m around Indiranagar metro station | None | cannot resolve 'Indiranagar metro' in the local extract |
+| g015 | 500m around Indiranagar metro station | features_in | template |
 
 ### Nested template pairs in the gold suite
 

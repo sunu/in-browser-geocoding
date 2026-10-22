@@ -112,7 +112,8 @@ class Store:
         hint = type_hint or hint_from_name
         hint_subtypes = set()
         if hint:
-            h = {"district": "district", "state": "state", "city": "city", "town": "city", "country": "country"}.get(hint, hint)
+            h = {"district": "district", "state": "state", "city": "city", "town": "city", "country": "country",
+                 "union_territory": "union_territory"}.get(hint, hint)
             hint_subtypes = set(policy["admin_levels"].get(h, []))
         ctx = norm_name(context) if context else ""
         cands = []

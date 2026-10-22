@@ -34,6 +34,7 @@ LEADING_FILLERS = [
     "show me the", "show me", "show the", "show", "find me", "find the", "find", "list the", "list all", "list",
     "give me the", "give me", "get me", "get", "map of the", "map of", "map", "where is the", "where is",
     "where are the", "where are", "what are the", "what are", "which are the", "all the", "all of the", "the",
+    "everything", "anything",
 ]
 
 
@@ -250,6 +251,14 @@ class Parser:
         if dec.below("pick_template", td):
             raise _Stop(Unsupported(reason=f"low confidence for pick_template ({td.confidence:.2f})", decision="pick_template", depth=depth, text=text))
         tpl = self.templates[td.value]
+        if tpl.family == "lookup":
+            # Guard: the lookup template takes the whole text as one name. If the text describes a set
+            # of places (and no other template matched), it is not supported. Do not geocode it.
+            g = dec.is_subquery(text, depth=depth, context={"gazetteer_exact": bool(self.store.search(text, fuzzy=False, limit=1)),
+                                                             "has_distance": bool(re.search(r"\d", text))})
+            if g.value or dec.below("is_subquery", g):
+                raise _Stop(Unsupported(reason="the text is not one place name, and no other template matches",
+                                        decision="is_subquery", depth=depth, text=text))
         matches = cands.get(tpl.id, [])
         if not matches:
             raise _Stop(Unsupported(reason=f"template {tpl.id} has no valid split", decision="pick_split", depth=depth, text=text))

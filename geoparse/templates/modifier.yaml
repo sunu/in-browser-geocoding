@@ -10,7 +10,8 @@ templates:
     patterns:
       - "{distance} (around|from|of|near|radius around|radius of|radius from|buffer around|buffer of) {target}"
       - "within [a|an] {distance} [radius] (of|from|around) {target}"
-      - "(area|region|zone) within {distance} (of|from|around) {target}"
+      - "(area|region|zone|places|everything) within [a|an] {distance} [radius] (of|from|around) {target}"
+      - "(around|near|within) {target} [within] {distance}"
       - "(near|around|close to|nearby|vicinity of|surroundings of|neighbourhood of|neighborhood of|area around|area near) {target}"
       - "{target} (surroundings|vicinity|neighbourhood|neighborhood|and around|and surroundings)"
     dag: "Buffer(${target}, ${distance})"

@@ -24,4 +24,5 @@ templates:
       - "{category} within [a] {distance} [radius] (of|from|around) {region}"
       - "{category} {distance} (from|around|of|near) {region}"
       - "{category} (in|within) [a] {distance} radius (of|from|around) {region}"
+      - "{category} (near|around|within|close to) {region} [within] {distance}"
     dag: "Features(${category}, Buffer(${region}, ${distance}))"

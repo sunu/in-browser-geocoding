@@ -7,7 +7,10 @@ admin_levels:
     keywords: [country, countries, nation, nations]
   state:
     description: "States or union territories, the first level of division inside a country"
-    keywords: [state, states, province, provinces, ut, uts, union territory, union territories, region, regions]
+    keywords: [state, states, province, provinces, region, regions]
+  union_territory:
+    description: "Union territories only"
+    keywords: [ut, uts, union territory, union territories]
   district:
     description: "Districts, the level of division inside a state"
     keywords: [district, districts, dist, dists, zilla, zillas, county, counties]

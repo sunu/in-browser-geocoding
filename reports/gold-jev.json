@@ -1311,7 +1311,7 @@
    "got": "direction_part",
    "gold": "direction_part",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g021",
@@ -1321,8 +1321,8 @@
    "correct": true,
    "got": "direction_part",
    "gold": "direction_part",
-   "conf": 1.0,
-   "n_options": 3
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g021",
@@ -1394,7 +1394,7 @@
    "got": "direction_outside",
    "gold": "direction_outside",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g022",
@@ -1405,7 +1405,7 @@
    "got": "direction_outside",
    "gold": "direction_outside",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g022",
@@ -1476,8 +1476,8 @@
    "correct": true,
    "got": "direction_outside",
    "gold": "direction_outside",
-   "conf": 0.98,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g023",
@@ -1488,7 +1488,7 @@
    "got": "direction_outside",
    "gold": "direction_outside",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g023",
@@ -1548,7 +1548,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.77,
+   "conf": 0.94,
    "n_options": 3
   },
   {
@@ -1620,7 +1620,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.43,
+   "conf": 0.67,
    "n_options": 3
   },
   {
@@ -1692,7 +1692,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.53,
+   "conf": 0.8,
    "n_options": 3
   },
   {
@@ -1764,8 +1764,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.55,
-   "n_options": 3
+   "conf": 0.92,
+   "n_options": 4
   },
   {
    "id": "g027",
@@ -1787,7 +1787,7 @@
    "got": "children",
    "gold": "children",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 4
   },
   {
    "id": "g027",
@@ -1804,7 +1804,7 @@
     "parent": "tamil nadu"
    },
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g027",
@@ -1836,7 +1836,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.28,
+   "conf": 0.74,
    "n_options": 3
   },
   {
@@ -1981,7 +1981,7 @@
    "got": "hierarchy",
    "gold": "hierarchy",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g030",
@@ -1992,7 +1992,7 @@
    "got": "parent",
    "gold": "parent",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g030",
@@ -2003,7 +2003,7 @@
    "got": "parent",
    "gold": "parent",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 1
   },
   {
    "id": "g030",
@@ -2052,8 +2052,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.83,
-   "n_options": 3
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g031",
@@ -2075,7 +2075,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g031",
@@ -2328,7 +2328,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g035",
@@ -2350,7 +2350,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g035",
@@ -2366,8 +2366,8 @@
     "head": "coastal states",
     "parent": "India"
    },
-   "conf": 0.72,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g035",
@@ -2411,7 +2411,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g036",
@@ -2433,7 +2433,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 4
+   "n_options": 2
   },
   {
    "id": "g036",
@@ -2449,8 +2449,8 @@
     "head": "landlocked districts",
     "parent": "Karnataka"
    },
-   "conf": 0.84,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g036",
@@ -2494,7 +2494,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g037",
@@ -2515,8 +2515,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 4
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g037",
@@ -2532,8 +2532,8 @@
     "head": "coastal districts",
     "parent": "Odisha"
    },
-   "conf": 0.94,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g037",
@@ -2577,7 +2577,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g038",
@@ -2599,7 +2599,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 4
+   "n_options": 2
   },
   {
    "id": "g038",
@@ -2615,8 +2615,8 @@
     "head": "coastl states",
     "parent": "india"
    },
-   "conf": 0.74,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g038",
@@ -2659,8 +2659,8 @@
    "correct": true,
    "got": "predicate_filter",
    "gold": "predicate_filter",
-   "conf": 0.98,
-   "n_options": 3
+   "conf": 1.0,
+   "n_options": 2
   },
   {
    "id": "g039",
@@ -2682,7 +2682,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 0.96,
-   "n_options": 4
+   "n_options": 2
   },
   {
    "id": "g039",
@@ -2698,8 +2698,8 @@
     "head": "border districts",
     "parent": "Punjab"
    },
-   "conf": 0.84,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g039",
@@ -2743,7 +2743,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 0.98,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g040",
@@ -2765,7 +2765,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 4
+   "n_options": 2
   },
   {
    "id": "g040",
@@ -2781,8 +2781,8 @@
     "head": "inland districts",
     "parent": "Kerala"
    },
-   "conf": 0.7,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g040",
@@ -2826,7 +2826,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g041",
@@ -2847,8 +2847,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 4
+   "conf": 0.96,
+   "n_options": 2
   },
   {
    "id": "g041",
@@ -2864,8 +2864,8 @@
     "head": "landlocked states",
     "parent": "India"
    },
-   "conf": 0.6,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g041",
@@ -2887,7 +2887,7 @@
    "got": "state",
    "gold": "state",
    "text": "landlocked states",
-   "conf": 0.49
+   "conf": 0.62
   },
   {
    "id": "g041",
@@ -2949,8 +2949,8 @@
     "parent": "Maharashtra",
     "pred": "coast"
    },
-   "conf": 0.9,
-   "n_options": 6
+   "conf": 0.96,
+   "n_options": 5
   },
   {
    "id": "g042",
@@ -2993,7 +2993,7 @@
    "correct": true,
    "got": "predicate_filter",
    "gold": "predicate_filter",
-   "conf": 0.92,
+   "conf": 0.51,
    "n_options": 3
   },
   {
@@ -3016,7 +3016,7 @@
    "got": "children_touching",
    "gold": "children_touching",
    "conf": 1.0,
-   "n_options": 6
+   "n_options": 5
   },
   {
    "id": "g043",
@@ -3078,7 +3078,7 @@
    "correct": true,
    "got": "predicate_filter",
    "gold": "predicate_filter",
-   "conf": 0.97,
+   "conf": 0.76,
    "n_options": 3
   },
   {
@@ -3101,7 +3101,7 @@
    "got": "children_touching",
    "gold": "children_touching",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 4
   },
   {
    "id": "g044",
@@ -4226,7 +4226,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g058",
@@ -4248,7 +4248,7 @@
    "got": "along_coast",
    "gold": "along_coast",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g058",
@@ -4286,8 +4286,8 @@
    "correct": true,
    "got": "relational",
    "gold": "relational",
-   "conf": 0.91,
-   "n_options": 3
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g059",
@@ -4309,7 +4309,7 @@
    "got": "along_coast",
    "gold": "along_coast",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g059",
@@ -4407,7 +4407,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g061",
@@ -4429,7 +4429,7 @@
    "got": "along_border",
    "gold": "along_border",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g061",
@@ -4467,8 +4467,8 @@
    "correct": true,
    "got": "relational",
    "gold": "relational",
-   "conf": 0.83,
-   "n_options": 3
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g062",
@@ -4490,7 +4490,7 @@
    "got": "along_border",
    "gold": "along_border",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g062",
@@ -4527,7 +4527,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g063",
@@ -4549,7 +4549,7 @@
    "got": "along_intl_border",
    "gold": "along_intl_border",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g063",
@@ -4587,8 +4587,8 @@
    "correct": true,
    "got": "relational",
    "gold": "relational",
-   "conf": 0.89,
-   "n_options": 3
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g064",
@@ -4610,7 +4610,7 @@
    "got": "along_intl_border",
    "gold": "along_intl_border",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g064",
@@ -4902,7 +4902,7 @@
     "region": "Mysuru"
    },
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g068",
@@ -5405,7 +5405,7 @@
    "correct": true,
    "got": "attribute",
    "gold": "attribute",
-   "conf": 0.79,
+   "conf": 1.0,
    "n_options": 5
   },
   {
@@ -5505,7 +5505,7 @@
    "correct": true,
    "got": "attribute",
    "gold": "attribute",
-   "conf": 0.71,
+   "conf": 1.0,
    "n_options": 5
   },
   {
@@ -5605,8 +5605,8 @@
    "correct": true,
    "got": "attribute",
    "gold": "attribute",
-   "conf": 0.64,
-   "n_options": 6
+   "conf": 1.0,
+   "n_options": 5
   },
   {
    "id": "g077",
@@ -5628,14 +5628,14 @@
    "got": "children_attr",
    "gold": "children_attr",
    "conf": 1.0,
-   "n_options": 7
+   "n_options": 6
   },
   {
    "id": "g077",
    "decision": "pick_split",
    "depth": 0,
    "family": "attribute",
-   "correct": false,
+   "correct": true,
    "got": {
     "level": "districts",
     "parent": "Kerala",
@@ -5647,11 +5647,11 @@
     "level": "districts",
     "parent": "Kerala",
     "opseg": "more than",
-    "value": "30",
-    "attrseg": "lakh people"
+    "value": "30 lakh",
+    "attrseg": "people"
    },
-   "conf": 0.74,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g077",
@@ -5672,7 +5672,7 @@
    "correct": true,
    "got": "population",
    "gold": "population",
-   "text": "lakh people",
+   "text": "people",
    "conf": 1.0
   },
   {
@@ -5705,7 +5705,7 @@
    "correct": true,
    "got": "attribute",
    "gold": "attribute",
-   "conf": 0.76,
+   "conf": 1.0,
    "n_options": 5
   },
   {
@@ -5805,7 +5805,7 @@
    "correct": true,
    "got": "attribute",
    "gold": "attribute",
-   "conf": 0.46,
+   "conf": 1.0,
    "n_options": 5
   },
   {
@@ -5902,10 +5902,10 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "attribute",
-   "correct": false,
-   "got": "predicate_filter",
+   "correct": true,
+   "got": "attribute",
    "gold": "attribute",
-   "conf": 0.5,
+   "conf": 0.97,
    "n_options": 5
   },
   {
@@ -6005,8 +6005,8 @@
    "correct": true,
    "got": "attribute",
    "gold": "attribute",
-   "conf": 0.59,
-   "n_options": 6
+   "conf": 1.0,
+   "n_options": 5
   },
   {
    "id": "g081",
@@ -6028,7 +6028,7 @@
    "got": "children_attr",
    "gold": "children_attr",
    "conf": 0.99,
-   "n_options": 7
+   "n_options": 6
   },
   {
    "id": "g081",
@@ -6051,7 +6051,7 @@
     "value": "50,000"
    },
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g081",
@@ -6105,8 +6105,8 @@
    "correct": true,
    "got": "attribute",
    "gold": "attribute",
-   "conf": 0.71,
-   "n_options": 5
+   "conf": 0.96,
+   "n_options": 2
   },
   {
    "id": "g082",
@@ -6128,7 +6128,7 @@
    "got": "children_attr",
    "gold": "children_attr",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 2
   },
   {
    "id": "g082",
@@ -6203,7 +6203,7 @@
    "correct": true,
    "got": "attribute",
    "gold": "attribute",
-   "conf": 0.57,
+   "conf": 1.0,
    "n_options": 4
   },
   {
@@ -6303,7 +6303,7 @@
    "correct": true,
    "got": "attribute",
    "gold": "attribute",
-   "conf": 0.59,
+   "conf": 1.0,
    "n_options": 5
   },
   {
@@ -6404,7 +6404,7 @@
    "got": "features",
    "gold": "features",
    "conf": 1.0,
-   "n_options": 4
+   "n_options": 2
   },
   {
    "id": "g085",
@@ -6425,8 +6425,8 @@
    "correct": true,
    "got": "features_near",
    "gold": "features_near",
-   "conf": 0.95,
-   "n_options": 6
+   "conf": 0.97,
+   "n_options": 3
   },
   {
    "id": "g085",
@@ -6478,7 +6478,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g085",
@@ -6499,8 +6499,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 4
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g085",
@@ -6516,8 +6516,8 @@
     "head": "coastal districts",
     "parent": "Odisha"
    },
-   "conf": 0.94,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g085",
@@ -6560,8 +6560,8 @@
    "correct": true,
    "got": "features",
    "gold": "features",
-   "conf": 0.96,
-   "n_options": 4
+   "conf": 1.0,
+   "n_options": 2
   },
   {
    "id": "g086",
@@ -6582,8 +6582,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 0.91,
-   "n_options": 5
+   "conf": 1.0,
+   "n_options": 2
   },
   {
    "id": "g086",
@@ -6600,7 +6600,7 @@
     "region": "landlocked districts of Goa"
    },
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g086",
@@ -6633,7 +6633,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g086",
@@ -6654,8 +6654,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 4
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g086",
@@ -6671,8 +6671,8 @@
     "head": "landlocked districts",
     "parent": "Goa"
    },
-   "conf": 0.78,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g086",
@@ -6715,8 +6715,8 @@
    "correct": true,
    "got": "modifier",
    "gold": "modifier",
-   "conf": 0.64,
-   "n_options": 4
+   "conf": 0.96,
+   "n_options": 2
   },
   {
    "id": "g087",
@@ -6737,8 +6737,8 @@
    "correct": true,
    "got": "buffer",
    "gold": "buffer",
-   "conf": 0.99,
-   "n_options": 5
+   "conf": 1.0,
+   "n_options": 2
   },
   {
    "id": "g087",
@@ -6776,7 +6776,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.8,
+   "conf": 0.95,
    "n_options": 3
   },
   {
@@ -6848,8 +6848,8 @@
    "correct": true,
    "got": "set_algebra",
    "gold": "set_algebra",
-   "conf": 0.88,
-   "n_options": 4
+   "conf": 1.0,
+   "n_options": 2
   },
   {
    "id": "g088",
@@ -6870,8 +6870,8 @@
    "correct": true,
    "got": "union",
    "gold": "union",
-   "conf": 0.81,
-   "n_options": 5
+   "conf": 1.0,
+   "n_options": 2
   },
   {
    "id": "g088",
@@ -6921,7 +6921,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g088",
@@ -6942,8 +6942,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 4
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g088",
@@ -6959,8 +6959,8 @@
     "head": "coastal districts",
     "parent": "Karnataka"
    },
-   "conf": 0.78,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g088",
@@ -7004,7 +7004,7 @@
    "got": "set_algebra",
    "gold": "set_algebra",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 3
   },
   {
    "id": "g089",
@@ -7025,8 +7025,8 @@
    "correct": true,
    "got": "difference",
    "gold": "difference",
-   "conf": 0.99,
-   "n_options": 5
+   "conf": 1.0,
+   "n_options": 3
   },
   {
    "id": "g089",
@@ -7065,7 +7065,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g089",
@@ -7087,7 +7087,7 @@
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g089",
@@ -7103,8 +7103,8 @@
     "head": "coastal states",
     "parent": "India"
    },
-   "conf": 0.72,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g089",
@@ -7144,10 +7144,10 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "hierarchy",
-   "correct": false,
-   "got": "predicate_filter",
+   "correct": true,
+   "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.86,
+   "conf": 0.53,
    "n_options": 3
   },
   {
@@ -7155,22 +7155,22 @@
    "decision": "pick_template",
    "depth": 0,
    "family": "hierarchy",
-   "correct": false,
-   "got": "neighbors",
+   "correct": true,
+   "got": "children",
    "gold": "children",
-   "conf": 0.56,
-   "n_options": 3
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g090",
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "hierarchy",
-   "correct": false,
-   "got": "children_touching",
+   "correct": true,
+   "got": "children",
    "gold": "children",
-   "conf": 0.82,
-   "n_options": 6
+   "conf": 0.47,
+   "n_options": 4
   },
   {
    "id": "g090",
@@ -7187,7 +7187,7 @@
     "parent": "states that border Goa"
    },
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g090",
@@ -7219,8 +7219,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.86,
-   "n_options": 3
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g090",
@@ -7242,7 +7242,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g090",
@@ -7291,19 +7291,19 @@
    "correct": true,
    "got": "predicate_filter",
    "gold": "predicate_filter",
-   "conf": 0.94,
-   "n_options": 3
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g091",
    "decision": "pick_template",
    "depth": 0,
    "family": "predicate_filter",
-   "correct": false,
-   "got": "children_touching",
+   "correct": true,
+   "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 0.06,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g091",
@@ -7313,8 +7313,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 0.63,
-   "n_options": 6
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g091",
@@ -7330,8 +7330,8 @@
     "head": "coastal districts",
     "parent": "states that border Goa"
    },
-   "conf": 0.96,
-   "n_options": 5
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g091",
@@ -7374,8 +7374,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.88,
-   "n_options": 3
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g091",
@@ -7397,7 +7397,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g091",
@@ -7443,11 +7443,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "hierarchy",
-   "correct": false,
-   "got": "predicate_filter",
+   "correct": true,
+   "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.4,
-   "n_options": 3
+   "conf": 1.0,
+   "n_options": 2
   },
   {
    "id": "g092",
@@ -7458,7 +7458,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 1
   },
   {
    "id": "g092",
@@ -7468,8 +7468,8 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 0.97,
-   "n_options": 5
+   "conf": 1.0,
+   "n_options": 2
   },
   {
    "id": "g092",
@@ -7519,7 +7519,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g092",
@@ -7540,8 +7540,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 4
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g092",
@@ -7557,8 +7557,8 @@
     "head": "coastal districts",
     "parent": "Odisha"
    },
-   "conf": 0.94,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g092",
@@ -7601,8 +7601,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.98,
-   "n_options": 3
+   "conf": 1.0,
+   "n_options": 2
   },
   {
    "id": "g093",
@@ -7624,7 +7624,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g093",
@@ -7662,7 +7662,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.62,
+   "conf": 0.91,
    "n_options": 3
   },
   {
@@ -7724,7 +7724,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 4
+   "n_options": 2
   },
   {
    "id": "g095",
@@ -7745,8 +7745,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 0.99,
-   "n_options": 5
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g095",
@@ -7762,8 +7762,8 @@
     "head": "coastal districts",
     "parent": "south india"
    },
-   "conf": 0.86,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g095",
@@ -7792,11 +7792,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "attribute",
-   "correct": false,
-   "got": "set_algebra",
+   "correct": true,
+   "got": "attribute",
    "gold": "attribute",
-   "conf": 0.62,
-   "n_options": 5
+   "conf": 0.52,
+   "n_options": 2
   },
   {
    "id": "g096",
@@ -7817,8 +7817,8 @@
    "correct": true,
    "got": "children_attr",
    "gold": "children_attr",
-   "conf": 0.7,
-   "n_options": 7
+   "conf": 1.0,
+   "n_options": 2
   },
   {
    "id": "g096",
@@ -7893,8 +7893,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.82,
-   "n_options": 3
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g096",
@@ -7916,7 +7916,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g096",
@@ -7966,7 +7966,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 5
+   "n_options": 3
   },
   {
    "id": "g097",
@@ -7988,7 +7988,7 @@
    "got": "between",
    "gold": "between",
    "conf": 1.0,
-   "n_options": 6
+   "n_options": 3
   },
   {
    "id": "g097",
@@ -8038,7 +8038,7 @@
    "got": "predicate_filter",
    "gold": "predicate_filter",
    "conf": 1.0,
-   "n_options": 3
+   "n_options": 2
   },
   {
    "id": "g097",
@@ -8059,8 +8059,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 4
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g097",
@@ -8076,8 +8076,8 @@
     "head": "coastal districts",
     "parent": "Karnataka"
    },
-   "conf": 0.78,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g097",
@@ -8120,8 +8120,8 @@
    "correct": true,
    "got": "modifier",
    "gold": "modifier",
-   "conf": 0.81,
-   "n_options": 4
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g098",
@@ -8132,7 +8132,7 @@
    "got": "direction_part",
    "gold": "direction_part",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g098",
@@ -8142,8 +8142,8 @@
    "correct": true,
    "got": "direction_part",
    "gold": "direction_part",
-   "conf": 0.76,
-   "n_options": 6
+   "conf": 0.94,
+   "n_options": 2
   },
   {
    "id": "g098",
@@ -8159,8 +8159,8 @@
     "dir": "northern",
     "target": "districts of Goa"
    },
-   "conf": 0.83,
-   "n_options": 3
+   "conf": 0.92,
+   "n_options": 2
   },
   {
    "id": "g098",
@@ -8192,7 +8192,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.8,
+   "conf": 0.95,
    "n_options": 3
   },
   {
@@ -8265,8 +8265,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5519843101501465,
-   "model_calls": 2,
+   "latency_s": 0.12475085258483887,
+   "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
@@ -8284,8 +8284,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0862116813659668,
-   "model_calls": 1,
+   "latency_s": 0.11857986450195312,
+   "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
@@ -8303,8 +8303,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.554030179977417,
-   "model_calls": 1,
+   "latency_s": 0.12123894691467285,
+   "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
@@ -8322,8 +8322,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.05872511863708496,
-   "model_calls": 2,
+   "latency_s": 0.5537278652191162,
+   "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
@@ -8341,8 +8341,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.04678487777709961,
-   "model_calls": 1,
+   "latency_s": 0.05617094039916992,
+   "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
@@ -8360,8 +8360,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07548785209655762,
-   "model_calls": 1,
+   "latency_s": 0.5819880962371826,
+   "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
@@ -8379,8 +8379,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6587746143341064,
-   "model_calls": 2,
+   "latency_s": 0.7463810443878174,
+   "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
@@ -8398,8 +8398,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.05018186569213867,
-   "model_calls": 1,
+   "latency_s": 0.5408680438995361,
+   "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
@@ -8417,8 +8417,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07406187057495117,
-   "model_calls": 1,
+   "latency_s": 0.10610508918762207,
+   "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
@@ -8436,7 +8436,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 7.009506225585938e-05,
+   "latency_s": 6.818771362304688e-05,
    "model_calls": 0,
    "requests_in_sequence": 0,
    "unsupported": null,
@@ -8455,7 +8455,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 7.605552673339844e-05,
+   "latency_s": 8.0108642578125e-05,
    "model_calls": 0,
    "requests_in_sequence": 0,
    "unsupported": null,
@@ -8474,7 +8474,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.05452299118041992,
+   "latency_s": 0.05348396301269531,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8493,7 +8493,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.04981112480163574,
+   "latency_s": 0.05630207061767578,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8512,7 +8512,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.116142749786377,
+   "latency_s": 0.5866701602935791,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8531,7 +8531,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.05859994888305664,
+   "latency_s": 0.06099510192871094,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8550,7 +8550,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07786202430725098,
+   "latency_s": 0.6428658962249756,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8569,7 +8569,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07702898979187012,
+   "latency_s": 0.07673311233520508,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8588,7 +8588,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07490396499633789,
+   "latency_s": 0.07538318634033203,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8607,7 +8607,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08182787895202637,
+   "latency_s": 0.07776784896850586,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8626,7 +8626,7 @@
    "depth": 0,
    "template_ok": false,
    "ok": false,
-   "latency_s": 0.00450587272644043,
+   "latency_s": 0.004300832748413086,
    "model_calls": 1,
    "requests_in_sequence": 1,
    "unsupported": {
@@ -8648,9 +8648,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08402681350708008,
-   "model_calls": 6,
-   "requests_in_sequence": 4,
+   "latency_s": 0.07572197914123535,
+   "model_calls": 5,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "direction_part",
    "path": "simple",
@@ -8667,9 +8667,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08135294914245605,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
+   "latency_s": 0.07641100883483887,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "direction_outside",
    "path": "simple",
@@ -8686,17 +8686,17 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5579462051391602,
-   "model_calls": 6,
-   "requests_in_sequence": 3,
+   "latency_s": 0.07940673828125,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "direction_outside",
    "path": "simple",
    "slots_ok": true,
    "diffs": [],
-   "dag_ok": false,
-   "exec_ok": false,
-   "exec_note": "empty geometry"
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 32405.442 vs 32405.442"
   },
   {
    "id": "g024",
@@ -8705,7 +8705,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07864499092102051,
+   "latency_s": 0.07551884651184082,
    "model_calls": 4,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -8724,7 +8724,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07668209075927734,
+   "latency_s": 0.0754861831665039,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8743,7 +8743,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08486485481262207,
+   "latency_s": 0.0785820484161377,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8762,9 +8762,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07946491241455078,
-   "model_calls": 4,
-   "requests_in_sequence": 3,
+   "latency_s": 0.08217310905456543,
+   "model_calls": 3,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -8779,22 +8779,19 @@
    "query": "dists of odisha",
    "family": "hierarchy",
    "depth": 0,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 0.008526802062988281,
-   "model_calls": 1,
-   "requests_in_sequence": 1,
-   "unsupported": {
-    "reason": "low confidence for pick_family (0.28)",
-    "decision": "pick_family",
-    "depth": 0,
-    "text": "dists of odisha"
-   },
-   "got_template": null,
-   "path": null,
-   "slots_ok": false,
-   "dag_ok": false,
-   "exec_ok": false
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.07934689521789551,
+   "model_calls": 4,
+   "requests_in_sequence": 3,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "30 ids vs 30"
   },
   {
    "id": "g029",
@@ -8803,7 +8800,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5965256690979004,
+   "latency_s": 0.14876580238342285,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8820,22 +8817,19 @@
    "query": "which district is Whitefield in",
    "family": "hierarchy",
    "depth": 0,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 0.5965578556060791,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
-   "unsupported": {
-    "reason": "low confidence for disambiguate (0.04)",
-    "decision": "disambiguate",
-    "depth": 0,
-    "text": "Whitefield"
-   },
-   "got_template": null,
-   "path": null,
-   "slots_ok": false,
-   "dag_ok": false,
-   "exec_ok": false
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.18782901763916016,
+   "model_calls": 2,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "parent",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
   },
   {
    "id": "g031",
@@ -8844,7 +8838,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07518506050109863,
+   "latency_s": 0.10972905158996582,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8863,7 +8857,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07485008239746094,
+   "latency_s": 0.09164690971374512,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8882,7 +8876,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07444596290588379,
+   "latency_s": 0.0903470516204834,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8901,7 +8895,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07698512077331543,
+   "latency_s": 0.0889899730682373,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8920,9 +8914,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07650494575500488,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
+   "latency_s": 0.08931684494018555,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -8939,9 +8933,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08046889305114746,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
+   "latency_s": 0.08698487281799316,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -8958,9 +8952,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07952713966369629,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
+   "latency_s": 0.08788609504699707,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -8977,9 +8971,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0801701545715332,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
+   "latency_s": 0.08595490455627441,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -8996,9 +8990,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07929086685180664,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
+   "latency_s": 0.07873916625976562,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -9015,9 +9009,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08152103424072266,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
+   "latency_s": 0.07874298095703125,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -9034,9 +9028,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0793919563293457,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
+   "latency_s": 0.07866883277893066,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -9053,7 +9047,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0796668529510498,
+   "latency_s": 0.08151078224182129,
    "model_calls": 5,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9072,7 +9066,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08659911155700684,
+   "latency_s": 0.08446168899536133,
    "model_calls": 5,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9091,7 +9085,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08506417274475098,
+   "latency_s": 0.08938908576965332,
    "model_calls": 5,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9110,7 +9104,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08549332618713379,
+   "latency_s": 0.08517694473266602,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9129,7 +9123,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08958697319030762,
+   "latency_s": 0.09171795845031738,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9148,7 +9142,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.1006319522857666,
+   "latency_s": 0.10897994041442871,
    "model_calls": 5,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9167,8 +9161,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.567375898361206,
-   "model_calls": 6,
+   "latency_s": 0.1079709529876709,
+   "model_calls": 5,
    "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "union3",
@@ -9186,8 +9180,8 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5726070404052734,
-   "model_calls": 4,
+   "latency_s": 0.10507512092590332,
+   "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "difference",
@@ -9205,7 +9199,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07979917526245117,
+   "latency_s": 0.08635187149047852,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9224,7 +9218,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07779669761657715,
+   "latency_s": 0.08594942092895508,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9243,7 +9237,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07425570487976074,
+   "latency_s": 0.0860128402709961,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9260,22 +9254,19 @@
    "query": "overlap of Bengaluru Urban and 10 km around Whitefield",
    "family": "set_algebra",
    "depth": 1,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 0.6103160381317139,
-   "model_calls": 7,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.12261223793029785,
+   "model_calls": 6,
    "requests_in_sequence": 5,
-   "unsupported": {
-    "reason": "low confidence for disambiguate (0.18)",
-    "decision": "disambiguate",
-    "depth": 1,
-    "text": "Whitefield"
-   },
-   "got_template": null,
-   "path": null,
-   "slots_ok": false,
-   "dag_ok": false,
-   "exec_ok": false
+   "unsupported": null,
+   "got_template": "intersection",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
   },
   {
    "id": "g054",
@@ -9284,7 +9275,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10137391090393066,
+   "latency_s": 0.11630606651306152,
    "model_calls": 5,
    "requests_in_sequence": 4,
    "unsupported": null,
@@ -9303,7 +9294,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08381915092468262,
+   "latency_s": 0.09906196594238281,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9322,39 +9313,36 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.557300329208374,
-   "model_calls": 4,
+   "latency_s": 0.09751605987548828,
+   "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "between",
    "path": "complex",
    "slots_ok": true,
    "diffs": [],
-   "dag_ok": false,
-   "exec_ok": false,
-   "exec_note": "area 0.0 vs 8307.533"
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 8307.533 vs 8307.533"
   },
   {
    "id": "g057",
    "query": "region between chennai and pondicherry",
    "family": "relational",
    "depth": 0,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 0.5386760234832764,
-   "model_calls": 4,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.09083008766174316,
+   "model_calls": 3,
    "requests_in_sequence": 2,
-   "unsupported": {
-    "reason": "low confidence for disambiguate (0.08)",
-    "decision": "disambiguate",
-    "depth": 0,
-    "text": "pondicherry"
-   },
-   "got_template": null,
-   "path": null,
-   "slots_ok": false,
-   "dag_ok": false,
-   "exec_ok": false
+   "unsupported": null,
+   "got_template": "between",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 172697.466 vs 172697.466"
   },
   {
    "id": "g058",
@@ -9363,7 +9351,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07848715782165527,
+   "latency_s": 0.08741402626037598,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9382,7 +9370,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07479190826416016,
+   "latency_s": 0.08319497108459473,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9401,7 +9389,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0856328010559082,
+   "latency_s": 0.0868520736694336,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9420,7 +9408,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08945918083190918,
+   "latency_s": 0.08726716041564941,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9439,7 +9427,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07990407943725586,
+   "latency_s": 0.08553028106689453,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9458,7 +9446,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08585333824157715,
+   "latency_s": 0.08384108543395996,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9477,7 +9465,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10313796997070312,
+   "latency_s": 0.07920575141906738,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9496,7 +9484,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5492427349090576,
+   "latency_s": 0.1208808422088623,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9515,7 +9503,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6581640243530273,
+   "latency_s": 0.1878352165222168,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9534,7 +9522,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1253371238708496,
+   "latency_s": 0.7362720966339111,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9553,9 +9541,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6883370876312256,
-   "model_calls": 6,
-   "requests_in_sequence": 3,
+   "latency_s": 0.7212390899658203,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -9572,7 +9560,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5586481094360352,
+   "latency_s": 0.07550907135009766,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9591,7 +9579,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6666018962860107,
+   "latency_s": 0.18266701698303223,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9610,7 +9598,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.054309844970703125,
+   "latency_s": 0.04839181900024414,
    "model_calls": 6,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9629,7 +9617,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.05725216865539551,
+   "latency_s": 0.051451921463012695,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9646,21 +9634,19 @@
    "query": "petrol pumps near Whitefield",
    "family": "features",
    "depth": 0,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 1.3359999656677246,
-   "model_calls": 6,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.07645392417907715,
+   "model_calls": 5,
    "requests_in_sequence": 2,
-   "unsupported": {
-    "reason": "low confidence for disambiguate (0.14)",
-    "decision": "disambiguate",
-    "depth": 0,
-    "text": "Whitefield"
-   },
-   "got_template": null,
-   "path": null,
-   "slots_ok": false,
-   "dag_ok": false
+   "unsupported": null,
+   "got_template": "features_near",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": null,
+   "exec_note": "needs network"
   },
   {
    "id": "g074",
@@ -9669,7 +9655,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.06118607521057129,
+   "latency_s": 0.05034375190734863,
    "model_calls": 6,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9688,7 +9674,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08495879173278809,
+   "latency_s": 0.07920598983764648,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9707,7 +9693,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08273530006408691,
+   "latency_s": 0.09043097496032715,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9726,9 +9712,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4895310401916504,
-   "model_calls": 6,
-   "requests_in_sequence": 3,
+   "latency_s": 0.0902857780456543,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_attr",
    "path": "complex",
@@ -9745,7 +9731,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07686471939086914,
+   "latency_s": 0.08697819709777832,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9764,7 +9750,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0773158073425293,
+   "latency_s": 0.08452296257019043,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9781,22 +9767,19 @@
    "query": "states of India with population over 10 crore",
    "family": "attribute",
    "depth": 0,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 0.4910111427307129,
-   "model_calls": 4,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.08561515808105469,
+   "model_calls": 5,
    "requests_in_sequence": 2,
-   "unsupported": {
-    "reason": "low confidence for is_subquery (0.16)",
-    "decision": "is_subquery",
-    "depth": 0,
-    "text": "India with population over 10 crore"
-   },
-   "got_template": null,
-   "path": null,
-   "slots_ok": false,
-   "dag_ok": false,
-   "exec_ok": false
+   "unsupported": null,
+   "got_template": "children_attr",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
   },
   {
    "id": "g081",
@@ -9805,9 +9788,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.07989120483398438,
-   "model_calls": 6,
-   "requests_in_sequence": 3,
+   "latency_s": 0.09328985214233398,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_attr",
    "path": "complex",
@@ -9824,7 +9807,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08049607276916504,
+   "latency_s": 0.09490513801574707,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9843,7 +9826,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.08073782920837402,
+   "latency_s": 0.08879780769348145,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9862,7 +9845,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09405398368835449,
+   "latency_s": 0.0908207893371582,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9881,9 +9864,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.1017909049987793,
-   "model_calls": 10,
-   "requests_in_sequence": 6,
+   "latency_s": 0.10771894454956055,
+   "model_calls": 9,
+   "requests_in_sequence": 5,
    "unsupported": null,
    "got_template": "features_near",
    "path": "complex",
@@ -9900,9 +9883,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10139226913452148,
-   "model_calls": 10,
-   "requests_in_sequence": 6,
+   "latency_s": 0.10942268371582031,
+   "model_calls": 8,
+   "requests_in_sequence": 4,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -9919,7 +9902,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.11018800735473633,
+   "latency_s": 0.10993099212646484,
    "model_calls": 6,
    "requests_in_sequence": 5,
    "unsupported": null,
@@ -9938,9 +9921,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10925102233886719,
-   "model_calls": 8,
-   "requests_in_sequence": 5,
+   "latency_s": 0.10711789131164551,
+   "model_calls": 7,
+   "requests_in_sequence": 4,
    "unsupported": null,
    "got_template": "union",
    "path": "complex",
@@ -9957,9 +9940,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.09681415557861328,
-   "model_calls": 7,
-   "requests_in_sequence": 5,
+   "latency_s": 0.10083413124084473,
+   "model_calls": 6,
+   "requests_in_sequence": 4,
    "unsupported": null,
    "got_template": "difference",
    "path": "complex",
@@ -9974,65 +9957,57 @@
    "query": "districts of states that border Goa",
    "family": "hierarchy",
    "depth": 1,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 1.4619920253753662,
-   "model_calls": 6,
-   "requests_in_sequence": 4,
-   "unsupported": {
-    "reason": "low confidence for is_subquery (0.12)",
-    "decision": "is_subquery",
-    "depth": 0,
-    "text": "states"
-   },
-   "got_template": null,
-   "path": null,
-   "slots_ok": false,
-   "dag_ok": false,
-   "exec_ok": false
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.10119295120239258,
+   "model_calls": 7,
+   "requests_in_sequence": 5,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "67 ids vs 67"
   },
   {
    "id": "g091",
    "query": "coastal districts of states that border Goa",
    "family": "predicate_filter",
    "depth": 1,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 0.008677244186401367,
-   "model_calls": 2,
-   "requests_in_sequence": 2,
-   "unsupported": {
-    "reason": "low confidence for pick_template (0.06)",
-    "decision": "pick_template",
-    "depth": 0,
-    "text": "coastal districts of states that border Goa"
-   },
-   "got_template": null,
-   "path": null,
-   "slots_ok": false,
-   "dag_ok": false,
-   "exec_ok": false
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.10081696510314941,
+   "model_calls": 7,
+   "requests_in_sequence": 4,
+   "unsupported": null,
+   "got_template": "children_with_predicate",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "10 ids vs 10"
   },
   {
    "id": "g092",
    "query": "districts that border coastal districts of Odisha",
    "family": "hierarchy",
    "depth": 1,
-   "template_ok": false,
+   "template_ok": true,
    "ok": true,
-   "latency_s": 1.0193381309509277,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
+   "latency_s": 0.0987391471862793,
+   "model_calls": 7,
+   "requests_in_sequence": 4,
    "unsupported": null,
-   "got_template": "children_with_predicate",
+   "got_template": "neighbors",
    "path": "complex",
-   "slots_ok": false,
-   "diffs": [
-    "template"
-   ],
-   "dag_ok": false,
-   "exec_ok": false,
-   "exec_note": "22 ids vs 12"
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "12 ids vs 12"
   },
   {
    "id": "g093",
@@ -10041,7 +10016,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.005826711654663086,
+   "latency_s": 0.006978034973144531,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -10060,7 +10035,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.00782012939453125,
+   "latency_s": 0.006695985794067383,
    "model_calls": 3,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -10079,9 +10054,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.006769895553588867,
-   "model_calls": 4,
-   "requests_in_sequence": 3,
+   "latency_s": 0.0067141056060791016,
+   "model_calls": 3,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -10096,22 +10071,19 @@
    "query": "cities with population over 1 million in states that border Gujarat",
    "family": "attribute",
    "depth": 1,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 0.5304310321807861,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
-   "unsupported": {
-    "reason": "cannot resolve 'cities' in the local extract",
-    "decision": null,
-    "depth": 1,
-    "text": "cities"
-   },
-   "got_template": null,
-   "path": null,
-   "slots_ok": false,
-   "dag_ok": false,
-   "exec_ok": false
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.10131406784057617,
+   "model_calls": 8,
+   "requests_in_sequence": 4,
+   "unsupported": null,
+   "got_template": "children_attr",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "15 ids vs 15"
   },
   {
    "id": "g097",
@@ -10120,9 +10092,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10981082916259766,
-   "model_calls": 8,
-   "requests_in_sequence": 5,
+   "latency_s": 0.10199403762817383,
+   "model_calls": 7,
+   "requests_in_sequence": 4,
    "unsupported": null,
    "got_template": "between",
    "path": "complex",
@@ -10139,9 +10111,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.10160398483276367,
-   "model_calls": 9,
-   "requests_in_sequence": 7,
+   "latency_s": 0.0984492301940918,
+   "model_calls": 8,
+   "requests_in_sequence": 6,
    "unsupported": null,
    "got_template": "direction_part",
    "path": "simple",
@@ -10155,19 +10127,19 @@
  "summary": {
   "pick_family": {
    "n": 111,
-   "correct": 106
+   "correct": 110
   },
   "pick_template": {
    "n": 111,
-   "correct": 109
+   "correct": 111
   },
   "pick_template_flat": {
    "n": 111,
-   "correct": 110
+   "correct": 111
   },
   "pick_split": {
    "n": 111,
-   "correct": 110
+   "correct": 111
   },
   "is_subquery": {
    "n": 114,
@@ -10204,15 +10176,15 @@
   "pipeline": {
    "attribute": {
     "n": 11,
-    "dag_ok": 9
+    "dag_ok": 11
    },
    "features": {
     "n": 12,
-    "dag_ok": 11
+    "dag_ok": 12
    },
    "hierarchy": {
     "n": 15,
-    "dag_ok": 11
+    "dag_ok": 15
    },
    "lookup": {
     "n": 11,
@@ -10220,23 +10192,23 @@
    },
    "modifier": {
     "n": 14,
-    "dag_ok": 12
+    "dag_ok": 13
    },
    "predicate_filter": {
     "n": 12,
-    "dag_ok": 11
+    "dag_ok": 12
    },
    "relational": {
     "n": 11,
-    "dag_ok": 9
+    "dag_ok": 11
    },
    "set_algebra": {
     "n": 12,
-    "dag_ok": 11
+    "dag_ok": 12
    },
    "ALL": {
     "n": 98,
-    "dag_ok": 85
+    "dag_ok": 97
    }
   }
  }

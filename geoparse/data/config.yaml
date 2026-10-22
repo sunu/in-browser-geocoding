@@ -18,6 +18,7 @@ policy:
   admin_levels:
     country: [country]
     state: [region]
+    union_territory: [region]
     district: [county]
     city: [locality]
     locality: [locality, macrohood, neighborhood, microhood]
