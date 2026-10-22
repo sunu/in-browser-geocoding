@@ -115,6 +115,10 @@ def eval_isolated(parser: Parser, dec: Decider, rec: dict[str, Any], text: str, 
     tfam = {tid: templates[tid].family for tid in cands}
     tscores = {tid: max(m["score"] for m in ms) for tid, ms in cands.items() if ms}
     ctx = {"template_scores": tscores, "template_family": tfam}
+    if not parser.prune:
+        # No pattern pruning: the model sees every family and every template.
+        cands = {tid: cands.get(tid, []) for tid in templates}
+        tfam = {tid: templates[tid].family for tid in cands}
     fams = {f: parser.families[f].description for f in parser.families if any(tfam[x] == f for x in cands)}
     if family not in fams:
         add("pick_family", False, coverage_miss=True, got=None, gold=family)
@@ -229,6 +233,7 @@ def main() -> None:
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--tag", default="")
     ap.add_argument("--set", default="gold", help="gold or heldout")
+    ap.add_argument("--no-prune", action="store_true", help="the model sees every family and template")
     args = ap.parse_args()
 
     path = GOLD.parent / f"{args.set}.jsonl"
@@ -242,7 +247,7 @@ def main() -> None:
     logger = DecisionLogger()
     base = Decider(default=args.provider, logger=logger, use_ner=not args.no_ner, jev_mode=args.jev_mode,
                    jev_cache=args.jev_cache)
-    parser = Parser(base)
+    parser = Parser(base, prune_by_pattern=not args.no_prune)
     # Warm up GLiNER and the store so that the first query does not carry the load time.
     parser.parse("Kerala")
 
