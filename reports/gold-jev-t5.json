@@ -68,7 +68,7 @@
    "got": "lookup",
    "gold": "lookup",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g002",
@@ -90,7 +90,7 @@
    "got": "lookup_place",
    "gold": "lookup_place",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g002",
@@ -182,41 +182,48 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "coverage_miss": true,
-   "got": null,
-   "gold": "lookup"
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g004",
    "decision": "pick_template",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "coverage_miss": true,
-   "got": null,
-   "gold": "lookup_place"
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g004",
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "coverage_miss": true,
-   "got": null,
-   "gold": "lookup_place"
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g004",
    "decision": "pick_split",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "coverage_miss": true,
+   "correct": true,
+   "got": {
+    "anchor": "MG Road, Bangalore"
+   },
    "gold": {
     "anchor": "MG Road, Bangalore"
-   }
+   },
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g004",
@@ -297,7 +304,7 @@
    "got": "lookup",
    "gold": "lookup",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g006",
@@ -319,7 +326,7 @@
    "got": "lookup_place",
    "gold": "lookup_place",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g006",
@@ -415,7 +422,7 @@
    "got": "lookup",
    "gold": "lookup",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g008",
@@ -437,7 +444,7 @@
    "got": "lookup_place",
    "gold": "lookup_place",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g008",
@@ -474,7 +481,7 @@
    "got": "lookup",
    "gold": "lookup",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 3
   },
   {
    "id": "g009",
@@ -496,7 +503,7 @@
    "got": "lookup_place",
    "gold": "lookup_place",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 3
   },
   {
    "id": "g009",
@@ -1221,7 +1228,7 @@
    "got": "direction_part",
    "gold": "direction_part",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g020",
@@ -1232,7 +1239,7 @@
    "got": "direction_part",
    "gold": "direction_part",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g020",
@@ -1541,8 +1548,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.98,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g024",
@@ -1564,7 +1571,7 @@
    "got": "children",
    "gold": "children",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g024",
@@ -1613,8 +1620,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.84,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g025",
@@ -1636,7 +1643,7 @@
    "got": "children",
    "gold": "children",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g025",
@@ -1685,8 +1692,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.96,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g026",
@@ -1708,7 +1715,7 @@
    "got": "children",
    "gold": "children",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g026",
@@ -1769,7 +1776,7 @@
    "got": "children",
    "gold": "children",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g027",
@@ -1780,7 +1787,7 @@
    "got": "children",
    "gold": "children",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g027",
@@ -1829,8 +1836,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.94,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g028",
@@ -1841,7 +1848,7 @@
    "got": "children",
    "gold": "children",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 3
   },
   {
    "id": "g028",
@@ -1852,7 +1859,7 @@
    "got": "children",
    "gold": "children",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 3
   },
   {
    "id": "g028",
@@ -2201,7 +2208,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g033",
@@ -2212,7 +2219,7 @@
    "got": "neighbors",
    "gold": "neighbors",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g033",
@@ -2288,7 +2295,7 @@
     "of": "India"
    },
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g034",
@@ -2532,7 +2539,7 @@
     "parent": "Odisha"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g037",
@@ -3440,8 +3447,8 @@
     "b": "Haryana",
     "c": "Punjab"
    },
-   "conf": 0.98,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 3
   },
   {
    "id": "g048",
@@ -3913,17 +3920,17 @@
    "decision": "pick_split",
    "depth": 0,
    "family": "set_algebra",
-   "correct": false,
+   "correct": true,
    "got": {
     "a": "Karnataka",
-    "b": "within 50 km of Goa"
+    "b": "50 km of Goa"
    },
    "gold": {
     "a": "Karnataka",
     "b": "50 km of Goa"
    },
-   "conf": 0.92,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g054",
@@ -4161,7 +4168,7 @@
    "got": "relational",
    "gold": "relational",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g057",
@@ -4183,7 +4190,7 @@
    "got": "between",
    "gold": "between",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g057",
@@ -4485,8 +4492,8 @@
    "correct": true,
    "got": "along_border",
    "gold": "along_border",
-   "conf": 0.98,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g062",
@@ -4496,8 +4503,8 @@
    "correct": true,
    "got": "along_border",
    "gold": "along_border",
-   "conf": 0.98,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g062",
@@ -4665,7 +4672,7 @@
    "got": "features_in",
    "gold": "features_in",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g065",
@@ -4676,7 +4683,7 @@
    "got": "features_in",
    "gold": "features_in",
    "conf": 1.0,
-   "n_options": 2
+   "n_options": 1
   },
   {
    "id": "g065",
@@ -5097,7 +5104,7 @@
    "got": "features_near",
    "gold": "features_near",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g071",
@@ -5108,7 +5115,7 @@
    "got": "features_near",
    "gold": "features_near",
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g071",
@@ -6245,16 +6252,16 @@
    "correct": true,
    "got": {
     "level": "districts",
+    "attr": "population",
     "op": "above",
     "value": "2 million",
-    "attr": "population",
     "parent": "tamil nadu"
    },
    "gold": {
     "level": "districts",
+    "attr": "population",
     "op": "above",
     "value": "2 million",
-    "attr": "population",
     "parent": "tamil nadu"
    },
    "conf": 1.0,
@@ -6528,7 +6535,7 @@
     "parent": "Odisha"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g085",
@@ -6861,8 +6868,8 @@
    "correct": true,
    "got": "set_algebra",
    "gold": "set_algebra",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.96,
+   "n_options": 2
   },
   {
    "id": "g088",
@@ -6883,8 +6890,8 @@
    "correct": true,
    "got": "union",
    "gold": "union",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9,
+   "n_options": 2
   },
   {
    "id": "g088",
@@ -6900,8 +6907,8 @@
     "a": "Kerala",
     "b": "coastal districts of Karnataka"
    },
-   "conf": 1.0,
-   "n_options": 3
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g088",
@@ -6975,7 +6982,7 @@
     "parent": "Karnataka"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g088",
@@ -7465,8 +7472,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.38,
+   "n_options": 2
   },
   {
    "id": "g092",
@@ -7487,8 +7494,8 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.98,
+   "n_options": 2
   },
   {
    "id": "g092",
@@ -7579,7 +7586,7 @@
     "parent": "Odisha"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g092",
@@ -7722,8 +7729,8 @@
     "level": "districts",
     "parent": "the seven sisters"
    },
-   "conf": 0.34,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g094",
@@ -7786,7 +7793,7 @@
     "parent": "south india"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g095",
@@ -8104,7 +8111,7 @@
     "parent": "Karnataka"
    },
    "conf": 1.0,
-   "n_options": 1
+   "n_options": 2
   },
   {
    "id": "g097",
@@ -8292,7 +8299,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.26228904724121094,
+   "latency_s": 0.22742986679077148,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8311,9 +8318,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5601401329040527,
-   "model_calls": 3,
-   "requests_in_sequence": 1,
+   "latency_s": 0.3315088748931885,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -8330,7 +8337,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.33954501152038574,
+   "latency_s": 0.4212188720703125,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8347,19 +8354,17 @@
    "query": "MG Road, Bangalore",
    "family": "lookup",
    "depth": 0,
-   "template_ok": false,
+   "template_ok": true,
    "ok": true,
-   "latency_s": 0.4188711643218994,
-   "model_calls": 6,
-   "requests_in_sequence": 2,
+   "latency_s": 1.5973448753356934,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
    "unsupported": null,
-   "got_template": "intersection",
-   "path": "complex",
-   "slots_ok": false,
-   "diffs": [
-    "template"
-   ],
-   "dag_ok": false,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
    "exec_ok": null,
    "exec_note": "needs network"
   },
@@ -8370,7 +8375,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.35504603385925293,
+   "latency_s": 0.3410770893096924,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8389,9 +8394,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4715750217437744,
-   "model_calls": 3,
-   "requests_in_sequence": 1,
+   "latency_s": 0.46342992782592773,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -8408,7 +8413,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6785976886749268,
+   "latency_s": 0.7141520977020264,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8427,9 +8432,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.42786502838134766,
-   "model_calls": 4,
-   "requests_in_sequence": 2,
+   "latency_s": 0.39507102966308594,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -8446,9 +8451,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5286967754364014,
-   "model_calls": 3,
-   "requests_in_sequence": 1,
+   "latency_s": 0.456132173538208,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -8465,7 +8470,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.000102996826171875,
+   "latency_s": 8.916854858398438e-05,
    "model_calls": 0,
    "requests_in_sequence": 0,
    "unsupported": null,
@@ -8484,7 +8489,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 9.989738464355469e-05,
+   "latency_s": 8.678436279296875e-05,
    "model_calls": 0,
    "requests_in_sequence": 0,
    "unsupported": null,
@@ -8503,7 +8508,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.2262859344482422,
+   "latency_s": 0.17838382720947266,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8522,7 +8527,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.32650089263916016,
+   "latency_s": 0.28685903549194336,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8541,7 +8546,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.37442612648010254,
+   "latency_s": 0.40437912940979004,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8560,7 +8565,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.41822171211242676,
+   "latency_s": 0.3579442501068115,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8579,7 +8584,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4843282699584961,
+   "latency_s": 0.3824000358581543,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8598,7 +8603,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4943511486053467,
+   "latency_s": 0.45135998725891113,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8617,7 +8622,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.44551610946655273,
+   "latency_s": 0.4609842300415039,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8636,7 +8641,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4638400077819824,
+   "latency_s": 0.5050802230834961,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8655,9 +8660,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4551558494567871,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 0.49582815170288086,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "direction_part",
    "path": "simple",
@@ -8674,7 +8679,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.414794921875,
+   "latency_s": 0.4629390239715576,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8693,7 +8698,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4384167194366455,
+   "latency_s": 0.4955410957336426,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8712,7 +8717,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4168109893798828,
+   "latency_s": 0.44182801246643066,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8731,9 +8736,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4658029079437256,
-   "model_calls": 5,
-   "requests_in_sequence": 2,
+   "latency_s": 0.4787459373474121,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -8750,9 +8755,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5086939334869385,
-   "model_calls": 5,
-   "requests_in_sequence": 2,
+   "latency_s": 0.4171478748321533,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -8769,9 +8774,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5588960647583008,
-   "model_calls": 5,
-   "requests_in_sequence": 2,
+   "latency_s": 0.4561920166015625,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -8788,9 +8793,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5882458686828613,
-   "model_calls": 5,
-   "requests_in_sequence": 2,
+   "latency_s": 0.5549418926239014,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -8807,7 +8812,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.47394609451293945,
+   "latency_s": 0.35656189918518066,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8826,7 +8831,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4623229503631592,
+   "latency_s": 0.3637731075286865,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8845,7 +8850,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4623281955718994,
+   "latency_s": 0.41426515579223633,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8864,7 +8869,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4240598678588867,
+   "latency_s": 0.35532212257385254,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8883,7 +8888,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.34151387214660645,
+   "latency_s": 0.328218936920166,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8902,9 +8907,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4391798973083496,
-   "model_calls": 3,
-   "requests_in_sequence": 1,
+   "latency_s": 0.3899190425872803,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -8921,9 +8926,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.38451290130615234,
-   "model_calls": 5,
-   "requests_in_sequence": 2,
+   "latency_s": 0.3780078887939453,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -8940,7 +8945,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.43451595306396484,
+   "latency_s": 0.39992594718933105,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8959,7 +8964,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5271313190460205,
+   "latency_s": 0.5124249458312988,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8978,9 +8983,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5765621662139893,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 0.5898239612579346,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -8997,7 +9002,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5274360179901123,
+   "latency_s": 0.5215530395507812,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9016,7 +9021,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5861852169036865,
+   "latency_s": 0.5769920349121094,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9035,7 +9040,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5839629173278809,
+   "latency_s": 0.5576300621032715,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9054,7 +9059,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5992040634155273,
+   "latency_s": 0.553537130355835,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9073,7 +9078,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6185228824615479,
+   "latency_s": 0.5614678859710693,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9092,7 +9097,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6327168941497803,
+   "latency_s": 0.585953950881958,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9111,7 +9116,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6580080986022949,
+   "latency_s": 0.6152281761169434,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9130,7 +9135,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5737028121948242,
+   "latency_s": 0.5640988349914551,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9149,7 +9154,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5287449359893799,
+   "latency_s": 0.5222179889678955,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9168,7 +9173,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.534857988357544,
+   "latency_s": 0.508167028427124,
    "model_calls": 8,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9187,7 +9192,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5040419101715088,
+   "latency_s": 0.4612560272216797,
    "model_calls": 8,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9206,7 +9211,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6105351448059082,
+   "latency_s": 0.5584180355072021,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9225,7 +9230,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5769128799438477,
+   "latency_s": 0.5258631706237793,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9244,7 +9249,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5306811332702637,
+   "latency_s": 0.493056058883667,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9263,7 +9268,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4810140132904053,
+   "latency_s": 0.4572608470916748,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9282,7 +9287,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9727098941802979,
+   "latency_s": 0.9567198753356934,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9301,9 +9306,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9122388362884521,
-   "model_calls": 8,
-   "requests_in_sequence": 3,
+   "latency_s": 0.8980388641357422,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "intersection",
    "path": "complex",
@@ -9320,7 +9325,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6781859397888184,
+   "latency_s": 0.5083901882171631,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9339,7 +9344,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.46390509605407715,
+   "latency_s": 0.4443850517272949,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9358,9 +9363,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.347959041595459,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 0.45420026779174805,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "between",
    "path": "complex",
@@ -9377,7 +9382,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.36054110527038574,
+   "latency_s": 0.46621012687683105,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9396,7 +9401,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.3713037967681885,
+   "latency_s": 0.46967124938964844,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9415,7 +9420,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.35202670097351074,
+   "latency_s": 0.4748809337615967,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9434,7 +9439,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.3440268039703369,
+   "latency_s": 0.4411041736602783,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9453,9 +9458,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.3522529602050781,
-   "model_calls": 4,
-   "requests_in_sequence": 2,
+   "latency_s": 0.4485621452331543,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "along_border",
    "path": "complex",
@@ -9472,7 +9477,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4006667137145996,
+   "latency_s": 0.47862792015075684,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9491,7 +9496,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4099428653717041,
+   "latency_s": 0.48944687843322754,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9510,9 +9515,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.3233211040496826,
-   "model_calls": 7,
-   "requests_in_sequence": 2,
+   "latency_s": 0.49872684478759766,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -9529,7 +9534,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5488419532775879,
+   "latency_s": 0.505760908126831,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9548,7 +9553,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.48225998878479004,
+   "latency_s": 0.4398350715637207,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9567,7 +9572,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5339298248291016,
+   "latency_s": 0.5008797645568848,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9586,7 +9591,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5270700454711914,
+   "latency_s": 0.4954230785369873,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9605,7 +9610,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5411989688873291,
+   "latency_s": 0.49858522415161133,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9624,9 +9629,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4899778366088867,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 0.46520495414733887,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "features_near",
    "path": "complex",
@@ -9643,7 +9648,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5561296939849854,
+   "latency_s": 0.5280649662017822,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9662,7 +9667,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5706069469451904,
+   "latency_s": 0.54274582862854,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9681,7 +9686,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4677700996398926,
+   "latency_s": 0.44542479515075684,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9700,7 +9705,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7221081256866455,
+   "latency_s": 0.7073879241943359,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9719,7 +9724,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8599469661712646,
+   "latency_s": 0.8246967792510986,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9738,7 +9743,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9524490833282471,
+   "latency_s": 0.922968864440918,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9757,7 +9762,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.0964128971099854,
+   "latency_s": 1.0714528560638428,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9776,7 +9781,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.946742057800293,
+   "latency_s": 0.9145159721374512,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9795,7 +9800,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8985826969146729,
+   "latency_s": 0.8973820209503174,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9814,7 +9819,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8920931816101074,
+   "latency_s": 0.8779551982879639,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9833,7 +9838,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8744020462036133,
+   "latency_s": 0.863483190536499,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9852,7 +9857,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9084699153900146,
+   "latency_s": 0.904677152633667,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9871,7 +9876,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9053390026092529,
+   "latency_s": 0.9104998111724854,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9890,9 +9895,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.379727840423584,
-   "model_calls": 9,
-   "requests_in_sequence": 2,
+   "latency_s": 1.4109148979187012,
+   "model_calls": 10,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "features_near",
    "path": "complex",
@@ -9909,7 +9914,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.310762882232666,
+   "latency_s": 1.3532280921936035,
    "model_calls": 10,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9928,7 +9933,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2089779376983643,
+   "latency_s": 1.1660869121551514,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9947,9 +9952,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1483707427978516,
-   "model_calls": 10,
-   "requests_in_sequence": 3,
+   "latency_s": 1.1212680339813232,
+   "model_calls": 12,
+   "requests_in_sequence": 5,
    "unsupported": null,
    "got_template": "union",
    "path": "complex",
@@ -9966,7 +9971,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9652712345123291,
+   "latency_s": 0.9142348766326904,
    "model_calls": 8,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9985,7 +9990,7 @@
    "depth": 1,
    "template_ok": false,
    "ok": false,
-   "latency_s": 0.46643495559692383,
+   "latency_s": 0.40163087844848633,
    "model_calls": 2,
    "requests_in_sequence": 2,
    "unsupported": {
@@ -10007,7 +10012,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9779419898986816,
+   "latency_s": 1.075657844543457,
    "model_calls": 8,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -10026,9 +10031,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9901449680328369,
-   "model_calls": 8,
-   "requests_in_sequence": 2,
+   "latency_s": 1.0579900741577148,
+   "model_calls": 10,
+   "requests_in_sequence": 4,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -10045,7 +10050,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5473940372467041,
+   "latency_s": 0.6074237823486328,
    "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -10064,9 +10069,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.3455209732055664,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.3513979911804199,
+   "model_calls": 2,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -10083,9 +10088,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.3190007209777832,
-   "model_calls": 3,
-   "requests_in_sequence": 1,
+   "latency_s": 0.3131570816040039,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -10102,7 +10107,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7892091274261475,
+   "latency_s": 0.778796911239624,
    "model_calls": 9,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -10121,9 +10126,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9347188472747803,
-   "model_calls": 9,
-   "requests_in_sequence": 2,
+   "latency_s": 0.9603607654571533,
+   "model_calls": 10,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "between",
    "path": "complex",
@@ -10140,7 +10145,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9576067924499512,
+   "latency_s": 0.9639670848846436,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -10156,19 +10161,19 @@
  "summary": {
   "pick_family": {
    "n": 111,
-   "correct": 110
+   "correct": 111
   },
   "pick_template": {
    "n": 111,
-   "correct": 110
+   "correct": 111
   },
   "pick_template_flat": {
    "n": 111,
-   "correct": 109
+   "correct": 110
   },
   "pick_split": {
    "n": 111,
-   "correct": 109
+   "correct": 111
   },
   "is_subquery": {
    "n": 114,
@@ -10217,7 +10222,7 @@
    },
    "lookup": {
     "n": 11,
-    "dag_ok": 10
+    "dag_ok": 11
    },
    "modifier": {
     "n": 14,
@@ -10237,7 +10242,7 @@
    },
    "ALL": {
     "n": 98,
-    "dag_ok": 96
+    "dag_ok": 97
    }
   }
  }

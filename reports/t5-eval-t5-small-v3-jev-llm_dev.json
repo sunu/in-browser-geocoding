@@ -1,0 +1,408 @@
+{
+ "t5": "models/t5/t5-small-v3",
+ "t5_alone": {
+  "gold": {
+   "n": 98,
+   "top1": 1.0,
+   "top4": 1.0,
+   "exact": null,
+   "median_ms": 108.21354389190674,
+   "errors": []
+  },
+  "heldout": {
+   "n": 30,
+   "top1": 1.0,
+   "top4": 1.0,
+   "exact": null,
+   "median_ms": 92.67044067382812,
+   "errors": []
+  },
+  "llm_dev": {
+   "n": 279,
+   "top1": 0.942652329749104,
+   "top4": 0.989247311827957,
+   "exact": 0.8422939068100358,
+   "median_ms": 115.46802520751953,
+   "errors": [
+    [
+     "can you show all the tehsils inside Jaipur district please",
+     "features_in ; category = tehsils ; region = Jaipur district",
+     "children ; level = tehsils ; parent = Jaipur district"
+    ],
+    [
+     "district of Lonavala",
+     "children ; level = district ; parent = Lonavala",
+     "parent ; level = district ; child = Lonavala"
+    ],
+    [
+     "state of Tirupati",
+     "children ; level = state ; parent = Tirupati",
+     "parent ; level = state ; child = Tirupati"
+    ],
+    [
+     "which all states touch madhya pradesh border pls",
+     "children_touching ; level = states ; parent = madhya pradesh",
+     "neighbors ; level = states ; of = madhya pradesh"
+    ],
+    [
+     "banglore airport",
+     "features_in ; category = airport ; region = banglore",
+     "lookup_place ; anchor = banglore airport"
+    ],
+    [
+     "15 kms aroud Jaipur airport",
+     "features_near ; category = airport ; distance = 15 km ; region = Jaipur",
+     "buffer ; distance = 15 km ; target = Jaipur airport"
+    ],
+    [
+     "what is the exact middle point of Pune district?",
+     "centroid ; target = Pune",
+     "centroid ; target = Pune district"
+    ],
+    [
+     "i want to find the central location of Nashik district in Maharashtra",
+     "direction_part ; dir = central ; target = Nashik district in Maharashtra",
+     "centroid ; target = Nashik district in Maharashtra"
+    ],
+    [
+     "i want to see the upper northern portion of West Bengal on map",
+     "direction_part ; dir = upper ; target = northern portion of West Bengal",
+     "direction_part ; dir = northern ; target = West Bengal"
+    ],
+    [
+     "btw Chennai n Pondicherry",
+     "union ; a = Chennai ; b = Pondicherry",
+     "between ; a = Chennai ; b = Pondicherry"
+    ],
+    [
+     "can u show both Jaipur and Udaipur districts on the map?",
+     "union ; a = Jaipur ; b = Udaipur districts",
+     "union ; a = Jaipur ; b = Udaipur"
+    ],
+    [
+     "Can you show Uttar Pradesh apart from Lucknow district?",
+     "difference ; a = Uttar Pradesh ; b = Lucknow",
+     "difference ; a = Uttar Pradesh ; b = Lucknow district"
+    ],
+    [
+     "West Bengal without Kolkata and Howrah",
+     "difference ; a = West Bengal ; b = Kolkata ; c = Howrah",
+     "difference ; a = West Bengal ; b = Kolkata and Howrah"
+    ],
+    [
+     "Himachal Pradesh minus Shimla and Kullu",
+     "difference ; a = Himachal Pradesh ; b = Shimla ; c = Kullu",
+     "difference ; a = Himachal Pradesh ; b = Shimla and Kullu"
+    ],
+    [
+     "which part of Jaipur lies within 5 km around Amber Fort",
+     "intersection ; a = Jaipur ; b = within 5 km around Amber Fort",
+     "intersection ; a = Jaipur ; b = 5 km around Amber Fort"
+    ],
+    [
+     "Thiruvananthapuram district intersect 5 km along the coast of Kerala",
+     "along_coast ; distance = 5 km ; region = Thiruvananthapuram district",
+     "intersection ; a = Thiruvananthapuram district ; b = 5 km along the coast of Kerala"
+    ]
+   ]
+  },
+  "llm_test": {
+   "n": 294,
+   "top1": 0.9217687074829932,
+   "top4": 0.9829931972789115,
+   "exact": 0.8197278911564626,
+   "median_ms": 108.9237928390503,
+   "errors": [
+    [
+     "Konark Sun Temple state",
+     "lookup_place ; anchor = Konark Sun Temple state",
+     "parent ; level = state ; child = Konark Sun Temple"
+    ],
+    [
+     "disrtict of Bodh Gaya",
+     "children ; level = disrtict ; parent = Bodh Gaya",
+     "parent ; level = disrtict ; child = Bodh Gaya"
+    ],
+    [
+     "which districts share a border with Pune district?",
+     "neighbors ; level = districts ; of = Pune",
+     "neighbors ; level = districts ; of = Pune district"
+    ],
+    [
+     "Tirupathi temple",
+     "features_in ; category = temple ; region = Tirupathi",
+     "lookup_place ; anchor = Tirupathi temple"
+    ],
+    [
+     "bufer 15 km Jaipur",
+     "features_near ; category = bufer ; distance = 15 km ; region = Jaipur",
+     "buffer ; distance = 15 km ; target = Jaipur"
+    ],
+    [
+     "cente of Tamil Nadu",
+     "cente ; target = Tamil Nadu",
+     "centroid ; target = Tamil Nadu"
+    ],
+    [
+     "which areas are in north Delhi?",
+     "children ; level = areas ; parent = north Delhi",
+     "direction_part ; dir = north ; target = Delhi"
+    ],
+    [
+     "nortern Karnataka",
+     "children ; level = nortern ; parent = Karnataka",
+     "direction_part ; dir = nortern ; target = Karnataka"
+    ],
+    [
+     "what is in the western part of Pune district?",
+     "direction_part ; dir = western ; target = Pune",
+     "direction_part ; dir = western ; target = Pune district"
+    ],
+    [
+     "areas souht of Hyderabad",
+     "children ; level = areas ; parent = Hyderabad",
+     "direction_outside ; dir = souht ; target = Hyderabad"
+    ],
+    [
+     "Which Indian states are landlocked",
+     "children_with_predicate ; level = states ; pred = landlocked ; parent = Indian",
+     "children_with_predicate ; pred = landlocked ; level = states"
+    ],
+    [
+     "talukas in Belagavi district that share a boundary with Goa",
+     "children_touching ; level = talukas ; parent = Belagavi ; other = Goa",
+     "children_touching ; level = talukas ; parent = Belagavi district ; other = Goa"
+    ],
+    [
+     "btwn hyderabad and secunderabad",
+     "union ; a = btwn hyderabad ; b = secunderabad",
+     "between ; a = hyderabad ; b = secunderabad"
+    ],
+    [
+     "coastline buffer gujrat 15 km",
+     "buffer ; distance = 15 km ; target = coastline buffer gujrat",
+     "along_coast ; distance = 15 km ; region = gujrat"
+    ],
+    [
+     "how do i see 8 km along the state border of West Bengal?",
+     "along_intl_border ; distance = 8 km ; region = West Bengal",
+     "along_border ; distance = 8 km ; region = West Bengal"
+    ],
+    [
+     "border area with Bangladesh in Tripura 3 km along the international border",
+     "along_intl_border ; distance = 3 km ; region = Bangladesh in Tripura",
+     "along_intl_border ; distance = 3 km ; region = Tripura"
+    ],
+    [
+     "Sundarbans, 10 km around Kolkata and Howrah",
+     "union ; a = Sundarbans ; b = 10 km around Kolkata ; c = Howrah",
+     "union3 ; a = Sundarbans ; b = 10 km around Kolkata ; c = Howrah"
+    ],
+    [
+     "uttar pradesh without noida and ghaziabad",
+     "difference ; a = uttar pradesh ; b = noida ; c = ghaziabad",
+     "difference ; a = uttar pradesh ; b = noida and ghaziabad"
+    ],
+    [
+     "all the districts of West Bengal except Kolkata",
+     "difference ; a = all the districts of West Bengal ; b = Kolkata",
+     "difference ; a = districts of West Bengal ; b = Kolkata"
+    ],
+    [
+     "madhya pradesh except bhopal n indore",
+     "difference ; a = madhya pradesh ; b = bhopal ; c = indore",
+     "difference ; a = madhya pradesh ; b = bhopal n indore"
+    ],
+    [
+     "coastal districts of Odisha intersect 50 km around Bhubaneswar",
+     "children_with_predicate ; level = districts ; pred = coastal ; parent = Odisha ; other = 50 km around Bhubaneswar",
+     "intersection ; a = coastal districts of Odisha ; b = 50 km around Bhubaneswar"
+    ],
+    [
+     "Ernakulam intersect with 10 km along the coast of Kerala",
+     "along_coast ; distance = 10 km ; region = Kerala",
+     "intersection ; a = Ernakulam ; b = 10 km along the coast of Kerala"
+    ],
+    [
+     "only the part of Delhi that lies within 3 km around India Gate",
+     "intersection ; a = Delhi ; b = within 3 km around India Gate",
+     "intersection ; a = Delhi ; b = 3 km around India Gate"
+    ]
+   ]
+  }
+ },
+ "pipeline_llm_dev": {
+  "n": 279,
+  "acc": 0.9247311827956989,
+  "by_template": {
+   "along_border": "9/13",
+   "along_coast": "13/13",
+   "along_intl_border": "14/14",
+   "between": "11/12",
+   "buffer": "12/13",
+   "centroid": "11/11",
+   "children": "6/9",
+   "children_attr": "13/14",
+   "children_touching": "13/15",
+   "children_with_predicate": "12/12",
+   "difference": "12/13",
+   "direction_outside": "12/13",
+   "direction_part": "14/14",
+   "features_in": "11/11",
+   "features_near": "15/15",
+   "intersection": "10/13",
+   "lookup_place": "12/12",
+   "neighbors": "11/11",
+   "parent": "12/13",
+   "union": "12/13",
+   "union3": "12/14",
+   "unsupported": "11/11"
+  },
+  "median_s": 0.38875794410705566,
+  "errors": [
+   [
+    "wards in Mumbai with population greater than 50,000",
+    "children_attr ; level = wards ; parent = Mumbai ; attr = population ; op = greater than ; value = 50000",
+    null,
+    "the text 'wards' names no known admin_level"
+   ],
+   [
+    "blocks in Ranchi",
+    "children ; level = blocks ; parent = Ranchi",
+    null,
+    "the text 'blocks' names no known admin_level"
+   ],
+   [
+    "what are the sub-districts in Kamrup?",
+    "children ; level = sub-districts ; parent = Kamrup",
+    null,
+    "the text 'sub-districts' names no known admin_level"
+   ],
+   [
+    "gram panchayats in Nashik district Maharashtra",
+    "children ; level = gram panchayats ; parent = Nashik district Maharashtra",
+    null,
+    "low confidence for pick_family (0.20)"
+   ],
+   [
+    "city that contains Salt Lake Sector V",
+    "parent ; level = city ; child = Salt Lake Sector V",
+    null,
+    "cannot resolve 'Salt Lake Sector V' in the local extract"
+   ],
+   [
+    "15 kms aroud Jaipur airport",
+    "buffer ; distance = 15 km ; target = Jaipur airport",
+    "features_near",
+    {
+     "distance": 15000.0,
+     "category": "airport",
+     "region": "Jaipur airport"
+    }
+   ],
+   [
+    "i want to see the area north of Connaught Place Delhi",
+    "direction_outside ; dir = north ; target = Connaught Place Delhi",
+    null,
+    "low confidence for select_source (0.18)"
+   ],
+   [
+    "wards of Bengaluru adjacent to Whitefield",
+    "children_touching ; level = wards ; parent = Bengaluru ; other = Whitefield",
+    null,
+    "the text 'wards' names no known admin_level"
+   ],
+   [
+    "blocks of Assam next to Meghalaya",
+    "children_touching ; level = blocks ; parent = Assam ; other = Meghalaya",
+    null,
+    "the text 'blocks' names no known admin_level"
+   ],
+   [
+    "btw Chennai n Pondicherry",
+    "between ; a = Chennai ; b = Pondicherry",
+    "union",
+    {
+     "a": "Chennai",
+     "b": "Pondicherry"
+    }
+   ],
+   [
+    "5 km belt along Delhi border",
+    "along_border ; distance = 5 km ; region = Delhi",
+    null,
+    "low confidence for pick_split (0.10)"
+   ],
+   [
+    "stretch along Goa's border 3 km",
+    "along_border ; distance = 3 km ; region = Goa",
+    "along_border",
+    {
+     "distance": 3000.0,
+     "region": {
+      "q": "Goa's border",
+      "t": "along_border",
+      "s": {
+       "distance": null,
+       "region": "Goa"
+      }
+     }
+    }
+   ],
+   [
+    "how much land is within 500 m along the Bengaluru Urban boundary?",
+    "along_border ; distance = 500 m ; region = Bengaluru Urban",
+    null,
+    "low confidence for pick_split (0.02)"
+   ],
+   [
+    "boundary strip Mumbai Suburban 4 km",
+    "along_border ; distance = 4 km ; region = Mumbai Suburban",
+    null,
+    "low confidence for is_subquery (0.20)"
+   ],
+   [
+    "Mumbai Suburban and Thane",
+    "union ; a = Mumbai Suburban ; b = Thane",
+    null,
+    "low confidence for is_subquery (0.20)"
+   ],
+   [
+    "Goa, Daman and Diu and Dadra and Nagar Haveli together",
+    "union3 ; a = Goa ; b = Daman and Diu ; c = Dadra and Nagar Haveli",
+    null,
+    "depth limit"
+   ],
+   [
+    "coastal districts of Odisha, Andhra Pradesh and West Bengal",
+    "union3 ; a = coastal districts of Odisha ; b = Andhra Pradesh ; c = West Bengal",
+    null,
+    "low confidence for pick_family (0.14)"
+   ],
+   [
+    "area of Pune district excluding Pimpri Chinchwad",
+    "difference ; a = Pune district ; b = Pimpri Chinchwad",
+    null,
+    "low confidence for is_subquery (0.16)"
+   ],
+   [
+    "which part of Jaipur lies within 5 km around Amber Fort",
+    "intersection ; a = Jaipur ; b = 5 km around Amber Fort",
+    null,
+    "low confidence for pick_split (0.08)"
+   ],
+   [
+    "Bangalore Rural and 7 km around Devanahalli overlap",
+    "intersection ; a = Bangalore Rural ; b = 7 km around Devanahalli",
+    null,
+    "cannot resolve 'Bangalore Rural' in the local extract"
+   ],
+   [
+    "Mumbai Suburban intersetion with 3 km around Bandra Kurla Complex",
+    "intersection ; a = Mumbai Suburban ; b = 3 km around Bandra Kurla Complex",
+    null,
+    "low confidence for is_subquery (0.20)"
+   ]
+  ]
+ }
+}

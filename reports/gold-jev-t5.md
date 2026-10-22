@@ -6,10 +6,10 @@ Records: 98. Depth 0: 85. Depth 1 (two levels): 13.
 
 | Decision | Accuracy | Depth 0 | Depth 1 | Coverage misses | Mean confidence |
 |---|---|---|---|---|---|
-| pick_family | 99% (110/111) | 99% (97/98) | 100% (13/13) | 1 | 0.99 |
-| pick_template | 99% (110/111) | 99% (97/98) | 100% (13/13) | 1 | 1.00 |
-| pick_template_flat | 98% (109/111) | 98% (96/98) | 100% (13/13) | 1 | 0.99 |
-| pick_split | 98% (109/111) | 98% (96/98) | 100% (13/13) | 1 | 0.99 |
+| pick_family | 100% (111/111) | 100% (98/98) | 100% (13/13) | 0 | 0.98 |
+| pick_template | 100% (111/111) | 100% (98/98) | 100% (13/13) | 0 | 1.00 |
+| pick_template_flat | 99% (110/111) | 99% (97/98) | 100% (13/13) | 0 | 0.99 |
+| pick_split | 100% (111/111) | 100% (98/98) | 100% (13/13) | 0 | 1.00 |
 | is_subquery | 100% (114/114) | 100% (101/101) | 100% (13/13) | 0 | 0.95 |
 | select_source | 100% (24/24) | 100% (24/24) | - | 0 | 0.99 |
 | fill_closed_slot.admin_level | 100% (48/48) | 100% (37/37) | 100% (11/11) | 0 | 1.00 |
@@ -23,11 +23,6 @@ Records: 98. Depth 0: 85. Depth 1 (two levels): 13.
 
 | Gold id | Decision | Depth | Gold | Got | Confidence |
 |---|---|---|---|---|---|
-| g004 | pick_family | 0 | lookup | null | coverage miss |
-| g004 | pick_template | 0 | lookup_place | null | coverage miss |
-| g004 | pick_template_flat | 0 | lookup_place | null | coverage miss |
-| g004 | pick_split | 0 | {"anchor": "MG Road, Bangalore"} | null | coverage miss |
-| g054 | pick_split | 0 | {"a": "Karnataka", "b": "50 km of Goa"} | {"a": "Karnataka", "b": "within 50 km of Goa"} | 0.92 |
 | g090 | pick_template_flat | 0 | children | children_touching | 0.9 |
 
 ## Full pipeline
@@ -37,25 +32,24 @@ Records: 98. Depth 0: 85. Depth 1 (two levels): 13.
 | attribute | 100% (11/11) | 100% (11/11) | 100% (11/11) | 0 | 100% (11/11) |
 | features | 100% (12/12) | 100% (12/12) | 100% (12/12) | 0 | 100% (9/9) |
 | hierarchy | 93% (14/15) | 93% (14/15) | 93% (14/15) | 1 | 93% (14/15) |
-| lookup | 91% (10/11) | 91% (10/11) | 91% (10/11) | 0 | 100% (8/8) |
+| lookup | 100% (11/11) | 100% (11/11) | 100% (11/11) | 0 | 100% (8/8) |
 | modifier | 100% (14/14) | 100% (14/14) | 100% (14/14) | 0 | 100% (11/11) |
 | predicate_filter | 100% (12/12) | 100% (12/12) | 100% (12/12) | 0 | 100% (12/12) |
 | relational | 100% (11/11) | 100% (11/11) | 100% (11/11) | 0 | 100% (11/11) |
 | set_algebra | 100% (12/12) | 100% (12/12) | 100% (12/12) | 0 | 100% (12/12) |
-| ALL | 98% (96/98) | 98% (96/98) | 98% (96/98) | 1 | 99% (88/89) |
+| ALL | 99% (97/98) | 99% (97/98) | 99% (97/98) | 1 | 99% (88/89) |
 
 ### By depth
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 99% (84/85) | 0.48 s | 4.6 | 1.3 |
-| 1 | 92% (12/13) | 0.97 s | 7.8 | 2.3 |
+| 0 | 100% (85/85) | 0.48 s | 4.6 | 1.3 |
+| 1 | 92% (12/13) | 0.96 s | 8.2 | 2.7 |
 
 ### Pipeline errors
 
 | Gold id | Query | Got template | Problem |
 |---|---|---|---|
-| g004 | MG Road, Bangalore | intersection | template |
 | g090 | districts of states that border Goa | None | low confidence for pick_family (0.28) |
 
 ### Nested template pairs in the gold suite

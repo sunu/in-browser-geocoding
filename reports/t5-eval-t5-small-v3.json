@@ -1,0 +1,234 @@
+{
+ "t5": "models/t5/t5-small-v3",
+ "t5_alone": {
+  "gold": {
+   "n": 98,
+   "top1": 1.0,
+   "top4": 1.0,
+   "exact": null,
+   "median_ms": 109.99119281768799,
+   "errors": []
+  },
+  "heldout": {
+   "n": 30,
+   "top1": 1.0,
+   "top4": 1.0,
+   "exact": null,
+   "median_ms": 93.63901615142822,
+   "errors": []
+  },
+  "llm_dev": {
+   "n": 279,
+   "top1": 0.942652329749104,
+   "top4": 0.989247311827957,
+   "exact": 0.8422939068100358,
+   "median_ms": 115.56696891784668,
+   "errors": [
+    [
+     "can you show all the tehsils inside Jaipur district please",
+     "features_in ; category = tehsils ; region = Jaipur district",
+     "children ; level = tehsils ; parent = Jaipur district"
+    ],
+    [
+     "district of Lonavala",
+     "children ; level = district ; parent = Lonavala",
+     "parent ; level = district ; child = Lonavala"
+    ],
+    [
+     "state of Tirupati",
+     "children ; level = state ; parent = Tirupati",
+     "parent ; level = state ; child = Tirupati"
+    ],
+    [
+     "which all states touch madhya pradesh border pls",
+     "children_touching ; level = states ; parent = madhya pradesh",
+     "neighbors ; level = states ; of = madhya pradesh"
+    ],
+    [
+     "banglore airport",
+     "features_in ; category = airport ; region = banglore",
+     "lookup_place ; anchor = banglore airport"
+    ],
+    [
+     "15 kms aroud Jaipur airport",
+     "features_near ; category = airport ; distance = 15 km ; region = Jaipur",
+     "buffer ; distance = 15 km ; target = Jaipur airport"
+    ],
+    [
+     "what is the exact middle point of Pune district?",
+     "centroid ; target = Pune",
+     "centroid ; target = Pune district"
+    ],
+    [
+     "i want to find the central location of Nashik district in Maharashtra",
+     "direction_part ; dir = central ; target = Nashik district in Maharashtra",
+     "centroid ; target = Nashik district in Maharashtra"
+    ],
+    [
+     "i want to see the upper northern portion of West Bengal on map",
+     "direction_part ; dir = upper ; target = northern portion of West Bengal",
+     "direction_part ; dir = northern ; target = West Bengal"
+    ],
+    [
+     "btw Chennai n Pondicherry",
+     "union ; a = Chennai ; b = Pondicherry",
+     "between ; a = Chennai ; b = Pondicherry"
+    ],
+    [
+     "can u show both Jaipur and Udaipur districts on the map?",
+     "union ; a = Jaipur ; b = Udaipur districts",
+     "union ; a = Jaipur ; b = Udaipur"
+    ],
+    [
+     "Can you show Uttar Pradesh apart from Lucknow district?",
+     "difference ; a = Uttar Pradesh ; b = Lucknow",
+     "difference ; a = Uttar Pradesh ; b = Lucknow district"
+    ],
+    [
+     "West Bengal without Kolkata and Howrah",
+     "difference ; a = West Bengal ; b = Kolkata ; c = Howrah",
+     "difference ; a = West Bengal ; b = Kolkata and Howrah"
+    ],
+    [
+     "Himachal Pradesh minus Shimla and Kullu",
+     "difference ; a = Himachal Pradesh ; b = Shimla ; c = Kullu",
+     "difference ; a = Himachal Pradesh ; b = Shimla and Kullu"
+    ],
+    [
+     "which part of Jaipur lies within 5 km around Amber Fort",
+     "intersection ; a = Jaipur ; b = within 5 km around Amber Fort",
+     "intersection ; a = Jaipur ; b = 5 km around Amber Fort"
+    ],
+    [
+     "Thiruvananthapuram district intersect 5 km along the coast of Kerala",
+     "along_coast ; distance = 5 km ; region = Thiruvananthapuram district",
+     "intersection ; a = Thiruvananthapuram district ; b = 5 km along the coast of Kerala"
+    ]
+   ]
+  },
+  "llm_test": {
+   "n": 294,
+   "top1": 0.9217687074829932,
+   "top4": 0.9829931972789115,
+   "exact": 0.8197278911564626,
+   "median_ms": 110.5356216430664,
+   "errors": [
+    [
+     "Konark Sun Temple state",
+     "lookup_place ; anchor = Konark Sun Temple state",
+     "parent ; level = state ; child = Konark Sun Temple"
+    ],
+    [
+     "disrtict of Bodh Gaya",
+     "children ; level = disrtict ; parent = Bodh Gaya",
+     "parent ; level = disrtict ; child = Bodh Gaya"
+    ],
+    [
+     "which districts share a border with Pune district?",
+     "neighbors ; level = districts ; of = Pune",
+     "neighbors ; level = districts ; of = Pune district"
+    ],
+    [
+     "Tirupathi temple",
+     "features_in ; category = temple ; region = Tirupathi",
+     "lookup_place ; anchor = Tirupathi temple"
+    ],
+    [
+     "bufer 15 km Jaipur",
+     "features_near ; category = bufer ; distance = 15 km ; region = Jaipur",
+     "buffer ; distance = 15 km ; target = Jaipur"
+    ],
+    [
+     "cente of Tamil Nadu",
+     "cente ; target = Tamil Nadu",
+     "centroid ; target = Tamil Nadu"
+    ],
+    [
+     "which areas are in north Delhi?",
+     "children ; level = areas ; parent = north Delhi",
+     "direction_part ; dir = north ; target = Delhi"
+    ],
+    [
+     "nortern Karnataka",
+     "children ; level = nortern ; parent = Karnataka",
+     "direction_part ; dir = nortern ; target = Karnataka"
+    ],
+    [
+     "what is in the western part of Pune district?",
+     "direction_part ; dir = western ; target = Pune",
+     "direction_part ; dir = western ; target = Pune district"
+    ],
+    [
+     "areas souht of Hyderabad",
+     "children ; level = areas ; parent = Hyderabad",
+     "direction_outside ; dir = souht ; target = Hyderabad"
+    ],
+    [
+     "Which Indian states are landlocked",
+     "children_with_predicate ; level = states ; pred = landlocked ; parent = Indian",
+     "children_with_predicate ; pred = landlocked ; level = states"
+    ],
+    [
+     "talukas in Belagavi district that share a boundary with Goa",
+     "children_touching ; level = talukas ; parent = Belagavi ; other = Goa",
+     "children_touching ; level = talukas ; parent = Belagavi district ; other = Goa"
+    ],
+    [
+     "btwn hyderabad and secunderabad",
+     "union ; a = btwn hyderabad ; b = secunderabad",
+     "between ; a = hyderabad ; b = secunderabad"
+    ],
+    [
+     "coastline buffer gujrat 15 km",
+     "buffer ; distance = 15 km ; target = coastline buffer gujrat",
+     "along_coast ; distance = 15 km ; region = gujrat"
+    ],
+    [
+     "how do i see 8 km along the state border of West Bengal?",
+     "along_intl_border ; distance = 8 km ; region = West Bengal",
+     "along_border ; distance = 8 km ; region = West Bengal"
+    ],
+    [
+     "border area with Bangladesh in Tripura 3 km along the international border",
+     "along_intl_border ; distance = 3 km ; region = Bangladesh in Tripura",
+     "along_intl_border ; distance = 3 km ; region = Tripura"
+    ],
+    [
+     "Sundarbans, 10 km around Kolkata and Howrah",
+     "union ; a = Sundarbans ; b = 10 km around Kolkata ; c = Howrah",
+     "union3 ; a = Sundarbans ; b = 10 km around Kolkata ; c = Howrah"
+    ],
+    [
+     "uttar pradesh without noida and ghaziabad",
+     "difference ; a = uttar pradesh ; b = noida ; c = ghaziabad",
+     "difference ; a = uttar pradesh ; b = noida and ghaziabad"
+    ],
+    [
+     "all the districts of West Bengal except Kolkata",
+     "difference ; a = all the districts of West Bengal ; b = Kolkata",
+     "difference ; a = districts of West Bengal ; b = Kolkata"
+    ],
+    [
+     "madhya pradesh except bhopal n indore",
+     "difference ; a = madhya pradesh ; b = bhopal ; c = indore",
+     "difference ; a = madhya pradesh ; b = bhopal n indore"
+    ],
+    [
+     "coastal districts of Odisha intersect 50 km around Bhubaneswar",
+     "children_with_predicate ; level = districts ; pred = coastal ; parent = Odisha ; other = 50 km around Bhubaneswar",
+     "intersection ; a = coastal districts of Odisha ; b = 50 km around Bhubaneswar"
+    ],
+    [
+     "Ernakulam intersect with 10 km along the coast of Kerala",
+     "along_coast ; distance = 10 km ; region = Kerala",
+     "intersection ; a = Ernakulam ; b = 10 km along the coast of Kerala"
+    ],
+    [
+     "only the part of Delhi that lies within 3 km around India Gate",
+     "intersection ; a = Delhi ; b = within 3 km around India Gate",
+     "intersection ; a = Delhi ; b = 3 km around India Gate"
+    ]
+   ]
+  }
+ }
+}

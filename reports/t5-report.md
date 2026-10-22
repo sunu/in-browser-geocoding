@@ -6,15 +6,14 @@ Date: 2026-10-22.
 
 A fine-tuned t5-small model now generates the candidate parse frames. Jev chooses among them and fills the closed slots. The hand-written split patterns are a fallback only.
 
-| Measure | Patterns only (before) | T5 + Jev (now) |
+| Measure | Patterns only (before) | T5 v3 + Jev (now) |
 |---|---|---|
-| LLM test set, 294 unseen queries, full pipeline | not measured (most fail) | 88.8 % |
-| LLM dev set, 279 queries, full pipeline | 84.2 % (first T5 run) | 92.1 % |
+| LLM test set, 294 unseen queries, full pipeline | not measured (most fail) | 87.8 % |
+| LLM dev set, 279 queries, full pipeline | 84.2 % (first T5 run) | 92.5 % |
 | Paraphrase set, 20 queries (no labels) | 11 of 20 parse | all 20 parse; checked by hand |
-| Gold suite, 98 queries, correct DAG | 99 % | 98 % |
+| Gold suite, 98 queries, correct DAG | 99 % | 99 % |
 | Held-out set, 30 queries, correct DAG | 100 % | 100 % |
-| Median parse latency, depth 0 (gold, with cache) | | 0.40 s |
-| Median parse latency, LLM test (live Jev) | | 1.16 s |
+| Median parse latency, LLM test (live Jev, first run) | | 1.16 s |
 
 ## 2. Model selection
 
@@ -22,9 +21,10 @@ A fine-tuned t5-small model now generates the candidate parse frames. Jev choose
 |---|---|---|---|---|---|
 | t5-small v1 (synthetic + paraphrases) | 243 MB | 91.0 % | 91.2 % | 97.3 % | 112 ms |
 | t5-small v2 (generator v2) | 243 MB | 94.3 % | 94.6 % | 98.0 % | 113 ms |
+| t5-small v3 (v2 + anchors with city context) | 243 MB | 94.3 % | 92.2 % | 98.3 % | 111 ms |
 | flan-t5-base v2 | 963 MB | 93.5 % | 94.2 % | 98.6 % | 312 ms |
 
-Decision: **t5-small v2**. flan-t5-base is not more accurate, and it is 3 times slower and 4 times larger.
+Decision: **t5-small v3** (`models/t5/current`). flan-t5-base is not more accurate, and it is 3 times slower and 4 times larger. v2 and v3 are equal on the dev set; v3 fixes "MG Road, Bangalore" (a street with its city, which v2 read as two places). The test-set difference between v2 and v3 (2.4 points, 7 queries) is in the range of run-to-run variation (standard error approximately 1.4 points on 294 queries). I did not select by test score.
 
 "Top 1" compares the core of the frame: template, open-slot texts, and quantities.
 
@@ -72,3 +72,17 @@ Also, about 5 test labels are debatable (the LLM wrote them).
 1. Approve or reject `geocoder.anchor_scope: all`.
 2. The ONNX export for the browser is not done.
 3. The rules baseline is weaker now (gold 95 %), because the vocabulary checks were removed. One gold test is marked as an expected failure.
+
+## 7. POI extract (plan-004 section 2)
+
+- `data/build/places.parquet`: 5,430,152 rows, 271 MB (estimate was 283 MB). Build time: 9 minutes (S3 read).
+- `geoparse.duckdb` with the places table: 704 MB.
+- `Features` now runs in DuckDB on the places table: approximately 15 ms for a neighbourhood. Photon took up to 19 s for a large region (rate limit).
+- Category tree: 9 groups, 48 items, matched against the Overture `basic_category` and every level of the taxonomy hierarchy.
+- Policy: `places_min_confidence` (0.5), `max_features` (10,000), `point_area_radius_m` (a radius for places that have only a point, for example the Koramangala macrohood).
+- Gold feature queries now have expected IDs (local data). Example: "hospitals in Koramangala": 76 places (Photon found 27 in a larger box).
+
+## 8. Next steps for the data in T5 training
+
+- Lists inside a slot ("noida and ghaziabad") sometimes give an extra slot `c`, so the frame is not valid. Add list examples for `difference` and `union` slots.
+- Run-to-run variation is large. Train 3 seeds and report the mean, or use an ensemble of the beams.
