@@ -14,6 +14,11 @@ import duckdb
 from geoparse.config import build_dir, load_config
 from geoparse.decisions.types import Candidate
 
+# Score of a name match for each name kind.
+KIND_SCORE = "CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 WHEN kind = 'translit' THEN 0.9 ELSE 0.95 END"
+# Fuzzy search compares only keys with the same first characters (no spaces).
+FUZZY_PREFIX = 3
+
 # Ranking prior for each subtype (and locality class). A higher value ranks first.
 SUBTYPE_PRIOR = {
     "country": 0.40, "region": 0.38, "county": 0.30, ("locality", "city"): 0.32, ("locality", "town"): 0.20,
@@ -121,31 +126,35 @@ class Store:
                     q_list.append(" ".join(ws[:i] + [aliases[w]] + ws[i + 1:]))
             if x in aliases:
                 q_list.append(aliases[x])
-        rows = cur.execute("""
-            SELECT id, max(CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 WHEN kind = 'translit' THEN 0.9 ELSE 0.95 END) AS s
-            FROM names WHERE name_norm IN (SELECT unnest(?)) OR name_nospace IN (SELECT replace(unnest(?), ' ', ''))
+        # The key is the name without spaces (the key of the web name shards). It gives the matches of
+        # "name_norm OR name_nospace".
+        rows = cur.execute(f"""
+            SELECT id, max({KIND_SCORE}) AS s FROM names WHERE name_nospace IN (SELECT replace(unnest(?), ' ', ''))
             GROUP BY id
-        """, [q_list, q_list]).fetchall()
+        """, [q_list]).fetchall()
         scores = {r[0]: float(r[1]) for r in rows}
         if not scores:
             # Fallback: Overture names can end with a level word ("Mumbai Suburban District").
             q2 = [f"{x} {suffix}" for x in q_list for suffix in ("district", "city")]
-            rows = cur.execute("""
-                SELECT id, max(CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 WHEN kind = 'translit' THEN 0.9 ELSE 0.95 END) AS s
-                FROM names WHERE name_norm IN (SELECT unnest(?)) GROUP BY id
+            rows = cur.execute(f"""
+                SELECT id, max({KIND_SCORE}) AS s FROM names WHERE name_nospace IN (SELECT replace(unnest(?), ' ', ''))
+                GROUP BY id
             """, [q2]).fetchall()
             scores = {r[0]: float(r[1]) * 0.98 for r in rows}
         if fuzzy and not scores and len(n) >= 4:
-            rows = cur.execute("""
-                SELECT n.id, max(jaro_winkler_similarity(n.name_norm, ?)) AS s
+            # Keys with the same first FUZZY_PREFIX characters (one or a few web name shards). The similarity is
+            # multiplied by the score of the name kind, so that a transliteration does not win over a primary name.
+            nk = n.replace(" ", "")
+            rows = cur.execute(f"""
+                SELECT n.id, max(jaro_winkler_similarity(n.name_nospace, $nk) * {KIND_SCORE}) AS s
                 FROM names n JOIN divisions d ON d.id = n.id
                 WHERE d.subtype IN ('country', 'region', 'county', 'locality', 'macrohood', 'neighborhood')
                   AND coalesce(d.class, '') NOT IN ('hamlet')
-                  AND n.name_norm[1] = ?[1]
-                  AND jaro_winkler_similarity(n.name_norm, ?) >= 0.85
-                  AND damerau_levenshtein(n.name_norm, ?) <= CASE WHEN length(?) >= 10 THEN 2 ELSE 1 END
-                GROUP BY n.id ORDER BY s DESC LIMIT 50
-            """, [n, n, n, n, n]).fetchall()
+                  AND left(n.name_nospace, {FUZZY_PREFIX}) = left($nk, {FUZZY_PREFIX})
+                  AND jaro_winkler_similarity(n.name_nospace, $nk) >= 0.85
+                  AND damerau_levenshtein(n.name_nospace, $nk) <= CASE WHEN length($nk) >= 10 THEN 2 ELSE 1 END
+                GROUP BY n.id ORDER BY s DESC, n.id LIMIT 50
+            """, {"nk": nk}).fetchall()
             scores = {r[0]: float(r[1]) * 0.9 for r in rows}
         if not scores:
             return []

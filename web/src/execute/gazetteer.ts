@@ -9,6 +9,10 @@ const PRIOR: Record<string, number> = {
   macrohood: 0.16, neighborhood: 0.10, microhood: 0.06, "locality|village": 0.02, "locality|hamlet": 0.0,
 };
 
+// geoparse.execute.data.KIND_SCORE and FUZZY_PREFIX
+const KIND_SCORE = "CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 WHEN kind = 'translit' THEN 0.9 ELSE 0.95 END";
+const FUZZY_PREFIX = 3;
+
 export class Gazetteer {
   aliases: Record<string, string>;
   constructor(public db: Db, public bundle: Bundle) {
@@ -45,23 +49,25 @@ export class Gazetteer {
       ws.forEach((w, i) => { if (w in this.aliases) qList.push([...ws.slice(0, i), this.aliases[w], ...ws.slice(i + 1)].join(" ")); });
       if (x in this.aliases) qList.push(this.aliases[x]);
     }
-    const kindScore = "max(CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 WHEN kind = 'translit' THEN 0.9 ELSE 0.95 END)::DOUBLE";
-    let rs = await this.db.query(`SELECT id, ${kindScore} AS s FROM names
-      WHERE name_norm IN (SELECT unnest(${list(qList)})) OR name_nospace IN (SELECT replace(unnest(${list(qList)}), ' ', '')) GROUP BY id`);
+    let rs = await this.db.query(`SELECT id, max(${KIND_SCORE})::DOUBLE AS s FROM names
+      WHERE name_nospace IN (SELECT replace(unnest(${list(qList)}), ' ', '')) GROUP BY id`);
     let scores: Record<string, number> = Object.fromEntries(rs.map((r) => [r.id, Number(r.s)]));
     if (!Object.keys(scores).length) {
       const q2 = qList.flatMap((x) => [`${x} district`, `${x} city`]);
-      rs = await this.db.query(`SELECT id, ${kindScore} AS s FROM names WHERE name_norm IN (SELECT unnest(${list(q2)})) GROUP BY id`);
+      rs = await this.db.query(`SELECT id, max(${KIND_SCORE})::DOUBLE AS s FROM names
+        WHERE name_nospace IN (SELECT replace(unnest(${list(q2)}), ' ', '')) GROUP BY id`);
       scores = Object.fromEntries(rs.map((r) => [r.id, Number(r.s) * 0.98]));
     }
     if (fuzzy && !Object.keys(scores).length && n.length >= 4) {
-      rs = await this.db.query(`SELECT n.id, max(jaro_winkler_similarity(n.name_norm, ${q(n)})) AS s
+      const nk = q(n.replaceAll(" ", ""));
+      rs = await this.db.query(`SELECT n.id, max(jaro_winkler_similarity(n.name_nospace, ${nk}) * ${KIND_SCORE})::DOUBLE AS s
         FROM names n JOIN divisions d ON d.id = n.id
         WHERE d.subtype IN ('country', 'region', 'county', 'locality', 'macrohood', 'neighborhood')
-          AND coalesce(d.class, '') NOT IN ('hamlet') AND n.name_norm[1] = ${q(n[0])}
-          AND jaro_winkler_similarity(n.name_norm, ${q(n)}) >= 0.85
-          AND damerau_levenshtein(n.name_norm, ${q(n)}) <= ${n.length >= 10 ? 2 : 1}
-        GROUP BY n.id ORDER BY s DESC LIMIT 50`);
+          AND coalesce(d.class, '') NOT IN ('hamlet')
+          AND left(n.name_nospace, ${FUZZY_PREFIX}) = left(${nk}, ${FUZZY_PREFIX})
+          AND jaro_winkler_similarity(n.name_nospace, ${nk}) >= 0.85
+          AND damerau_levenshtein(n.name_nospace, ${nk}) <= CASE WHEN length(${nk}) >= 10 THEN 2 ELSE 1 END
+        GROUP BY n.id ORDER BY s DESC, n.id LIMIT 50`);
       scores = Object.fromEntries(rs.map((r) => [r.id, Number(r.s) * 0.9]));
     }
     if (!Object.keys(scores).length) return [];
