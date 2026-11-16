@@ -5,6 +5,7 @@ Usage:
   uv run python scripts/export_web.py data     # web/public/data/*.parquet (from geoparse.duckdb)
   GEOPARSE_SCOPE=world uv run python scripts/export_web.py data --out data/build-world/web
   GEOPARSE_SCOPE=world uv run python scripts/export_web.py data --layout country --out data/build-world/web
+  uv run python scripts/export_web.py data --layout country --out web/public/countries   # India, for the parity checks
 
 The Python package stays the single source of truth for templates, options, and policy.
 """
@@ -98,6 +99,13 @@ def export_country(out: Path) -> None:
     con = duckdb.connect(str(build_dir() / "geoparse.duckdb"), read_only=True)
     con.execute("LOAD spatial; SET geometry_always_xy = true;")
     root = export_country_layout(con, out, load_config()["data"]["overture_release"])
+    if con.execute("SELECT count(*) FROM duckdb_tables() WHERE table_name = 'places'").fetchone()[0]:
+        # Until phase 5 (places by category), the country layout has the places file of the flat layout.
+        con.execute(f"""COPY (SELECT id, name, basic_category, cats, confidence, lon, lat FROM places)
+                        TO '{root / "places.parquet"}' (FORMAT parquet, COMPRESSION zstd, ROW_GROUP_SIZE 10000)""")
+        m = json.loads((root / "manifest.json").read_text())
+        m["places"] = "places.parquet"
+        (root / "manifest.json").write_text(json.dumps(m, indent=1))
     errors = verify_country_layout(con, root)
     for e in errors:
         print("ERROR", e)

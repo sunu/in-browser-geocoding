@@ -1,7 +1,8 @@
 // DuckDB-WASM in Node.js (tests) and in the browser (app). Loads the files of scripts/export_web.py.
 import { isNode, nodeImport } from "../models/runtime.ts";
+import { CountryStore } from "./store.ts";
 
-export interface Db { query(sql: string): Promise<any[]> }
+export interface Db { query(sql: string): Promise<any[]>; store?: CountryStore }
 
 function toPlain(v: any): any {
   if (typeof v === "bigint") return Number(v);
@@ -37,12 +38,14 @@ function tables(base: string, placesUrl?: string) {
   ];
 }
 
-/** dataBase: a directory (Node.js) or a URL (browser) with the Parquet files. */
-export async function openDb(dataBase: string, onProgress?: (msg: string) => void): Promise<Db> {
+/** dataBase: a directory (Node.js) or a URL (browser) with the Parquet files, in the flat layout or the country
+ * layout (manifest.json, plan-015). defaultCountry: the country that the country layout loads at start-up. */
+export async function openDb(dataBase: string, onProgress?: (msg: string) => void, defaultCountry = "IN"): Promise<Db> {
   const base = dataBase.replace(/\/$/, "");
   if (isNode) {
     const { createRequire } = await nodeImport("node:module");
     const path = await nodeImport("node:path");
+    const fs = await nodeImport("node:fs");
     const require = createRequire(import.meta.url);
     const duckdb = require("@duckdb/duckdb-wasm/dist/duckdb-node-blocking.cjs");
     const DIST = path.dirname(require.resolve("@duckdb/duckdb-wasm/dist/duckdb-eh.wasm"));
@@ -50,8 +53,20 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
       eh: { mainModule: path.join(DIST, "duckdb-eh.wasm"), mainWorker: "" } }, new duckdb.VoidLogger(), duckdb.NODE_RUNTIME);
     await db.instantiate();
     const c = db.connect();
-    for (const s of [...SETUP, ...tables(base)]) { onProgress?.(s.slice(0, 60)); c.query(s); }
-    return { query: async (sql: string) => rows(c.query(sql)) };
+    const query = async (sql: string) => rows(c.query(sql));
+    for (const s of SETUP) c.query(s);
+    if (fs.existsSync(`${base}/manifest.json`)) {
+      const store = new CountryStore({
+        query,
+        file: async (rel) => `${base}/${rel}`,
+        release: async () => {},
+        json: async (rel) => JSON.parse(fs.readFileSync(`${base}/${rel}`, "utf8")),
+      });
+      await store.init(defaultCountry, onProgress);
+      return { query, store };
+    }
+    for (const s of tables(base)) { onProgress?.(s.slice(0, 60)); c.query(s); }
+    return { query };
   }
   const duckdb = await import("@duckdb/duckdb-wasm");
   const bundle = await duckdb.selectBundle(duckdb.getJsDelivrBundles());
@@ -62,24 +77,47 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
   // the whole places file (281 MB) on the first query.
   await db.open({ filesystem: { reliableHeadRequests: true, allowFullHTTPReads: false, forceFullHTTPReads: false } });
   const c = await db.connect();
+  const query = async (sql: string) => rows(await c.query(sql));
   const abs = new URL(base, location.href).href;
-  // The small files go through fetch() (normal browser cache) and are given to DuckDB as buffers.
+  // Files go through fetch() (normal browser cache) and are given to DuckDB as buffers.
   // DuckDB-WASM's HTTP reader fails on a 304 (Not Modified) answer, which Firefox can cause when the file
   // is in its cache.
+  const get = async (rel: string) => {
+    const r = await fetch(`${abs}/${rel}`);
+    if (!r.ok) throw new Error(`cannot load ${rel}: HTTP ${r.status}`);
+    return r;
+  };
+  for (const s of SETUP) await c.query(s);
+  const m = await fetch(`${abs}/manifest.json`);
+  // A dev server can answer index.html for a missing file, so check the type.
+  if (m.ok && (m.headers.get("content-type") ?? "").includes("json")) {
+    const store = new CountryStore({
+      query,
+      file: async (rel) => {
+        // Places: read with range requests, with the per-session parameter of the flat layout (see below).
+        if (rel.endsWith("places.parquet")) return `${abs}/${rel}?session=${Date.now().toString(36)}`;
+        const name = rel.replaceAll("/", "__");
+        await db.registerFileBuffer(name, new Uint8Array(await (await get(rel)).arrayBuffer()));
+        return name;
+      },
+      release: async (name) => { if (!name.includes("://")) await db.dropFile(name); },
+      json: async (rel) => (await get(rel)).json(),
+    });
+    await store.init(defaultCountry, onProgress);
+    return { query, store };
+  }
   await Promise.all(SMALL.map(async (n) => {
-    const r = await fetch(`${abs}/${n}`);
-    if (!r.ok) throw new Error(`cannot load ${n}: HTTP ${r.status}`);
-    await db.registerFileBuffer(n, new Uint8Array(await r.arrayBuffer()));
+    await db.registerFileBuffer(n, new Uint8Array(await (await get(n)).arrayBuffer()));
     onProgress?.(`data: ${n}`);
   }));
   // The places file is read with range requests. A per-session query parameter keeps the browser from
   // sending conditional requests (304) for it.
   const placesUrl = `${abs}/places.parquet?session=${Date.now().toString(36)}`;
-  for (const s of [...SETUP, ...tables("", placesUrl).map((t) => t.replace(/'\/(\w+\.parquet)'/g, "'$1'"))]) {
+  for (const s of tables("", placesUrl).map((t) => t.replace(/'\/(\w+\.parquet)'/g, "'$1'"))) {
     onProgress?.(s.slice(0, 60));
     await c.query(s);
   }
-  return { query: async (sql: string) => rows(await c.query(sql)) };
+  return { query };
 }
 
 export function q(s: any): string {

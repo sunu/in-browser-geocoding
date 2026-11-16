@@ -1,4 +1,5 @@
-// Headless browser check of the page: load time, queries, console errors. Needs the dev server on :5173.
+// Headless browser check of the page: load time, queries, console errors. Needs the dev server.
+// PAGE: the page URL, for example http://localhost:5180/?data=/countries/2026-10-21.0 (country layout).
 import { chromium, firefox, webkit } from "playwright";
 
 const QUERIES = ["districts near the sea in Gujarat", "hospitals within 2 km of coastal districts of Odisha",
@@ -20,7 +21,7 @@ page.on("requestfinished", async (req) => {
   byFile[f] = (byFile[f] ?? 0) + s.responseBodySize;
 });
 const t0 = Date.now();
-await page.goto("http://localhost:5173/");
+await page.goto(process.env.PAGE ?? "http://localhost:5173/");
 if (process.argv.includes("--reload")) {
   // Second load with the files in the browser cache (the case that failed in Firefox).
   await page.waitForFunction(() => document.getElementById("status")!.textContent!.startsWith("Ready"), null, { timeout: 600000 });

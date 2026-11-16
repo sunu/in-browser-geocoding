@@ -64,7 +64,9 @@ go.onclick = () => q.value && runQuery(q.value);
 q.onkeydown = (e) => { if (e.key === "Enter" && !go.disabled && q.value) runQuery(q.value); };
 
 const t0 = performance.now();
-load("", (m) => (status.textContent = `Loading ${m}…`)).then((g) => {
+// ?data=<url>: other data files, for example the country layout (public/countries/<release>).
+const data = new URLSearchParams(location.search).get("data") ?? undefined;
+load("", (m) => (status.textContent = `Loading ${m}…`), data).then((g) => {
   gp = g;
   go.disabled = false;
   status.textContent = `Ready in ${((performance.now() - t0) / 1000).toFixed(1)} s. Everything runs in this browser tab.`;

@@ -1,5 +1,5 @@
 // Executor parity: execute the gold DAGs in JS and compare the result IDs with gold expected_ids.
-// Run: npx tsx scripts/exec_parity.ts
+// Run: [DATA=public/countries/<release>] npx tsx scripts/exec_parity.ts
 import fs from "node:fs";
 import { loadBundle } from "../src/core/bundle.ts";
 import { openDb } from "../src/execute/db.ts";
@@ -8,7 +8,7 @@ import { Photon } from "../src/execute/photon.ts";
 
 const pub = new URL("../public", import.meta.url).pathname;
 const bundle = await loadBundle(pub + "/bundle.json");
-const db = await openDb(pub + "/data");
+const db = await openDb(process.env.DATA ?? pub + "/data", undefined, bundle.config.data.country);
 const ex = new Executor(db, bundle, new Photon());
 const rows = ["gold", "heldout"].flatMap((n) => fs.readFileSync(new URL(`../../gold/${n}.jsonl`, import.meta.url), "utf8").trim().split("\n").map((l) => JSON.parse(l)));
 let same = 0, n = 0, geomOk = 0, nGeom = 0;

@@ -25,7 +25,8 @@ export class Gazetteer {
     const rs = await this.db.query(`
       SELECT d.id, d.name, d.subtype, d.class, d.region, d.country, d.population,
              [h.name FOR h IN list_filter(
-                (SELECT list(struct_pack(id := x.id, name := x.name, subtype := x.subtype))
+                (SELECT list(struct_pack(id := x.id, name := x.name, subtype := x.subtype)
+                              ORDER BY list_position(d.ancestors, x.id) DESC)
                  FROM divisions x WHERE list_contains(d.ancestors, x.id) AND x.id <> d.id),
                 lambda h: h.subtype IN ('region', 'county', 'locality', 'macrohood'))] AS anc,
              EXISTS (SELECT 1 FROM areas a WHERE a.id = d.id) AS has_area, d.ancestors AS anc_ids
@@ -49,25 +50,30 @@ export class Gazetteer {
       ws.forEach((w, i) => { if (w in this.aliases) qList.push([...ws.slice(0, i), this.aliases[w], ...ws.slice(i + 1)].join(" ")); });
       if (x in this.aliases) qList.push(this.aliases[x]);
     }
-    let rs = await this.db.query(`SELECT id, max(${KIND_SCORE})::DOUBLE AS s FROM names
-      WHERE name_nospace IN (SELECT replace(unnest(${list(qList)}), ' ', '')) GROUP BY id`);
-    let scores: Record<string, number> = Object.fromEntries(rs.map((r) => [r.id, Number(r.s)]));
-    if (!Object.keys(scores).length) {
-      const q2 = qList.flatMap((x) => [`${x} district`, `${x} city`]);
-      rs = await this.db.query(`SELECT id, max(${KIND_SCORE})::DOUBLE AS s FROM names
-        WHERE name_nospace IN (SELECT replace(unnest(${list(q2)}), ' ', '')) GROUP BY id`);
-      scores = Object.fromEntries(rs.map((r) => [r.id, Number(r.s) * 0.98]));
-    }
+    // Name rows with the division id: one relation for the flat layout and the country layout.
+    const store = this.db.store;
+    const names = store
+      ? "SELECT d.id, r.kind, r.key, d.subtype, d.class FROM name_rows r JOIN divisions d ON d.n = r.n"
+      : "SELECT n.id, n.kind, n.name_nospace AS key, d.subtype, d.class FROM names n JOIN divisions d ON d.id = n.id";
+    const exact = async (xs: string[], f: number) => {
+      const keys = xs.map((x) => x.replaceAll(" ", ""));
+      await store?.ensureKeys(keys);
+      const rs = await this.db.query(`SELECT id, max(${KIND_SCORE})::DOUBLE AS s FROM (${names})
+        WHERE key IN (SELECT unnest(${list(keys)})) GROUP BY id`);
+      return Object.fromEntries(rs.map((r) => [r.id, Number(r.s) * f])) as Record<string, number>;
+    };
+    let scores = await exact(qList, 1);
+    if (!Object.keys(scores).length) scores = await exact(qList.flatMap((x) => [`${x} district`, `${x} city`]), 0.98);
     if (fuzzy && !Object.keys(scores).length && n.length >= 4) {
-      const nk = q(n.replaceAll(" ", ""));
-      rs = await this.db.query(`SELECT n.id, max(jaro_winkler_similarity(n.name_nospace, ${nk}) * ${KIND_SCORE})::DOUBLE AS s
-        FROM names n JOIN divisions d ON d.id = n.id
-        WHERE d.subtype IN ('country', 'region', 'county', 'locality', 'macrohood', 'neighborhood')
-          AND coalesce(d.class, '') NOT IN ('hamlet')
-          AND left(n.name_nospace, ${FUZZY_PREFIX}) = left(${nk}, ${FUZZY_PREFIX})
-          AND jaro_winkler_similarity(n.name_nospace, ${nk}) >= 0.85
-          AND damerau_levenshtein(n.name_nospace, ${nk}) <= CASE WHEN length(${nk}) >= 10 THEN 2 ELSE 1 END
-        GROUP BY n.id ORDER BY s DESC, n.id LIMIT 50`);
+      const k = n.replaceAll(" ", ""), nk = q(k);
+      const where = `subtype IN ('country', 'region', 'county', 'locality', 'macrohood', 'neighborhood')
+          AND coalesce(class, '') NOT IN ('hamlet')
+          AND left(key, ${FUZZY_PREFIX}) = left(${nk}, ${FUZZY_PREFIX})
+          AND jaro_winkler_similarity(key, ${nk}) >= 0.85
+          AND damerau_levenshtein(key, ${nk}) <= CASE WHEN length(${nk}) >= 10 THEN 2 ELSE 1 END`;
+      await store?.ensurePrefix([...k].slice(0, FUZZY_PREFIX).join(""), where);
+      const rs = await this.db.query(`SELECT id, max(jaro_winkler_similarity(key, ${nk}) * ${KIND_SCORE})::DOUBLE AS s
+        FROM (${names}) WHERE ${where} GROUP BY id ORDER BY s DESC, id LIMIT 50`);
       scores = Object.fromEntries(rs.map((r) => [r.id, Number(r.s) * 0.9]));
     }
     if (!Object.keys(scores).length) return [];

@@ -1,4 +1,4 @@
-// JS pipeline against the Python reference (web/test/ref_parse.jsonl). Run: npx tsx scripts/parity.ts [--int8]
+// JS pipeline against the Python reference (web/test/ref_parse.jsonl). Run: [DATA=public/countries/<release>] npx tsx scripts/parity.ts [--int8]
 import fs from "node:fs";
 import { loadBundle } from "../src/core/bundle.ts";
 import { Decider } from "../src/decisions/decider.ts";
@@ -14,7 +14,7 @@ const int8 = process.argv.includes("--int8");
 const pub = new URL("../public", import.meta.url).pathname;
 setModelBase(pub + "/models");
 const bundle = await loadBundle(pub + "/bundle.json");
-const [db, t5, xenc] = await Promise.all([openDb(pub + "/data"), T5Frames.load(int8), CrossEncoder.load(int8)]);
+const [db, t5, xenc] = await Promise.all([openDb(process.env.DATA ?? pub + "/data", undefined, bundle.config.data.country), T5Frames.load(int8), CrossEncoder.load(int8)]);
 const parser = new Parser(bundle, t5, new Gazetteer(db, bundle), new Decider(bundle, xenc));
 const refs = fs.readFileSync(new URL("../test/ref_parse.jsonl", import.meta.url), "utf8").trim().split("\n").map((l) => JSON.parse(l));
 let same = 0, sameOk = 0;

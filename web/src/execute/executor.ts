@@ -100,6 +100,12 @@ class Run {
     return cond.join(" AND ");
   }
 
+  /** Country layout: polygons of all countries for an operation at country level. Other levels are limited to the
+   * default country (levelFilter), which is loaded at start-up. */
+  async levelData(level: string) {
+    if (level === "country") await this.ex.db.store?.ensureAdminAreas();
+  }
+
   divisionsRel(where: string) {
     return this.newRel(`SELECT d.id, coalesce(d.name_en, d.name) AS name, d.subtype, 'overture' AS source,
       coalesce(a.geometry, d.geometry) AS geometry, coalesce(a.gs, d.geometry) AS gs
@@ -134,6 +140,7 @@ class Run {
         'photon' AS source, ST_Point(${f.lon}, ${f.lat}) AS geometry, ST_Point(${f.lon}, ${f.lat}) AS gs`);
     }
     if (!a.id) throw new ExecError(`'${a.name}' has no resolved id`);
+    await this.ex.db.store?.ensureId(a.id, a.name);
     return this.divisionsRel(`d.id = ${q(a.id)}`);
   }
 
@@ -156,6 +163,7 @@ class Run {
 
   async op_Children(a: any) {
     const parent = await this.eval(a.of);
+    await this.levelData(a.level);
     if ((await this.idsOf(parent)).length)
       return this.divisionsRel(`${this.levelFilter(a.level)} AND EXISTS (SELECT 1 FROM ${parent} p
         WHERE p.id IS NOT NULL AND p.id <> d.id AND list_contains(d.ancestors, p.id))`);
@@ -164,6 +172,7 @@ class Run {
 
   async op_Parent(a: any) {
     const child = await this.eval(a.of);
+    await this.levelData(a.level);
     const ids = await this.idsOf(child);
     const nOv = (await this.run(`SELECT count(*) AS n FROM ${child} WHERE source = 'overture'`))[0].n;
     if (ids.length && nOv)
@@ -182,6 +191,7 @@ class Run {
       level = Object.entries(this.policy.admin_levels).find(([, v]: any) => subtypes.every((s) => v.includes(s)))?.[0];
       if (!level) throw new ExecError(`cannot find a level for neighbors of subtypes ${subtypes}`);
     }
+    await this.levelData(level);
     return this.divisionsRel(`${this.levelFilter(level)} AND a.id IS NOT NULL
       AND d.id NOT IN (SELECT id FROM ${src} WHERE id IS NOT NULL)
       AND ST_DWithin(a.gs, ${this.unionGeom(src, "gs")}, ${tol})`);

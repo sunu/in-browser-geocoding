@@ -88,7 +88,8 @@ class Store:
         rows = self.cursor().execute("""
             SELECT d.id, d.name, d.subtype, d.class, d.region, d.country, d.population,
                    [h.name FOR h IN list_filter(
-                        (SELECT list(struct_pack(id := x.id, name := x.name, subtype := x.subtype))
+                        (SELECT list(struct_pack(id := x.id, name := x.name, subtype := x.subtype)
+                                    ORDER BY list_position(d.ancestors, x.id) DESC)
                          FROM divisions x WHERE list_contains(d.ancestors, x.id) AND x.id <> d.id),
                         lambda h: h.subtype IN ('region', 'county', 'locality', 'macrohood'))] AS anc,
                    EXISTS (SELECT 1 FROM areas a WHERE a.id = d.id) AS has_area, d.ancestors
