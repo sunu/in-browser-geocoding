@@ -45,7 +45,7 @@ export class Gazetteer {
       ws.forEach((w, i) => { if (w in this.aliases) qList.push([...ws.slice(0, i), this.aliases[w], ...ws.slice(i + 1)].join(" ")); });
       if (x in this.aliases) qList.push(this.aliases[x]);
     }
-    const kindScore = "max(CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 ELSE 0.95 END)::DOUBLE";
+    const kindScore = "max(CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 WHEN kind = 'translit' THEN 0.9 ELSE 0.95 END)::DOUBLE";
     let rs = await this.db.query(`SELECT id, ${kindScore} AS s FROM names
       WHERE name_norm IN (SELECT unnest(${list(qList)})) OR name_nospace IN (SELECT replace(unnest(${list(qList)}), ' ', '')) GROUP BY id`);
     let scores: Record<string, number> = Object.fromEntries(rs.map((r) => [r.id, Number(r.s)]));

@@ -23,6 +23,7 @@ import shapely
 import yaml
 
 from geoparse.config import PACKAGE_DIR, build_dir, load_config, scope
+from geoparse.data.translit import translit_keys
 from geoparse.execute.data import norm_name
 
 
@@ -56,9 +57,12 @@ def build_divisions(con, cfg, out: Path) -> None:
             names.primary AS name,
             coalesce(names.common['en'], names.primary) AS name_en,
             list_distinct(list_filter(
-                [r.value FOR r IN coalesce(names.rules, [])
-                 IF r.language IS NULL OR r.language = 'en'],
+                [r.value FOR r IN coalesce(names.rules, [])],
                 lambda x: x IS NOT NULL)) AS alt_names,
+            -- Names in all other languages (plan-013). The English name is name_en.
+            list_distinct(list_filter(
+                [e.value FOR e IN coalesce(map_entries(names.common), []) IF e.key <> 'en'],
+                lambda x: x IS NOT NULL)) AS common_names,
             country,
             region,
             parent_division_id AS parent_id,
@@ -265,12 +269,26 @@ def build_db(cfg, out: Path, simplify_deg: float = 0.001) -> None:
         SELECT id, name AS n, 'primary' AS kind FROM divisions
         UNION ALL SELECT id, name_en, 'en' FROM divisions WHERE name_en IS NOT NULL AND name_en <> name
         UNION ALL SELECT id, unnest(alt_names), 'alt' FROM divisions
+        UNION ALL SELECT id, unnest(common_names), 'common' FROM divisions
     """)
     con.execute("CREATE TEMP TABLE name_keys AS SELECT n, norm_name(n) AS k FROM (SELECT DISTINCT n FROM raw_names WHERE n IS NOT NULL)")
     con.execute("""
+        CREATE TEMP TABLE key_rows AS
+        SELECT r.id, k.k, r.kind FROM raw_names r JOIN name_keys k USING (n) WHERE k.k <> ''
+    """)
+    # Latin keys for names in Cyrillic, Greek and Chinese script (geoparse.data.translit).
+    con.create_function("translit_keys", translit_keys, ["VARCHAR", "VARCHAR"], "VARCHAR[]", side_effects=False)
+    con.execute("""
+        INSERT INTO key_rows
+        SELECT r.id, unnest(t.keys), 'translit' FROM raw_names r JOIN divisions d USING (id) JOIN (
+            SELECT n, country, translit_keys(n, country) AS keys FROM (
+                SELECT DISTINCT r.n, d.country FROM raw_names r JOIN divisions d USING (id)
+                WHERE regexp_matches(r.n, '[\\x{0370}-\\x{03FF}\\x{1F00}-\\x{1FFF}\\x{0400}-\\x{04FF}\\x{3400}-\\x{9FFF}\\x{F900}-\\x{FAFF}]'))
+        ) t ON t.n = r.n AND t.country IS NOT DISTINCT FROM d.country
+    """)
+    con.execute("""
         CREATE TABLE names AS
-        SELECT DISTINCT r.id, k.k AS name_norm, replace(k.k, ' ', '') AS name_nospace, r.kind
-        FROM raw_names r JOIN name_keys k USING (n) WHERE k.k <> ''
+        SELECT DISTINCT id, k AS name_norm, replace(k, ' ', '') AS name_nospace, kind FROM key_rows
     """)
     print(f"names: {con.execute('SELECT count(*) FROM names').fetchone()[0]} rows, {time.time() - t1:.1f}s")
     t1 = time.time()

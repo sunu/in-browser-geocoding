@@ -15,6 +15,7 @@ async function open(metadataCache) {
   await db.open({ filesystem: { reliableHeadRequests: true, allowFullHTTPReads: false, forceFullHTTPReads: false } });
   const c = await db.connect();
   if (metadataCache) await c.query("SET parquet_metadata_cache = true");
+  c.db = db;
   return c;
 }
 
@@ -41,12 +42,62 @@ window.lookups = async ({ base, names, prefixes, metadataCache }) => {
   return out;
 };
 
+// Name shards (plan-010): index.json, then one fetch() for each lookup.
+function cmp(a, b) {
+  const x = [...a], y = [...b];
+  for (let i = 0; i < Math.min(x.length, y.length); i++) {
+    const d = x[i].codePointAt(0) - y[i].codePointAt(0);
+    if (d) return d;
+  }
+  return x.length - y.length;
+}
+
+window.shards = async ({ base, names, prefixes }) => {
+  const c = await open(false);
+  // No cache-busting query parameter: the edge cache key includes the query string.
+  const t0 = performance.now();
+  const idx = (await (await fetch(`${base}/names/index.json`)).json()).shards;
+  const indexMs = Math.round(performance.now() - t0);
+  const find = (k) => { let lo = 0, hi = idx.length - 1; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (cmp(idx[m].first, k) <= 0) lo = m; else hi = m - 1; } return lo; };
+  const loaded = new Set();
+  const load = async (i) => {
+    const f = idx[i].file;
+    if (loaded.has(f)) return;
+    const buf = new Uint8Array(await (await fetch(`${base}/names/${f}`)).arrayBuffer());
+    await c.db.registerFileBuffer(f, buf);
+    loaded.add(f);
+  };
+  const q = (x) => "'" + x.replaceAll("'", "''") + "'";
+  const out = [];
+  for (const name of names) {
+    const n = name.replaceAll(" ", "");
+    const { ms, r } = await timed(async () => {
+      const i = find(n);
+      await load(i);
+      return c.query(`SELECT n, country FROM read_parquet(${q(idx[i].file)}) WHERE key = ${q(n)}`);
+    });
+    out.push({ kind: "exact", key: n, ms, rows: r.numRows });
+  }
+  for (const p of prefixes) {
+    const hi = p.slice(0, -1) + String.fromCharCode(p.charCodeAt(p.length - 1) + 1);
+    const { ms, r } = await timed(async () => {
+      const a = find(p), b = find(hi);
+      const ids = Array.from({ length: b - a + 1 }, (_, j) => a + j);
+      await Promise.all(ids.map(load));
+      const files = ids.map((i) => q(idx[i].file));
+      return c.query(`SELECT key, n FROM read_parquet([${files.join(", ")}]) WHERE key >= ${q(p)} AND key < ${q(hi)}`);
+    });
+    out.push({ kind: "prefix", key: p, ms, rows: r.numRows });
+  }
+  return { indexMs, out };
+};
+
 window.countries = async ({ base, codes }) => {
   const out = [];
   for (const cc of codes) {
     const files = ["divisions", "areas", "layer_dist"];
     const { ms, r } = await timed(() => Promise.all(files.map(async (f) => {
-      const res = await fetch(`${base}/country=${cc}/${f}.parquet?s=${Math.random().toString(36).slice(2)}`);
+      const res = await fetch(`${base}/country=${cc}/${f}.parquet`);
       return (await res.arrayBuffer()).byteLength;
     })));
     out.push({ country: cc, ms, mb: +(r.reduce((a, b) => a + b, 0) / 1e6).toFixed(1) });

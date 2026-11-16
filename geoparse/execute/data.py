@@ -122,7 +122,7 @@ class Store:
             if x in aliases:
                 q_list.append(aliases[x])
         rows = cur.execute("""
-            SELECT id, max(CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 ELSE 0.95 END) AS s
+            SELECT id, max(CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 WHEN kind = 'translit' THEN 0.9 ELSE 0.95 END) AS s
             FROM names WHERE name_norm IN (SELECT unnest(?)) OR name_nospace IN (SELECT replace(unnest(?), ' ', ''))
             GROUP BY id
         """, [q_list, q_list]).fetchall()
@@ -131,7 +131,7 @@ class Store:
             # Fallback: Overture names can end with a level word ("Mumbai Suburban District").
             q2 = [f"{x} {suffix}" for x in q_list for suffix in ("district", "city")]
             rows = cur.execute("""
-                SELECT id, max(CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 ELSE 0.95 END) AS s
+                SELECT id, max(CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 WHEN kind = 'translit' THEN 0.9 ELSE 0.95 END) AS s
                 FROM names WHERE name_norm IN (SELECT unnest(?)) GROUP BY id
             """, [q2]).fetchall()
             scores = {r[0]: float(r[1]) * 0.98 for r in rows}

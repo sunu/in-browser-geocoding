@@ -181,3 +181,62 @@ Conclusions:
 2. The first lookup still takes 5 to 8 s (footer and metadata of a 133 MB file, many requests).
 3. One request on a reused connection takes approximately 0.2 s from this client. The name shards of plan-010 (one `fetch()` for each lookup) are expected to take approximately 0.2 s for each lookup, and no first-lookup cost except `index.json`.
 4. The Cloudflare location is far from the client (free plan). Requests from India cannot be faster than approximately 0.15 s.
+
+## 9. Country layout and name shards (phase 1b)
+
+Command:
+
+```sh
+GEOPARSE_SCOPE=world uv run python scripts/export_web.py data --layout country --out data/build-world/web
+```
+
+The export compares the output with the tables in `geoparse.duckdb` (`verify_country_layout`): the same rows in the country files, each key in one shard, the index agrees with the shards.
+
+### 9.1 Name sources
+
+New name sources (plan-013): all values of `names.common`, all values of `names.rules`, and Latin keys from transliteration at build time (Cyrillic and Greek tables, pinyin for Chinese names in CN, TW, HK, MO, SG).
+
+| Kind | Name rows | Divisions |
+|---|---|---|
+| primary | 4,700,999 | 4,700,999 |
+| common | 2,862,424 | 1,423,065 |
+| translit | 1,570,435 | 1,046,083 |
+| en | 884,723 | 884,723 |
+| alt | 823,352 | 513,892 |
+
+Divisions with no Latin key: 143,187 (before: 580,215). CN: 172 (before: 272,343). RU: 2 (before: 138,928). Most of the remaining divisions are in JP (90,003) and IR (33,512). Japanese and Arabic-script transliteration is not done (plan-013).
+
+### 9.2 Sizes
+
+| Part | Files | Size |
+|---|---|---|
+| Country files (`divisions`, `areas`, `layer_dist`) | 272 countries | 811.5 MB (CN 81.9, RU 67.4, FR 47.3, IN 43.8, US 42.1 MB) |
+| `global/admin.parquet` (attributes of countries, dependencies, regions, counties, localadmin) | 1 | 3.5 MB |
+| `global/admin_areas.parquet` (polygons of countries, dependencies, regions) | 1 | 45.6 MB |
+| `global/layers.parquet` | 1 | 9.4 MB |
+| Name shards | 1,082 (median 181 kB, maximum 272 kB) | 194.2 MB |
+| `names/index.json` | 1 | 87 kB |
+
+Name shard design:
+
+- Key: the name key without spaces. Two names with equal keys have equal keys without spaces, so one key gives the same matches as `name_norm OR name_nospace`.
+- One row for each key and division (the best name kind). 8,940,614 rows.
+- `n`: an integer id. The country `divisions` file maps `n` to the Overture id. Before this change, the Overture id column used 199 MB of 496 MB.
+- `region_n`, `county_n`: integer references to `global/admin.parquet`. `locality_name` is a string (localities are not in `admin.parquet`).
+- `name_en` only when it is different from `name`.
+
+### 9.3 Latency of a name lookup with shards
+
+Setup as in section 8 (custom domain, edge cache, client in Kolkata). Test: `MODE=shards web/scripts/latency_check.ts`. Each lookup finds the shard in `index.json`, downloads the shard with one `fetch()`, and queries it with DuckDB-WASM. Third run (edge cache warm):
+
+| Browser | `index.json` | First lookup | Exact lookup (median, p95) | Prefix lookup (median, max) |
+|---|---|---|---|---|
+| Chromium | 0.58 s | 1.14 s | 0.21, 0.24 s | 0.19, 0.49 s |
+| Firefox | 0.65 s | 0.99 s | 0.21, 0.25 s | 0.18, 0.49 s |
+| WebKit | 0.79 s | 1.06 s | 0.42, 3.26 s | 0.47, 1.25 s |
+
+The second run gave WebKit 0.22 s (median) and 0.35 s (p95). The WebKit values of the third run are one slow sample.
+
+Note: the browser tests of sections 7 and 8 added a query parameter (`?s=...`) to each URL. The edge cache key contains the query string, so these requests did not use the edge cache. The values in section 8 for the browsers are therefore values without the edge cache.
+
+Result: an exact lookup takes approximately 0.2 s (target: less than 0.3 s). The first lookup also loads `index.json` and opens the connection (approximately 1 s).

@@ -4,6 +4,7 @@ Usage:
   uv run python scripts/export_web.py bundle   # web/public/bundle.json
   uv run python scripts/export_web.py data     # web/public/data/*.parquet (from geoparse.duckdb)
   GEOPARSE_SCOPE=world uv run python scripts/export_web.py data --out data/build-world/web
+  GEOPARSE_SCOPE=world uv run python scripts/export_web.py data --layout country --out data/build-world/web
 
 The Python package stays the single source of truth for templates, options, and policy.
 """
@@ -18,6 +19,7 @@ import duckdb
 import yaml
 
 from geoparse.config import PACKAGE_DIR, REPO_ROOT, build_dir, load_config
+from geoparse.data.web_layout import export_country_layout, verify_country_layout
 from geoparse.decisions.functions import INSTRUCTIONS, IS_SUBQUERY_CRITERIA, NONE_OPTION, SOURCE_OPTIONS
 from geoparse.dsl.schema import CATALOG, DIRECTION_MODES, LAYERS, PREDICATE_DAGS, SOURCES
 from geoparse.options import categories, lexicon, options
@@ -92,16 +94,36 @@ def export_data(simplify_out: float, out: Path) -> None:
         print(f"{name:20s} {(out / name).stat().st_size / 1e6:8.1f} MB  {time.time() - t0:.1f}s")
 
 
+def export_country(out: Path) -> None:
+    con = duckdb.connect(str(build_dir() / "geoparse.duckdb"), read_only=True)
+    con.execute("LOAD spatial; SET geometry_always_xy = true;")
+    root = export_country_layout(con, out, load_config()["data"]["overture_release"])
+    errors = verify_country_layout(con, root)
+    for e in errors:
+        print("ERROR", e)
+    if errors:
+        raise SystemExit(1)
+    m = json.loads((root / "manifest.json").read_text())
+    total = sum(c["total"] for c in m["countries"].values())
+    print(f"{root}: {len(m['countries'])} countries {total / 1e6:.1f} MB, global {sum(m['global'].values()) / 1e6:.1f} MB,"
+          f" names {m['names']['shards']} shards {m['names']['bytes'] / 1e6:.1f} MB")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("what", choices=["bundle", "data", "all"])
     ap.add_argument("--simplify", type=float, default=0.0005)
     ap.add_argument("--out", type=Path, default=WEB / "data", help="Output directory of the data files.")
+    ap.add_argument("--layout", choices=["flat", "country"], default="flat",
+                    help="flat: one file for each table. country: files for each country and name shards (plan-008).")
     args = ap.parse_args()
     if args.what in ("bundle", "all"):
         export_bundle()
     if args.what in ("data", "all"):
-        export_data(args.simplify, args.out)
+        if args.layout == "country":
+            export_country(args.out)
+        else:
+            export_data(args.simplify, args.out)
 
 
 if __name__ == "__main__":
