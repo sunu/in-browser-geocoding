@@ -109,6 +109,40 @@ The first lookup also reads the footer (1.4 MB). Common names (springfield, san 
 3. **Size of `ancestors`.** This column is 50% of the flat `divisions` file. In the files for each country it is smaller, but it is still the largest column. A parent pointer and a lookup at query time can replace it. This is optional.
 4. **Country codes.** The data has 273 country codes and 219 country divisions. Some dependencies and disputed areas have their own code. Phase 3 must define the policy for them.
 
-## 7. Not done in this phase
+5. **Divisions with no country.** Some divisions have no `country` value. They go to the partition `__HIVE_DEFAULT_PARTITION__`. Phase 1 must put them in a named partition or remove them.
 
-Range-read latency from Cloudflare R2 in Chromium, Firefox and WebKit. This test needs an upload to R2. The numbers in section 5 give the number of row groups and bytes. They do not give the time.
+## 7. Range-read latency from Cloudflare R2
+
+Setup:
+
+- Bucket `geoparse-world-test` (location APAC), public `r2.dev` URL, CORS for GET and HEAD.
+- Files: `global/names.parquet` (section 5) and the files of CN, IN and LU.
+- Client: Kolkata, India. The nearest Cloudflare location is CCU. The `r2.dev` answers come from MRS (Marseille).
+- Test: `web/latency.html` and `web/scripts/latency_check.ts`. DuckDB-WASM with the settings of `web/src/execute/db.ts`. 20 exact name lookups and 5 prefix lookups, each in a new DuckDB instance, with and without `parquet_metadata_cache`.
+
+Single range requests with curl: 0.41 to 1.03 s to the first byte.
+
+| Browser | Metadata cache | First lookup | Exact lookup (median, p95) | Prefix lookup (median, max) | Requests (25 lookups) | Data |
+|---|---|---|---|---|---|---|
+| Chromium | off | 8.7 s | 2.26, 3.33 s | 1.17, 5.77 s | 106 | 12.9 MB |
+| Chromium | on | 6.7 s | 1.59, 2.67 s | 1.07, 5.49 s | 106 | 12.9 MB |
+| Firefox | off | 7.9 s | 2.14, 4.07 s | 2.03, 4.47 s | 106 | 13.8 MB |
+| Firefox | on | 5.2 s | 1.91, 6.64 s | 1.79, 5.27 s | 106 | 13.8 MB |
+| WebKit | off | 6.1 s | 2.13, 6.39 s | 1.77, 4.66 s | 106 | 13.8 MB |
+| WebKit | on | 5.2 s | 1.95, 3.26 s | 1.90, 4.58 s | 106 | 13.8 MB |
+
+Full download of the files of one country (`fetch()`, all three files in parallel):
+
+| Browser | LU (0.2 MB) | IN (42.7 MB) | CN (80.4 MB) |
+|---|---|---|---|
+| Chromium | 1.7 s | 15.3 s | 6.0 s |
+| Firefox | 0.9 s | 3.0 s | 2.6 s |
+| WebKit | 0.9 s | 4.1 s | 2.8 s |
+
+Conclusions:
+
+1. The time of one lookup is the request latency, not the bandwidth. Each lookup uses approximately 4 requests in sequence, at 0.4 to 0.6 s each. The data for each lookup is small (approximately 0.5 MB).
+2. With `r2.dev`, a name lookup with DuckDB range reads takes approximately 2 s. A query with 2 or 3 names takes 4 to 6 s. This is too slow.
+3. The metadata cache removes only part of the time. The number of requests does not change.
+4. Full downloads are fast. CN (80 MB) takes 3 to 6 s.
+5. The Chromium IN time (15.3 s) is one slow sample. The other browsers took 3 to 4 s for the same files.

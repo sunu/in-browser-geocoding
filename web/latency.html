@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Range-read latency</title></head>
+<body>
+<pre id="out">loading</pre>
+<script type="module">
+// Range-read latency check for remote Parquet files (plan-008). Driven by scripts/latency_check.ts.
+import * as duckdb from "@duckdb/duckdb-wasm";
+
+async function open(metadataCache) {
+  const bundle = await duckdb.selectBundle(duckdb.getJsDelivrBundles());
+  const workerUrl = URL.createObjectURL(new Blob([`importScripts("${bundle.mainWorker}");`], { type: "text/javascript" }));
+  const db = new duckdb.AsyncDuckDB(new duckdb.VoidLogger(), new Worker(workerUrl));
+  await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+  await db.open({ filesystem: { reliableHeadRequests: true, allowFullHTTPReads: false, forceFullHTTPReads: false } });
+  const c = await db.connect();
+  if (metadataCache) await c.query("SET parquet_metadata_cache = true");
+  return c;
+}
+
+async function timed(f) {
+  const t = performance.now();
+  const r = await f();
+  return { ms: Math.round(performance.now() - t), r };
+}
+
+window.lookups = async ({ base, names, prefixes, metadataCache }) => {
+  const c = await open(metadataCache);
+  const url = `${base}/global/names.parquet?s=${Math.random().toString(36).slice(2)}`;
+  const q = (s) => "'" + s.replaceAll("'", "''") + "'";
+  const out = [];
+  for (const n of names) {
+    const { ms, r } = await timed(() => c.query(`SELECT id, country FROM read_parquet(${q(url)}) WHERE name_norm = ${q(n)}`));
+    out.push({ kind: "exact", key: n, ms, rows: r.numRows });
+  }
+  for (const p of prefixes) {
+    const hi = p.slice(0, -1) + String.fromCharCode(p.charCodeAt(p.length - 1) + 1);
+    const { ms, r } = await timed(() => c.query(`SELECT name_norm, id FROM read_parquet(${q(url)}) WHERE name_norm >= ${q(p)} AND name_norm < ${q(hi)}`));
+    out.push({ kind: "prefix", key: p, ms, rows: r.numRows });
+  }
+  return out;
+};
+
+window.countries = async ({ base, codes }) => {
+  const out = [];
+  for (const cc of codes) {
+    const files = ["divisions", "areas", "layer_dist"];
+    const { ms, r } = await timed(() => Promise.all(files.map(async (f) => {
+      const res = await fetch(`${base}/country=${cc}/${f}.parquet?s=${Math.random().toString(36).slice(2)}`);
+      return (await res.arrayBuffer()).byteLength;
+    })));
+    out.push({ country: cc, ms, mb: +(r.reduce((a, b) => a + b, 0) / 1e6).toFixed(1) });
+  }
+  return out;
+};
+
+document.getElementById("out").textContent = "ready";
+</script>
+</body>
+</html>
