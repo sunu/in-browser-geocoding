@@ -146,3 +146,38 @@ Conclusions:
 3. The metadata cache removes only part of the time. The number of requests does not change.
 4. Full downloads are fast. CN (80 MB) takes 3 to 6 s.
 5. The Chromium IN time (15.3 s) is one slow sample. The other browsers took 3 to 4 s for the same files.
+
+## 8. Range-read latency with a custom domain and the edge cache
+
+Setup changes from section 7:
+
+- Custom domain `files.geoparse.labs.sunu.in` on the bucket (zone `sunu.in`, minimum TLS 1.2).
+- Cache Rule on the zone: host `files.geoparse.labs.sunu.in`, eligible for cache, edge TTL 1 month, browser TTL 1 day.
+- The answers still come from MRS (Marseille). Ping from the client: 160 to 210 ms.
+
+Single requests with curl, cached (`cf-cache-status: HIT`), 300 kB range:
+
+| Connection | Time to first byte | Total |
+|---|---|---|
+| New connection (TCP and TLS) | 0.41 to 0.57 s | |
+| Reused HTTP/2 connection | 0.15 s | 0.22 s |
+
+Browsers, second run (edge cache warm):
+
+| Browser | Metadata cache | First lookup | Exact lookup (median, p95) | Prefix lookup (median, max) |
+|---|---|---|---|---|
+| Chromium | off | 7.7 s | 0.72, 1.14 s | 0.62, 2.39 s |
+| Chromium | on | 5.0 s | 0.52, 0.85 s | 0.37, 1.74 s |
+| Firefox | off | 5.8 s | 1.01, 1.34 s | 1.00, 1.90 s |
+| Firefox | on | 5.3 s | 0.99, 1.30 s | 0.85, 1.90 s |
+| WebKit | off | 7.6 s | 1.23, 4.04 s | 1.03, 3.64 s |
+| WebKit | on | 6.3 s | 1.01, 1.40 s | 0.94, 1.97 s |
+
+Full download of the files of one country: IN (42.7 MB) 2.4 to 4.3 s, CN (80.4 MB) 3.2 to 7.5 s.
+
+Conclusions:
+
+1. The edge cache makes the exact lookups 2 to 4 times faster. Chromium: 0.5 s. Firefox and WebKit: 1.0 s.
+2. The first lookup still takes 5 to 8 s (footer and metadata of a 133 MB file, many requests).
+3. One request on a reused connection takes approximately 0.2 s from this client. The name shards of plan-010 (one `fetch()` for each lookup) are expected to take approximately 0.2 s for each lookup, and no first-lookup cost except `index.json`.
+4. The Cloudflare location is far from the client (free plan). Requests from India cannot be faster than approximately 0.15 s.
