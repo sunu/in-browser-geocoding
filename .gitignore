@@ -8,6 +8,7 @@ data_build/
 models/
 plans/
 data/build/
+data/build-world/
 .cache/
 web/public/data/
 web/public/models/

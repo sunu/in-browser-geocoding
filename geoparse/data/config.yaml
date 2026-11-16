@@ -3,8 +3,12 @@
 data:
   overture_release: "2026-10-21.0"
   overture_s3: "s3://overturemaps-us-west-2/release"
-  # Build output directory, relative to the repo root.
+  # Extent of the extract: "country" (the country below) or "world" (all countries, no places).
+  # The environment variable GEOPARSE_SCOPE overrides this value.
+  scope: country
+  # Build output directories, relative to the repo root.
   build_dir: "data/build"
+  world_build_dir: "data/build-world"
   # India bounding box: xmin, ymin, xmax, ymax.
   bbox: [68.0, 6.5, 97.5, 37.2]
   country: "IN"

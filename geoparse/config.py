@@ -23,9 +23,18 @@ def load_config(path: str | None = None) -> dict[str, Any]:
         return yaml.safe_load(f)
 
 
+def scope(cfg: dict[str, Any] | None = None) -> str:
+    cfg = cfg or load_config()
+    s = os.environ.get("GEOPARSE_SCOPE", cfg["data"].get("scope", "country"))
+    if s not in ("country", "world"):
+        raise ValueError(f"unknown scope: {s}")
+    return s
+
+
 def build_dir(cfg: dict[str, Any] | None = None) -> Path:
     cfg = cfg or load_config()
-    d = Path(os.environ.get("GEOPARSE_DATA_DIR", cfg["data"]["build_dir"]))
+    default = cfg["data"]["world_build_dir"] if scope(cfg) == "world" else cfg["data"]["build_dir"]
+    d = Path(os.environ.get("GEOPARSE_DATA_DIR", default))
     return d if d.is_absolute() else REPO_ROOT / d
 
 

@@ -1,6 +1,7 @@
-"""Build the local India extract as GeoParquet.
+"""Build the local India extract (or the world extract) as GeoParquet.
 
 Usage: uv run python -m geoparse.data.build_extract [--skip-overture]
+       GEOPARSE_SCOPE=world uv run python -m geoparse.data.build_extract   # data/build-world
 
 Outputs (in the build directory):
   divisions.parquet      one row per Overture division (point geometry and attributes)
@@ -17,9 +18,11 @@ import urllib.request
 from pathlib import Path
 
 import duckdb
+import numpy as np
+import shapely
 import yaml
 
-from geoparse.config import PACKAGE_DIR, build_dir, load_config
+from geoparse.config import PACKAGE_DIR, build_dir, load_config, scope
 
 
 def connect() -> duckdb.DuckDBPyConnection:
@@ -32,11 +35,14 @@ def connect() -> duckdb.DuckDBPyConnection:
 def build_divisions(con, cfg, out: Path) -> None:
     d = cfg["data"]
     base = f"{d['overture_s3']}/{d['overture_release']}/theme=divisions"
-    xmin, ymin, xmax, ymax = d["bbox"]
-    bbox_where = f"bbox.xmin < {xmax} AND bbox.xmax > {xmin} AND bbox.ymin < {ymax} AND bbox.ymax > {ymin}"
-    extra = ", ".join(f"'{c}'" for c in d["extra_countries"])
-    # India: all subtypes. Extra countries: only the country row.
-    where = f"(country = '{d['country']}' AND {bbox_where}) OR (subtype = 'country' AND country IN ({extra}))"
+    if scope(cfg) == "world":
+        where = "true"
+    else:
+        xmin, ymin, xmax, ymax = d["bbox"]
+        bbox_where = f"bbox.xmin < {xmax} AND bbox.xmax > {xmin} AND bbox.ymin < {ymax} AND bbox.ymax > {ymin}"
+        extra = ", ".join(f"'{c}'" for c in d["extra_countries"])
+        # India: all subtypes. Extra countries: only the country row.
+        where = f"(country = '{d['country']}' AND {bbox_where}) OR (subtype = 'country' AND country IN ({extra}))"
 
     t0 = time.time()
     con.execute(f"""
@@ -65,23 +71,29 @@ def build_divisions(con, cfg, out: Path) -> None:
     """)
     print(f"divisions: {con.execute('SELECT count(*) FROM divisions').fetchone()[0]} rows, {time.time() - t0:.1f}s")
 
+    con.execute(f"COPY divisions TO '{out / 'divisions.parquet'}' (FORMAT parquet, COMPRESSION zstd)")
+
     t0 = time.time()
     # One area per division. Prefer the land polygon. The extra countries keep the land polygon too.
+    # Two passes: the window function reads no geometry, so the world build stays in memory.
+    src = f"read_parquet('{base}/type=division_area/*')"
     con.execute(f"""
-        CREATE OR REPLACE TABLE division_area AS
-        SELECT division_id, subtype, is_land, is_territorial, geometry
-        FROM (
-            SELECT a.*, row_number() OVER (
-                PARTITION BY a.division_id ORDER BY a.is_land DESC, a.is_territorial ASC) AS rn
-            FROM read_parquet('{base}/type=division_area/*') a
-            WHERE ({where})
+        CREATE OR REPLACE TEMP TABLE area_pick AS
+        SELECT id FROM (
+            SELECT id, division_id, row_number() OVER (
+                PARTITION BY division_id ORDER BY is_land DESC, is_territorial ASC) AS rn
+            FROM {src} WHERE ({where})
         )
         WHERE rn = 1 AND division_id IN (SELECT id FROM divisions)
     """)
-    print(f"division_area: {con.execute('SELECT count(*) FROM division_area').fetchone()[0]} rows, {time.time() - t0:.1f}s")
-
-    con.execute(f"COPY divisions TO '{out / 'divisions.parquet'}' (FORMAT parquet, COMPRESSION zstd)")
-    con.execute(f"COPY division_area TO '{out / 'division_area.parquet'}' (FORMAT parquet, COMPRESSION zstd)")
+    con.execute(f"""
+        COPY (
+            SELECT division_id, subtype, is_land, is_territorial, geometry
+            FROM {src} WHERE ({where}) AND id IN (SELECT id FROM area_pick)
+        ) TO '{out / 'division_area.parquet'}' (FORMAT parquet, COMPRESSION zstd)
+    """)
+    n = con.execute(f"SELECT count(*) FROM read_parquet('{out / 'division_area.parquet'}')").fetchone()[0]
+    print(f"division_area: {n} rows, {time.time() - t0:.1f}s")
 
 
 def build_places(con, cfg, out: Path) -> None:
@@ -118,7 +130,7 @@ def build_coastline(con, cfg, out: Path) -> None:
         req = urllib.request.Request(d["natural_earth_coastline"], headers={"User-Agent": "geoparse-build/0.1"})
         with urllib.request.urlopen(req) as r, zip_path.open("wb") as f:
             f.write(r.read())
-    xmin, ymin, xmax, ymax = d["bbox"]
+    xmin, ymin, xmax, ymax = [-180.0, -90.0, 180.0, 90.0] if scope(cfg) == "world" else d["bbox"]
     con.execute(f"""
         CREATE OR REPLACE TABLE coastline AS
         SELECT ST_SetCRS(ST_Intersection(geom, ST_MakeEnvelope({xmin}, {ymin}, {xmax}, {ymax})), 'OGC:CRS84') AS geometry
@@ -155,7 +167,73 @@ def build_lexicon(con, out: Path) -> None:
     print(f"lexicon: {len(lexicon)} sets, {missing} members not in the extract")
 
 
-NAME_NORM_SQL = "trim(regexp_replace(regexp_replace(lower({x}), '[^a-z0-9]+', ' ', 'g'), '\\s+', ' ', 'g'))"
+LAYER_DIST_SUBTYPES = ("country", "dependency", "region", "county", "localadmin", "locality")
+# World build: distances above this value (degrees) are stored as this value. All tolerances are smaller.
+LAYER_DIST_CAP = 0.5
+
+
+def _chunks(geom, n: int = 64) -> list:
+    """Split lines into short pieces, so that the STRtree can index them."""
+    out = []
+    for part in shapely.get_parts(geom):
+        c = shapely.get_coordinates(part)
+        for i in range(0, max(len(c) - 1, 1), n - 1):
+            if len(c[i:i + n]) >= 2:
+                out.append(shapely.linestrings(c[i:i + n]))
+    return out
+
+
+def build_world_layers(con, out: Path) -> None:
+    """World layers: full coastline, and all land borders between countries (one layer).
+
+    layer_dist is computed with an STRtree of short line pieces. The SQL version compares each area with
+    the full layer and is too slow for the world.
+    """
+    coast = [shapely.from_wkb(bytes(w)) for (w,) in con.execute(
+        f"SELECT ST_AsWKB(geometry) FROM read_parquet('{out / 'coastline.parquet'}')").fetchall()]
+    coast_line = shapely.multilinestrings([p for g in coast for p in shapely.get_parts(g)])
+
+    rows = con.execute("""
+        SELECT d.country, ST_AsWKB(a.gs) FROM areas a JOIN divisions d USING (id)
+        WHERE d.subtype IN ('country', 'dependency')""").fetchall()
+    polys = [shapely.from_wkb(bytes(w)) for _, w in rows]
+    tree = shapely.STRtree(polys)
+    borders = []
+    for i, p in enumerate(polys):
+        near = [j for j in tree.query(p, predicate="dwithin", distance=0.05) if j != i]
+        if not near:
+            continue
+        x0, y0, x1, y1 = p.bounds
+        clip = shapely.box(x0 - 0.1, y0 - 0.1, x1 + 0.1, y1 + 0.1)
+        others = shapely.union_all([shapely.clip_by_rect(polys[j], *clip.bounds) for j in near])
+        b = shapely.intersection(shapely.boundary(p), shapely.buffer(others, 0.05))
+        borders += [g for g in shapely.get_parts(b) if g.geom_type in ("LineString", "MultiLineString")]
+    border_line = shapely.multilinestrings([p for g in borders for p in shapely.get_parts(g)])
+
+    con.execute("CREATE TABLE layers (name VARCHAR, geometry GEOMETRY)")
+    for name, g in (("coastline", coast_line), ("country_boundary", border_line)):
+        con.execute("INSERT INTO layers VALUES (?, ST_GeomFromWKB(?))", [name, shapely.to_wkb(g)])
+
+    trees = {name: shapely.STRtree(_chunks(g)) for name, g in (("coastline", coast_line), ("country_boundary", border_line))}
+    subtypes = ", ".join(f"'{s}'" for s in LAYER_DIST_SUBTYPES)
+    con.execute("CREATE TABLE layer_dist (id VARCHAR, coastline DOUBLE, country_boundary DOUBLE)")
+    cur = con.cursor().execute(f"SELECT id, ST_AsWKB(gs) FROM areas WHERE subtype IN ({subtypes})")
+    while batch := cur.fetchmany(50000):
+        ids = np.array([r[0] for r in batch], dtype=object)
+        geoms = shapely.from_wkb([bytes(r[1]) for r in batch])
+        cols = {"id": ids}
+        for name, t in trees.items():
+            d = np.full(len(batch), LAYER_DIST_CAP)
+            (idx, _), dist = t.query_nearest(geoms, max_distance=LAYER_DIST_CAP, return_distance=True, all_matches=False)
+            d[idx] = np.minimum(d[idx], dist)
+            cols[name] = d
+        con.register("ld_batch", cols)
+        con.execute("INSERT INTO layer_dist SELECT id, coastline, country_boundary FROM ld_batch")
+        con.unregister("ld_batch")
+    print(f"layer_dist: {con.execute('SELECT count(*) FROM layer_dist').fetchone()[0]} rows")
+
+
+NAME_NORM_SQL ="trim(regexp_replace(regexp_replace(lower({x}), '[^a-z0-9]+', ' ', 'g'), '\\s+', ' ', 'g'))"
 
 
 def build_db(cfg, out: Path, simplify_deg: float = 0.001) -> None:
@@ -193,27 +271,30 @@ def build_db(cfg, out: Path, simplify_deg: float = 0.001) -> None:
                replace({nn.format(x='n')}, ' ', '') AS name_nospace, kind
         FROM raw WHERE n IS NOT NULL
     """)
-    country = cfg["data"]["country"]
-    con.execute(f"""
-        CREATE TABLE layers AS
-        SELECT 'coastline' AS name, ST_Union_Agg(geometry) AS geometry
-        FROM read_parquet('{out / 'coastline.parquet'}')
-        UNION ALL
-        SELECT 'country_boundary', ST_Intersection(
-            ST_Boundary((SELECT a.gs FROM areas a JOIN divisions d USING (id) WHERE d.subtype = 'country' AND d.country = '{country}')),
-            ST_Buffer((SELECT ST_Union_Agg(a.gs) FROM areas a JOIN divisions d USING (id) WHERE d.subtype = 'country' AND d.country <> '{country}'), 0.05))
-    """)
-    # Distance (degrees) from each admin area to the layers. The predicates compare it with the policy
-    # tolerance at query time. Neighborhoods are not included (too many, and rarely used with predicates).
     t1 = time.time()
-    con.execute("""
-        CREATE TABLE layer_dist AS
-        SELECT a.id,
-               ST_Distance(a.gs, (SELECT geometry FROM layers WHERE name = 'coastline')) AS coastline,
-               ST_Distance(a.gs, (SELECT geometry FROM layers WHERE name = 'country_boundary')) AS country_boundary
-        FROM areas a WHERE a.subtype IN ('country', 'region', 'county', 'locality')
-    """)
-    print(f"layer distances in {time.time() - t1:.1f}s")
+    if scope(cfg) == "world":
+        build_world_layers(con, out)
+    else:
+        country = cfg["data"]["country"]
+        con.execute(f"""
+            CREATE TABLE layers AS
+            SELECT 'coastline' AS name, ST_Union_Agg(geometry) AS geometry
+            FROM read_parquet('{out / 'coastline.parquet'}')
+            UNION ALL
+            SELECT 'country_boundary', ST_Intersection(
+                ST_Boundary((SELECT a.gs FROM areas a JOIN divisions d USING (id) WHERE d.subtype = 'country' AND d.country = '{country}')),
+                ST_Buffer((SELECT ST_Union_Agg(a.gs) FROM areas a JOIN divisions d USING (id) WHERE d.subtype = 'country' AND d.country <> '{country}'), 0.05))
+        """)
+        # Distance (degrees) from each admin area to the layers. The predicates compare it with the policy
+        # tolerance at query time. Neighborhoods are not included (too many, and rarely used with predicates).
+        con.execute("""
+            CREATE TABLE layer_dist AS
+            SELECT a.id,
+                   ST_Distance(a.gs, (SELECT geometry FROM layers WHERE name = 'coastline')) AS coastline,
+                   ST_Distance(a.gs, (SELECT geometry FROM layers WHERE name = 'country_boundary')) AS country_boundary
+            FROM areas a WHERE a.subtype IN ('country', 'region', 'county', 'locality')
+        """)
+    print(f"layers and layer distances in {time.time() - t1:.1f}s")
     con.execute("CREATE INDEX layer_dist_id ON layer_dist (id)")
     if (out / "places.parquet").exists():
         t1 = time.time()
@@ -237,14 +318,18 @@ def main() -> None:
     cfg = load_config()
     out = build_dir(cfg)
     out.mkdir(parents=True, exist_ok=True)
+    world = scope(cfg) == "world"
+    print(f"scope: {scope(cfg)}, output: {out}")
     if not args.db_only:
         con = connect()
         if not args.skip_overture:
             build_divisions(con, cfg, out)
-        if not args.skip_places:
+        # The world build has no places (plan-008). The lexicon comes from the country build.
+        if not args.skip_places and not world:
             build_places(con, cfg, out)
         build_coastline(con, cfg, out)
-        build_lexicon(con, out)
+        if not world:
+            build_lexicon(con, out)
         con.close()
     build_db(cfg, out)
     for f in sorted(list(out.glob("*.parquet")) + list(out.glob("*.duckdb"))):

@@ -3,6 +3,7 @@
 Usage:
   uv run python scripts/export_web.py bundle   # web/public/bundle.json
   uv run python scripts/export_web.py data     # web/public/data/*.parquet (from geoparse.duckdb)
+  GEOPARSE_SCOPE=world uv run python scripts/export_web.py data --out data/build-world/web
 
 The Python package stays the single source of truth for templates, options, and policy.
 """
@@ -64,9 +65,8 @@ def export_bundle() -> None:
     print(f"bundle.json: {(WEB / 'bundle.json').stat().st_size / 1e3:.0f} kB, {len(templates)} templates")
 
 
-def export_data(simplify_out: float) -> None:
+def export_data(simplify_out: float, out: Path) -> None:
     """Parquet files for DuckDB-WASM. Geometry as WKB blobs (the WASM engine is DuckDB 1.5)."""
-    out = WEB / "data"
     out.mkdir(parents=True, exist_ok=True)
     con = duckdb.connect(str(build_dir() / "geoparse.duckdb"), read_only=True)
     con.execute("LOAD spatial; SET geometry_always_xy = true;")
@@ -83,6 +83,8 @@ def export_data(simplify_out: float) -> None:
                              FROM areas ORDER BY id""",
         "places.parquet": "SELECT id, name, basic_category, cats, confidence, lon, lat FROM places",
     }
+    if not con.execute("SELECT count(*) FROM duckdb_tables() WHERE table_name = 'places'").fetchone()[0]:
+        del jobs["places.parquet"]
     for name, sql in jobs.items():
         t0 = time.time()
         rg = 10000 if name in ("areas.parquet", "places.parquet") else 100000
@@ -94,11 +96,12 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("what", choices=["bundle", "data", "all"])
     ap.add_argument("--simplify", type=float, default=0.0005)
+    ap.add_argument("--out", type=Path, default=WEB / "data", help="Output directory of the data files.")
     args = ap.parse_args()
     if args.what in ("bundle", "all"):
         export_bundle()
     if args.what in ("data", "all"):
-        export_data(args.simplify)
+        export_data(args.simplify, args.out)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,300 @@
+{
+  "flat_files_mb": {
+    "areas.parquet": 618.73,
+    "divisions.parquet": 512.27,
+    "layer_dist.parquet": 15.1,
+    "layers.parquet": 9.29,
+    "names.parquet": 157.6
+  },
+  "simplification": [
+    {
+      "subtype": "locality",
+      "areas": 556094,
+      "raw_wkb_mb": 2923.05,
+      "simplified_wkb_mb": 301.34,
+      "ratio": 9.7,
+      "raw_points": 182154812,
+      "simplified_points": 18298031
+    },
+    {
+      "subtype": "county",
+      "areas": 38937,
+      "raw_wkb_mb": 1315.04,
+      "simplified_wkb_mb": 138.51,
+      "ratio": 9.5,
+      "raw_points": 82088290,
+      "simplified_points": 8555358
+    },
+    {
+      "subtype": "neighborhood",
+      "areas": 325055,
+      "raw_wkb_mb": 719.15,
+      "simplified_wkb_mb": 72.62,
+      "ratio": 9.9,
+      "raw_points": 44667471,
+      "simplified_points": 4259468
+    },
+    {
+      "subtype": "region",
+      "areas": 3929,
+      "raw_wkb_mb": 473.47,
+      "simplified_wkb_mb": 56.76,
+      "ratio": 8.3,
+      "raw_points": 29508797,
+      "simplified_points": 3464210
+    },
+    {
+      "subtype": "localadmin",
+      "areas": 21502,
+      "raw_wkb_mb": 318.26,
+      "simplified_wkb_mb": 36.54,
+      "ratio": 8.7,
+      "raw_points": 19868586,
+      "simplified_points": 2261270
+    },
+    {
+      "subtype": "macrohood",
+      "areas": 47293,
+      "raw_wkb_mb": 130.81,
+      "simplified_wkb_mb": 10.91,
+      "ratio": 12.0,
+      "raw_points": 8135060,
+      "simplified_points": 641337
+    },
+    {
+      "subtype": "country",
+      "areas": 219,
+      "raw_wkb_mb": 97.58,
+      "simplified_wkb_mb": 21.5,
+      "ratio": 4.5,
+      "raw_points": 6040330,
+      "simplified_points": 1285457
+    },
+    {
+      "subtype": "microhood",
+      "areas": 89205,
+      "raw_wkb_mb": 58.84,
+      "simplified_wkb_mb": 9.29,
+      "ratio": 6.3,
+      "raw_points": 3600720,
+      "simplified_points": 503911
+    },
+    {
+      "subtype": "dependency",
+      "areas": 53,
+      "raw_wkb_mb": 1.56,
+      "simplified_wkb_mb": 1.41,
+      "ratio": 1.1,
+      "raw_points": 90777,
+      "simplified_points": 81251
+    }
+  ],
+  "by_country": {
+    "countries": 273,
+    "over_25_mb": 7,
+    "over_50_mb": 2,
+    "over_100_mb": 0,
+    "median_mb": 0.37,
+    "total_mb": 792.4,
+    "largest": [
+      {
+        "country": "CN",
+        "divisions": 41.59,
+        "areas": 37.97,
+        "layer_dist": 0.83,
+        "total_mb": 80.39
+      },
+      {
+        "country": "RU",
+        "divisions": 13.82,
+        "areas": 49.67,
+        "layer_dist": 2.83,
+        "total_mb": 66.33
+      },
+      {
+        "country": "FR",
+        "divisions": 24.83,
+        "areas": 20.5,
+        "layer_dist": 0.93,
+        "total_mb": 46.26
+      },
+      {
+        "country": "IN",
+        "divisions": 25.68,
+        "areas": 16.84,
+        "layer_dist": 0.16,
+        "total_mb": 42.67
+      },
+      {
+        "country": "US",
+        "divisions": 15.5,
+        "areas": 25.0,
+        "layer_dist": 0.78,
+        "total_mb": 41.29
+      },
+      {
+        "country": "BR",
+        "divisions": 11.22,
+        "areas": 19.73,
+        "layer_dist": 0.15,
+        "total_mb": 31.1
+      },
+      {
+        "country": "DE",
+        "divisions": 9.1,
+        "areas": 15.44,
+        "layer_dist": 0.57,
+        "total_mb": 25.11
+      },
+      {
+        "country": "JP",
+        "divisions": 15.78,
+        "areas": 7.02,
+        "layer_dist": 0.1,
+        "total_mb": 22.9
+      },
+      {
+        "country": "ID",
+        "divisions": 9.42,
+        "areas": 9.69,
+        "layer_dist": 0.3,
+        "total_mb": 19.41
+      },
+      {
+        "country": "PL",
+        "divisions": 8.95,
+        "areas": 9.45,
+        "layer_dist": 0.67,
+        "total_mb": 19.07
+      },
+      {
+        "country": "ES",
+        "divisions": 8.58,
+        "areas": 9.0,
+        "layer_dist": 0.22,
+        "total_mb": 17.79
+      },
+      {
+        "country": "IT",
+        "divisions": 7.51,
+        "areas": 7.48,
+        "layer_dist": 0.23,
+        "total_mb": 15.22
+      },
+      {
+        "country": "CA",
+        "divisions": 1.76,
+        "areas": 12.83,
+        "layer_dist": 0.19,
+        "total_mb": 14.77
+      },
+      {
+        "country": "AU",
+        "divisions": 1.6,
+        "areas": 11.42,
+        "layer_dist": 0.36,
+        "total_mb": 13.38
+      },
+      {
+        "country": "UA",
+        "divisions": 3.06,
+        "areas": 8.98,
+        "layer_dist": 0.49,
+        "total_mb": 12.53
+      },
+      {
+        "country": "IE",
+        "divisions": 3.81,
+        "areas": 8.67,
+        "layer_dist": 0.02,
+        "total_mb": 12.5
+      },
+      {
+        "country": "GB",
+        "divisions": 4.55,
+        "areas": 7.12,
+        "layer_dist": 0.64,
+        "total_mb": 12.31
+      },
+      {
+        "country": "TR",
+        "divisions": 6.03,
+        "areas": 6.03,
+        "layer_dist": 0.03,
+        "total_mb": 12.09
+      },
+      {
+        "country": "MX",
+        "divisions": 5.67,
+        "areas": 5.1,
+        "layer_dist": 0.1,
+        "total_mb": 10.87
+      },
+      {
+        "country": "IR",
+        "divisions": 4.64,
+        "areas": 4.15,
+        "layer_dist": 0.2,
+        "total_mb": 8.99
+      }
+    ]
+  },
+  "names_index": {
+    "empty_name_norm_rows": 1555448,
+    "divisions_without_latin_name": 580215,
+    "file_mb": 132.71,
+    "row_groups": 456,
+    "footer_mb": 1.37,
+    "rows": 4662101,
+    "exact_lookup": {
+      "row_groups_median": 1,
+      "row_groups_p95": 1,
+      "row_groups_max": 2,
+      "mb_median": 0.29,
+      "mb_p95": 0.31,
+      "mb_max": 0.58
+    },
+    "prefix3_lookup": {
+      "row_groups_median": 1,
+      "row_groups_p95": 8,
+      "row_groups_max": 11,
+      "mb_median": 0.3,
+      "mb_p95": 1.74,
+      "mb_max": 3.02
+    },
+    "named_examples": {
+      "springfield": {
+        "row_groups": 1,
+        "bytes": 303129
+      },
+      "san jose": {
+        "row_groups": 1,
+        "bytes": 283843
+      },
+      "victoria": {
+        "row_groups": 1,
+        "bytes": 301418
+      },
+      "london": {
+        "row_groups": 1,
+        "bytes": 297325
+      },
+      "paris": {
+        "row_groups": 1,
+        "bytes": 305805
+      },
+      "mumbai": {
+        "row_groups": 1,
+        "bytes": 297961
+      },
+      "santa maria": {
+        "row_groups": 1,
+        "bytes": 267081
+      },
+      "saint martin": {
+        "row_groups": 1,
+        "bytes": 301524
+      }
+    }
+  }
+}
