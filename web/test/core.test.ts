@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { checkFrame, distanceM, findSpan, frameFromText, frameToText, groupFrames, valueNum } from "../src/core/frames.ts";
 import { keywordHits } from "../src/core/keywords.ts";
@@ -36,6 +37,11 @@ describe("text and keywords", () => {
     expect(normalizeQuery("show me the coastal states?", ["show me the", "show me"])).toBe("coastal states");
     expect(normName("Tamil-Nadu ")).toBe("tamil nadu");
     expect(keywordHits("coastl states", ["coastal"])).toBe(1);
+  });
+  it("gives the same name keys as Python norm_name (scripts/make_norm_fixture.py)", () => {
+    const cases: [string, string][] = JSON.parse(readFileSync(new URL("./fixtures/norm_names.json", import.meta.url), "utf8"));
+    expect(cases.length).toBeGreaterThan(30);
+    expect(cases.filter(([n, k]) => normName(n) !== k)).toEqual([]);
   });
   it("substitutes slots and drops None", () => {
     expect(substitute({ op: "Neighbors", args: { of: { $slot: "of" }, level: { $slot: "level" } } }, { of: { op: "Resolve", args: { name: "Kerala" } }, level: null }))

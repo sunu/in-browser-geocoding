@@ -4,6 +4,7 @@ from __future__ import annotations
 import math
 import re
 import threading
+import unicodedata
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -31,8 +32,22 @@ def name_aliases() -> dict[str, str]:
     return {norm_name(k): norm_name(v) for k, v in raw.items()}
 
 
+# Latin letters that NFKD does not split into a base letter and a mark.
+NAME_FOLD = {"ł": "l", "ø": "o", "đ": "d", "ð": "d", "ħ": "h", "ı": "i", "ŀ": "l", "ß": "ss", "æ": "ae", "œ": "oe", "þ": "th"}
+_GENERIC_MARKS = re.compile("[̀-ͯ]")
+
+
 def norm_name(s: str) -> str:
-    return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", s.lower())).strip()
+    """Name key for the gazetteer. web/src/core/text.ts normName must give the same result.
+
+    Removes the generic diacritics (U+0300 to U+036F) only. Script-specific marks (for example the
+    vowel signs of Devanagari and Thai) stay. All characters other than letters, marks and digits
+    become a space.
+    """
+    s = unicodedata.normalize("NFKD", s.lower())
+    s = unicodedata.normalize("NFC", _GENERIC_MARKS.sub("", s))
+    s = "".join(NAME_FOLD.get(c, c) if unicodedata.category(c)[0] in "LMN" else " " for c in s)
+    return " ".join(s.split())
 
 
 class Store:

@@ -6,9 +6,12 @@ export function norm(text: string): string {
   return text.toLowerCase().replace(/[^\p{L}\p{N}_\s<>=&+-]/gu, " ").replace(/\s+/g, " ").trim();
 }
 
-/** geoparse.execute.data.norm_name */
+const NAME_FOLD: Record<string, string> = { "ł": "l", "ø": "o", "đ": "d", "ð": "d", "ħ": "h", "ı": "i", "ŀ": "l", "ß": "ss", "æ": "ae", "œ": "oe", "þ": "th" };
+
+/** geoparse.execute.data.norm_name (test/fixtures/norm_names.json checks that both give the same result) */
 export function normName(s: string): string {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, " ").replace(/\s+/g, " ").trim();
+  s = s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").normalize("NFC");
+  return s.replace(/./gsu, (c) => NAME_FOLD[c] ?? c).replace(/[^\p{L}\p{M}\p{N}]+/gu, " ").trim().replace(/\s+/g, " ");
 }
 
 export function ntext(s: string): string {

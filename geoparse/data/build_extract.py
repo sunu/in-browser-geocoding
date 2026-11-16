@@ -23,6 +23,7 @@ import shapely
 import yaml
 
 from geoparse.config import PACKAGE_DIR, build_dir, load_config, scope
+from geoparse.execute.data import norm_name
 
 
 def connect() -> duckdb.DuckDBPyConnection:
@@ -233,9 +234,6 @@ def build_world_layers(con, out: Path) -> None:
     print(f"layer_dist: {con.execute('SELECT count(*) FROM layer_dist').fetchone()[0]} rows")
 
 
-NAME_NORM_SQL ="trim(regexp_replace(regexp_replace(lower({x}), '[^a-z0-9]+', ' ', 'g'), '\\s+', ' ', 'g'))"
-
-
 def build_db(cfg, out: Path, simplify_deg: float = 0.001) -> None:
     """Build data/build/geoparse.duckdb from the GeoParquet files.
 
@@ -259,18 +257,22 @@ def build_db(cfg, out: Path, simplify_deg: float = 0.001) -> None:
         FROM read_parquet('{out / 'division_area.parquet'}')
     """)
     print(f"areas simplified in {time.time() - t0:.1f}s")
-    nn = NAME_NORM_SQL
-    con.execute(f"""
-        CREATE TABLE names AS
-        WITH raw AS (
-            SELECT id, name AS n, 'primary' AS kind FROM divisions
-            UNION ALL SELECT id, name_en, 'en' FROM divisions WHERE name_en IS NOT NULL AND name_en <> name
-            UNION ALL SELECT id, unnest(alt_names), 'alt' FROM divisions
-        )
-        SELECT DISTINCT id, {nn.format(x='n')} AS name_norm,
-               replace({nn.format(x='n')}, ' ', '') AS name_nospace, kind
-        FROM raw WHERE n IS NOT NULL
+    t1 = time.time()
+    # The name key comes from geoparse.execute.data.norm_name (also used at query time).
+    con.create_function("norm_name", norm_name, ["VARCHAR"], "VARCHAR", side_effects=False)
+    con.execute("""
+        CREATE TEMP TABLE raw_names AS
+        SELECT id, name AS n, 'primary' AS kind FROM divisions
+        UNION ALL SELECT id, name_en, 'en' FROM divisions WHERE name_en IS NOT NULL AND name_en <> name
+        UNION ALL SELECT id, unnest(alt_names), 'alt' FROM divisions
     """)
+    con.execute("CREATE TEMP TABLE name_keys AS SELECT n, norm_name(n) AS k FROM (SELECT DISTINCT n FROM raw_names WHERE n IS NOT NULL)")
+    con.execute("""
+        CREATE TABLE names AS
+        SELECT DISTINCT r.id, k.k AS name_norm, replace(k.k, ' ', '') AS name_nospace, r.kind
+        FROM raw_names r JOIN name_keys k USING (n) WHERE k.k <> ''
+    """)
+    print(f"names: {con.execute('SELECT count(*) FROM names').fetchone()[0]} rows, {time.time() - t1:.1f}s")
     t1 = time.time()
     if scope(cfg) == "world":
         build_world_layers(con, out)
