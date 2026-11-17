@@ -242,6 +242,16 @@ def test_policy_union_territories(world, world_config):
     assert names(res) == ["Westa"]
 
 
+def test_policy_for_one_country(world, world_config):
+    # Values in policy.countries.<code> apply to the divisions of that country only.
+    world_config["policy"]["countries"] = {"TL": {"union_territories": ["TL-EA"], "union_territories_are_states": False}}
+    res = run(world, {"op": "Children", "args": {"of": R("c_tl"), "level": "state"}})
+    assert names(res) == ["Westa"]
+    world_config["policy"]["countries"] = {"OT": {"union_territories": ["TL-EA"], "union_territories_are_states": False}}
+    res = run(world, {"op": "Children", "args": {"of": R("c_tl"), "level": "state"}})
+    assert names(res) == ["Easta", "Westa"]
+
+
 def test_invalid_dag_is_rejected(world):
     res = world.execute({"op": "Children", "args": {"of": R("c_tl"), "level": "galaxy"}})
     assert not res.ok and "admin_levels" in res.error

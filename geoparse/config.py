@@ -23,6 +23,11 @@ def load_config(path: str | None = None) -> dict[str, Any]:
         return yaml.safe_load(f)
 
 
+def country_policy(policy: dict[str, Any], country: str | None) -> dict[str, Any]:
+    """The policy for one country: the defaults with the values of `policy.countries.<country>`."""
+    return {**policy, **(policy.get("countries") or {}).get(country or "", {})}
+
+
 def scope(cfg: dict[str, Any] | None = None) -> str:
     cfg = cfg or load_config()
     s = os.environ.get("GEOPARSE_SCOPE", cfg["data"].get("scope", "country"))

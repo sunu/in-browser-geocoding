@@ -1,6 +1,6 @@
 // Port of geoparse/execute/executor.py for DuckDB-WASM (engine 1.5). In the browser data, `geometry` is the
 // simplified polygon (areas.parquet has only the simplified form), so geometry and gs are the same column.
-import type { Bundle } from "../core/bundle.ts";
+import { countryPolicy, type Bundle } from "../core/bundle.ts";
 import { validate } from "../core/dsl.ts";
 import { list, q, type Db } from "./db.ts";
 import type { Photon } from "./photon.ts";
@@ -86,17 +86,24 @@ class Run {
 
   async idsOf(rel: string): Promise<string[]> { return (await this.run(`SELECT id FROM ${rel} WHERE id IS NOT NULL`)).map((r) => r.id); }
 
-  levelFilter(level: string, a = "d"): string {
-    const p = this.policy;
+  /** Country of most divisions in a relation; the configured country if it has none. */
+  async countryOf(rel: string): Promise<string> {
+    const r = await this.run(`SELECT d.country FROM ${rel} r JOIN divisions d ON d.id = r.id WHERE d.country IS NOT NULL
+      GROUP BY 1 ORDER BY count(*) DESC, 1 LIMIT 1`);
+    return r[0]?.country ?? this.ex.bundle.config.data.country;
+  }
+
+  levelFilter(level: string, country: string, a = "d"): string {
+    const p = countryPolicy(this.policy, country);
     const cond = [`${a}.subtype IN (${p.admin_levels[level].map(q).join(", ")})`];
     if (level === "city") cond.push(`${a}.class IN (${p.city_classes.map(q).join(", ")})`);
     if (level === "village") cond.push(`${a}.class IN (${p.village_classes.map(q).join(", ")})`);
-    if (level === "union_territory") cond.push(`${a}.region IN (${p.union_territories.map(q).join(", ")})`);
+    if (level === "union_territory") cond.push(`${a}.region IN (${p.union_territories.map(q).join(", ") || "NULL"})`);
     if (level === "state") {
       if (p.require_region_code) cond.push(`${a}.region IS NOT NULL`);
-      if (!p.union_territories_are_states) cond.push(`${a}.region NOT IN (${p.union_territories.map(q).join(", ")})`);
+      if (!p.union_territories_are_states && p.union_territories.length) cond.push(`${a}.region NOT IN (${p.union_territories.map(q).join(", ")})`);
     }
-    if (level !== "country") cond.push(`${a}.country = ${q(this.ex.bundle.config.data.country)}`);
+    if (level !== "country") cond.push(`${a}.country = ${q(country)}`);
     return cond.join(" AND ");
   }
 
@@ -164,21 +171,23 @@ class Run {
   async op_Children(a: any) {
     const parent = await this.eval(a.of);
     await this.levelData(a.level);
+    const lf = this.levelFilter(a.level, await this.countryOf(parent));
     if ((await this.idsOf(parent)).length)
-      return this.divisionsRel(`${this.levelFilter(a.level)} AND EXISTS (SELECT 1 FROM ${parent} p
+      return this.divisionsRel(`${lf} AND EXISTS (SELECT 1 FROM ${parent} p
         WHERE p.id IS NOT NULL AND p.id <> d.id AND list_contains(d.ancestors, p.id))`);
-    return this.divisionsRel(`${this.levelFilter(a.level)} AND ST_Intersects(d.geometry, ${this.unionGeom(parent, "gs")})`);
+    return this.divisionsRel(`${lf} AND ST_Intersects(d.geometry, ${this.unionGeom(parent, "gs")})`);
   }
 
   async op_Parent(a: any) {
     const child = await this.eval(a.of);
     await this.levelData(a.level);
     const ids = await this.idsOf(child);
+    const lf = this.levelFilter(a.level, await this.countryOf(child));
     const nOv = (await this.run(`SELECT count(*) AS n FROM ${child} WHERE source = 'overture'`))[0].n;
     if (ids.length && nOv)
-      return this.divisionsRel(`${this.levelFilter(a.level)} AND d.id IN (SELECT unnest(c.ancestors) FROM divisions c
+      return this.divisionsRel(`${lf} AND d.id IN (SELECT unnest(c.ancestors) FROM divisions c
         WHERE c.id IN (SELECT id FROM ${child}))`);
-    return this.divisionsRel(`${this.levelFilter(a.level)} AND a.id IS NOT NULL AND ST_Contains(a.gs,
+    return this.divisionsRel(`${lf} AND a.id IS NOT NULL AND ST_Contains(a.gs,
       (SELECT ST_PointOnSurface(ST_Union_Agg(gs)) FROM ${child}))`);
   }
 
@@ -186,13 +195,14 @@ class Run {
     const src = await this.eval(a.of);
     const tol = this.deg(Number(this.policy.neighbor_tolerance_m), await this.latOf(src));
     let level = a.level;
+    const country = await this.countryOf(src);
     if (!level || level === "none") {
       const subtypes = (await this.run(`SELECT DISTINCT subtype FROM ${src}`)).map((r) => r.subtype);
-      level = Object.entries(this.policy.admin_levels).find(([, v]: any) => subtypes.every((s) => v.includes(s)))?.[0];
+      level = Object.entries(countryPolicy(this.policy, country).admin_levels).find(([, v]: any) => subtypes.every((s) => v.includes(s)))?.[0];
       if (!level) throw new ExecError(`cannot find a level for neighbors of subtypes ${subtypes}`);
     }
     await this.levelData(level);
-    return this.divisionsRel(`${this.levelFilter(level)} AND a.id IS NOT NULL
+    return this.divisionsRel(`${this.levelFilter(level, country)} AND a.id IS NOT NULL
       AND d.id NOT IN (SELECT id FROM ${src} WHERE id IS NOT NULL)
       AND ST_DWithin(a.gs, ${this.unionGeom(src, "gs")}, ${tol})`);
   }

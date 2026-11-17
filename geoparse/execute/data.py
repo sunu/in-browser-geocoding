@@ -11,7 +11,7 @@ from typing import Any
 
 import duckdb
 
-from geoparse.config import build_dir, load_config
+from geoparse.config import build_dir, country_policy, load_config
 from geoparse.decisions.types import Candidate
 
 # Score of a name match for each name kind.
@@ -160,19 +160,17 @@ class Store:
         if not scores:
             return []
         info = self.describe(list(scores))
-        policy = load_config()["policy"]
+        cfg = load_config()
         hint = type_hint or hint_from_name
-        hint_subtypes = set()
-        if hint:
-            h = {"district": "district", "state": "state", "city": "city", "town": "city", "country": "country",
-                 "union_territory": "union_territory"}.get(hint, hint)
-            hint_subtypes = set(policy["admin_levels"].get(h, []))
+        h = {"district": "district", "state": "state", "city": "city", "town": "city", "country": "country",
+             "union_territory": "union_territory"}.get(hint, hint) if hint else None
         ctx = norm_name(context) if context else ""
         cands = []
         for id_, s in scores.items():
             d = info.get(id_)
             if not d:
                 continue
+            policy = country_policy(cfg["policy"], d["country"])
             if d["subtype"] == "region" and policy["require_region_code"] and not d["region"]:
                 continue
             prior = SUBTYPE_PRIOR.get((d["subtype"], d["class"]), SUBTYPE_PRIOR.get(d["subtype"], 0.0))
@@ -181,15 +179,15 @@ class Store:
                 score += 0.1
             if d["population"]:
                 score += min(0.1, math.log10(max(d["population"], 1)) / 100)
-            if hint_subtypes and d["subtype"] in hint_subtypes:
+            if h and d["subtype"] in policy["admin_levels"].get(h, []):
                 score += 0.5
             if ctx and any(ctx in norm_name(a) or norm_name(a) in ctx for a in d["ancestors"]):
                 score += 0.3
-            if d["country"] != load_config()["data"]["country"]:
+            if d["country"] != cfg["data"]["country"]:
                 score -= 0.2
             where = ", ".join(a for a in reversed(d["ancestors"][-2:])) if d["ancestors"] else ""
             kind = d["subtype"] if not d["class"] else f"{d['subtype']} ({d['class']})"
-            desc = f"{d['name']}: {kind}" + (f" in {where}" if where else "") + ("" if d["country"] == "IN" else f", country {d['country']}")
+            desc = f"{d['name']}: {kind}" + (f" in {where}" if where else "") + ("" if d["country"] == cfg["data"]["country"] else f", country {d['country']}")
             cands.append(Candidate(id=id_, name=d["name"], source="overture", subtype=d["subtype"],
                                    description=desc, score=round(score, 4), ancestors=d["ancestor_ids"]))
         cands.sort(key=lambda c: (-c.score, c.id))

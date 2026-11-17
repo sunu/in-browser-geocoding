@@ -22,7 +22,7 @@ from typing import Any
 import shapely
 from pydantic import BaseModel, Field
 
-from geoparse.config import load_config
+from geoparse.config import country_policy, load_config
 from geoparse.dsl.schema import CATALOG, validate
 from geoparse.execute.data import Store, get_store
 from geoparse.execute.geocoder import Geocoder, PhotonGeocoder
@@ -164,22 +164,28 @@ class _Run:
     def ids_of(self, rel: str) -> list[str]:
         return [r[0] for r in self.run(f"SELECT id FROM {rel} WHERE id IS NOT NULL").fetchall()]
 
-    def level_filter(self, level: str, alias: str = "d") -> str:
-        subtypes = self.policy["admin_levels"][level]
-        cond = [f"{alias}.subtype IN ({', '.join(_q(s) for s in subtypes)})"]
+    def country_of(self, rel: str) -> str:
+        """Country of most divisions in a relation; the configured country if it has none."""
+        row = self.run(f"SELECT d.country FROM {rel} r JOIN divisions d ON d.id = r.id WHERE d.country IS NOT NULL "
+                       "GROUP BY 1 ORDER BY count(*) DESC, 1 LIMIT 1").fetchone()
+        return row[0] if row else self.ex.cfg["data"]["country"]
+
+    def level_filter(self, level: str, country: str, alias: str = "d") -> str:
+        p = country_policy(self.policy, country)
+        cond = [f"{alias}.subtype IN ({', '.join(_q(s) for s in p['admin_levels'][level])})"]
         if level == "city":
-            cond.append(f"{alias}.class IN ({', '.join(_q(c) for c in self.policy['city_classes'])})")
+            cond.append(f"{alias}.class IN ({', '.join(_q(c) for c in p['city_classes'])})")
         if level == "village":
-            cond.append(f"{alias}.class IN ({', '.join(_q(c) for c in self.policy['village_classes'])})")
+            cond.append(f"{alias}.class IN ({', '.join(_q(c) for c in p['village_classes'])})")
         if level == "union_territory":
-            cond.append(f"{alias}.region IN ({', '.join(_q(u) for u in self.policy['union_territories'])})")
+            cond.append(f"{alias}.region IN ({', '.join(_q(u) for u in p['union_territories']) or 'NULL'})")
         if level == "state":
-            if self.policy["require_region_code"]:
+            if p["require_region_code"]:
                 cond.append(f"{alias}.region IS NOT NULL")
-            if not self.policy["union_territories_are_states"]:
-                cond.append(f"{alias}.region NOT IN ({', '.join(_q(u) for u in self.policy['union_territories'])})")
+            if not p["union_territories_are_states"] and p["union_territories"]:
+                cond.append(f"{alias}.region NOT IN ({', '.join(_q(u) for u in p['union_territories'])})")
         if level != "country":
-            cond.append(f"{alias}.country = {_q(self.ex.cfg['data']['country'])}")
+            cond.append(f"{alias}.country = {_q(country)}")
         return " AND ".join(cond)
 
     def divisions_rel(self, where: str, params: list[Any] | None = None) -> str:
@@ -258,36 +264,40 @@ class _Run:
 
     def op_Children(self, of: Any, level: str) -> str:
         parent = self.eval(of)
+        lf = self.level_filter(level, self.country_of(parent))
         if self.ids_of(parent):
             return self.divisions_rel(
-                f"{self.level_filter(level)} AND EXISTS (SELECT 1 FROM {parent} p "
+                f"{lf} AND EXISTS (SELECT 1 FROM {parent} p "
                 f"WHERE p.id IS NOT NULL AND p.id <> d.id AND list_contains(d.ancestors, p.id))")
         # No IDs (a computed geometry): use the division point inside the geometry.
-        return self.divisions_rel(f"{self.level_filter(level)} AND ST_Intersects(crs84(d.geometry), {self.union_geom(parent, 'gs')})")
+        return self.divisions_rel(f"{lf} AND ST_Intersects(crs84(d.geometry), {self.union_geom(parent, 'gs')})")
 
     def op_Parent(self, of: Any, level: str) -> str:
         child = self.eval(of)
         ids = self.ids_of(child)
+        lf = self.level_filter(level, self.country_of(child))
         if ids and self.run(f"SELECT count(*) FROM {child} WHERE source = 'overture'").fetchone()[0]:
             return self.divisions_rel(
-                f"{self.level_filter(level)} AND d.id IN (SELECT unnest(c.ancestors) FROM divisions c "
+                f"{lf} AND d.id IN (SELECT unnest(c.ancestors) FROM divisions c "
                 f"WHERE c.id IN (SELECT id FROM {child}))")
         return self.divisions_rel(
-            f"{self.level_filter(level)} AND a.id IS NOT NULL AND ST_Contains(crs84(a.gs), "
+            f"{lf} AND a.id IS NOT NULL AND ST_Contains(crs84(a.gs), "
             f"(SELECT ST_PointOnSurface(crs84(ST_Union_Agg(gs))) FROM {child}))")
 
     def op_Neighbors(self, of: Any, level: str | None = None) -> str:
         src = self.eval(of)
         lat = self.lat_of(src)
         tol = self.deg(float(self.policy["neighbor_tolerance_m"]), lat)
+        country = self.country_of(src)
         if level is None or level == "none":
             subtypes = [r[0] for r in self.run(f"SELECT DISTINCT subtype FROM {src}").fetchall()]
-            lvl = next((k for k, v in self.policy["admin_levels"].items() if set(subtypes) <= set(v)), None)
+            levels = country_policy(self.policy, country)["admin_levels"]
+            lvl = next((k for k, v in levels.items() if set(subtypes) <= set(v)), None)
             if lvl is None:
                 raise ExecutionError(f"cannot find a level for neighbors of subtypes {subtypes}")
             level = lvl
         return self.divisions_rel(
-            f"{self.level_filter(level)} AND a.id IS NOT NULL "
+            f"{self.level_filter(level, country)} AND a.id IS NOT NULL "
             f"AND d.id NOT IN (SELECT id FROM {src} WHERE id IS NOT NULL) "
             f"AND ST_DWithin(crs84(a.gs), {self.union_geom(src, 'gs')}, {tol})")
 

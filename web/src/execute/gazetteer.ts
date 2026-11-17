@@ -1,5 +1,5 @@
 // Port of geoparse.execute.data.Store.search and describe.
-import type { Bundle } from "../core/bundle.ts";
+import { countryPolicy, type Bundle } from "../core/bundle.ts";
 import { normName } from "../core/text.ts";
 import type { Candidate } from "../decisions/types.ts";
 import { list, q, type Db } from "./db.ts";
@@ -78,29 +78,26 @@ export class Gazetteer {
     }
     if (!Object.keys(scores).length) return [];
     const info = await this.describe(Object.keys(scores));
-    const policy = this.bundle.config.policy;
+    const { policy: base, data } = this.bundle.config;
     const hint = typeHint ?? hintFromName;
-    let hintSubtypes = new Set<string>();
-    if (hint) {
-      const h = ({ district: "district", state: "state", city: "city", town: "city", country: "country", union_territory: "union_territory" } as any)[hint] ?? hint;
-      hintSubtypes = new Set(policy.admin_levels[h] ?? []);
-    }
+    const h = hint ? ({ district: "district", state: "state", city: "city", town: "city", country: "country", union_territory: "union_territory" } as any)[hint] ?? hint : null;
     const ctx = context ? normName(context) : "";
     const cands: Candidate[] = [];
     for (const [id, s] of Object.entries(scores)) {
       const d = info[id];
       if (!d) continue;
+      const policy = countryPolicy(base, d.country);
       if (d.subtype === "region" && policy.require_region_code && !d.region) continue;
       const prior = PRIOR[`${d.subtype}|${d.class ?? ""}`] ?? PRIOR[d.subtype] ?? 0;
       let score = s + prior;
       if (d.has_area) score += 0.1;
       if (d.population) score += Math.min(0.1, Math.log10(Math.max(d.population, 1)) / 100);
-      if (hintSubtypes.size && hintSubtypes.has(d.subtype)) score += 0.5;
+      if (h && (policy.admin_levels[h] ?? []).includes(d.subtype)) score += 0.5;
       if (ctx && d.ancestors.some((a: string) => normName(a).includes(ctx) || ctx.includes(normName(a)))) score += 0.3;
-      if (d.country !== this.bundle.config.data.country) score -= 0.2;
+      if (d.country !== data.country) score -= 0.2;
       const where = d.ancestors.length ? d.ancestors.slice(-2).reverse().join(", ") : "";
       const kind = d.class ? `${d.subtype} (${d.class})` : d.subtype;
-      const desc = `${d.name}: ${kind}` + (where ? ` in ${where}` : "") + (d.country === "IN" ? "" : `, country ${d.country}`);
+      const desc = `${d.name}: ${kind}` + (where ? ` in ${where}` : "") + (d.country === data.country ? "" : `, country ${d.country}`);
       cands.push({ id, name: d.name, source: "overture", subtype: d.subtype, description: desc, score: Math.round(score * 1e4) / 1e4, ancestors: d.ancestor_ids });
     }
     cands.sort((a, b) => b.score - a.score || (a.id < b.id ? -1 : 1));

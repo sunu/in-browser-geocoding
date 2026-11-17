@@ -30,3 +30,8 @@ export async function loadBundle(url: string): Promise<Bundle> {
   const r = await fetch(url);
   return r.json();
 }
+
+/** geoparse.config.country_policy: the defaults with the values of `policy.countries.<country>`. */
+export function countryPolicy(policy: any, country: string | null | undefined): any {
+  return { ...policy, ...(policy.countries ?? {})[country ?? ""] };
+}
