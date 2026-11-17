@@ -76,9 +76,12 @@ class Store:
         return c
 
     def new_session(self) -> duckdb.DuckDBPyConnection:
-        """A cursor for one execution. Temp tables live in it."""
+        """A cursor for one execution. Temp tables live in it. The world point datasets (poi/*.parquet next to
+        the database) are views `poi_<name>`."""
         c = self._con.cursor()
         c.execute("LOAD spatial; SET geometry_always_xy = true;")
+        for f in sorted((self.path.parent / "poi").glob("*.parquet")):
+            c.execute(f"CREATE TEMP VIEW poi_{f.stem} AS SELECT * FROM read_parquet('{f}')")
         return c
 
     # ------------------------------------------------------------ gazetteer

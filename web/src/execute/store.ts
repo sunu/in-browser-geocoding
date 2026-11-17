@@ -82,6 +82,9 @@ export class CountryStore {
       ? `CREATE VIEW places AS SELECT * FROM read_parquet(${q(await e.file(places))})`
       : `CREATE VIEW places AS SELECT NULL::VARCHAR AS id, NULL::VARCHAR AS name, NULL::VARCHAR AS basic_category,
            NULL::VARCHAR[] AS cats, NULL::DOUBLE AS confidence, NULL::DOUBLE AS lon, NULL::DOUBLE AS lat WHERE false`);
+    // World point datasets (plan-008 phase 5), read with range requests.
+    for (const [name, d] of Object.entries<any>(this.manifest.poi ?? {}))
+      await e.query(`CREATE VIEW poi_${name} AS SELECT * FROM read_parquet(${q(await e.file(d.file))})`);
     onProgress?.("data: global files");
     await this.ensureCountries([defaultCountry]);
     onProgress?.(`data: country ${defaultCountry}`);
@@ -152,6 +155,14 @@ export class CountryStore {
   loadPrefix(prefix: string): Promise<void> {
     const a = shardOf(this.shards, prefix), b = shardOf(this.shards, prefixEnd(prefix));
     return this.ensureShards(Array.from({ length: b - a + 1 }, (_, i) => a + i));
+  }
+
+  /** Table of the Features operator for a category: `places` if the layout has it, else the point dataset of the
+   * category, else null (Photon). */
+  featuresTable(category: string): string | null {
+    if (this.manifest.places) return "places";
+    const hit = Object.entries<any>(this.manifest.poi ?? {}).find(([, d]) => d.categories.includes(category));
+    return hit ? `poi_${hit[0]}` : null;
   }
 
   /** Extent of the division points of a country (manifest), or null. */

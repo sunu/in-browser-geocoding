@@ -25,6 +25,7 @@ import yaml
 from geoparse.config import PACKAGE_DIR, build_dir, load_config, scope
 from geoparse.data.translit import translit_keys
 from geoparse.execute.data import norm_name
+from geoparse.options import category_leaves
 
 
 def connect() -> duckdb.DuckDBPyConnection:
@@ -123,6 +124,46 @@ def build_places(con, cfg, out: Path) -> None:
     """)
     n = con.execute(f"SELECT count(*) FROM read_parquet('{out / 'places.parquet'}')").fetchone()[0]
     print(f"places: {n} rows, {time.time() - t0:.1f}s")
+
+
+def build_poi(con, cfg, out: Path) -> None:
+    """World point datasets (plan-008 phase 5): out/poi/<name>.parquet, one file for each `data.poi_datasets`
+    entry. Hilbert sort on the world extent and row groups of 10,000 rows, so that a bbox filter reads few row groups."""
+    d = cfg["data"]
+    src = f"{d['overture_s3']}/{d['overture_release']}/theme=places/type=place/*"
+    leaves = category_leaves()
+    sets = {name: sorted({m for item in items for m in leaves[item]["match"]}) for name, items in d["poi_datasets"].items()}
+    every = sorted({m for ms in sets.values() for m in ms})
+    min_conf = float(cfg["policy"]["places_min_confidence"])
+    t0 = time.time()
+    con.execute(f"""
+        CREATE OR REPLACE TEMP TABLE poi_src AS
+        SELECT id, name, cats, confidence, lon, lat, h FROM (
+            SELECT id, names.primary AS name,
+                   list_distinct(list_filter(list_concat([basic_category], coalesce(taxonomy.hierarchy, [])),
+                                             lambda x: x IS NOT NULL)) AS cats,
+                   confidence, ST_X(geometry) AS lon, ST_Y(geometry) AS lat,
+                   ST_Hilbert(geometry, ST_Extent(ST_MakeEnvelope(-180, -90, 180, 90))) AS h
+            FROM read_parquet('{src}')
+            WHERE confidence >= {min_conf}
+              AND (basic_category IN ({', '.join(_sql_str(c) for c in every)})
+                   OR list_has_any(taxonomy.hierarchy, {every!r})))
+        WHERE list_has_any(cats, {every!r})
+    """)
+    print(f"poi source: {con.execute('SELECT count(*) FROM poi_src').fetchone()[0]} rows, {time.time() - t0:.1f}s")
+    (out / "poi").mkdir(exist_ok=True)
+    for name, ms in sets.items():
+        path = out / "poi" / f"{name}.parquet"
+        con.execute(f"""
+            COPY (SELECT id, name, cats, confidence, lon, lat FROM poi_src WHERE list_has_any(cats, {ms!r}) ORDER BY h)
+            TO '{path}' (FORMAT parquet, COMPRESSION zstd, ROW_GROUP_SIZE 10000)
+        """)
+        n = con.execute(f"SELECT count(*) FROM read_parquet('{path}')").fetchone()[0]
+        print(f"poi/{name}: {n} rows, {path.stat().st_size / 1e6:.1f} MB")
+
+
+def _sql_str(s: str) -> str:
+    return "'" + s.replace("'", "''") + "'"
 
 
 def build_coastline(con, cfg, out: Path) -> None:
@@ -334,19 +375,24 @@ def main() -> None:
     ap.add_argument("--skip-overture", action="store_true", help="Keep the existing Overture files.")
     ap.add_argument("--db-only", action="store_true", help="Only build geoparse.duckdb from the existing files.")
     ap.add_argument("--skip-places", action="store_true", help="Keep the existing places file.")
+    ap.add_argument("--only-poi", action="store_true", help="Only build the world point datasets (poi/).")
     args = ap.parse_args()
     cfg = load_config()
     out = build_dir(cfg)
     out.mkdir(parents=True, exist_ok=True)
     world = scope(cfg) == "world"
     print(f"scope: {scope(cfg)}, output: {out}")
+    if args.only_poi:
+        build_poi(connect(), cfg, out)
+        return
     if not args.db_only:
         con = connect()
         if not args.skip_overture:
             build_divisions(con, cfg, out)
-        # The world build has no places (plan-008). The lexicon comes from the country build.
-        if not args.skip_places and not world:
-            build_places(con, cfg, out)
+        # The world build has point datasets for some categories, not the full places (plan-008 phase 5).
+        # The lexicon comes from the country build.
+        if not args.skip_places:
+            (build_poi if world else build_places)(con, cfg, out)
         build_coastline(con, cfg, out)
         if not world:
             build_lexicon(con, out)

@@ -292,3 +292,49 @@ Results:
 - "San Jose" loads 3–4 small countries (bounded loading) and makes 10–14 requests. The time is in the requests, not in the data.
 - "counties of Nevada": the parser reads "counties" as the level "country". The executor then loads `global/admin_areas.parquet` (45.6 MB) and tests the country polygons. Execute time: Chromium 26.0 s, Firefox 5.6 s, WebKit 5.2 s.
 - "Minas Gerais" goes to Photon: "minas" is one edit from the street word "minar".
+
+## 11. Hospitals and schools (phase 5)
+
+### 11.1 Build
+
+Command: `GEOPARSE_SCOPE=world uv run python -m geoparse.data.build_extract --only-poi`, then `GEOPARSE_SCOPE=world uv run python scripts/export_web.py poi --out data/build-world/web`. One scan of the Overture places theme on S3: 15.6 minutes.
+
+| File | Category items | Rows | Size | Row groups |
+|---|---|---|---|---|
+| `poi/hospitals.parquet` | hospital | 502,004 | 25.2 MB | 50 |
+| `poi/schools.parquet` | school, preschool | 1,729,263 | 86.1 MB | 169 |
+
+Columns: `id`, `name`, `cats`, `confidence`, `lon`, `lat`. Minimum confidence: `policy.places_min_confidence` (0.5). Hilbert sort on the world extent, row groups of 10,000 rows.
+
+The schools file has more rows than the estimate of section 2.3 of plan-008 (706,067). The match uses all levels of the taxonomy hierarchy, as the India places file does. Rows by first category: `place_of_learning` 902,184, `school` 694,411, `child_care_and_day_care` 77,802, `public_school` 53,211.
+
+Other categories (clinics, pharmacies, banks and others) have no world file. The executor uses Photon for them and adds a note to the result.
+
+### 11.2 Queries
+
+Setup as in section 10. Test: `SET=poi PAGE=... npx tsx web/scripts/world_smoke.ts <browser>`. Logs: `logs/poi-r2-<browser>.log`. Time is from submit to result. "POI" is the requests and bytes for the point file only.
+
+| View | Query | Results | Chromium | Firefox | WebKit | POI requests | POI data |
+|---|---|---|---|---|---|---|---|
+| IN | hospitals in Ernakulam | 503 | 3.3 s | 3.5 s | 5.0 s | 9 | 1.4–1.8 MB |
+| IN | schools in Pune | 3,339 | 5.3 s | 5.1 s | 6.1 s | 9 | 1.4–1.8 MB |
+| US | hospitals in San Francisco | 151 | 12.2 s | 11.6 s | 12.6 s | 8 | 0.7–0.8 MB |
+| US | schools in Reno | 168 | 8.4 s | 6.6 s | 7.6 s | 11 | 1.0–1.1 MB |
+| FR | hospitals in Lyon | 118 | 8.8 s | 8.1 s | 9.0 s | 8 | 0.7–0.8 MB |
+| BR | schools in Recife | 1,063 | 7.0 s | 7.4 s | 7.7 s | 9 | 1.4–1.8 MB |
+| JP | hospitals in Sapporo | 523 | 8.3 s | 9.8 s | 9.8 s | 12 | 1.7–2.2 MB |
+| FR | pharmacies in Lyon (Photon) | 36 | 14.4 s | 11.0 s | 19.3 s | 0 | 0 |
+
+Console errors: 0 in all browsers.
+
+Results:
+
+- The Features operation takes 1.3–2.9 s over R2 (0.05–0.7 s from the local dev server). The time is in 8–12 range requests at the latency of section 8.
+- Most of the time of the first query in a country is the download of the country files (for example US 58 MB: "San Francisco" loads 6 countries).
+- A category with no world file uses Photon: 9 tiles with 1 s between the requests (9–16 s).
+
+### 11.3 Firefox and cached HEAD responses
+
+For a URL in `read_parquet()`, DuckDB-WASM first sends a HEAD request without `Range`. Then it sends a HEAD request with `Range: bytes=0-` and needs the answer 206. If the server allows caching (R2: `max-age=86400`), Firefox answers the second request from its cache with 200. DuckDB-WASM then cannot open the file. The page now registers each range-read file with `registerFileURL` and gives the name to `read_parquet()`. DuckDB then does not send the HEAD request without `Range`.
+
+The Vite dev server sends `Cache-Control: no-cache`. Firefox then sends conditional requests, and DuckDB-WASM cannot read a 304 answer. The dev server removed the conditional headers only for `/data/`. It now also does this for `/countries/` and `/world/`.

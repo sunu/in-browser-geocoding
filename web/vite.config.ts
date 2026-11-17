@@ -2,11 +2,12 @@ import { defineConfig, type Plugin } from "vite";
 
 // DuckDB-WASM reads the large Parquet files with HTTP range requests only if the server says it supports
 // them (Accept-Ranges). The Vite dev server answers range requests but does not send the header.
+const isData = (url?: string) => /^\/(data|countries|world)\//.test(url ?? "");
 const acceptRanges: Plugin = {
   name: "accept-ranges",
   configureServer(server) {
     server.middlewares.use((req, res, next) => {
-      if (req.url?.startsWith("/data/")) {
+      if (isData(req.url)) {
         res.setHeader("Accept-Ranges", "bytes");
         // DuckDB-WASM cannot handle 304 answers. Never answer a conditional request for data files.
         delete req.headers["if-none-match"];
@@ -17,7 +18,7 @@ const acceptRanges: Plugin = {
   },
   configurePreviewServer(server) {
     server.middlewares.use((req, res, next) => {
-      if (req.url?.startsWith("/data/")) res.setHeader("Accept-Ranges", "bytes");
+      if (isData(req.url)) res.setHeader("Accept-Ranges", "bytes");
       next();
     });
   },

@@ -15,6 +15,11 @@ data:
   # Country polygons outside India that the extract keeps, so that queries such as
   # "countries that border India" work. ISO 3166-1 alpha-2 codes.
   extra_countries: [AF, BD, BT, CN, IR, LK, MM, MV, NP, PK]
+  # World point datasets (plan-008 phase 5): file name to category items (categories.json). The world build
+  # keeps places with confidence of policy.places_min_confidence or more. Other categories use Photon.
+  poi_datasets:
+    hospitals: [hospital]
+    schools: [school, preschool]
   natural_earth_coastline: "https://naciscdn.org/naturalearth/10m/physical/ne_10m_coastline.zip"
 
 policy:

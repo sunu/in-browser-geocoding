@@ -121,7 +121,7 @@ class _Run:
         self.n = 0
         tables = {r[0] for r in self.con.execute("SELECT table_name FROM information_schema.tables").fetchall()}
         self.has_layer_dist = "layer_dist" in tables
-        self.has_places = "places" in tables
+        self.tables = tables
         self.sql: list[str] = []
         self.notes: list[str] = []
 
@@ -506,11 +506,23 @@ class _Run:
 
     def op_Features(self, category: str, within: Any) -> str:
         source = self.ex.cfg["geocoder"].get("features_source", "places")
-        if source == "places" and self.has_places:
-            return self._features_places(category, within)
+        table = self.features_table(category) if source == "places" else None
+        if table:
+            return self._features_places(category, within, table)
+        if source == "places":
+            self.notes.append(f"features: no local data for {category}; Photon is used")
         return self._features_photon(category, within)
 
-    def _features_places(self, category: str, within: Any) -> str:
+    def features_table(self, category: str) -> str | None:
+        """`places` (all categories of one country), else the world point dataset of the category (plan-008 phase 5)."""
+        if "places" in self.tables:
+            return "places"
+        for name, items in self.ex.cfg["data"].get("poi_datasets", {}).items():
+            if category in items and f"poi_{name}" in self.tables:
+                return f"poi_{name}"
+        return None
+
+    def _features_places(self, category: str, within: Any, table: str) -> str:
         """Features from the local Overture places table (plan-004 section 2)."""
         leaf = category_leaves()[category]
         rw = self.area_of(self.eval(within))
@@ -526,7 +538,7 @@ class _Run:
             WITH r AS (SELECT {g} AS g)
             SELECT p.id, p.name, ? AS subtype, 'overture_places' AS source,
                    crs84(ST_Point(p.lon, p.lat)) AS geometry, crs84(ST_Point(p.lon, p.lat)) AS gs
-            FROM places p, r
+            FROM {table} p, r
             WHERE p.lon BETWEEN {x0} AND {x1} AND p.lat BETWEEN {y0} AND {y1}
               AND p.confidence >= {min_conf}
               AND list_has_any(p.cats, ?)
@@ -564,7 +576,7 @@ class _Run:
             raise ExecutionError(f"category {category} has no Photon tag")
         osm_tag = leaf["photon_tag"]
         q_text = leaf["description"].split(" ")[0].lower()
-        rw = self.eval(within)
+        rw = self.area_of(self.eval(within))
         row = self.run(f"SELECT ST_AsWKB({self.union_geom(rw, 'gs')})").fetchone()
         if row is None or row[0] is None:
             return self.empty_rel()

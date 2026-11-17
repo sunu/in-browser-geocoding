@@ -1,10 +1,15 @@
 """One test (or more) for each operator, against the synthetic fixture world."""
 from __future__ import annotations
 
+import shutil
+
+import duckdb
 import shapely
 from shapely.geometry import shape
 
 from geoparse.dsl.schema import PREDICATE_DAGS
+from geoparse.execute.data import Store
+from geoparse.execute.executor import Executor
 
 
 def R(id_=None, name=None, **kw):
@@ -263,3 +268,20 @@ def test_features_on_empty_region(world, fake_geocoder):
     res = run(world, {"op": "Features", "args": {"category": "hospital", "within": empty}})
     assert res.features == [] and any("empty" in n for n in res.notes)
     assert fake_geocoder.calls == []
+
+
+def test_features_from_world_poi(world_store, world_config, fake_geocoder, tmp_path):
+    # World layout (plan-008 phase 5): no places table, one point file for each dataset in poi/.
+    shutil.copyfile(world_store.path, tmp_path / "world.duckdb")
+    con = duckdb.connect(str(tmp_path / "world.duckdb"))
+    (tmp_path / "poi").mkdir()
+    con.execute(f"COPY (SELECT id, name, cats, confidence, lon, lat FROM places WHERE list_has_any(cats, ['hospital'])) "
+                f"TO '{tmp_path / 'poi' / 'hospitals.parquet'}' (FORMAT parquet)")
+    con.execute("DROP TABLE places")
+    con.close()
+    world = Executor(store=Store(tmp_path / "world.duckdb"), geocoder=fake_geocoder, config=world_config)
+    res = run(world, {"op": "Features", "args": {"category": "hospital", "within": R("st_w")}})
+    assert res.ids == ["p1"] and fake_geocoder.calls == []
+    res = run(world, {"op": "Features", "args": {"category": "school", "within": R("d_w1")}})
+    assert any("no local data for school" in n for n in res.notes)
+    assert fake_geocoder.calls and fake_geocoder.calls[0]["osm_tag"] == "amenity:school"

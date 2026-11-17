@@ -371,18 +371,24 @@ class Run {
   }
 
   async op_Features(a: any) {
-    const leaf = Object.values(this.ex.bundle.categories).map((g) => g.items[a.category]).find(Boolean);
+    const leaf: any = Object.values(this.ex.bundle.categories).map((g) => g.items[a.category]).find(Boolean);
     if (!leaf) throw new ExecError(`unknown category ${a.category}`);
     const rw = await this.areaOf(await this.eval(a.within));
     const g = this.unionGeom(rw, "gs");
     const r = (await this.run(`SELECT ST_XMin(g) AS x0, ST_YMin(g) AS y0, ST_XMax(g) AS x1, ST_YMax(g) AS y1, ST_IsEmpty(g) AS e FROM (SELECT ${g} AS g)`))[0];
     if (!r || r.x0 === null || r.e) { this.notes.push("features: the region is empty, so the result is empty"); return this.emptyRel(); }
+    const local = (this.ex.bundle.config.geocoder.features_source ?? "places") === "places";
+    const table = !local ? null : this.ex.db.store ? this.ex.db.store.featuresTable(a.category) : "places";
+    if (!table) {
+      if (local) this.notes.push(`features: no local data for ${a.category}; Photon is used`);
+      return this.featuresPhoton(a.category, leaf, g, [r.x0, r.y0, r.x1, r.y1]);
+    }
     const minConf = Number(this.policy.places_min_confidence ?? 0);
     const limit = Number(this.policy.max_features ?? 10000);
     const rel = await this.newRel(`WITH r AS (SELECT ${g} AS g)
       SELECT p.id, p.name, ${q(a.category)} AS subtype, 'overture_places' AS source,
              ST_Point(p.lon, p.lat) AS geometry, ST_Point(p.lon, p.lat) AS gs
-      FROM places p, r
+      FROM ${table} p, r
       WHERE p.lon BETWEEN ${r.x0} AND ${r.x1} AND p.lat BETWEEN ${r.y0} AND ${r.y1}
         AND p.confidence >= ${minConf} AND list_has_any(p.cats, ${list(leaf.match)})
         AND ST_Intersects(r.g, ST_Point(p.lon, p.lat))
@@ -391,4 +397,35 @@ class Run {
     if (n > limit) this.notes.push(`features: more than ${limit} results; the result is cut at ${limit + 1}`);
     return rel;
   }
+
+  /** Port of _features_photon: one Photon search for each tile of the bbox that touches the region. */
+  async featuresPhoton(category: string, leaf: any, g: string, bounds: number[]) {
+    if (!leaf.photon_tag) throw new ExecError(`category ${category} has no Photon tag`);
+    const cfg = this.ex.bundle.config.geocoder;
+    const limit = Number(cfg.limit);
+    const tiles = tilesOf(bounds, Number(cfg.max_tiles));
+    const hit = await this.run(`SELECT list(ST_Intersects(g, ST_MakeEnvelope(t[1], t[2], t[3], t[4]))) AS h
+      FROM (SELECT ${g} AS g), (SELECT unnest(${JSON.stringify(tiles)}::DOUBLE[][]) AS t)`);
+    const seen = new Map<string, any>();
+    for (const [i, t] of tiles.entries()) {
+      if (!hit[0].h[i]) continue;
+      for (const f of await this.ex.photon.search(leaf.description.split(" ")[0].toLowerCase(), { limit, bbox: t, osmTag: leaf.photon_tag }))
+        if (!seen.has(f.id)) seen.set(f.id, f);
+    }
+    if (tiles.length > 1) this.notes.push(`features: ${tiles.length} geocoder tiles, max ${limit} results each`);
+    if (!seen.size) return this.emptyRel();
+    const vals = [...seen.values()].map((f) => `(${q(f.id)}, ${q(f.name)}, ${f.lon}, ${f.lat})`).join(", ");
+    return this.newRel(`WITH r AS (SELECT ${g} AS g)
+      SELECT p.id, p.name, ${q(category)} AS subtype, 'photon' AS source, ST_Point(p.lon, p.lat) AS geometry, ST_Point(p.lon, p.lat) AS gs
+      FROM (VALUES ${vals}) p(id, name, lon, lat), r WHERE ST_Intersects(r.g, ST_Point(p.lon, p.lat))`);
+  }
+}
+
+/** Port of executor._tiles: split a bbox into at most maxTiles tiles of about 0.05 degrees or more. */
+function tilesOf([x0, y0, x1, y1]: number[], maxTiles: number): number[][] {
+  const w = Math.max(x1 - x0, 1e-6), h = Math.max(y1 - y0, 1e-6);
+  const n = Math.max(1, Math.min(Math.floor(Math.sqrt(maxTiles)), Math.ceil(Math.max(w, h) / 0.05)));
+  const out: number[][] = [];
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) out.push([x0 + i * w / n, y0 + j * h / n, x0 + (i + 1) * w / n, y0 + (j + 1) * h / n]);
+  return out;
 }

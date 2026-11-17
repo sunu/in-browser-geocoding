@@ -61,7 +61,7 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
         // As in the browser: the file as a buffer. Many direct file reads in one session fail in the Node
         // runtime of DuckDB-WASM ("too small to be a Parquet file").
         file: async (rel) => {
-          if (rel.endsWith("places.parquet")) return `${base}/${rel}`;
+          if (ranged(rel)) return `${base}/${rel}`;
           const name = rel.replaceAll("/", "__");
           db.registerFileBuffer(name, new Uint8Array(fs.readFileSync(`${base}/${rel}`)));
           return name;
@@ -102,9 +102,14 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
     const store = new CountryStore({
       query,
       file: async (rel) => {
-        // Places: read with range requests, with the per-session parameter of the flat layout (see below).
-        if (rel.endsWith("places.parquet")) return `${abs}/${rel}?session=${Date.now().toString(36)}`;
         const name = rel.replaceAll("/", "__");
+        // Places and point datasets: read with range requests, with the per-session parameter of the flat layout
+        // (see below). A registered name, not the URL: for a URL, DuckDB first sends a HEAD without Range, and
+        // Firefox then answers the HEAD with Range from its cache (200, not 206). DuckDB then cannot open the file.
+        if (ranged(rel)) {
+          await db.registerFileURL(name, `${abs}/${rel}?session=${Date.now().toString(36)}`, duckdb.DuckDBDataProtocol.HTTP, false);
+          return name;
+        }
         await db.registerFileBuffer(name, new Uint8Array(await (await get(rel)).arrayBuffer()));
         return name;
       },
@@ -127,6 +132,8 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
   }
   return { query };
 }
+
+const ranged = (rel: string) => rel.endsWith("places.parquet") || rel.startsWith("poi/");
 
 export function q(s: any): string {
   return "'" + String(s).replaceAll("'", "''") + "'";
