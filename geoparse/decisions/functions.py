@@ -74,6 +74,8 @@ class Decider:
         self.run_id = uuid.uuid4().hex[:12]
         self.trace: list[dict[str, Any]] = []
         self._lock = threading.Lock()
+        # Map view (xmin, ymin, xmax, ymax) of the parse. Parser.parse sets it on the fork; the gazetteer uses it.
+        self.view: list[float] | None = None
 
     def fork(self) -> "Decider":
         """A Decider with the same providers and a new, empty trace. Use one fork for each parse."""
@@ -83,6 +85,7 @@ class Decider:
         d.run_id = uuid.uuid4().hex[:12]
         d.trace = []
         d._lock = threading.Lock()
+        d.view = None
         return d
 
     @staticmethod
@@ -144,6 +147,12 @@ class Decider:
         return float(self.thresholds.get(base, 0.0))
 
     # ------------------------------------------------------------ core
+
+    def record_step(self, step: str, depth: int, inputs: dict[str, Any], value: Any, impl: str, trace: dict[str, Any]):
+        """Record a ranking step that is not a decision (for example the Photon boost) in the trace."""
+        with self._lock:
+            self.trace.append({"decision": step, "depth": depth, "inputs": inputs, "options": None, "value": value,
+                               "confidence": 1.0, "impl": impl, "latency_s": 0.0, "threshold": 0.0, "trace": trace})
 
     def _record(self, decision: str, depth: int, inputs: dict[str, Any], options: Any, d: Decision, dt: float):
         rec = {

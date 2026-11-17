@@ -109,7 +109,8 @@ def _slot_default(sd) -> Any:
 class Parser:
     def __init__(self, decider: Decider | None = None, store=None, config: dict[str, Any] | None = None,
                  two_step: bool = True, prune_by_pattern: bool = True, max_workers: int = 32,
-                 use_t5: bool | None = None, use_patterns: str | None = None, t5_dir: str | None = None):
+                 use_t5: bool | None = None, use_patterns: str | None = None, t5_dir: str | None = None,
+                 geocoder=None):
         self.base_decider = decider or Decider()
         self.cfg = config or load_config()
         self.max_depth = int(self.cfg["decisions"]["max_depth"])
@@ -118,6 +119,8 @@ class Parser:
         self.families = load_families()
         self.templates = {t.id: t for f in self.families.values() for t in f.templates}
         self._store = store
+        # Geocoder for the Photon boost of close candidates (plan-012 section 3.2). None: no boost.
+        self.geocoder = geocoder
         self.pool = ThreadPoolExecutor(max_workers=max_workers)
         self.t5_cfg = self.cfg.get("t5", {})
         self.use_patterns = str(self.t5_cfg.get("use_patterns", "fallback")) if use_patterns is None else use_patterns
@@ -142,8 +145,10 @@ class Parser:
 
     # ------------------------------------------------------------ public
 
-    def parse(self, query: str) -> ParseResult:
+    def parse(self, query: str, view: list[float] | None = None) -> ParseResult:
+        """view: map view (xmin, ymin, xmax, ymax) for the ranking of candidates. None: data.bbox."""
         dec = self.base_decider.fork()
+        dec.view = list(view) if view else None
         t0 = time.time()
         res = ParseResult(query=query, ok=False)
         try:
@@ -325,7 +330,7 @@ class Parser:
         if tpl.family == "lookup":
             # Guard: the lookup template takes the whole text as one name. If the text describes a set
             # of places (and no other template matched), it is not supported. Do not geocode it.
-            g = dec.is_subquery(text, depth=depth, context={"gazetteer_exact": bool(self.store.search(text, fuzzy=False, limit=1)),
+            g = dec.is_subquery(text, depth=depth, context={"gazetteer_exact": bool(self.store.search(text, fuzzy=False, limit=1, view=dec.view)),
                                                              "has_distance": bool(re.search(r"\d", text))})
             if g.value or dec.below("is_subquery", g):
                 raise _Stop(Unsupported(reason="the text is not one place name, and no other template matches",
@@ -493,7 +498,7 @@ class Parser:
             return {"op": "LexiconSet", "args": {"key": lex}}, {"lex": lex, "text": text}
         sd = tpl.slots
         is_region = any(s.type == "region" for s in sd.values()) and tpl.family != "lookup"
-        exact = self.store.search(text, type_hint=type_hint, fuzzy=False, limit=3)
+        exact = self.store.search(text, type_hint=type_hint, fuzzy=False, limit=3, view=dec.view)
         if is_region:
             d = dec.is_subquery(text, depth=depth, context={"gazetteer_exact": bool(exact),
                                                              "has_distance": parse_distance(text) is not None
@@ -517,7 +522,7 @@ class Parser:
         ctx_text = None
         name = text
         if allow_geocoder:
-            cands = exact or self.store.search(text, type_hint=type_hint, limit=3)
+            cands = exact or self.store.search(text, type_hint=type_hint, limit=3, view=dec.view)
             top = cands[0] if cands else None
             sd = dec.select_source(text, {"gazetteer_match": top.description if top else None,
                                           "gazetteer_top_score": top.score if top else 0.0}, depth=depth)
@@ -533,12 +538,12 @@ class Parser:
                 name = b.value.text
                 rest = text.replace(name, " ").strip(" ,")
                 ctx_text = rest or None
-        cands = self.store.search(name, type_hint=type_hint, context=ctx_text, limit=6)
+        cands = self.store.search(name, type_hint=type_hint, context=ctx_text, limit=6, view=dec.view)
         if not cands:
             raise _Stop(Unsupported(reason=f"cannot resolve {name!r} in the local extract", depth=depth, text=text))
-        cands = merge_nested(cands)
+        cands = self._photon_boost(dec, name, merge_nested(cands), depth)
         chosen = cands[0]
-        if len(cands) > 1 and cands[0].score - cands[1].score < 0.15:
+        if len(cands) > 1 and cands[0].score - cands[1].score < self.cfg["policy"]["ranking"]["close_margin"]:
             close = [c for c in cands if cands[0].score - c.score < 0.3]
             d = dec.disambiguate(name, close, query=query, depth=depth)
             if dec.below("disambiguate", d):
@@ -551,6 +556,29 @@ class Parser:
         if ctx_text:
             args["context"] = ctx_text
         return {"op": "Resolve", "args": args}
+
+    def _photon_boost(self, dec: Decider, name: str, cands: list, depth: int) -> list:
+        """If the two best candidates are close, add a score to the candidates that match Photon results."""
+        rk = self.cfg["policy"]["ranking"]
+        if self.geocoder is None or len(cands) < 2 or cands[0].score - cands[1].score >= rk["close_margin"]:
+            return cands
+        kw: dict[str, Any] = {"limit": int(rk["photon_limit"])}
+        if dec.view:
+            kw["location"] = ((dec.view[0] + dec.view[2]) / 2, (dec.view[1] + dec.view[3]) / 2)
+        try:
+            feats = self.geocoder.search(name, **kw)
+        except Exception as e:  # noqa: BLE001 - the boost is optional; continue without it
+            dec.record_step("photon_boost", depth, {"name": name}, None, "rules", {"error": str(e)[:200]})
+            return cands
+        ranks = self.store.match_points([c.id for c in cands], [(f.lon, f.lat) for f in feats])
+        boosts = {i: rk["photon_boost"][r - 1] for i, r in ranks.items() if r <= len(rk["photon_boost"])}
+        dec.record_step("photon_boost", depth, {"name": name}, boosts, "rules",
+                        {"photon": [f.label for f in feats], "ranks": ranks})
+        if not boosts:
+            return cands
+        out = [c.model_copy(update={"score": round(c.score + boosts.get(c.id, 0.0), 4)}) for c in cands]
+        out.sort(key=lambda c: (-c.score, c.id))
+        return out
 
 
 def merge_nested(cands: list) -> list:

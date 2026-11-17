@@ -18,7 +18,8 @@ export class Executor {
   macrosReady = false;
   constructor(public db: Db, public bundle: Bundle, public photon: Photon) {}
 
-  async execute(dag: any, withGeometry = true): Promise<Result> {
+  /** view: map view (xmin, ymin, xmax, ymax). Photon anchors use its center as a location bias. */
+  async execute(dag: any, withGeometry = true, view: number[] | null = null): Promise<Result> {
     const errors = validate(dag, this.bundle);
     if (errors.length) return { ok: false, kind: "set", features: [], ids: [], error: "invalid DAG: " + errors.join("; "), sql: [], notes: [], timings: {} };
     if (!this.macrosReady) {
@@ -30,7 +31,7 @@ export class Executor {
       ]) await this.db.query(m);
       this.macrosReady = true;
     }
-    const run = new Run(this, ++RUN);
+    const run = new Run(this, ++RUN, view);
     const t0 = performance.now();
     try {
       const rel = await run.eval(dag);
@@ -52,7 +53,7 @@ class Run {
   notes: string[] = [];
   tables: string[] = [];
   policy: any;
-  constructor(public ex: Executor, public id: number) { this.policy = ex.bundle.config.policy; }
+  constructor(public ex: Executor, public id: number, public view: number[] | null = null) { this.policy = ex.bundle.config.policy; }
 
   async run(sql: string) {
     this.sql.push(sql.trim());
@@ -140,7 +141,9 @@ class Run {
 
   async op_Resolve(a: any) {
     if (a.source === "photon") {
-      const feats = await this.ex.photon.search(a.name, { limit: 5, bbox: this.ex.bundle.config.data.bbox });
+      const v = this.view;
+      const feats = await this.ex.photon.search(a.name, v?.length
+        ? { limit: 5, location: [(v[0] + v[2]) / 2, (v[1] + v[3]) / 2] } : { limit: 5, bbox: this.ex.bundle.config.data.bbox });
       const f = (a.id && feats.find((x) => x.id === a.id)) || feats[0];
       if (!f) throw new ExecError(`the geocoder found no result for '${a.name}'`);
       return this.newRel(`SELECT ${q(f.id)} AS id, ${q(f.name)} AS name, ${q(`${f.osm_key}:${f.osm_value}`)} AS subtype,

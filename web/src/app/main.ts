@@ -35,7 +35,9 @@ async function runQuery(text: string) {
   go.disabled = true;
   status.textContent = "Parsing…";
   const t0 = performance.now();
-  const { parse: p, result: r } = await gp.run(text);
+  // The map view biases the ranking of places with the same name.
+  const b = map.getBounds();
+  const { parse: p, result: r } = await gp.run(text, [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]);
   const total = (performance.now() - t0) / 1000;
   status.textContent = `${p.ok ? "OK" : "Unsupported"} · parse ${p.timings.parse_s.toFixed(2)} s · total ${total.toFixed(2)} s`;
   const fc = { type: "FeatureCollection", features: (r?.features ?? []).filter((f) => f.geometry).map((f) => ({ type: "Feature", geometry: f.geometry, properties: { name: f.name, id: f.id } })) };

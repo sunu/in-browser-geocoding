@@ -21,7 +21,7 @@ class FakeGeocoder:
         self.points = points or {}
         self.calls: list[dict] = []
 
-    def search(self, q, *, limit=5, bbox=None, osm_tag=None):
+    def search(self, q, *, limit=5, bbox=None, osm_tag=None, location=None):
         self.calls.append({"q": q, "bbox": bbox, "osm_tag": osm_tag})
         feats = self.points.get(osm_tag or q, [])
         if bbox:

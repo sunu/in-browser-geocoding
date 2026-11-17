@@ -36,7 +36,7 @@ class Geocoder(Protocol):
     name: str
 
     def search(self, q: str, *, limit: int = 5, bbox: tuple[float, float, float, float] | None = None,
-               osm_tag: str | None = None) -> list[GeoFeature]: ...
+               osm_tag: str | None = None, location: tuple[float, float] | None = None) -> list[GeoFeature]: ...
 
 
 class GeocoderError(RuntimeError):
@@ -94,8 +94,11 @@ class PhotonGeocoder:
         return data
 
     def search(self, q: str, *, limit: int = 5, bbox: tuple[float, float, float, float] | None = None,
-               osm_tag: str | None = None) -> list[GeoFeature]:
+               osm_tag: str | None = None, location: tuple[float, float] | None = None) -> list[GeoFeature]:
+        """bbox: only results inside. location: (lon, lat) for a location bias."""
         params: dict[str, Any] = {"q": q, "limit": limit, "lang": "en"}
+        if location:
+            params["lon"], params["lat"] = f"{location[0]:.4f}", f"{location[1]:.4f}"
         if bbox:
             params["bbox"] = ",".join(f"{v:.5f}" for v in bbox)
         if osm_tag:

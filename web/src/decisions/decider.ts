@@ -27,9 +27,16 @@ function best(scores: Record<string, number>): [string, number] {
 
 export class Decider {
   trace: TraceRecord[] = [];
+  /** Map view (xmin, ymin, xmax, ymax) of the parse. Parser.parse sets it on the fork; the gazetteer uses it. */
+  view: number[] | null = null;
   constructor(public bundle: Bundle, public xenc: CrossEncoder) {}
 
   fork(): Decider { return new Decider(this.bundle, this.xenc); }
+
+  /** Record a ranking step that is not a decision (for example the Photon boost) in the trace. */
+  recordStep(step: string, depth: number, inputs: Record<string, any>, value: any, impl: string, trace: Record<string, any>) {
+    this.trace.push({ decision: step, depth, inputs, options: null, value, confidence: 1, impl, latency_s: 0, threshold: 0, trace } as any);
+  }
 
   providerName(decision: string): string {
     const providers = this.bundle.config.decisions.providers;

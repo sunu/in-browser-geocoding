@@ -29,15 +29,45 @@ export class Gazetteer {
                               ORDER BY list_position(d.ancestors, x.id) DESC)
                  FROM divisions x WHERE list_contains(d.ancestors, x.id) AND x.id <> d.id),
                 lambda h: h.subtype IN ('region', 'county', 'locality', 'macrohood'))] AS anc,
-             EXISTS (SELECT 1 FROM areas a WHERE a.id = d.id) AS has_area, d.ancestors AS anc_ids
+             EXISTS (SELECT 1 FROM areas a WHERE a.id = d.id) AS has_area, d.ancestors AS anc_ids, d.lon, d.lat
       FROM divisions d WHERE d.id IN (SELECT unnest(${list(ids)}))`);
     const out: Record<string, any> = {};
     for (const r of rs) out[r.id] = { ...r, ancestors: r.anc ?? [], ancestor_ids: (r.anc_ids ?? []).filter((a: string) => a !== r.id) };
     return out;
   }
 
-  async search(name: string, opts: { typeHint?: string | null; context?: string | null; limit?: number; fuzzy?: boolean } = {}): Promise<Candidate[]> {
-    const { typeHint = null, context = null, limit = 8, fuzzy = true } = opts;
+  /** Map view and the country of its center (nearest admin point). No view: data.bbox and data.country. */
+  async view(view: number[] | null | undefined): Promise<[number[], string | null]> {
+    const { data } = this.bundle.config;
+    if (!view?.length) return [data.bbox, data.country];
+    const cx = (view[0] + view[2]) / 2, cy = (view[1] + view[3]) / 2;
+    const r = await this.db.query(`SELECT country FROM divisions
+      WHERE subtype IN ('country', 'dependency', 'region') AND country IS NOT NULL
+      ORDER BY (lon - ${cx}) ** 2 + (lat - ${cy}) ** 2, id LIMIT 1`);
+    return [view, r[0]?.country ?? null];
+  }
+
+  /** For each division id, the first point (1-based rank) inside its area, or near its point (less than the
+   * point_area_radius_m of its subtype). */
+  async matchPoints(ids: string[], points: number[][]): Promise<Record<string, number>> {
+    if (!ids.length || !points.length) return {};
+    const radii = this.bundle.config.policy.point_area_radius_m ?? {};
+    const cases = Object.entries(radii).filter(([k]) => k !== "default").map(([k, v]) => `WHEN ${q(k)} THEN ${Number(v)}`).join(" ");
+    const def = Number(radii.default ?? 1000);
+    const radius = cases ? `(CASE d.subtype ${cases} ELSE ${def} END)` : String(def);
+    const pts = points.map((p, i) => `(${i + 1}, ${Number(p[0])}, ${Number(p[1])})`).join(", ");
+    const rs = await this.db.query(`
+      WITH p(rk, lon, lat) AS (VALUES ${pts})
+      SELECT d.id, min(p.rk) AS rk FROM divisions d CROSS JOIN p LEFT JOIN areas a ON a.id = d.id
+      WHERE d.id IN (SELECT unnest(${list(ids)}))
+        AND ((a.gs IS NOT NULL AND ST_Contains(a.gs, ST_Point(p.lon, p.lat)))
+             OR ST_Distance_Sphere(ST_Point(d.lon, d.lat), ST_Point(p.lon, p.lat)) <= ${radius})
+      GROUP BY d.id`);
+    return Object.fromEntries(rs.map((r) => [r.id, Number(r.rk)]));
+  }
+
+  async search(name: string, opts: { typeHint?: string | null; context?: string | null; limit?: number; fuzzy?: boolean; view?: number[] | null } = {}): Promise<Candidate[]> {
+    const { typeHint = null, context = null, limit = 8, fuzzy = true, view = null } = opts;
     const n = normName(name.trim().replace(/^the\s+/i, ""));
     if (!n) return [];
     const levelWords = new Set(["district", "state", "city", "town", "taluk", "village"]);
@@ -79,6 +109,8 @@ export class Gazetteer {
     if (!Object.keys(scores).length) return [];
     const info = await this.describe(Object.keys(scores));
     const { policy: base, data } = this.bundle.config;
+    const ranking = base.ranking;
+    const [[x0, y0, x1, y1], viewCountry] = await this.view(view);
     const hint = typeHint ?? hintFromName;
     const h = hint ? ({ district: "district", state: "state", city: "city", town: "city", country: "country", union_territory: "union_territory" } as any)[hint] ?? hint : null;
     const ctx = context ? normName(context) : "";
@@ -94,7 +126,8 @@ export class Gazetteer {
       if (d.population) score += Math.min(0.1, Math.log10(Math.max(d.population, 1)) / 100);
       if (h && (policy.admin_levels[h] ?? []).includes(d.subtype)) score += 0.5;
       if (ctx && d.ancestors.some((a: string) => normName(a).includes(ctx) || ctx.includes(normName(a)))) score += 0.3;
-      if (d.country !== data.country) score -= 0.2;
+      if (d.lon == null || !(d.lon >= x0 && d.lon <= x1 && d.lat >= y0 && d.lat <= y1)) score -= ranking.view_outside;
+      if (d.country !== viewCountry) score -= ranking.view_other_country;
       const where = d.ancestors.length ? d.ancestors.slice(-2).reverse().join(", ") : "";
       const kind = d.class ? `${d.subtype} (${d.class})` : d.subtype;
       const desc = `${d.name}: ${kind}` + (where ? ` in ${where}` : "") + (d.country === data.country ? "" : `, country ${d.country}`);

@@ -7,6 +7,7 @@ import threading
 import unicodedata
 from functools import lru_cache
 from pathlib import Path
+from collections.abc import Sequence
 from typing import Any
 
 import duckdb
@@ -92,18 +93,46 @@ class Store:
                                     ORDER BY list_position(d.ancestors, x.id) DESC)
                          FROM divisions x WHERE list_contains(d.ancestors, x.id) AND x.id <> d.id),
                         lambda h: h.subtype IN ('region', 'county', 'locality', 'macrohood'))] AS anc,
-                   EXISTS (SELECT 1 FROM areas a WHERE a.id = d.id) AS has_area, d.ancestors
+                   EXISTS (SELECT 1 FROM areas a WHERE a.id = d.id) AS has_area, d.ancestors,
+                   ST_X(d.geometry) AS lon, ST_Y(d.geometry) AS lat
             FROM divisions d WHERE d.id IN (SELECT unnest(?))
         """, [ids]).fetchall()
         out = {}
-        for id_, name, subtype, cls, region, country, pop, anc, has_area, anc_ids in rows:
+        for id_, name, subtype, cls, region, country, pop, anc, has_area, anc_ids, lon, lat in rows:
             out[id_] = {"name": name, "subtype": subtype, "class": cls, "region": region, "country": country,
-                        "population": pop, "ancestors": anc or [], "has_area": has_area,
+                        "population": pop, "ancestors": anc or [], "has_area": has_area, "lon": lon, "lat": lat,
                         "ancestor_ids": [a for a in (anc_ids or []) if a != id_]}
         return out
 
+    def view(self, view: Sequence[float] | None, cfg: dict[str, Any]) -> tuple[Sequence[float], str | None]:
+        """Map view (xmin, ymin, xmax, ymax) and the country of its center. No view: data.bbox and data.country."""
+        if not view:
+            return cfg["data"]["bbox"], cfg["data"]["country"]
+        cx, cy = (view[0] + view[2]) / 2, (view[1] + view[3]) / 2
+        row = self.cursor().execute("""
+            SELECT country FROM divisions WHERE subtype IN ('country', 'dependency', 'region') AND country IS NOT NULL
+            ORDER BY (ST_X(geometry) - ?) ** 2 + (ST_Y(geometry) - ?) ** 2, id LIMIT 1""", [cx, cy]).fetchone()
+        return view, row[0] if row else None
+
+    def match_points(self, ids: list[str], points: list[tuple[float, float]]) -> dict[str, int]:
+        """For each division id, the first point (1-based rank) inside its area, or near its point (less than the
+        point_area_radius_m of its subtype)."""
+        if not ids or not points:
+            return {}
+        radii = load_config()["policy"].get("point_area_radius_m", {})
+        cases = " ".join(f"WHEN '{k}' THEN {float(v)}" for k, v in radii.items() if k != "default")
+        radius = f"(CASE d.subtype {cases} ELSE {float(radii.get('default', 1000))} END)" if cases else str(float(radii.get("default", 1000)))
+        rows = self.cursor().execute(f"""
+            WITH p AS (SELECT unnest(?) AS rk, unnest(?) AS lon, unnest(?) AS lat)
+            SELECT d.id, min(p.rk) FROM divisions d CROSS JOIN p LEFT JOIN areas a ON a.id = d.id
+            WHERE d.id IN (SELECT unnest(?))
+              AND ((a.gs IS NOT NULL AND ST_Contains(a.gs::GEOMETRY, ST_Point(p.lon, p.lat)))
+                   OR ST_Distance_Sphere(ST_Point(ST_X(d.geometry), ST_Y(d.geometry)), ST_Point(p.lon, p.lat)) <= {radius})
+            GROUP BY d.id""", [list(range(1, len(points) + 1)), [p[0] for p in points], [p[1] for p in points], ids]).fetchall()
+        return {r[0]: int(r[1]) for r in rows}
+
     def search(self, name: str, *, type_hint: str | None = None, context: str | None = None,
-               limit: int = 8, fuzzy: bool = True) -> list[Candidate]:
+               limit: int = 8, fuzzy: bool = True, view: Sequence[float] | None = None) -> list[Candidate]:
         """Find Overture divisions by name. Exact (primary, English, alternate, no-space) first, then fuzzy."""
         n = norm_name(re.sub(r"^(the)\s+", "", name.strip(), flags=re.I))
         if not n:
@@ -161,6 +190,8 @@ class Store:
             return []
         info = self.describe(list(scores))
         cfg = load_config()
+        ranking = cfg["policy"]["ranking"]
+        (x0, y0, x1, y1), view_country = self.view(view, cfg)
         hint = type_hint or hint_from_name
         h = {"district": "district", "state": "state", "city": "city", "town": "city", "country": "country",
              "union_territory": "union_territory"}.get(hint, hint) if hint else None
@@ -183,8 +214,10 @@ class Store:
                 score += 0.5
             if ctx and any(ctx in norm_name(a) or norm_name(a) in ctx for a in d["ancestors"]):
                 score += 0.3
-            if d["country"] != cfg["data"]["country"]:
-                score -= 0.2
+            if d["lon"] is None or not (x0 <= d["lon"] <= x1 and y0 <= d["lat"] <= y1):
+                score -= ranking["view_outside"]
+            if d["country"] != view_country:
+                score -= ranking["view_other_country"]
             where = ", ".join(a for a in reversed(d["ancestors"][-2:])) if d["ancestors"] else ""
             kind = d["subtype"] if not d["class"] else f"{d['subtype']} ({d['class']})"
             desc = f"{d['name']}: {kind}" + (f" in {where}" if where else "") + ("" if d["country"] == cfg["data"]["country"] else f", country {d['country']}")

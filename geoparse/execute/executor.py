@@ -83,11 +83,12 @@ class Executor:
 
     # ------------------------------------------------------------ public
 
-    def execute(self, dag: dict[str, Any], *, with_geometry: bool = True) -> Result:
+    def execute(self, dag: dict[str, Any], *, with_geometry: bool = True, view: list[float] | None = None) -> Result:
+        """view: map view (xmin, ymin, xmax, ymax). Photon anchors use its center as a location bias."""
         errors = validate(dag, choices())
         if errors:
             return Result(ok=False, error="invalid DAG: " + "; ".join(errors))
-        run = _Run(self)
+        run = _Run(self, view)
         t0 = time.time()
         try:
             rel = run.eval(dag)
@@ -110,8 +111,9 @@ class Executor:
 class _Run:
     """State of one execution: a DuckDB cursor with temp tables."""
 
-    def __init__(self, ex: Executor):
+    def __init__(self, ex: Executor, view: list[float] | None = None):
         self.ex = ex
+        self.view = view
         self.policy = ex.policy
         self.con = ex.store.new_session()
         for m in MACROS:
@@ -232,7 +234,11 @@ class _Run:
         return self.divisions_rel("d.id = ?", [id])
 
     def _resolve_photon(self, name: str, id: str | None) -> str:
-        feats = self.ex.geocoder_or_default().search(name, limit=5, bbox=tuple(self._bbox_xyxy()))
+        if self.view:
+            v = self.view
+            feats = self.ex.geocoder_or_default().search(name, limit=5, location=((v[0] + v[2]) / 2, (v[1] + v[3]) / 2))
+        else:
+            feats = self.ex.geocoder_or_default().search(name, limit=5, bbox=tuple(self._bbox_xyxy()))
         if id:
             feats = [f for f in feats if f.id == id] or feats
         if not feats:

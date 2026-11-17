@@ -7,6 +7,7 @@ import { lexiconMatch, norm, normalizeQuery } from "../core/text.ts";
 import { Decider, type TraceRecord } from "../decisions/decider.ts";
 import type { Candidate, Decision } from "../decisions/types.ts";
 import type { Gazetteer } from "../execute/gazetteer.ts";
+import type { Photon } from "../execute/photon.ts";
 import type { T5Frames } from "../models/t5.ts";
 
 const OPEN = new Set(["region", "anchor"]);
@@ -35,13 +36,16 @@ function fmt(x: number) { return x.toFixed(2); }
 export class Parser {
   templates: Record<string, Template>;
   maxDepth: number;
-  constructor(public bundle: Bundle, public t5: T5Frames, public gaz: Gazetteer, public base: Decider) {
+  /** photon: geocoder for the boost of close candidates (plan-012 section 3.2). null: no boost. */
+  constructor(public bundle: Bundle, public t5: T5Frames, public gaz: Gazetteer, public base: Decider, public photon: Photon | null = null) {
     this.templates = bundle.templates;
     this.maxDepth = Number(bundle.config.decisions.max_depth);
   }
 
-  async parse(query: string): Promise<ParseResult> {
+  /** view: map view (xmin, ymin, xmax, ymax) for the ranking of candidates. null: data.bbox. */
+  async parse(query: string, view: number[] | null = null): Promise<ParseResult> {
     const dec = this.base.fork();
+    dec.view = view;
     const t0 = performance.now();
     const res: ParseResult = { query, ok: false, dag: null, unsupported: null, family: null, template: null, slots: {}, path: null, trace: [], timings: {} };
     try {
@@ -221,7 +225,7 @@ export class Parser {
     const lex = lexiconMatch(text, this.bundle);
     if (lex) return [{ op: "LexiconSet", args: { key: lex } }, { lex, text }];
     const isRegion = Object.values(tpl.slots).some((s) => s.type === "region") && tpl.family !== "lookup";
-    const exact = await this.gaz.search(text, { typeHint, fuzzy: false, limit: 3 });
+    const exact = await this.gaz.search(text, { typeHint, fuzzy: false, limit: 3, view: dec.view });
     if (isRegion) {
       const d = await dec.isSubquery(text, depth);
       if (dec.below("is_subquery", d)) stop(`low confidence for is_subquery (${fmt(d.confidence)})`, depth, text, "is_subquery");
@@ -238,18 +242,18 @@ export class Parser {
     const scope = this.bundle.config.geocoder?.anchor_scope ?? "simple_and_features";
     const allowGeocoder = scope === "all" || (depth === 0 && GEOCODER_FAMILIES.has(tpl.family));
     if (allowGeocoder) {
-      const cands = exact.length ? exact : await this.gaz.search(text, { typeHint, limit: 3 });
+      const cands = exact.length ? exact : await this.gaz.search(text, { typeHint, limit: 3, view: dec.view });
       const top = cands[0];
       const sd = await dec.selectSource(text, { gazetteer_match: top?.description ?? null, gazetteer_top_score: top?.score ?? 0 }, depth);
       if (dec.below("select_source", sd)) stop(`low confidence for select_source (${fmt(sd.confidence)})`, depth, text, "select_source");
       if (sd.value === "photon") return { op: "Resolve", args: { name: text, source: "photon" } };
     }
     // No NER spans in the browser version: the whole slot text is the anchor (bind_anchor is not asked).
-    let cands = await this.gaz.search(text, { typeHint, limit: 6 });
+    let cands = await this.gaz.search(text, { typeHint, limit: 6, view: dec.view });
     if (!cands.length) stop(`cannot resolve '${text}' in the local extract`, depth, text);
-    cands = mergeNested(cands);
+    cands = await this.photonBoost(dec, text, mergeNested(cands), depth);
     let chosen = cands[0];
-    if (cands.length > 1 && cands[0].score - cands[1].score < 0.15) {
+    if (cands.length > 1 && cands[0].score - cands[1].score < this.bundle.config.policy.ranking.close_margin) {
       const close = cands.filter((c) => cands[0].score - c.score < 0.3);
       const d = await dec.disambiguate(text, close, query, depth);
       if (dec.below("disambiguate", d)) stop(`low confidence for disambiguate (${fmt(d.confidence)})`, depth, text, "disambiguate");
@@ -258,6 +262,28 @@ export class Parser {
     const args: any = { name: text, source: "overture", id: chosen.id };
     if (typeHint) args.type_hint = typeHint;
     return { op: "Resolve", args };
+  }
+
+  /** If the two best candidates are close, add a score to the candidates that match Photon results. */
+  private async photonBoost(dec: Decider, name: string, cands: Candidate[], depth: number): Promise<Candidate[]> {
+    const rk = this.bundle.config.policy.ranking;
+    if (!this.photon || cands.length < 2 || cands[0].score - cands[1].score >= rk.close_margin) return cands;
+    const v = dec.view;
+    let feats;
+    try {
+      feats = await this.photon.search(name, { limit: Number(rk.photon_limit), location: v?.length ? [(v[0] + v[2]) / 2, (v[1] + v[3]) / 2] : undefined });
+    } catch (e) {
+      dec.recordStep("photon_boost", depth, { name }, null, "rules", { error: String((e as Error).message).slice(0, 200) });
+      return cands;
+    }
+    const ranks = await this.gaz.matchPoints(cands.map((c) => c.id), feats.map((f) => [f.lon, f.lat]));
+    const boosts: Record<string, number> = {};
+    for (const [id, r] of Object.entries(ranks)) if (r <= rk.photon_boost.length) boosts[id] = rk.photon_boost[r - 1];
+    dec.recordStep("photon_boost", depth, { name }, boosts, "rules", { photon: feats.map((f) => f.label), ranks });
+    if (!Object.keys(boosts).length) return cands;
+    const out = cands.map((c) => ({ ...c, score: Math.round((c.score + (boosts[c.id] ?? 0)) * 1e4) / 1e4 }));
+    out.sort((a, b) => b.score - a.score || (a.id < b.id ? -1 : 1));
+    return out;
   }
 }
 

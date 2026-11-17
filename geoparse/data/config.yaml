@@ -71,6 +71,21 @@ policy:
   max_features: 10000
   # Simplification tolerance (degrees) for output geometries. 0 means no simplification.
   output_simplify_deg: 0.0005
+  # Ranking of gazetteer candidates (plan-012 section 3.2). A query with no map view uses data.bbox as the
+  # view and data.country as the country of the view.
+  ranking:
+    # Penalties, not boosts: select_source compares the absolute top score with a threshold, so a candidate in
+    # the view and in its country keeps its score.
+    # Score removed from a candidate whose point is outside the map view.
+    view_outside: 0.15
+    # Score removed from a candidate that is not in the country of the view center.
+    view_other_country: 0.05
+    # If the two best candidates are closer than this, ask Photon (boost), then the disambiguate decision.
+    close_margin: 0.15
+    # Score added to the candidates that match Photon results 1, 2, 3.
+    photon_boost: [0.2, 0.1, 0.05]
+    # Photon results to request for the boost.
+    photon_limit: 5
 
 geocoder:
   # Which anchors can go to the geocoder (select_source decides): "simple_and_features" (lookup, modifier,
