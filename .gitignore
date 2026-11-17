@@ -12,6 +12,7 @@ data/build-world/
 .cache/
 web/public/data/
 web/public/countries/
+web/public/world/
 web/public/models/
 web/node_modules/
 web/dist/

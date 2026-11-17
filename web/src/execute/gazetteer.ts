@@ -80,16 +80,68 @@ export class Gazetteer {
       ws.forEach((w, i) => { if (w in this.aliases) qList.push([...ws.slice(0, i), this.aliases[w], ...ws.slice(i + 1)].join(" ")); });
       if (x in this.aliases) qList.push(this.aliases[x]);
     }
+    const { policy: base } = this.bundle.config;
+    const ranking = base.ranking;
+    const [vb, viewCountry] = await this.view(view);
+    const [x0, y0, x1, y1] = vb;
+    const hint = typeHint ?? hintFromName;
+    const h = hint ? ({ district: "district", state: "state", city: "city", town: "city", country: "country", union_territory: "union_territory" } as any)[hint] ?? hint : null;
+    const ctx = context ? normName(context) : "";
+    // Score without the context match and the map-view penalty; null: not a candidate.
+    const partial = (d: any, s: number): number | null => {
+      const policy = countryPolicy(base, d.country);
+      if (d.subtype === "region" && policy.require_region_code && !d.region) return null;
+      let score = s + (PRIOR[`${d.subtype}|${d.class ?? ""}`] ?? PRIOR[d.subtype] ?? 0);
+      if (d.has_area) score += 0.1;
+      if (d.population) score += Math.min(0.1, Math.log10(Math.max(d.population, 1)) / 100);
+      if (h && (policy.admin_levels[h] ?? []).includes(d.subtype)) score += 0.5;
+      if (d.country !== viewCountry) score -= ranking.view_other_country;
+      return score;
+    };
+
     // Name rows with the division id: one relation for the flat layout and the country layout.
     const store = this.db.store;
     const names = store
-      ? "SELECT d.id, r.kind, r.key, d.subtype, d.class FROM name_rows r JOIN divisions d ON d.n = r.n"
+      ? "SELECT d.id, d.n, r.kind, r.key, d.subtype, d.class FROM name_rows r JOIN divisions d ON d.n = r.n"
       : "SELECT n.id, n.kind, n.name_nospace AS key, d.subtype, d.class FROM names n JOIN divisions d ON d.id = n.id";
+    // Country layout: load only the countries of the candidates that can be in the best `limit`. The name rows
+    // give the score except the context match (at most +0.3) and the view penalty (known if the extent of the
+    // country is inside or outside the view). Returns the divisions (n) to keep, if `cap` cut the list.
+    const prepare = async (where: string, sim: string, f: number, cap: number | null): Promise<number[] | null> => {
+      if (!store) return null;
+      const rows = (await this.db.query(`SELECT r.n, r.country, max(${sim} * ${KIND_SCORE})::DOUBLE AS s,
+          any_value(r.subtype) AS subtype, any_value(r.class) AS class, any_value(r.population) AS population,
+          bool_or(r.has_area) AS has_area, any_value(a.region) AS region
+        FROM (SELECT * FROM name_rows WHERE ${where}) r LEFT JOIN (SELECT n, region FROM divisions) a ON a.n = r.n
+        GROUP BY r.n, r.country`)).map((r) => ({ ...r, s: Number(r.s) * f }));
+      let cand = rows, keep: number[] | null = null;
+      if (cap && rows.length > cap) {
+        rows.sort((a, b) => b.s - a.s);
+        const sCap = rows[cap - 1].s;
+        // A tie at the cut: the order by id decides, so load all countries at the cut.
+        if (rows[cap].s === sCap) { await store.ensureCountries(rows.filter((r) => r.s >= sCap).map((r) => r.country)); return null; }
+        cand = rows.slice(0, cap);
+        keep = cand.map((r) => r.n);
+      }
+      const bounds = cand.flatMap((r) => {
+        const p = partial(r, r.s);
+        if (p === null) return [];
+        const b = store.bbox(r.country);
+        const inside = b && b[0] >= x0 && b[2] <= x1 && b[1] >= y0 && b[3] <= y1;
+        const outside = b && (b[2] < x0 || b[0] > x1 || b[3] < y0 || b[1] > y1);
+        return [{ country: r.country, lo: p - (inside ? 0 : ranking.view_outside), hi: p + (ctx ? 0.3 : 0) - (outside ? ranking.view_outside : 0) }];
+      });
+      const los = bounds.map((b) => b.lo).sort((a, b) => b - a);
+      const L = los.length >= limit ? los[limit - 1] : -Infinity;
+      await store.ensureCountries(bounds.filter((b) => b.hi >= L - 1e-9).map((b) => b.country));
+      return keep;
+    };
     const exact = async (xs: string[], f: number) => {
       const keys = xs.map((x) => x.replaceAll(" ", ""));
-      await store?.ensureKeys(keys);
+      const where = `key IN (SELECT unnest(${list(keys)}))`;
+      if (store) { await store.loadKeys(keys); await prepare(where, "1", f, null); }
       const rs = await this.db.query(`SELECT id, max(${KIND_SCORE})::DOUBLE AS s FROM (${names})
-        WHERE key IN (SELECT unnest(${list(keys)})) GROUP BY id`);
+        WHERE ${where} GROUP BY id`);
       return Object.fromEntries(rs.map((r) => [r.id, Number(r.s) * f])) as Record<string, number>;
     };
     let scores = await exact(qList, 1);
@@ -101,27 +153,26 @@ export class Gazetteer {
           AND left(key, ${FUZZY_PREFIX}) = left(${nk}, ${FUZZY_PREFIX})
           AND jaro_winkler_similarity(key, ${nk}) >= 0.85
           AND damerau_levenshtein(key, ${nk}) <= CASE WHEN length(${nk}) >= 10 THEN 2 ELSE 1 END`;
-      await store?.ensurePrefix([...k].slice(0, FUZZY_PREFIX).join(""), where);
+      let keep: number[] | null = null;
+      if (store) {
+        await store.loadPrefix([...k].slice(0, FUZZY_PREFIX).join(""));
+        keep = await prepare(where, `jaro_winkler_similarity(key, ${nk})`, 0.9, 50);
+      }
+      const only = keep ? ` AND n IN (SELECT unnest([${keep.join(", ")}]::INTEGER[]))` : "";
       const rs = await this.db.query(`SELECT id, max(jaro_winkler_similarity(key, ${nk}) * ${KIND_SCORE})::DOUBLE AS s
-        FROM (${names}) WHERE ${where} GROUP BY id ORDER BY s DESC, id LIMIT 50`);
+        FROM (${names}) WHERE ${where}${only} GROUP BY id ORDER BY s DESC, id LIMIT 50`);
       scores = Object.fromEntries(rs.map((r) => [r.id, Number(r.s) * 0.9]));
     }
     if (!Object.keys(scores).length) return [];
     const info = await this.describe(Object.keys(scores));
-    const { policy: base, data } = this.bundle.config;
-    const ranking = base.ranking;
-    const [[x0, y0, x1, y1], viewCountry] = await this.view(view);
-    const hint = typeHint ?? hintFromName;
-    const h = hint ? ({ district: "district", state: "state", city: "city", town: "city", country: "country", union_territory: "union_territory" } as any)[hint] ?? hint : null;
-    const ctx = context ? normName(context) : "";
     const cands: Candidate[] = [];
     for (const [id, s] of Object.entries(scores)) {
       const d = info[id];
       if (!d) continue;
+      // Same terms as partial(), in the order of the Python version (same rounding).
       const policy = countryPolicy(base, d.country);
       if (d.subtype === "region" && policy.require_region_code && !d.region) continue;
-      const prior = PRIOR[`${d.subtype}|${d.class ?? ""}`] ?? PRIOR[d.subtype] ?? 0;
-      let score = s + prior;
+      let score = s + (PRIOR[`${d.subtype}|${d.class ?? ""}`] ?? PRIOR[d.subtype] ?? 0);
       if (d.has_area) score += 0.1;
       if (d.population) score += Math.min(0.1, Math.log10(Math.max(d.population, 1)) / 100);
       if (h && (policy.admin_levels[h] ?? []).includes(d.subtype)) score += 0.5;
@@ -130,7 +181,7 @@ export class Gazetteer {
       if (d.country !== viewCountry) score -= ranking.view_other_country;
       const where = d.ancestors.length ? d.ancestors.slice(-2).reverse().join(", ") : "";
       const kind = d.class ? `${d.subtype} (${d.class})` : d.subtype;
-      const desc = `${d.name}: ${kind}` + (where ? ` in ${where}` : "") + (d.country === data.country ? "" : `, country ${d.country}`);
+      const desc = `${d.name}: ${kind}` + (where ? ` in ${where}` : "") + (d.country === viewCountry ? "" : `, country ${d.country}`);
       cands.push({ id, name: d.name, source: "overture", subtype: d.subtype, description: desc, score: Math.round(score * 1e4) / 1e4, ancestors: d.ancestor_ids });
     }
     cands.sort((a, b) => b.score - a.score || (a.id < b.id ? -1 : 1));

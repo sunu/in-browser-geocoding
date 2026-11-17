@@ -31,6 +31,7 @@ export class Executor {
       ]) await this.db.query(m);
       this.macrosReady = true;
     }
+    if (JSON.stringify(dag).includes('"op":"Layer"')) await this.db.store?.ensureLayers();
     const run = new Run(this, ++RUN, view);
     const t0 = performance.now();
     try {

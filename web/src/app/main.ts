@@ -11,6 +11,8 @@ const map = new maplibregl.Map({
   container: "map", style: "https://tiles.openfreemap.org/styles/positron", center: [78.9, 22.5], zoom: 4,
 });
 const mapReady = new Promise<void>((res) => (map.loaded() ? res() : map.once("load", () => res())));
+// For scripts/world_smoke.ts: set the map view before a query.
+(window as any).geoparseMap = map;
 
 let gp: Geoparse;
 const esc = (s: any) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));

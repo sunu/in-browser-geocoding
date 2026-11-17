@@ -220,7 +220,7 @@ class Store:
                 score -= ranking["view_other_country"]
             where = ", ".join(a for a in reversed(d["ancestors"][-2:])) if d["ancestors"] else ""
             kind = d["subtype"] if not d["class"] else f"{d['subtype']} ({d['class']})"
-            desc = f"{d['name']}: {kind}" + (f" in {where}" if where else "") + ("" if d["country"] == cfg["data"]["country"] else f", country {d['country']}")
+            desc = f"{d['name']}: {kind}" + (f" in {where}" if where else "") + ("" if d["country"] == view_country else f", country {d['country']}")
             cands.append(Candidate(id=id_, name=d["name"], source="overture", subtype=d["subtype"],
                                    description=desc, score=round(score, 4), ancestors=d["ancestor_ids"]))
         cands.sort(key=lambda c: (-c.score, c.id))

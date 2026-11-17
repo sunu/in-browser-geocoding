@@ -144,9 +144,14 @@ def export_country_layout(con: duckdb.DuckDBPyConnection, out: Path, release: st
 
     # Manifest.
     countries = {}
+    # bbox: extent of the division points of the country. The page uses it to bound the map-view penalty of
+    # candidates in countries that it has not loaded.
+    bbox = {c: [round(v, 5) for v in b] for c, *b in con.execute(
+        "SELECT country, min(lon), min(lat), max(lon), max(lat) FROM dv GROUP BY 1").fetchall()}
     for d in sorted(root.glob("country=*")):
         files = {f.stem: f.stat().st_size for f in d.glob("*.parquet")}
-        countries[d.name.removeprefix("country=")] = {"bytes": files, "total": sum(files.values())}
+        cc = d.name.removeprefix("country=")
+        countries[cc] = {"bytes": files, "total": sum(files.values()), "bbox": bbox[cc]}
     manifest = {
         "release": release,
         "global": {f.name: f.stat().st_size for f in (root / "global").glob("*.parquet")},

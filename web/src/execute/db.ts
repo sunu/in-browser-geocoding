@@ -58,8 +58,15 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
     if (fs.existsSync(`${base}/manifest.json`)) {
       const store = new CountryStore({
         query,
-        file: async (rel) => `${base}/${rel}`,
-        release: async () => {},
+        // As in the browser: the file as a buffer. Many direct file reads in one session fail in the Node
+        // runtime of DuckDB-WASM ("too small to be a Parquet file").
+        file: async (rel) => {
+          if (rel.endsWith("places.parquet")) return `${base}/${rel}`;
+          const name = rel.replaceAll("/", "__");
+          db.registerFileBuffer(name, new Uint8Array(fs.readFileSync(`${base}/${rel}`)));
+          return name;
+        },
+        release: async (name) => { if (!name.startsWith("/")) db.dropFile(name); },
         json: async (rel) => JSON.parse(fs.readFileSync(`${base}/${rel}`, "utf8")),
       });
       await store.init(defaultCountry, onProgress);
@@ -89,8 +96,9 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
   };
   for (const s of SETUP) await c.query(s);
   const m = await fetch(`${abs}/manifest.json`);
-  // A dev server can answer index.html for a missing file, so check the type.
-  if (m.ok && (m.headers.get("content-type") ?? "").includes("json")) {
+  // A dev server can answer index.html for a missing file, and R2 can send no content type, so check the content.
+  const manifest = m.ok ? await m.text().then((t) => { try { return JSON.parse(t); } catch { return null; } }) : null;
+  if (manifest?.countries) {
     const store = new CountryStore({
       query,
       file: async (rel) => {

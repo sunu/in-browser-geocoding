@@ -46,6 +46,7 @@ export class CountryStore {
   countries = new Map<string, Promise<void>>();
   loadedShards = new Map<number, Promise<void>>();
   adminAreas: Promise<void> | null = null;
+  layers: Promise<void> | null = null;
   private lock: Promise<unknown> = Promise.resolve();
 
   constructor(public engine: Engine) {}
@@ -60,7 +61,7 @@ export class CountryStore {
   async init(defaultCountry: string, onProgress?: (msg: string) => void) {
     const e = this.engine;
     [this.manifest, this.shards] = await Promise.all([e.json("manifest.json"), e.json("names/index.json").then((x) => x.shards)]);
-    const [admin, layers] = await Promise.all([e.file("global/admin.parquet"), e.file("global/layers.parquet")]);
+    const admin = await e.file("global/admin.parquet");
     for (const s of [
       `CREATE TABLE divisions (n INTEGER, id VARCHAR, subtype VARCHAR, class VARCHAR, name VARCHAR, name_en VARCHAR,
          country VARCHAR, region VARCHAR, ancestors VARCHAR[], population INTEGER, wikidata VARCHAR, lon DOUBLE, lat DOUBLE,
@@ -71,11 +72,11 @@ export class CountryStore {
       `CREATE TABLE name_rows (key VARCHAR, kind VARCHAR, n INTEGER, country VARCHAR, subtype VARCHAR, class VARCHAR,
          population INTEGER, name VARCHAR, name_en VARCHAR, region_n INTEGER, county_n INTEGER, locality_name VARCHAR,
          has_area BOOLEAN)`,
-      `CREATE TABLE layers AS SELECT name, ST_GeomFromWKB(wkb) AS geometry FROM read_parquet(${q(layers)})`,
+      "CREATE TABLE layers (name VARCHAR, geometry GEOMETRY)",
       // Attributes of all admin divisions. The country files replace these rows when they are loaded.
       `INSERT INTO divisions BY NAME SELECT *, ST_Point(lon, lat) AS geometry FROM read_parquet(${q(admin)})`,
     ]) await e.query(s);
-    await Promise.all([e.release(admin), e.release(layers)]);
+    await e.release(admin);
     const places = this.manifest.places;
     await e.query(places
       ? `CREATE VIEW places AS SELECT * FROM read_parquet(${q(await e.file(places))})`
@@ -108,6 +109,16 @@ export class CountryStore {
     await Promise.all([dv, ar, ld].map((f) => e.release(f)));
   }
 
+  /** Coastline and land borders (9 MB for the world): only DAGs with a Layer operator need them. */
+  ensureLayers(): Promise<void> {
+    this.layers ??= (async () => {
+      const f = await this.engine.file("global/layers.parquet");
+      await this.serial([`INSERT INTO layers SELECT name, ST_GeomFromWKB(wkb) FROM read_parquet(${q(f)})`]);
+      await this.engine.release(f);
+    })();
+    return this.layers;
+  }
+
   /** Polygons of the countries, dependencies and regions that are not loaded (operations across borders). */
   ensureAdminAreas(): Promise<void> {
     this.adminAreas ??= (async () => {
@@ -132,18 +143,26 @@ export class CountryStore {
     })).then(() => {});
   }
 
-  /** Load the name rows of keys, then the countries of the divisions with these keys. */
-  async ensureKeys(keys: string[]) {
-    await this.ensureShards(keys.map((k) => shardOf(this.shards, k)));
-    const rs = await this.engine.query(`SELECT DISTINCT country FROM name_rows WHERE key IN (SELECT unnest(${list(keys)}))`);
-    await this.ensureCountries(rs.map((r) => r.country));
+  /** Load the name rows of keys (not the countries). */
+  loadKeys(keys: string[]): Promise<void> {
+    return this.ensureShards(keys.map((k) => shardOf(this.shards, k)));
   }
 
-  /** Load the name rows that start with prefix, then the countries of the rows that match `where`. */
-  async ensurePrefix(prefix: string, where: string) {
+  /** Load the name rows that start with prefix (not the countries). */
+  loadPrefix(prefix: string): Promise<void> {
     const a = shardOf(this.shards, prefix), b = shardOf(this.shards, prefixEnd(prefix));
-    await this.ensureShards(Array.from({ length: b - a + 1 }, (_, i) => a + i));
-    const rs = await this.engine.query(`SELECT DISTINCT country FROM name_rows WHERE ${where}`);
+    return this.ensureShards(Array.from({ length: b - a + 1 }, (_, i) => a + i));
+  }
+
+  /** Extent of the division points of a country (manifest), or null. */
+  bbox(country: string): number[] | null {
+    return this.manifest.countries[country]?.bbox ?? null;
+  }
+
+  /** Load the name rows of keys, then the countries of the divisions with these keys. */
+  async ensureKeys(keys: string[]) {
+    await this.loadKeys(keys);
+    const rs = await this.engine.query(`SELECT DISTINCT country FROM name_rows WHERE key IN (SELECT unnest(${list(keys)}))`);
     await this.ensureCountries(rs.map((r) => r.country));
   }
 

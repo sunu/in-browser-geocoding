@@ -240,3 +240,55 @@ The second run gave WebKit 0.22 s (median) and 0.35 s (p95). The WebKit values o
 Note: the browser tests of sections 7 and 8 added a query parameter (`?s=...`) to each URL. The edge cache key contains the query string, so these requests did not use the edge cache. The values in section 8 for the browsers are therefore values without the edge cache.
 
 Result: an exact lookup takes approximately 0.2 s (target: less than 0.3 s). The first lookup also loads `index.json` and opens the connection (approximately 1 s).
+
+## 10. World data in the page (phase 4)
+
+Setup: page on the Vite dev server, data from `https://files.geoparse.labs.sunu.in/2026-10-21.0` (custom domain, edge cache), client in Kolkata, start view on India. Test: `PAGE="http://localhost:5180/?data=https://files.geoparse.labs.sunu.in/2026-10-21.0" npx tsx web/scripts/world_smoke.ts <browser>`. The map view is set on the country of each query. Logs: `logs/world-r2-<browser>.log`.
+
+Changes:
+
+- `manifest.json` has a `bbox` for each country (extent of the division points). The gazetteer uses it for the bounds of the view penalty.
+- The gazetteer loads only the countries that can be in the result (bounded loading). Check: `web/scripts/bounded_check.ts`, the same candidates as the old rule in 80 of 80 cases (20 names, 4 views), 136 country loads (old rule: 348).
+- `global/layers.parquet` (9.4 MB) is loaded only for a query with a `Layer` operation.
+- The description of a place gives the country relative to the country of the view.
+- The page detects the layout from the content of `manifest.json`, not from the content type.
+
+### 10.1 Start-up
+
+| Browser | Ready | Data |
+|---|---|---|
+| Chromium | 15.2 s | 47.4 MB |
+| Firefox | 11.5 s | 47.3 MB |
+| WebKit | 11.3 s | 47.4 MB |
+
+Data at start-up: `global/admin.parquet` 3.5 MB, `country=IN` 43.8 MB (`divisions` 26.9, `areas` 16.8, `layer_dist` 0.2), `manifest.json` and `names/index.json` 0.03 MB. The total transfer (models and WASM included) is approximately 220 MB.
+
+### 10.2 Queries
+
+Time from submit to result, and data downloaded for the query. The first query in a country loads the files of that country.
+
+| View | Query | Chromium | Firefox | WebKit | Data | Result |
+|---|---|---|---|---|---|---|
+| IN | Kerala except Palakkad | 3.3 s | 1.1 s | 2.1 s | 2.4 MB | 1 |
+| IN | districts near the sea in Gujarat | 4.1 s | 2.7 s | 4.7 s | 9.6 MB | 16 |
+| US | counties of Nevada | 33.5 s | 13.0 s | 13.0 s | 89.0 MB | 0 (wrong) |
+| US | states that border Nevada | 0.8 s | 0.9 s | 2.1 s | 0 | 5 |
+| US | Springfield | 7.6 s | 6.4 s | 6.7 s | 18.9 MB | 1 |
+| FR | Lyon | 6.9 s | 6.8 s | 6.8 s | 48.1 MB | 1 |
+| FR | districts of Bretagne | 3.3 s | 1.6 s | 2.0 s | 0.2 MB | 4 |
+| BR | cities in Minas Gerais with population over 1 million | 7.4 s | 7.2 s | 11.3 s | 33.4 MB | 0 (wrong) |
+| BR | Recife | 2.3 s | 1.5 s | 2.4 s | 0.2 MB | 1 |
+| JP | Osaka | 14.8 s | 12.3 s | 16.8 s | 92.0 MB | 1 |
+| JP | Hokkaido | 2.2 s | 0.9 s | 1.3 s | 0.2 MB | 1 |
+| US | San Jose | 10.8 s | 10.1 s | 10.2 s | 9.7 MB | 1 |
+| IN | San Jose | 13.0 s | 12.9 s | 12.5 s | 8.9 MB | 1 |
+
+Console errors: 0 in all browsers.
+
+Results:
+
+- A query in a country that is already loaded takes 1–4 s. Most of this time is the parse.
+- The first query in a large country takes 7–17 s. Most of this time is the download (JP 92 MB, US 89 MB, FR 48 MB).
+- "San Jose" loads 3–4 small countries (bounded loading) and makes 10–14 requests. The time is in the requests, not in the data.
+- "counties of Nevada": the parser reads "counties" as the level "country". The executor then loads `global/admin_areas.parquet` (45.6 MB) and tests the country polygons. Execute time: Chromium 26.0 s, Firefox 5.6 s, WebKit 5.2 s.
+- "Minas Gerais" goes to Photon: "minas" is one edit from the street word "minar".
