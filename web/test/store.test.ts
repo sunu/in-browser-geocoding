@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cmpKey, prefixEnd, shardOf } from "../src/execute/store.ts";
+import { cmpKey, once, prefixEnd, shardOf } from "../src/execute/store.ts";
 
 describe("name shards", () => {
   it("compares keys by code point, as DuckDB does", () => {
@@ -19,5 +19,17 @@ describe("name shards", () => {
     expect(prefixEnd("vis")).toBe("vit");
     expect(prefixEnd("ab\u{1F600}")).toBe("ab\u{1F601}");
     expect([shardOf(shards, "kol"), shardOf(shards, prefixEnd("kol"))]).toEqual([2, 2]);
+  });
+});
+
+describe("loads", () => {
+  it("runs a failed load again on the next call", async () => {
+    const m = new Map<string, Promise<void>>();
+    let n = 0;
+    const load = async () => { if (++n === 1) throw new TypeError("Load failed"); };
+    await expect(once(m, "BR", load)).rejects.toThrow("Load failed");
+    await once(m, "BR", load);
+    await once(m, "BR", load);
+    expect(n).toBe(2);
   });
 });

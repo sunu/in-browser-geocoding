@@ -69,8 +69,12 @@ q.onkeydown = (e) => { if (e.key === "Enter" && !go.disabled && q.value) runQuer
 
 const t0 = performance.now();
 // ?data=<url>: other data files, for example the country layout (public/countries/<release>).
-const data = new URLSearchParams(location.search).get("data") ?? undefined;
-load("", (m) => (status.textContent = `Loading ${m}…`), data).then((g) => {
+// A deployed build gets the data and model URLs from the deploy script (VITE_DATA_URL, VITE_MODEL_URL, VITE_DATA_VERSION).
+const env = import.meta.env;
+const param = new URLSearchParams(location.search).get("data");
+const data = param ?? (env.VITE_DATA_URL || undefined);
+load("", (m) => (status.textContent = `Loading ${m}…`), data,
+  { models: env.VITE_MODEL_URL || undefined, dataVersion: param ? "" : env.VITE_DATA_VERSION || "" }).then((g) => {
   gp = g;
   go.disabled = false;
   status.textContent = `Ready in ${((performance.now() - t0) / 1000).toFixed(1)} s. Everything runs in this browser tab.`;

@@ -18,14 +18,16 @@ export interface Geoparse {
   run(q: string, view?: number[] | null): Promise<{ parse: ParseResult; result: Result | null }>;
 }
 
-/** data: URL of the data files (flat layout or country layout); default `${base}/data`. */
-export async function load(base = "", onProgress: (msg: string) => void = () => {}, data = `${base}/data`): Promise<Geoparse> {
-  setModelBase(`${base}/models`);
+/** data: URL of the data files (flat layout or country layout); default `${base}/data`.
+ * opts.models: URL of the model files; default `${base}/models`. opts.dataVersion: see openDb. */
+export async function load(base = "", onProgress: (msg: string) => void = () => {}, data = `${base}/data`,
+                           opts: { models?: string; dataVersion?: string } = {}): Promise<Geoparse> {
+  setModelBase(opts.models ?? `${base}/models`);
   onProgress("bundle");
   const bundle = await loadBundle(`${base}/bundle.json`);
   onProgress("data, models");
   const [db, t5, xenc] = await Promise.all([
-    openDb(data, (m) => onProgress(`data: ${m}`), bundle.config.data.country),
+    openDb(data, (m) => onProgress(`data: ${m}`), bundle.config.data.country, opts.dataVersion),
     T5Frames.load(true).then((m) => (onProgress("T5 model loaded"), m)),
     CrossEncoder.load(true).then((m) => (onProgress("decision model loaded"), m)),
   ]);

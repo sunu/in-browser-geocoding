@@ -28,5 +28,7 @@ export default defineConfig({
   plugins: [acceptRanges],
   optimizeDeps: { exclude: ["@duckdb/duckdb-wasm", "onnxruntime-web", "onnxruntime-node"], entries: ["index.html"] },
   server: { headers: { "Cross-Origin-Opener-Policy": "same-origin", "Cross-Origin-Embedder-Policy": "credentialless" } },
-  build: { target: "es2022" },
+  preview: { headers: { "Cross-Origin-Opener-Policy": "same-origin", "Cross-Origin-Embedder-Policy": "credentialless" } },
+  // public/ has the models and the data (more than 1 GB). The deploy script copies only bundle.json.
+  build: { target: "es2022", copyPublicDir: false },
 });

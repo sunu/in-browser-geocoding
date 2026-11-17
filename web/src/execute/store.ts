@@ -92,8 +92,7 @@ export class CountryStore {
 
   ensureCountries(codes: string[]): Promise<void> {
     return Promise.all([...new Set(codes)].filter((c) => c && this.manifest.countries[c]).map((c) => {
-      if (!this.countries.has(c)) this.countries.set(c, this.loadCountry(c));
-      return this.countries.get(c)!;
+      return once(this.countries, c, () => this.loadCountry(c));
     })).then(() => {});
   }
 
@@ -118,7 +117,7 @@ export class CountryStore {
       const f = await this.engine.file("global/layers.parquet");
       await this.serial([`INSERT INTO layers SELECT name, ST_GeomFromWKB(wkb) FROM read_parquet(${q(f)})`]);
       await this.engine.release(f);
-    })();
+    })().catch((e) => { this.layers = null; throw e; });
     return this.layers;
   }
 
@@ -131,18 +130,17 @@ export class CountryStore {
           xmin, ymin, xmax, ymax, country FROM read_parquet(${q(f)})
         WHERE id NOT IN (SELECT id FROM areas)`]);
       await this.engine.release(f);
-    })();
+    })().catch((e) => { this.adminAreas = null; throw e; });
     return this.adminAreas;
   }
 
   private ensureShards(ids: number[]): Promise<void> {
     return Promise.all([...new Set(ids)].map((i) => {
-      if (!this.loadedShards.has(i)) this.loadedShards.set(i, (async () => {
+      return once(this.loadedShards, i, async () => {
         const f = await this.engine.file(`names/${this.shards[i].file}`);
         await this.serial([`INSERT INTO name_rows BY NAME SELECT * FROM read_parquet(${q(f)})`]);
         await this.engine.release(f);
-      })());
-      return this.loadedShards.get(i)!;
+      });
     })).then(() => {});
   }
 
@@ -183,4 +181,10 @@ export class CountryStore {
     const key = normName(name ?? "").replaceAll(" ", "");
     if (key) await this.ensureKeys([key]);
   }
+}
+
+/** A load that runs once for each key. A failed load leaves the map, so that the next query tries again. */
+export function once<K>(map: Map<K, Promise<void>>, key: K, load: () => Promise<void>): Promise<void> {
+  if (!map.has(key)) map.set(key, load().catch((e) => { map.delete(key); throw e; }));
+  return map.get(key)!;
 }

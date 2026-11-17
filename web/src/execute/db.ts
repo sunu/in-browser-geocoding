@@ -39,8 +39,9 @@ function tables(base: string, placesUrl?: string) {
 }
 
 /** dataBase: a directory (Node.js) or a URL (browser) with the Parquet files, in the flat layout or the country
- * layout (manifest.json, plan-015). defaultCountry: the country that the country layout loads at start-up. */
-export async function openDb(dataBase: string, onProgress?: (msg: string) => void, defaultCountry = "IN"): Promise<Db> {
+ * layout (manifest.json, plan-015). defaultCountry: the country that the country layout loads at start-up.
+ * version: added to the URLs of the JSON files (`?v=`), so that a new manifest gets a new edge cache key. */
+export async function openDb(dataBase: string, onProgress?: (msg: string) => void, defaultCountry = "IN", version = ""): Promise<Db> {
   const base = dataBase.replace(/\/$/, "");
   if (isNode) {
     const { createRequire } = await nodeImport("node:module");
@@ -90,12 +91,19 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
   // DuckDB-WASM's HTTP reader fails on a 304 (Not Modified) answer, which Firefox can cause when the file
   // is in its cache.
   const get = async (rel: string) => {
-    const r = await fetch(`${abs}/${rel}`);
+    const r = await fetch(`${abs}/${rel}${version && rel.endsWith(".json") ? `?v=${version}` : ""}`);
     if (!r.ok) throw new Error(`cannot load ${rel}: HTTP ${r.status}`);
     return r;
   };
+  // One more try after a network error (WebKit can lose the connection during a large download).
+  const bytes = async (rel: string) => {
+    try { return new Uint8Array(await (await get(rel)).arrayBuffer()); } catch (e) {
+      if (!(e instanceof TypeError)) throw e;
+      return new Uint8Array(await (await get(rel)).arrayBuffer());
+    }
+  };
   for (const s of SETUP) await c.query(s);
-  const m = await fetch(`${abs}/manifest.json`);
+  const m = await fetch(`${abs}/manifest.json${version ? `?v=${version}` : ""}`);
   // A dev server can answer index.html for a missing file, and R2 can send no content type, so check the content.
   const manifest = m.ok ? await m.text().then((t) => { try { return JSON.parse(t); } catch { return null; } }) : null;
   if (manifest?.countries) {
@@ -110,7 +118,7 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
           await db.registerFileURL(name, `${abs}/${rel}?session=${Date.now().toString(36)}`, duckdb.DuckDBDataProtocol.HTTP, false);
           return name;
         }
-        await db.registerFileBuffer(name, new Uint8Array(await (await get(rel)).arrayBuffer()));
+        await db.registerFileBuffer(name, await bytes(rel));
         return name;
       },
       release: async (name) => { if (!name.includes("://")) await db.dropFile(name); },
