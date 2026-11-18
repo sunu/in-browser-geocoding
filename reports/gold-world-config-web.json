@@ -1,0 +1,6434 @@
+{
+ "isolated": [
+  {
+   "id": "w001",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w001",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w001",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w001",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Springfield"
+   },
+   "gold": {
+    "anchor": "Springfield"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w001",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Springfield",
+   "conf": 0.8
+  },
+  {
+   "id": "w002",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w002",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w002",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w002",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "counties",
+    "parent": "Nevada"
+   },
+   "gold": {
+    "level": "counties",
+    "parent": "Nevada"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w002",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": false,
+   "got": "country",
+   "gold": "district",
+   "text": "counties",
+   "conf": 0.999004
+  },
+  {
+   "id": "w002",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Nevada",
+   "conf": 0.972154
+  },
+  {
+   "id": "w003",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w003",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w003",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w003",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "of": "Oregon"
+   },
+   "gold": {
+    "level": "states",
+    "of": "Oregon"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w003",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 0.9874700000000001
+  },
+  {
+   "id": "w003",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Oregon",
+   "conf": 0.97923
+  },
+  {
+   "id": "w004",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w004",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w004",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w004",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "counties",
+    "pred": "coastal",
+    "parent": "Georgia"
+   },
+   "gold": {
+    "level": "counties",
+    "pred": "coastal",
+    "parent": "Georgia"
+   },
+   "conf": 0.83162,
+   "n_options": 2
+  },
+  {
+   "id": "w004",
+   "decision": "fill_closed_slot.predicate",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "coastal",
+   "gold": "coastal",
+   "text": "coastal",
+   "conf": 1.0
+  },
+  {
+   "id": "w004",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": false,
+   "got": "country",
+   "gold": "district",
+   "text": "counties",
+   "conf": 0.999004
+  },
+  {
+   "id": "w004",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Georgia",
+   "conf": 0.971164
+  },
+  {
+   "id": "w005",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features",
+   "gold": "features",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w005",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w005",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w005",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": {
+    "category": "hospitals",
+    "region": "San Francisco"
+   },
+   "gold": {
+    "category": "hospitals",
+    "region": "San Francisco"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w005",
+   "decision": "fill_closed_slot.category",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "hospital",
+   "gold": "hospital",
+   "text": "hospitals",
+   "conf": 0.998702875
+  },
+  {
+   "id": "w005",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "San Francisco",
+   "conf": 0.979716
+  },
+  {
+   "id": "w006",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w006",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "parent",
+   "gold": "parent",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w006",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "parent",
+   "gold": "parent",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w006",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "state",
+    "child": "Boise"
+   },
+   "gold": {
+    "level": "state",
+    "child": "Boise"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w006",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "state",
+   "conf": 0.9948952
+  },
+  {
+   "id": "w006",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Boise",
+   "conf": 0.9703
+  },
+  {
+   "id": "w007",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "set_algebra",
+   "gold": "set_algebra",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w007",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "difference",
+   "gold": "difference",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w007",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "difference",
+   "gold": "difference",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w007",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": {
+    "a": "Texas",
+    "b": "Harris County"
+   },
+   "gold": {
+    "a": "Texas",
+    "b": "Harris County"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w007",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Texas",
+   "conf": 0.975252
+  },
+  {
+   "id": "w007",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Harris County",
+   "conf": 0.6981040000000001
+  },
+  {
+   "id": "w008",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w008",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w008",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w008",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Manchester"
+   },
+   "gold": {
+    "anchor": "Manchester"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w008",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Manchester",
+   "conf": 0.8
+  },
+  {
+   "id": "w009",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 0.9721299999999999,
+   "n_options": 2
+  },
+  {
+   "id": "w009",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w009",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": false,
+   "got": "children_with_predicate",
+   "gold": "children",
+   "conf": 0.03692800000000007,
+   "n_options": 2
+  },
+  {
+   "id": "w009",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "counties",
+    "parent": "Wales"
+   },
+   "gold": {
+    "level": "counties",
+    "parent": "Wales"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w009",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": false,
+   "got": "country",
+   "gold": "district",
+   "text": "counties",
+   "conf": 0.999004
+  },
+  {
+   "id": "w009",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Wales",
+   "conf": 0.974446
+  },
+  {
+   "id": "w010",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features",
+   "gold": "features",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w010",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 0.9928140000000001,
+   "n_options": 2
+  },
+  {
+   "id": "w010",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 0.773684,
+   "n_options": 2
+  },
+  {
+   "id": "w010",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": {
+    "category": "schools",
+    "region": "Oxford"
+   },
+   "gold": {
+    "category": "schools",
+    "region": "Oxford"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w010",
+   "decision": "fill_closed_slot.category",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "school",
+   "gold": "school",
+   "text": "schools",
+   "conf": 0.9975700000000001
+  },
+  {
+   "id": "w010",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Oxford",
+   "conf": 0.979046
+  },
+  {
+   "id": "w011",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "modifier",
+   "gold": "modifier",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w011",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "buffer",
+   "gold": "buffer",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w011",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "buffer",
+   "gold": "buffer",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w011",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": {
+    "distance": "5 km",
+    "target": "York"
+   },
+   "gold": {
+    "distance": "5 km",
+    "target": "York"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w011",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "York",
+   "conf": 0.985274
+  },
+  {
+   "id": "w011",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "York",
+   "conf": 0.8
+  },
+  {
+   "id": "w012",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "modifier",
+   "correct": false,
+   "got": "lookup",
+   "gold": "modifier",
+   "conf": 0.931656,
+   "n_options": 2
+  },
+  {
+   "id": "w012",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w012",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 0.823636,
+   "n_options": 2
+  },
+  {
+   "id": "w012",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": {
+    "dir": "northern",
+    "target": "Scotland"
+   },
+   "gold": {
+    "dir": "northern",
+    "target": "Scotland"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w012",
+   "decision": "fill_closed_slot.direction",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "north",
+   "gold": "north",
+   "text": "northern",
+   "conf": 0.99934975
+  },
+  {
+   "id": "w012",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Scotland",
+   "conf": 0.98189
+  },
+  {
+   "id": "w012",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Scotland",
+   "conf": 0.8
+  },
+  {
+   "id": "w013",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "set_algebra",
+   "gold": "set_algebra",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w013",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "union",
+   "gold": "union",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w013",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "union",
+   "gold": "union",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w013",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": {
+    "a": "England",
+    "b": "Wales"
+   },
+   "gold": {
+    "a": "England",
+    "b": "Wales"
+   },
+   "conf": 0.9643630000000001,
+   "n_options": 3
+  },
+  {
+   "id": "w013",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "England",
+   "conf": 0.984308
+  },
+  {
+   "id": "w013",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Wales",
+   "conf": 0.974446
+  },
+  {
+   "id": "w014",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w014",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w014",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w014",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Edinburgh"
+   },
+   "gold": {
+    "anchor": "Edinburgh"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w014",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Edinburgh",
+   "conf": 0.8
+  },
+  {
+   "id": "w015",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w015",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w015",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w015",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Paris"
+   },
+   "gold": {
+    "anchor": "Paris"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w015",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Paris",
+   "conf": 0.8
+  },
+  {
+   "id": "w016",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": false,
+   "got": "features",
+   "gold": "hierarchy",
+   "conf": 0.12614799999999993,
+   "n_options": 2
+  },
+  {
+   "id": "w016",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w016",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": false,
+   "got": "features_in",
+   "gold": "children",
+   "conf": 0.0776920000000001,
+   "n_options": 2
+  },
+  {
+   "id": "w016",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "departments",
+    "parent": "Bretagne"
+   },
+   "gold": {
+    "level": "departments",
+    "parent": "Bretagne"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w016",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "departments",
+   "conf": 0.9524176
+  },
+  {
+   "id": "w016",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Bretagne",
+   "conf": 0.947808
+  },
+  {
+   "id": "w017",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w017",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w017",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w017",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "regions",
+    "parent": "France"
+   },
+   "gold": {
+    "level": "regions",
+    "parent": "France"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w017",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "regions",
+   "conf": 0.9968092000000001
+  },
+  {
+   "id": "w017",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "France",
+   "conf": 0.981366
+  },
+  {
+   "id": "w018",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features",
+   "gold": "features",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w018",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w018",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w018",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": {
+    "category": "hospitals",
+    "region": "Lyon"
+   },
+   "gold": {
+    "category": "hospitals",
+    "region": "Lyon"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w018",
+   "decision": "fill_closed_slot.category",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "hospital",
+   "gold": "hospital",
+   "text": "hospitals",
+   "conf": 0.998702875
+  },
+  {
+   "id": "w018",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Lyon",
+   "conf": 0.983968
+  },
+  {
+   "id": "w019",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w019",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w019",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w019",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "departments",
+    "pred": "landlocked",
+    "parent": "Occitanie"
+   },
+   "gold": {
+    "level": "departments",
+    "pred": "landlocked",
+    "parent": "Occitanie"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w019",
+   "decision": "fill_closed_slot.predicate",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "landlocked",
+   "gold": "landlocked",
+   "text": "landlocked",
+   "conf": 1.0
+  },
+  {
+   "id": "w019",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "departments",
+   "conf": 0.9524176
+  },
+  {
+   "id": "w019",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Occitanie",
+   "conf": 0.988428
+  },
+  {
+   "id": "w020",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w020",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w020",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w020",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "countries",
+    "of": "France"
+   },
+   "gold": {
+    "level": "countries",
+    "of": "France"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w020",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "country",
+   "gold": "country",
+   "text": "countries",
+   "conf": 0.995856
+  },
+  {
+   "id": "w020",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "France",
+   "conf": 0.981366
+  },
+  {
+   "id": "w021",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w021",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w021",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w021",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Marseille"
+   },
+   "gold": {
+    "anchor": "Marseille"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w021",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Marseille",
+   "conf": 0.8
+  },
+  {
+   "id": "w022",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.9565159999999999,
+   "n_options": 2
+  },
+  {
+   "id": "w022",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w022",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 0.15886599999999995,
+   "n_options": 2
+  },
+  {
+   "id": "w022",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Bavaria"
+   },
+   "gold": {
+    "anchor": "Bavaria"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w022",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Bavaria",
+   "conf": 0.8
+  },
+  {
+   "id": "w023",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w023",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w023",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w023",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "parent": "Germany"
+   },
+   "gold": {
+    "level": "states",
+    "parent": "Germany"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w023",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 0.9889288
+  },
+  {
+   "id": "w023",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Germany",
+   "conf": 0.980206
+  },
+  {
+   "id": "w024",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w024",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w024",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w024",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "of": "Bavaria"
+   },
+   "gold": {
+    "level": "states",
+    "of": "Bavaria"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w024",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 0.9874700000000001
+  },
+  {
+   "id": "w024",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Bavaria",
+   "conf": 0.963892
+  },
+  {
+   "id": "w025",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features",
+   "gold": "features",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w025",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w025",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w025",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": {
+    "category": "schools",
+    "region": "Munich"
+   },
+   "gold": {
+    "category": "schools",
+    "region": "Munich"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w025",
+   "decision": "fill_closed_slot.category",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "school",
+   "gold": "school",
+   "text": "schools",
+   "conf": 0.9975700000000001
+  },
+  {
+   "id": "w025",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Munich",
+   "conf": 0.976184
+  },
+  {
+   "id": "w026",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w026",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w026",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w026",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "pred": "coastal",
+    "parent": "Germany"
+   },
+   "gold": {
+    "level": "states",
+    "pred": "coastal",
+    "parent": "Germany"
+   },
+   "conf": 0.813472,
+   "n_options": 2
+  },
+  {
+   "id": "w026",
+   "decision": "fill_closed_slot.predicate",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "coastal",
+   "gold": "coastal",
+   "text": "coastal",
+   "conf": 1.0
+  },
+  {
+   "id": "w026",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 0.9889288
+  },
+  {
+   "id": "w026",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Germany",
+   "conf": 0.980206
+  },
+  {
+   "id": "w027",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "modifier",
+   "gold": "modifier",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w027",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "buffer",
+   "gold": "buffer",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w027",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "buffer",
+   "gold": "buffer",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w027",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": {
+    "distance": "10 km",
+    "target": "Cologne"
+   },
+   "gold": {
+    "distance": "10 km",
+    "target": "Cologne"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w027",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Cologne",
+   "conf": 0.976666
+  },
+  {
+   "id": "w027",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Cologne",
+   "conf": 0.8
+  },
+  {
+   "id": "w028",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "set_algebra",
+   "gold": "set_algebra",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w028",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "union",
+   "gold": "union",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w028",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "union",
+   "gold": "union",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w028",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": {
+    "a": "Berlin",
+    "b": "Brandenburg"
+   },
+   "gold": {
+    "a": "Berlin",
+    "b": "Brandenburg"
+   },
+   "conf": 0.964944,
+   "n_options": 2
+  },
+  {
+   "id": "w028",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Berlin",
+   "conf": 0.979912
+  },
+  {
+   "id": "w028",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Brandenburg",
+   "conf": 0.983504
+  },
+  {
+   "id": "w029",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w029",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w029",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w029",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Recife"
+   },
+   "gold": {
+    "anchor": "Recife"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w029",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Recife",
+   "conf": 0.8
+  },
+  {
+   "id": "w030",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w030",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w030",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w030",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Minas Gerais"
+   },
+   "gold": {
+    "anchor": "Minas Gerais"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w030",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "got": "photon",
+   "gold": "overture",
+   "text": "Minas Gerais",
+   "conf": 0.8
+  },
+  {
+   "id": "w031",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w031",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w031",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w031",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "of": "Bahia"
+   },
+   "gold": {
+    "level": "states",
+    "of": "Bahia"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w031",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 0.9874700000000001
+  },
+  {
+   "id": "w031",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Bahia",
+   "conf": 0.983172
+  },
+  {
+   "id": "w032",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w032",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w032",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w032",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "pred": "coastal",
+    "parent": "Brazil"
+   },
+   "gold": {
+    "level": "states",
+    "pred": "coastal",
+    "parent": "Brazil"
+   },
+   "conf": 0.7699339999999999,
+   "n_options": 2
+  },
+  {
+   "id": "w032",
+   "decision": "fill_closed_slot.predicate",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "coastal",
+   "gold": "coastal",
+   "text": "coastal",
+   "conf": 1.0
+  },
+  {
+   "id": "w032",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 0.9889288
+  },
+  {
+   "id": "w032",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Brazil",
+   "conf": 0.981778
+  },
+  {
+   "id": "w033",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features",
+   "gold": "features",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w033",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w033",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w033",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": {
+    "category": "schools",
+    "region": "Recife"
+   },
+   "gold": {
+    "category": "schools",
+    "region": "Recife"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w033",
+   "decision": "fill_closed_slot.category",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "school",
+   "gold": "school",
+   "text": "schools",
+   "conf": 0.9975700000000001
+  },
+  {
+   "id": "w033",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Recife",
+   "conf": 0.98391
+  },
+  {
+   "id": "w034",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "attribute",
+   "gold": "attribute",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w034",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "children_attr",
+   "gold": "children_attr",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w034",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "children_attr",
+   "gold": "children_attr",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w034",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": {
+    "level": "cities",
+    "attr": "population",
+    "op": "over",
+    "value": "1 million",
+    "parent": "Minas Gerais"
+   },
+   "gold": {
+    "level": "cities",
+    "attr": "population",
+    "op": "over",
+    "value": "1 million",
+    "parent": "Minas Gerais"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w034",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "city",
+   "gold": "city",
+   "text": "cities",
+   "conf": 0.9997996
+  },
+  {
+   "id": "w034",
+   "decision": "fill_closed_slot.attr",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "population",
+   "gold": "population",
+   "text": "population",
+   "conf": 1.0
+  },
+  {
+   "id": "w034",
+   "decision": "fill_closed_slot.op",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "gt",
+   "gold": "gt",
+   "text": "over",
+   "conf": 0.9959960000000001
+  },
+  {
+   "id": "w034",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Minas Gerais",
+   "conf": 0.976938
+  },
+  {
+   "id": "w035",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w035",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "parent",
+   "gold": "parent",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w035",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "parent",
+   "gold": "parent",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w035",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "state",
+    "child": "Campinas"
+   },
+   "gold": {
+    "level": "state",
+    "child": "Campinas"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w035",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "state",
+   "conf": 0.9948952
+  },
+  {
+   "id": "w035",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Campinas",
+   "conf": 0.986824
+  },
+  {
+   "id": "w036",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w036",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w036",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w036",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Osaka"
+   },
+   "gold": {
+    "anchor": "Osaka"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w036",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Osaka",
+   "conf": 0.8
+  },
+  {
+   "id": "w037",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w037",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w037",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w037",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Hokkaido"
+   },
+   "gold": {
+    "anchor": "Hokkaido"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w037",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Hokkaido",
+   "conf": 0.8
+  },
+  {
+   "id": "w038",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 0.9855780000000001,
+   "n_options": 2
+  },
+  {
+   "id": "w038",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w038",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 0.19762400000000002,
+   "n_options": 2
+  },
+  {
+   "id": "w038",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "prefectures",
+    "of": "Kyoto"
+   },
+   "gold": {
+    "level": "prefectures",
+    "of": "Kyoto"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w038",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": false,
+   "got": "none",
+   "gold": "state",
+   "text": "prefectures",
+   "conf": 0.8778324999999999
+  },
+  {
+   "id": "w038",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Kyoto",
+   "conf": 0.97884
+  },
+  {
+   "id": "w039",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features",
+   "gold": "features",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w039",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w039",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w039",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": {
+    "category": "hospitals",
+    "region": "Sapporo"
+   },
+   "gold": {
+    "category": "hospitals",
+    "region": "Sapporo"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w039",
+   "decision": "fill_closed_slot.category",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "hospital",
+   "gold": "hospital",
+   "text": "hospitals",
+   "conf": 0.998702875
+  },
+  {
+   "id": "w039",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Sapporo",
+   "conf": 0.987366
+  },
+  {
+   "id": "w040",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w040",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w040",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w040",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "prefectures",
+    "pred": "landlocked",
+    "parent": "Japan"
+   },
+   "gold": {
+    "level": "prefectures",
+    "pred": "landlocked",
+    "parent": "Japan"
+   },
+   "conf": 0.9534959999999999,
+   "n_options": 2
+  },
+  {
+   "id": "w040",
+   "decision": "fill_closed_slot.predicate",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "landlocked",
+   "gold": "landlocked",
+   "text": "landlocked",
+   "conf": 1.0
+  },
+  {
+   "id": "w040",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "prefectures",
+   "conf": 0.42949960000000004
+  },
+  {
+   "id": "w040",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Japan",
+   "conf": 0.984206
+  },
+  {
+   "id": "w041",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "modifier",
+   "gold": "modifier",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w041",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w041",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w041",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": {
+    "dir": "southern",
+    "target": "Nagano"
+   },
+   "gold": {
+    "dir": "southern",
+    "target": "Nagano"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w041",
+   "decision": "fill_closed_slot.direction",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "south",
+   "gold": "south",
+   "text": "southern",
+   "conf": 0.9981066250000001
+  },
+  {
+   "id": "w041",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Nagano",
+   "conf": 0.986686
+  },
+  {
+   "id": "w041",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Nagano",
+   "conf": 0.8
+  },
+  {
+   "id": "w042",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w042",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w042",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w042",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Tokyo"
+   },
+   "gold": {
+    "anchor": "Tokyo"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w042",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Tokyo",
+   "conf": 0.8
+  },
+  {
+   "id": "w043",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w043",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w043",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w043",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Melbourne"
+   },
+   "gold": {
+    "anchor": "Melbourne"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w043",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Melbourne",
+   "conf": 0.8
+  },
+  {
+   "id": "w044",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w044",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w044",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w044",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "parent": "Australia"
+   },
+   "gold": {
+    "level": "states",
+    "parent": "Australia"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w044",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 0.9889288
+  },
+  {
+   "id": "w044",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Australia",
+   "conf": 0.982812
+  },
+  {
+   "id": "w045",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w045",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w045",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w045",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "of": "New South Wales"
+   },
+   "gold": {
+    "level": "states",
+    "of": "New South Wales"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w045",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 0.9874700000000001
+  },
+  {
+   "id": "w045",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "New South Wales",
+   "conf": 0.982704
+  },
+  {
+   "id": "w046",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features",
+   "gold": "features",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w046",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w046",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w046",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": {
+    "category": "hospitals",
+    "region": "Perth"
+   },
+   "gold": {
+    "category": "hospitals",
+    "region": "Perth"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w046",
+   "decision": "fill_closed_slot.category",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "hospital",
+   "gold": "hospital",
+   "text": "hospitals",
+   "conf": 0.998702875
+  },
+  {
+   "id": "w046",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Perth",
+   "conf": 0.979816
+  },
+  {
+   "id": "w047",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w047",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "parent",
+   "gold": "parent",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w047",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "parent",
+   "gold": "parent",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w047",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "state",
+    "child": "Cairns"
+   },
+   "gold": {
+    "level": "state",
+    "child": "Cairns"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w047",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "state",
+   "conf": 0.9948952
+  },
+  {
+   "id": "w047",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Cairns",
+   "conf": 0.964512
+  },
+  {
+   "id": "w048",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "modifier",
+   "gold": "modifier",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w048",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "buffer",
+   "gold": "buffer",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w048",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "buffer",
+   "gold": "buffer",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w048",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": {
+    "distance": "20 km",
+    "target": "Canberra"
+   },
+   "gold": {
+    "distance": "20 km",
+    "target": "Canberra"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w048",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Canberra",
+   "conf": 0.968314
+  },
+  {
+   "id": "w048",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Canberra",
+   "conf": 0.8
+  },
+  {
+   "id": "w049",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w049",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w049",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w049",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Victoria"
+   },
+   "gold": {
+    "anchor": "Victoria"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w049",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Victoria",
+   "conf": 0.8
+  },
+  {
+   "id": "w050",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w050",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w050",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w050",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Lagos"
+   },
+   "gold": {
+    "anchor": "Lagos"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w050",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Lagos",
+   "conf": 0.8
+  },
+  {
+   "id": "w051",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w051",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w051",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w051",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "of": "Kano"
+   },
+   "gold": {
+    "level": "states",
+    "of": "Kano"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w051",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 0.9874700000000001
+  },
+  {
+   "id": "w051",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Kano",
+   "conf": 0.986118
+  },
+  {
+   "id": "w052",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w052",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w052",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w052",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "local government areas",
+    "parent": "Lagos"
+   },
+   "gold": {
+    "level": "local government areas",
+    "parent": "Lagos"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w052",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "local government areas",
+   "conf": 0.18928119999999998
+  },
+  {
+   "id": "w052",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Lagos",
+   "conf": 0.982456
+  },
+  {
+   "id": "w053",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w053",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w053",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w053",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "pred": "coastal",
+    "parent": "Nigeria"
+   },
+   "gold": {
+    "level": "states",
+    "pred": "coastal",
+    "parent": "Nigeria"
+   },
+   "conf": 0.903478,
+   "n_options": 2
+  },
+  {
+   "id": "w053",
+   "decision": "fill_closed_slot.predicate",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "coastal",
+   "gold": "coastal",
+   "text": "coastal",
+   "conf": 1.0
+  },
+  {
+   "id": "w053",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 0.9889288
+  },
+  {
+   "id": "w053",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Nigeria",
+   "conf": 0.984428
+  },
+  {
+   "id": "w054",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features",
+   "gold": "features",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w054",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w054",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w054",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": {
+    "category": "hospitals",
+    "region": "Abuja"
+   },
+   "gold": {
+    "category": "hospitals",
+    "region": "Abuja"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w054",
+   "decision": "fill_closed_slot.category",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "hospital",
+   "gold": "hospital",
+   "text": "hospitals",
+   "conf": 0.998702875
+  },
+  {
+   "id": "w054",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Abuja",
+   "conf": 0.98931
+  },
+  {
+   "id": "w055",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w055",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "parent",
+   "gold": "parent",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w055",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "parent",
+   "gold": "parent",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w055",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "state",
+    "child": "Ibadan"
+   },
+   "gold": {
+    "level": "state",
+    "child": "Ibadan"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w055",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "state",
+   "conf": 0.9948952
+  },
+  {
+   "id": "w055",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Ibadan",
+   "conf": 0.98947
+  },
+  {
+   "id": "w056",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "set_algebra",
+   "gold": "set_algebra",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w056",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "union",
+   "gold": "union",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w056",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "union",
+   "gold": "union",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w056",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": {
+    "a": "Kano",
+    "b": "Kaduna"
+   },
+   "gold": {
+    "a": "Kano",
+    "b": "Kaduna"
+   },
+   "conf": 0.961468,
+   "n_options": 2
+  },
+  {
+   "id": "w056",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Kano",
+   "conf": 0.986118
+  },
+  {
+   "id": "w056",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Kaduna",
+   "conf": 0.989822
+  },
+  {
+   "id": "w057",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w057",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w057",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w057",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Guadalajara"
+   },
+   "gold": {
+    "anchor": "Guadalajara"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w057",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Guadalajara",
+   "conf": 0.8
+  },
+  {
+   "id": "w058",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w058",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w058",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w058",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "of": "Jalisco"
+   },
+   "gold": {
+    "level": "states",
+    "of": "Jalisco"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w058",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 0.9874700000000001
+  },
+  {
+   "id": "w058",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Jalisco",
+   "conf": 0.990708
+  },
+  {
+   "id": "w059",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w059",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w059",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w059",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "municipalities",
+    "parent": "Yucatan"
+   },
+   "gold": {
+    "level": "municipalities",
+    "parent": "Yucatan"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w059",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "municipalities",
+   "conf": 0.12376600000000003
+  },
+  {
+   "id": "w059",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Yucatan",
+   "conf": 0.981452
+  },
+  {
+   "id": "w060",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w060",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w060",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w060",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "pred": "landlocked",
+    "parent": "Mexico"
+   },
+   "gold": {
+    "level": "states",
+    "pred": "landlocked",
+    "parent": "Mexico"
+   },
+   "conf": 0.920674,
+   "n_options": 2
+  },
+  {
+   "id": "w060",
+   "decision": "fill_closed_slot.predicate",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "landlocked",
+   "gold": "landlocked",
+   "text": "landlocked",
+   "conf": 1.0
+  },
+  {
+   "id": "w060",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 0.9889288
+  },
+  {
+   "id": "w060",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Mexico",
+   "conf": 0.985414
+  },
+  {
+   "id": "w061",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features",
+   "gold": "features",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w061",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w061",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w061",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": {
+    "category": "schools",
+    "region": "Monterrey"
+   },
+   "gold": {
+    "category": "schools",
+    "region": "Monterrey"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w061",
+   "decision": "fill_closed_slot.category",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "school",
+   "gold": "school",
+   "text": "schools",
+   "conf": 0.9975700000000001
+  },
+  {
+   "id": "w061",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Monterrey",
+   "conf": 0.984252
+  },
+  {
+   "id": "w062",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "set_algebra",
+   "gold": "set_algebra",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w062",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "difference",
+   "gold": "difference",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w062",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "difference",
+   "gold": "difference",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w062",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": {
+    "a": "Oaxaca",
+    "b": "Oaxaca de Juarez"
+   },
+   "gold": {
+    "a": "Oaxaca",
+    "b": "Oaxaca de Juarez"
+   },
+   "conf": 0.949608,
+   "n_options": 2
+  },
+  {
+   "id": "w062",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Oaxaca",
+   "conf": 0.979254
+  },
+  {
+   "id": "w062",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Oaxaca de Juarez",
+   "conf": 0.20354799999999995
+  },
+  {
+   "id": "w063",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "modifier",
+   "gold": "modifier",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w063",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w063",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w063",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": {
+    "dir": "eastern",
+    "target": "Chihuahua"
+   },
+   "gold": {
+    "dir": "eastern",
+    "target": "Chihuahua"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w063",
+   "decision": "fill_closed_slot.direction",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "east",
+   "gold": "east",
+   "text": "eastern",
+   "conf": 0.9992113750000001
+  },
+  {
+   "id": "w063",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Chihuahua",
+   "conf": 0.95761
+  },
+  {
+   "id": "w063",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Chihuahua",
+   "conf": 0.8
+  },
+  {
+   "id": "w064",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.953886,
+   "n_options": 2
+  },
+  {
+   "id": "w064",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w064",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "got": "direction_part",
+   "gold": "lookup_place",
+   "conf": 0.2110939999999999,
+   "n_options": 2
+  },
+  {
+   "id": "w064",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Durban"
+   },
+   "gold": {
+    "anchor": "Durban"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w064",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Durban",
+   "conf": 0.8
+  },
+  {
+   "id": "w065",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w065",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w065",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w065",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "provinces",
+    "parent": "South Africa"
+   },
+   "gold": {
+    "level": "provinces",
+    "parent": "South Africa"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w065",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "provinces",
+   "conf": 0.9990604000000001
+  },
+  {
+   "id": "w065",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "South Africa",
+   "conf": 0.98407
+  },
+  {
+   "id": "w066",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w066",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w066",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w066",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "provinces",
+    "of": "Gauteng"
+   },
+   "gold": {
+    "level": "provinces",
+    "of": "Gauteng"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w066",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "provinces",
+   "conf": 0.9974169999999998
+  },
+  {
+   "id": "w066",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Gauteng",
+   "conf": 0.988976
+  },
+  {
+   "id": "w067",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w067",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w067",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w067",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "provinces",
+    "pred": "coastal",
+    "parent": "South Africa"
+   },
+   "gold": {
+    "level": "provinces",
+    "pred": "coastal",
+    "parent": "South Africa"
+   },
+   "conf": 0.96871,
+   "n_options": 2
+  },
+  {
+   "id": "w067",
+   "decision": "fill_closed_slot.predicate",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "coastal",
+   "gold": "coastal",
+   "text": "coastal",
+   "conf": 1.0
+  },
+  {
+   "id": "w067",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "provinces",
+   "conf": 0.9990604000000001
+  },
+  {
+   "id": "w067",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "South Africa",
+   "conf": 0.98407
+  },
+  {
+   "id": "w068",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features",
+   "gold": "features",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w068",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w068",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w068",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": {
+    "category": "hospitals",
+    "region": "Cape Town"
+   },
+   "gold": {
+    "category": "hospitals",
+    "region": "Cape Town"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w068",
+   "decision": "fill_closed_slot.category",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "hospital",
+   "gold": "hospital",
+   "text": "hospitals",
+   "conf": 0.998702875
+  },
+  {
+   "id": "w068",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Cape Town",
+   "conf": 0.985026
+  },
+  {
+   "id": "w069",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w069",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w069",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w069",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "countries",
+    "of": "South Africa"
+   },
+   "gold": {
+    "level": "countries",
+    "of": "South Africa"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w069",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "country",
+   "gold": "country",
+   "text": "countries",
+   "conf": 0.995856
+  },
+  {
+   "id": "w069",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "South Africa",
+   "conf": 0.98407
+  },
+  {
+   "id": "w070",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "modifier",
+   "gold": "modifier",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w070",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "buffer",
+   "gold": "buffer",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w070",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "buffer",
+   "gold": "buffer",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w070",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": {
+    "distance": "3 km",
+    "target": "Stellenbosch"
+   },
+   "gold": {
+    "distance": "3 km",
+    "target": "Stellenbosch"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "w070",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Stellenbosch",
+   "conf": 0.988172
+  },
+  {
+   "id": "w070",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Stellenbosch",
+   "conf": 0.8
+  }
+ ],
+ "pipeline": [
+  {
+   "id": "w001",
+   "query": "Springfield",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 7.488260746002197,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w002",
+   "query": "counties of Nevada",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.2831931114196777,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": false,
+   "diffs": [
+    "level: expected 'district', got 'country'"
+   ],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "0 ids vs 17"
+  },
+  {
+   "id": "w003",
+   "query": "states that border Oregon",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.9454219341278076,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "4 ids vs 4"
+  },
+  {
+   "id": "w004",
+   "query": "coastal counties of Georgia",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.9754300117492676,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_with_predicate",
+   "path": "complex",
+   "slots_ok": false,
+   "diffs": [
+    "level: expected 'district', got 'country'"
+   ],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "0 ids vs 6"
+  },
+  {
+   "id": "w005",
+   "query": "hospitals in San Francisco",
+   "family": "features",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 7.827791929244995,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "features_in",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "151 ids vs 151"
+  },
+  {
+   "id": "w006",
+   "query": "which state is Boise in",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 3.6274991035461426,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "parent",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w007",
+   "query": "Texas except Harris County",
+   "family": "set_algebra",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 4.525128364562988,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "difference",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w008",
+   "query": "Manchester",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 6.530240058898926,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w009",
+   "query": "counties of Wales",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.5204179286956787,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": false,
+   "diffs": [
+    "level: expected 'district', got 'country'"
+   ],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "0 ids vs 22"
+  },
+  {
+   "id": "w010",
+   "query": "schools in Oxford",
+   "family": "features",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 4.102991819381714,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "features_in",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "56 ids vs 56"
+  },
+  {
+   "id": "w011",
+   "query": "5 km around York",
+   "family": "modifier",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.98774790763855,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "buffer",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 704.223 vs 704.223"
+  },
+  {
+   "id": "w012",
+   "query": "northern Scotland",
+   "family": "modifier",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.701357841491699,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "direction_part",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 14368.51 vs 14368.51"
+  },
+  {
+   "id": "w013",
+   "query": "England and Wales",
+   "family": "set_algebra",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.5977180004119873,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "union",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "2 ids vs 2"
+  },
+  {
+   "id": "w014",
+   "query": "Edinburgh",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 3.5921621322631836,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w015",
+   "query": "Paris",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.635683059692383,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w016",
+   "query": "departments of Bretagne",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.5475828647613525,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "4 ids vs 4"
+  },
+  {
+   "id": "w017",
+   "query": "regions of France",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 6.800617933273315,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "13 ids vs 13"
+  },
+  {
+   "id": "w018",
+   "query": "hospitals in Lyon",
+   "family": "features",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 6.908732175827026,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "features_in",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "118 ids vs 118"
+  },
+  {
+   "id": "w019",
+   "query": "landlocked departments of Occitanie",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.7204720973968506,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children_with_predicate",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "9 ids vs 9"
+  },
+  {
+   "id": "w020",
+   "query": "countries that border France",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 5.899447917938232,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "8 ids vs 8"
+  },
+  {
+   "id": "w021",
+   "query": "Marseille",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.6401638984680176,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w022",
+   "query": "Bavaria",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.5763540267944336,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w023",
+   "query": "states of Germany",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.5873429775238037,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "16 ids vs 16"
+  },
+  {
+   "id": "w024",
+   "query": "states bordering Bavaria",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.1636390686035156,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "4 ids vs 4"
+  },
+  {
+   "id": "w025",
+   "query": "schools in Munich",
+   "family": "features",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 7.230817079544067,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "features_in",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "921 ids vs 921"
+  },
+  {
+   "id": "w026",
+   "query": "coastal states of Germany",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.5842397212982178,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_with_predicate",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "5 ids vs 5"
+  },
+  {
+   "id": "w027",
+   "query": "10 km around Cologne",
+   "family": "modifier",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 5.030628681182861,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "buffer",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 1661.174 vs 1661.174"
+  },
+  {
+   "id": "w028",
+   "query": "Berlin and Brandenburg",
+   "family": "set_algebra",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 4.783365964889526,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "union",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "2 ids vs 2"
+  },
+  {
+   "id": "w029",
+   "query": "Recife",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 3.2908477783203125,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w030",
+   "query": "Minas Gerais",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.7669310569763184,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w031",
+   "query": "states bordering Bahia",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 9.870813369750977,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "8 ids vs 8"
+  },
+  {
+   "id": "w032",
+   "query": "coastal states of Brazil",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.9712750911712646,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_with_predicate",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "17 ids vs 17"
+  },
+  {
+   "id": "w033",
+   "query": "schools in Recife",
+   "family": "features",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.8995609283447266,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "features_in",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1063 ids vs 1063"
+  },
+  {
+   "id": "w034",
+   "query": "cities in Minas Gerais with population over 1 million",
+   "family": "attribute",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 4.786188125610352,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children_attr",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "0 ids vs 1"
+  },
+  {
+   "id": "w035",
+   "query": "which state is Campinas in",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 10.185334920883179,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "parent",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w036",
+   "query": "Osaka",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.8548972606658936,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w037",
+   "query": "Hokkaido",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.8634660243988037,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w038",
+   "query": "prefectures bordering Kyoto",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.3008289337158203,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": false,
+   "diffs": [
+    "level: expected 'state', got 'none'"
+   ],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "12 ids vs 6"
+  },
+  {
+   "id": "w039",
+   "query": "hospitals in Sapporo",
+   "family": "features",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.312095880508423,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "features_in",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "523 ids vs 523"
+  },
+  {
+   "id": "w040",
+   "query": "landlocked prefectures of Japan",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": false,
+   "ok": false,
+   "latency_s": 0.7178771495819092,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": {
+    "reason": "no split of the text gives valid values for the slots of children_with_predicate",
+    "decision": "fill_closed_slot",
+    "depth": 0,
+    "text": "landlocked prefectures of Japan"
+   },
+   "got_template": null,
+   "path": null,
+   "slots_ok": false,
+   "dag_ok": false,
+   "exec_ok": false
+  },
+  {
+   "id": "w041",
+   "query": "southern Nagano",
+   "family": "modifier",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 5.363962650299072,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "direction_part",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 431.726 vs 431.726"
+  },
+  {
+   "id": "w042",
+   "query": "Tokyo",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 6.209320068359375,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w043",
+   "query": "Melbourne",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 6.643968105316162,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w044",
+   "query": "states of Australia",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.425981283187866,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "8 ids vs 8"
+  },
+  {
+   "id": "w045",
+   "query": "states bordering New South Wales",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.746403694152832,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "4 ids vs 4"
+  },
+  {
+   "id": "w046",
+   "query": "hospitals in Perth",
+   "family": "features",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.8516130447387695,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "features_in",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "16 ids vs 16"
+  },
+  {
+   "id": "w047",
+   "query": "which state is Cairns in",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.9255118370056152,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "parent",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w048",
+   "query": "20 km around Canberra",
+   "family": "modifier",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.0568768978118896,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "buffer",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 1257.319 vs 1257.319"
+  },
+  {
+   "id": "w049",
+   "query": "Victoria",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 5.80708384513855,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w050",
+   "query": "Lagos",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 4.20074200630188,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w051",
+   "query": "states bordering Kano",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.8944146633148193,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "4 ids vs 4"
+  },
+  {
+   "id": "w052",
+   "query": "local government areas of Lagos",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": false,
+   "ok": false,
+   "latency_s": 0.2812960147857666,
+   "model_calls": 2,
+   "requests_in_sequence": 1,
+   "unsupported": {
+    "reason": "the text 'local government areas' names no known admin_level",
+    "decision": "fill_closed_slot",
+    "depth": 0,
+    "text": "local government areas of Lagos"
+   },
+   "got_template": null,
+   "path": null,
+   "slots_ok": false,
+   "dag_ok": false,
+   "exec_ok": false
+  },
+  {
+   "id": "w053",
+   "query": "coastal states of Nigeria",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.1310787200927734,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_with_predicate",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "9 ids vs 9"
+  },
+  {
+   "id": "w054",
+   "query": "hospitals in Abuja",
+   "family": "features",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.058089017868042,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "features_in",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "18 ids vs 18"
+  },
+  {
+   "id": "w055",
+   "query": "which state is Ibadan in",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.8631300926208496,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "parent",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w056",
+   "query": "Kano and Kaduna",
+   "family": "set_algebra",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 6.447109937667847,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "union",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "2 ids vs 2"
+  },
+  {
+   "id": "w057",
+   "query": "Guadalajara",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 8.648313999176025,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w058",
+   "query": "states bordering Jalisco",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 4.341146230697632,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "6 ids vs 6"
+  },
+  {
+   "id": "w059",
+   "query": "municipalities of Yucatan",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": false,
+   "ok": false,
+   "latency_s": 0.19847512245178223,
+   "model_calls": 2,
+   "requests_in_sequence": 1,
+   "unsupported": {
+    "reason": "the text 'municipalities' names no known admin_level",
+    "decision": "fill_closed_slot",
+    "depth": 0,
+    "text": "municipalities of Yucatan"
+   },
+   "got_template": null,
+   "path": null,
+   "slots_ok": false,
+   "dag_ok": false,
+   "exec_ok": false
+  },
+  {
+   "id": "w060",
+   "query": "landlocked states of Mexico",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 4.744260311126709,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_with_predicate",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "15 ids vs 15"
+  },
+  {
+   "id": "w061",
+   "query": "schools in Monterrey",
+   "family": "features",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 9.059683084487915,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "features_in",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1082 ids vs 1082"
+  },
+  {
+   "id": "w062",
+   "query": "Oaxaca except Oaxaca de Juarez",
+   "family": "set_algebra",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 4.58649206161499,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "difference",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w063",
+   "query": "eastern Chihuahua",
+   "family": "modifier",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 3.045430898666382,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "direction_part",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 100312.625 vs 100312.625"
+  },
+  {
+   "id": "w064",
+   "query": "Durban",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.2900381088256836,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "w065",
+   "query": "provinces of South Africa",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.800584077835083,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "9 ids vs 9"
+  },
+  {
+   "id": "w066",
+   "query": "provinces bordering Gauteng",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 4.2573630809783936,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "4 ids vs 4"
+  },
+  {
+   "id": "w067",
+   "query": "coastal provinces of South Africa",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.6099340915679932,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_with_predicate",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "4 ids vs 4"
+  },
+  {
+   "id": "w068",
+   "query": "hospitals in Cape Town",
+   "family": "features",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 4.920264005661011,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "features_in",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "23 ids vs 23"
+  },
+  {
+   "id": "w069",
+   "query": "countries that border South Africa",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 3.194406032562256,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "6 ids vs 6"
+  },
+  {
+   "id": "w070",
+   "query": "within 3 km of Stellenbosch",
+   "family": "modifier",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.1026339530944824,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "buffer",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 223.323 vs 223.323"
+  }
+ ],
+ "summary": {
+  "pick_family": {
+   "n": 70,
+   "correct": 68
+  },
+  "pick_template": {
+   "n": 70,
+   "correct": 70
+  },
+  "pick_template_flat": {
+   "n": 70,
+   "correct": 67
+  },
+  "pick_split": {
+   "n": 70,
+   "correct": 70
+  },
+  "is_subquery": {
+   "n": 59,
+   "correct": 59
+  },
+  "select_source": {
+   "n": 23,
+   "correct": 22
+  },
+  "fill_closed_slot.admin_level": {
+   "n": 32,
+   "correct": 28
+  },
+  "fill_closed_slot.attr": {
+   "n": 1,
+   "correct": 1
+  },
+  "fill_closed_slot.category": {
+   "n": 10,
+   "correct": 10
+  },
+  "fill_closed_slot.direction": {
+   "n": 3,
+   "correct": 3
+  },
+  "fill_closed_slot.op": {
+   "n": 1,
+   "correct": 1
+  },
+  "fill_closed_slot.predicate": {
+   "n": 8,
+   "correct": 8
+  },
+  "pipeline": {
+   "attribute": {
+    "n": 1,
+    "dag_ok": 0
+   },
+   "features": {
+    "n": 10,
+    "dag_ok": 10
+   },
+   "hierarchy": {
+    "n": 23,
+    "dag_ok": 18
+   },
+   "lookup": {
+    "n": 16,
+    "dag_ok": 15
+   },
+   "modifier": {
+    "n": 7,
+    "dag_ok": 7
+   },
+   "predicate_filter": {
+    "n": 8,
+    "dag_ok": 6
+   },
+   "set_algebra": {
+    "n": 5,
+    "dag_ok": 5
+   },
+   "ALL": {
+    "n": 70,
+    "dag_ok": 61
+   }
+  }
+ }
+}

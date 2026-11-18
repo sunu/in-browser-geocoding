@@ -1,0 +1,106 @@
+# World gold set (plan-008 phase 7). Written on 2026-11-17. Use it only to report; do not tune on it.
+# Same record format as gold_src.yaml, plus `cc` and `ids`. `ids`: slot name to Overture id, for an anchor whose
+# top gazetteer candidate is not the gold place. `cc`: the country of the map view. `views` gives the view (bbox) of
+# each country. The build and the runs give this view to the gazetteer and to the executor.
+views:
+  US: [-125, 24, -66, 50]
+  GB: [-8.7, 49.8, 1.8, 60.9]
+  FR: [-5, 41, 10, 51.5]
+  DE: [5.8, 47.2, 15.1, 55.1]
+  BR: [-74, -34, -34, 5.5]
+  JP: [129, 30, 146, 46]
+  AU: [112, -44, 154, -10]
+  NG: [2.7, 4.2, 14.7, 13.9]
+  MX: [-118, 14.5, -86.5, 32.8]
+  ZA: [16.4, -35, 32.9, -22.1]
+
+records:
+  # United States
+  - {cc: US, q: "Springfield", t: lookup_place, s: {anchor: "Springfield"}, src: {anchor: overture}}
+  - {cc: US, q: "counties of Nevada", t: children, s: {level: district, parent: "Nevada"}}
+  - {cc: US, q: "states that border Oregon", t: neighbors, s: {level: state, of: "Oregon"}}
+  - {cc: US, q: "coastal counties of Georgia", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Georgia"}}
+  - {cc: US, q: "hospitals in San Francisco", t: features_in, s: {category: "hospital", region: "San Francisco"}}
+  - {cc: US, q: "which state is Boise in", t: parent, s: {level: state, child: "Boise"}}
+  - {cc: US, q: "Texas except Harris County", t: difference, s: {a: "Texas", b: "Harris County"}}
+
+  # United Kingdom
+  - {cc: GB, q: "Manchester", t: lookup_place, s: {anchor: "Manchester"}, src: {anchor: overture}}
+  - {cc: GB, q: "counties of Wales", t: children, s: {level: district, parent: "Wales"}}
+  - {cc: GB, q: "schools in Oxford", t: features_in, s: {category: "school", region: "Oxford"}}
+  - {cc: GB, q: "5 km around York", t: buffer, s: {distance: 5000, target: "York"}, src: {target: overture}}
+  - {cc: GB, q: "northern Scotland", t: direction_part, s: {dir: north, target: "Scotland"}, src: {target: overture}}
+  - {cc: GB, q: "England and Wales", t: union, s: {a: "England", b: "Wales"}}
+  - {cc: GB, q: "Edinburgh", t: lookup_place, s: {anchor: "Edinburgh"}, src: {anchor: overture}}
+
+  # France
+  - {cc: FR, q: "Paris", t: lookup_place, s: {anchor: "Paris"}, src: {anchor: overture}}
+  - {cc: FR, q: "departments of Bretagne", t: children, s: {level: district, parent: "Bretagne"}}
+  - {cc: FR, q: "regions of France", t: children, s: {level: state, parent: "France"}}
+  - {cc: FR, q: "hospitals in Lyon", t: features_in, s: {category: "hospital", region: "Lyon"}}
+  - {cc: FR, q: "landlocked departments of Occitanie", t: children_with_predicate, s: {pred: landlocked, level: district, parent: "Occitanie"}}
+  - {cc: FR, q: "countries that border France", t: neighbors, s: {level: country, of: "France"}}
+  - {cc: FR, q: "Marseille", t: lookup_place, s: {anchor: "Marseille"}, src: {anchor: overture}}
+
+  # Germany
+  - {cc: DE, q: "Bavaria", t: lookup_place, s: {anchor: "Bavaria"}, src: {anchor: overture}}
+  - {cc: DE, q: "states of Germany", t: children, s: {level: state, parent: "Germany"}}
+  - {cc: DE, q: "states bordering Bavaria", t: neighbors, s: {level: state, of: "Bavaria"}}
+  - {cc: DE, q: "schools in Munich", t: features_in, s: {category: "school", region: "Munich"}}
+  - {cc: DE, q: "coastal states of Germany", t: children_with_predicate, s: {pred: coastal, level: state, parent: "Germany"}}
+  - {cc: DE, q: "10 km around Cologne", t: buffer, s: {distance: 10000, target: "Cologne"}, src: {target: overture}}
+  - {cc: DE, q: "Berlin and Brandenburg", t: union, s: {a: "Berlin", b: "Brandenburg"}}
+
+  # Brazil
+  - {cc: BR, q: "Recife", t: lookup_place, s: {anchor: "Recife"}, src: {anchor: overture}}
+  - {cc: BR, q: "Minas Gerais", t: lookup_place, s: {anchor: "Minas Gerais"}, src: {anchor: overture}}
+  - {cc: BR, q: "states bordering Bahia", t: neighbors, s: {level: state, of: "Bahia"}}
+  - {cc: BR, q: "coastal states of Brazil", t: children_with_predicate, s: {pred: coastal, level: state, parent: "Brazil"}}
+  - {cc: BR, q: "schools in Recife", t: features_in, s: {category: "school", region: "Recife"}}
+  - {cc: BR, q: "cities in Minas Gerais with population over 1 million", t: children_attr, s: {level: city, parent: "Minas Gerais", attr: population, op: gt, value: 1000000}}
+  - {cc: BR, q: "which state is Campinas in", t: parent, s: {level: state, child: "Campinas"}}
+
+  # Japan
+  - {cc: JP, q: "Osaka", t: lookup_place, s: {anchor: "Osaka"}, src: {anchor: overture}}
+  - {cc: JP, q: "Hokkaido", t: lookup_place, s: {anchor: "Hokkaido"}, src: {anchor: overture}}
+  - {cc: JP, q: "prefectures bordering Kyoto", t: neighbors, s: {level: state, of: "Kyoto"}, ids: {of: ff26e266-55bc-45e0-b43e-b7dae13aedac}, n: "Kyoto Prefecture. The top gazetteer candidate is Kyoto city."}
+  - {cc: JP, q: "hospitals in Sapporo", t: features_in, s: {category: "hospital", region: "Sapporo"}}
+  - {cc: JP, q: "landlocked prefectures of Japan", t: children_with_predicate, s: {pred: landlocked, level: state, parent: "Japan"}}
+  - {cc: JP, q: "southern Nagano", t: direction_part, s: {dir: south, target: "Nagano"}, src: {target: overture}}
+  - {cc: JP, q: "Tokyo", t: lookup_place, s: {anchor: "Tokyo"}, src: {anchor: overture}}
+
+  # Australia
+  - {cc: AU, q: "Melbourne", t: lookup_place, s: {anchor: "Melbourne"}, src: {anchor: overture}}
+  - {cc: AU, q: "states of Australia", t: children, s: {level: state, parent: "Australia"}}
+  - {cc: AU, q: "states bordering New South Wales", t: neighbors, s: {level: state, of: "New South Wales"}}
+  - {cc: AU, q: "hospitals in Perth", t: features_in, s: {category: "hospital", region: "Perth"}}
+  - {cc: AU, q: "which state is Cairns in", t: parent, s: {level: state, child: "Cairns"}}
+  - {cc: AU, q: "20 km around Canberra", t: buffer, s: {distance: 20000, target: "Canberra"}, src: {target: overture}}
+  - {cc: AU, q: "Victoria", t: lookup_place, s: {anchor: "Victoria"}, src: {anchor: overture}}
+
+  # Nigeria
+  - {cc: NG, q: "Lagos", t: lookup_place, s: {anchor: "Lagos"}, src: {anchor: overture}}
+  - {cc: NG, q: "states bordering Kano", t: neighbors, s: {level: state, of: "Kano"}}
+  - {cc: NG, q: "local government areas of Lagos", t: children, s: {level: district, parent: "Lagos"}}
+  - {cc: NG, q: "coastal states of Nigeria", t: children_with_predicate, s: {pred: coastal, level: state, parent: "Nigeria"}}
+  - {cc: NG, q: "hospitals in Abuja", t: features_in, s: {category: "hospital", region: "Abuja"}}
+  - {cc: NG, q: "which state is Ibadan in", t: parent, s: {level: state, child: "Ibadan"}}
+  - {cc: NG, q: "Kano and Kaduna", t: union, s: {a: "Kano", b: "Kaduna"}}
+
+  # Mexico
+  - {cc: MX, q: "Guadalajara", t: lookup_place, s: {anchor: "Guadalajara"}, src: {anchor: overture}}
+  - {cc: MX, q: "states bordering Jalisco", t: neighbors, s: {level: state, of: "Jalisco"}}
+  - {cc: MX, q: "municipalities of Yucatan", t: children, s: {level: district, parent: "Yucatan"}}
+  - {cc: MX, q: "landlocked states of Mexico", t: children_with_predicate, s: {pred: landlocked, level: state, parent: "Mexico"}}
+  - {cc: MX, q: "schools in Monterrey", t: features_in, s: {category: "school", region: "Monterrey"}}
+  - {cc: MX, q: "Oaxaca except Oaxaca de Juarez", t: difference, s: {a: "Oaxaca", b: "Oaxaca de Juarez"}}
+  - {cc: MX, q: "eastern Chihuahua", t: direction_part, s: {dir: east, target: "Chihuahua"}, src: {target: overture}}
+
+  # South Africa
+  - {cc: ZA, q: "Durban", t: lookup_place, s: {anchor: "Durban"}, src: {anchor: overture}}
+  - {cc: ZA, q: "provinces of South Africa", t: children, s: {level: state, parent: "South Africa"}}
+  - {cc: ZA, q: "provinces bordering Gauteng", t: neighbors, s: {level: state, of: "Gauteng"}}
+  - {cc: ZA, q: "coastal provinces of South Africa", t: children_with_predicate, s: {pred: coastal, level: state, parent: "South Africa"}}
+  - {cc: ZA, q: "hospitals in Cape Town", t: features_in, s: {category: "hospital", region: "Cape Town"}}
+  - {cc: ZA, q: "countries that border South Africa", t: neighbors, s: {level: country, of: "South Africa"}}
+  - {cc: ZA, q: "within 3 km of Stellenbosch", t: buffer, s: {distance: 3000, target: "Stellenbosch"}, src: {target: overture}}

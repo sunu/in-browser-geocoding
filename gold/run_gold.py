@@ -7,6 +7,7 @@ Usage:
   uv run python -m gold.run_gold --provider rules
   uv run python -m gold.run_gold --provider jev --jev-mode cached
   options: --execute (compare executed results with expected_ids), --limit N, --only g001,g002
+  GEOPARSE_SCOPE=world uv run python -m gold.run_gold --provider config --setup web --set world --execute
 """
 from __future__ import annotations
 
@@ -172,7 +173,7 @@ def eval_isolated(parser: Parser, dec: Decider, rec: dict[str, Any], text: str, 
                 continue
             gold_sub = isinstance(v, dict) and "q" in v
             txt = re.sub(r"^(the|a|an)\s+", "", open_text(v), flags=re.I)
-            exact = parser.store.search(txt, fuzzy=False, limit=1)
+            exact = parser.store.search(txt, fuzzy=False, limit=1, view=rec.get("view"))
             d = dec.is_subquery(txt, depth=depth, context={"gazetteer_exact": bool(exact),
                                                            "has_distance": bool(re.search(r"\d", txt))})
             add("is_subquery", d.value == gold_sub, got=d.value, gold=gold_sub, text=txt, conf=d.confidence)
@@ -180,7 +181,7 @@ def eval_isolated(parser: Parser, dec: Decider, rec: dict[str, Any], text: str, 
                 eval_isolated(parser, dec, rec, v["q"], v["t"], v["s"], {}, depth + 1, templates[v["t"]].family, out, flat)
         if name in src:
             txt = open_text(slots[name])
-            cands_g = parser.store.search(txt, limit=1)
+            cands_g = parser.store.search(txt, limit=1, view=rec.get("view"))
             top = cands_g[0] if cands_g else None
             d = dec.select_source(txt, {"gazetteer_match": top.description if top else None,
                                         "gazetteer_top_score": top.score if top else 0.0}, depth=depth)
@@ -201,7 +202,7 @@ def split_key(tpl, parts: dict[str, str], matches: list[dict[str, Any]]) -> tupl
 def exec_compare(rec: dict[str, Any], dag: dict[str, Any], ex) -> tuple[bool | None, str]:
     if rec["expected_ids"] is None:
         return None, "needs network"
-    res = ex.execute(dag, with_geometry="expected_geometry" in rec)
+    res = ex.execute(dag, with_geometry="expected_geometry" in rec, view=rec.get("view"))
     if not res.ok:
         return False, res.error or ""
     if rec.get("expected_geometry"):
@@ -237,7 +238,9 @@ def main() -> None:
     ap.add_argument("--no-ner", action="store_true")
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--tag", default="")
-    ap.add_argument("--set", default="gold", help="gold or heldout")
+    ap.add_argument("--set", default="gold", help="gold, heldout or world (world: GEOPARSE_SCOPE=world)")
+    ap.add_argument("--setup", choices=["default", "web"], default="default",
+                    help="web: as the browser version (T5 frames only, no split patterns, no NER)")
     ap.add_argument("--no-prune", action="store_true", help="the model sees every family and template")
     args = ap.parse_args()
 
@@ -252,9 +255,10 @@ def main() -> None:
     logger = DecisionLogger()
     # "config" uses the provider of each decision from the config file.
     base = Decider(default=None if args.provider == "config" else args.provider, logger=logger,
-                   use_ner=not args.no_ner, jev_mode=args.jev_mode,
+                   use_ner=not args.no_ner and args.setup != "web", jev_mode=args.jev_mode,
                    jev_cache=args.jev_cache)
-    parser = Parser(base, prune_by_pattern=not args.no_prune)
+    web = {"use_t5": True, "use_patterns": "never"} if args.setup == "web" else {}
+    parser = Parser(base, prune_by_pattern=not args.no_prune, **web)
     # Warm up GLiNER and the store so that the first query does not carry the load time.
     parser.parse("Kerala")
 
@@ -281,7 +285,7 @@ def main() -> None:
 
     def one_pipe(rec):
         t0 = time.time()
-        p = parser.parse(rec["query"])
+        p = parser.parse(rec["query"], view=rec.get("view"))
         dt = time.time() - t0
         row = {"id": rec["id"], "query": rec["query"], "family": rec["family"], "depth": rec["depth"],
                "template_ok": p.template == rec["template"], "ok": p.ok, "latency_s": dt,
@@ -306,7 +310,8 @@ def main() -> None:
         pipe = list(pool.map(one_pipe, recs))
 
     report = summarize(iso, pipe, recs, args)
-    tag = (f"{args.set}-" if args.set != "gold" else "") + args.provider + (f"-{args.tag}" if args.tag else "")
+    tag = (f"{args.set}-" if args.set != "gold" else "") + args.provider + ("-web" if args.setup == "web" else "") + (
+        f"-{args.tag}" if args.tag else "")
     REPORTS.mkdir(exist_ok=True)
     (REPORTS / f"gold-{tag}.json").write_text(json.dumps({"isolated": iso, "pipeline": pipe, "summary": report["summary"]},
                                                          indent=1, default=str))

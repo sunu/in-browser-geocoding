@@ -4,7 +4,7 @@ For each record: the gold DAG (from the template and the gold slots), and expect
 execution of the gold DAG on the local extract). Records whose DAG needs the geocoder get
 expected_ids = null, because the gold suite must not depend on the network.
 
-Usage: uv run python gold/build_gold.py [--no-execute]
+Usage: uv run python gold/build_gold.py [--no-execute] [--set gold|heldout|world]
 """
 from __future__ import annotations
 
@@ -25,7 +25,9 @@ from geoparse.templates.model import CLOSED_TYPES, OPEN_TYPES, all_templates
 GOLD_DIR = Path(__file__).resolve().parent
 
 
-def gold_dag(t: str, s: dict[str, Any], src: dict[str, str] | None = None) -> dict[str, Any]:
+def gold_dag(t: str, s: dict[str, Any], src: dict[str, str] | None = None, view: list[float] | None = None,
+             pins: dict[str, str] | None = None) -> dict[str, Any]:
+    """pins: slot name to Overture id, for an anchor whose top gazetteer candidate is not the gold place."""
     tpl = all_templates()[t]
     store = get_store()
     values: dict[str, Any] = {}
@@ -36,17 +38,17 @@ def gold_dag(t: str, s: dict[str, Any], src: dict[str, str] | None = None) -> di
             if isinstance(v, dict) and "lex" in v:
                 values[name] = {"op": "LexiconSet", "args": {"key": v["lex"]}}
             elif isinstance(v, dict) and "q" in v:
-                values[name] = gold_dag(v["t"], v["s"])
+                values[name] = gold_dag(v["t"], v["s"], view=view)
             else:
                 source = (src or {}).get(name, "overture")
                 if source == "photon":
                     values[name] = {"op": "Resolve", "args": {"name": v, "source": "photon"}}
                 else:
                     hint = level if t == "neighbors" and level not in (None, "none") else None
-                    cands = store.search(v, type_hint=hint)
-                    if not cands:
+                    cands = [] if name in (pins or {}) else store.search(v, type_hint=hint, view=view)
+                    if not cands and name not in (pins or {}):
                         raise ValueError(f"gold anchor {v!r} not found")
-                    args = {"name": v, "source": "overture", "id": cands[0].id}
+                    args = {"name": v, "source": "overture", "id": (pins or {}).get(name) or cands[0].id}
                     if hint:
                         args["type_hint"] = hint
                     values[name] = {"op": "Resolve", "args": args}
@@ -104,28 +106,34 @@ def needs_network(dag: Any) -> bool:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-execute", action="store_true")
-    ap.add_argument("--set", default="gold", help="gold or heldout")
+    ap.add_argument("--set", default="gold", help="gold, heldout or world (world: GEOPARSE_SCOPE=world)")
     args = ap.parse_args()
     src = yaml.safe_load((GOLD_DIR / f"{args.set}_src.yaml").read_text())
+    # The world set: {views: {cc: bbox}, records: [... {cc: ...}]}. Each record gets the view of its country.
+    views = src.get("views", {}) if isinstance(src, dict) else {}
+    src = src["records"] if isinstance(src, dict) else src
     templates = all_templates()
     ex = Executor()
     out = []
     for i, r in enumerate(src):
         t = r["t"]
-        dag = gold_dag(t, r["s"], r.get("src"))
+        view = views.get(r.get("cc"))
+        dag = gold_dag(t, r["s"], r.get("src"), view, r.get("ids"))
         rec = {
-            "id": f"{'g' if args.set == 'gold' else 'h'}{i + 1:03d}", "query": r["q"], "lang": "en", "family": templates[t].family, "template": t,
+            "id": f"{args.set[0]}{i + 1:03d}", "query": r["q"], "lang": "en", "family": templates[t].family, "template": t,
             "slots": r["s"], "src": r.get("src", {}), "depth": depth_of(r["s"]), "dag": dag,
             "expected_ids": None, "notes": r.get("n", ""),
         }
+        if view:
+            rec["cc"], rec["view"] = r["cc"], view
         if not args.no_execute and not needs_network(dag):
-            res = ex.execute(dag, with_geometry=False)
+            res = ex.execute(dag, with_geometry=False, view=view)
             if not res.ok:
                 raise RuntimeError(f"{rec['id']} {r['q']!r}: {res.error}")
             rec["expected_ids"] = res.ids
             rec["expected_names"] = sorted({f.name for f in res.features if f.name})[:40]
             if res.kind == "geometry":
-                rec["expected_geometry"] = geometry_summary(ex.execute(dag, with_geometry=True))
+                rec["expected_geometry"] = geometry_summary(ex.execute(dag, with_geometry=True, view=view))
         out.append(rec)
         print(f"{rec['id']} d{rec['depth']} {t:24s} {r['q']!r:60s} n={len(rec['expected_ids']) if rec['expected_ids'] is not None else '-'}")
     with (GOLD_DIR / f"{args.set}.jsonl").open("w") as f:
