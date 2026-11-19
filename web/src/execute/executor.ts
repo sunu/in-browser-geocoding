@@ -172,14 +172,40 @@ class Run {
 
   // ------------------------------------------------------------ hierarchy
 
+  /** Port of level_countries: the countries of the divisions of a relation; for a natural feature, the countries
+   * whose simplified shape is near it (country_shapes). Loads their data. */
+  async levelCountries(rel: string): Promise<string[]> {
+    let codes = (await this.run(`SELECT DISTINCT d.country FROM ${rel} r JOIN divisions d ON d.id = r.id
+      WHERE d.country IS NOT NULL AND d.country <> 'XN' ORDER BY 1`)).map((r) => r.country as string);
+    if (!codes.length) {
+      if (!(await this.run(`SELECT count(*) AS n FROM ${rel} WHERE subtype = 'natural'`))[0].n) return [await this.countryOf(rel)];
+      await this.ex.db.store?.ensureCountryShapes();
+      codes = (await this.run(`SELECT country FROM country_shapes WHERE ST_DWithin(geometry, ${this.unionGeom(rel, "gs")},
+        ${Number(this.policy.around_tolerance_deg)}) ORDER BY 1`)).map((r) => r.country);
+      if (!codes.length) return [await this.countryOf(rel)];
+    }
+    await this.ex.db.store?.ensureCountries(codes);
+    return codes;
+  }
+
+  /** Port of levels_filter: the level filter of each country, joined with OR. */
+  levelsFilter(level: string, codes: string[]): string {
+    return codes.length === 1 ? this.levelFilter(level, codes[0]) : `(${codes.map((c) => `(${this.levelFilter(level, c)})`).join(" OR ")})`;
+  }
+
   async op_Children(a: any) {
     const parent = await this.eval(a.of);
-    const country = await this.countryOf(parent);
+    // Several parent countries ("districts along the Danube"), or a natural feature: the level filter of each country.
+    const codes = await this.levelCountries(parent);
+    let country = await this.countryOf(parent);
+    if (!codes.includes(country)) country = codes[0];
     const level = !a.level || a.level === "none" ? await this.childLevel(parent, country) : a.level;
     await this.levelData(level);
-    const lf = this.levelFilter(level, country);
-    // A direction part has the id of its source but only a part of its geometry: use the geometry.
-    if ((await this.idsOf(parent)).length && a.of?.op !== "Direction")
+    const lf = this.levelsFilter(level, codes);
+    // A direction part has the id of its source but only a part of its geometry, and a natural feature is not an
+    // ancestor of divisions: use the geometry.
+    const natural = (await this.run(`SELECT count(*) AS n FROM ${parent} WHERE subtype = 'natural'`))[0].n > 0;
+    if ((await this.idsOf(parent)).length && a.of?.op !== "Direction" && !natural)
       return this.divisionsRel(`${lf} AND EXISTS (SELECT 1 FROM ${parent} p
         WHERE p.id IS NOT NULL AND p.id <> d.id AND list_contains(d.ancestors, p.id))`);
     return this.divisionsRel(`${lf} AND ST_Intersects(d.geometry, ${this.unionGeom(parent, "gs")})`);
@@ -212,14 +238,16 @@ class Run {
     const src = await this.eval(a.of);
     const tol = this.deg(Number(this.policy.neighbor_tolerance_m), await this.latOf(src));
     let level = a.level;
-    const country = await this.countryOf(src);
+    const codes = await this.levelCountries(src);
+    let country = await this.countryOf(src);
+    if (!codes.includes(country)) country = codes[0];
     if (!level || level === "none") {
       const subtypes = (await this.run(`SELECT DISTINCT subtype FROM ${src}`)).map((r) => r.subtype);
       level = Object.entries(countryPolicy(this.policy, country).admin_levels).find(([, v]: any) => subtypes.every((s) => v.includes(s)))?.[0];
       if (!level) throw new ExecError(`cannot find a level for neighbors of subtypes ${subtypes}`);
     }
     await this.levelData(level);
-    return this.divisionsRel(`${this.levelFilter(level, country)} AND a.id IS NOT NULL
+    return this.divisionsRel(`${this.levelsFilter(level, codes)} AND a.id IS NOT NULL
       AND d.id NOT IN (SELECT id FROM ${src} WHERE id IS NOT NULL)
       AND ST_DWithin(a.gs, ${this.unionGeom(src, "gs")}, ${tol})`);
   }

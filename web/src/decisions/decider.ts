@@ -83,6 +83,8 @@ export class Decider {
     const base = decision.split(".")[0];
     if (base === "select_source") {
       // A typo in a street word counts only if the gazetteer has no good match ("Minas Gerais" is not "minar").
+      // An exact natural feature ("Lake Geneva"): "lake" is also a street word, but the gazetteer has the place.
+      if (ctx.gazetteer_top_subtype === "natural" && (ctx.gazetteer_top_score ?? 0) >= 1.0) return { value: "overture", confidence: 0.8, impl: "rules-v1", trace: {} };
       if (keywordHits(ctx.text, STREET_WORDS, (ctx.gazetteer_top_score ?? 0) < 1.0)) return { value: "photon", confidence: 0.8, impl: "rules-v1", trace: {} };
       if ((ctx.gazetteer_top_score ?? 0) >= 1.0) return { value: "overture", confidence: 0.8, impl: "rules-v1", trace: {} };
       return { value: "photon", confidence: 0.6, impl: "rules-v1", trace: {} };
@@ -168,7 +170,7 @@ export class Decider {
     return d;
   }
 
-  selectSource(text: string, ctx: { gazetteer_match: string | null; gazetteer_top_score: number }, depth: number) {
+  selectSource(text: string, ctx: { gazetteer_match: string | null; gazetteer_top_score: number; gazetteer_top_subtype?: string | null }, depth: number) {
     const state = { text, gazetteer_match: ctx.gazetteer_match ?? "none" };
     return this.choose("select_source", depth, state, this.bundle.source_options, { text, ...ctx }, { text, ...ctx });
   }

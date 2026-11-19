@@ -85,6 +85,7 @@ def export_data(simplify_out: float, out: Path) -> None:
         "names.parquet": "SELECT id, name_norm, name_nospace, kind FROM names ORDER BY name_norm",
         "layers.parquet": "SELECT name, ST_AsWKB(geometry) AS wkb FROM layers",
         "layer_dist.parquet": "SELECT * FROM layer_dist ORDER BY id",
+        "country_shapes.parquet": "SELECT country, ST_AsWKB(geometry) AS wkb FROM country_shapes ORDER BY country",
         # Read with HTTP range requests.
         "areas.parquet": f"""SELECT id, subtype, ST_AsWKB(gs) AS gs_wkb,
                                     ST_XMin(gs) AS xmin, ST_YMin(gs) AS ymin, ST_XMax(gs) AS xmax, ST_YMax(gs) AS ymax

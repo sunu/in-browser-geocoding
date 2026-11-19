@@ -30,6 +30,8 @@ from geoparse.templates.model import CLOSED_TYPES, OPEN_TYPES, Template, load_fa
 SIMPLE_FAMILIES = {"lookup", "modifier"}
 # Families whose anchors can go to the geocoder. "features" is here because plan-002 routes POIs to Photon.
 GEOCODER_FAMILIES = {"lookup", "modifier", "features"}
+# Templates whose optional parent (first name) without text is the countries around another slot (second name).
+AROUND_DEFAULT = {"children_touching": ("parent", "other")}
 # Templates where the admin level can be empty (an unknown level word). The executor uses the data.
 STRUCTURE_LEVEL = {"children", "children_with_predicate"}
 
@@ -447,10 +449,14 @@ class Parser:
         if "level" in jobs:
             lv = jobs["level"].result()
             level_hint = lv.value if lv.value != "none" else None
+        around = None
         for name, sd in tpl.slots.items():
             if sd.type in OPEN_TYPES and name not in seg_of:
-                # Optional open slot without text: the default is the country of the extract.
-                values[name], slots[name] = self._default_region(sd), None
+                if tpl.id in AROUND_DEFAULT and name == AROUND_DEFAULT[tpl.id][0]:
+                    around = name
+                    continue
+                # Optional open slot without text: the default is the country of the map view.
+                values[name], slots[name] = self._default_region(sd, dec), None
                 continue
             if sd.type in OPEN_TYPES:
                 seg_text = match["segments"][seg_of[name]]
@@ -485,6 +491,8 @@ class Parser:
                 values[name] = None
             else:
                 values[name] = r.value
+        if around:
+            values[around], slots[around] = self._around(dec, tpl.slots[around], values.get(AROUND_DEFAULT[tpl.id][1])), None
         if tpl.id in STRUCTURE_LEVEL and values.get("level") is None and "level" in seg_of:
             # The level from the data only below a country that the text names: an unknown word below a state is
             # a level that the data does not have ("talukas of Maharashtra"), and "talukas" alone is not "states".
@@ -494,10 +502,27 @@ class Parser:
                                         decision="fill_closed_slot", depth=depth, text=text))
         return values, slots
 
-    def _default_region(self, sd) -> dict[str, Any]:
+    def _around(self, dec: Decider, sd, other: Any) -> dict[str, Any]:
+        """Default parent of "districts along the Yamuna": the countries whose extent overlaps the extent of the
+        other place (the Touches filter then keeps the exact ones). The country of the map view if the other place
+        is not one resolved place."""
+        oid = other.get("args", {}).get("id") if isinstance(other, dict) and other.get("op") == "Resolve" else None
+        codes = self.store.countries_around(oid) if oid else []
+        if not codes:
+            return self._default_region(sd, dec)
+        rows = self.store.cursor().execute(
+            "SELECT country, id, name FROM divisions WHERE subtype = 'country' AND country IN (SELECT unnest(?)) ORDER BY country",
+            [codes]).fetchall()
+        node = None
+        for _, id_, name in rows:
+            r = {"op": "Resolve", "args": {"name": name, "source": "overture", "id": id_}}
+            node = r if node is None else {"op": "Union", "args": {"a": node, "b": r}}
+        return node or self._default_region(sd, dec)
+
+    def _default_region(self, sd, dec: Decider) -> dict[str, Any]:
         if sd.default != "country":
             raise _Stop(Unsupported(reason=f"no default for open slot ({sd.default!r})"))
-        code = self.cfg["data"]["country"]
+        code = dec.view_country or self.cfg["data"]["country"]
         row = self.store.cursor().execute(
             "SELECT id, name FROM divisions WHERE subtype = 'country' AND country = ?", [code]).fetchone()
         if not row:
@@ -550,7 +575,8 @@ class Parser:
             cands = exact or self.store.search(text, type_hint=type_hint, limit=3, view=dec.view)
             top = cands[0] if cands else None
             sd = dec.select_source(text, {"gazetteer_match": top.description if top else None,
-                                          "gazetteer_top_score": top.score if top else 0.0}, depth=depth)
+                                          "gazetteer_top_score": top.score if top else 0.0,
+                                          "gazetteer_top_subtype": top.subtype if top else None}, depth=depth)
             if dec.below("select_source", sd):
                 raise _Stop(Unsupported(reason=f"low confidence for select_source ({sd.confidence:.2f})",
                                         decision="select_source", depth=depth, text=text))

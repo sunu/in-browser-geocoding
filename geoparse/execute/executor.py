@@ -25,7 +25,7 @@ from pydantic import BaseModel, Field
 
 from geoparse.config import country_policy, load_config
 from geoparse.dsl.schema import CATALOG, validate
-from geoparse.execute.data import Store, get_store
+from geoparse.execute.data import NATURAL_COUNTRY, Store, get_store
 from geoparse.execute.geocoder import Geocoder, PhotonGeocoder
 from geoparse.options import category_leaves, choices, lexicon
 
@@ -173,6 +173,26 @@ class _Run:
                        "GROUP BY 1 ORDER BY count(*) DESC, 1 LIMIT 1").fetchone()
         return row[0] if row else self.ex.cfg["data"]["country"]
 
+    def level_countries(self, rel: str) -> list[str]:
+        """Countries for the level filter of a relation: the countries of its divisions. A natural feature is in no
+        country: the countries whose simplified shape is near it (country_shapes)."""
+        codes = [r[0] for r in self.run(f"SELECT DISTINCT d.country FROM {rel} r JOIN divisions d ON d.id = r.id "
+                                        f"WHERE d.country IS NOT NULL AND d.country <> '{NATURAL_COUNTRY}' ORDER BY 1").fetchall()]
+        if codes:
+            return codes
+        if not self.run(f"SELECT count(*) FROM {rel} WHERE subtype = 'natural'").fetchone()[0]:
+            return [self.country_of(rel)]
+        tol = float(self.policy["around_tolerance_deg"])
+        codes = [r[0] for r in self.run(f"SELECT country FROM country_shapes WHERE ST_DWithin(geometry, "
+                                        f"{self.union_geom(rel, 'gs')}, {tol}) ORDER BY 1").fetchall()]
+        return codes or [self.country_of(rel)]
+
+    def levels_filter(self, level: str, codes: list[str]) -> str:
+        """The level filter of each country, joined with OR."""
+        if len(codes) == 1:
+            return self.level_filter(level, codes[0])
+        return "(" + " OR ".join(f"({self.level_filter(level, c)})" for c in codes) + ")"
+
     def level_filter(self, level: str, country: str, alias: str = "d") -> str:
         p = country_policy(self.policy, country)
         cond = [f"{alias}.subtype IN ({', '.join(_q(s) for s in p['admin_levels'][level])})"]
@@ -274,12 +294,18 @@ class _Run:
 
     def op_Children(self, of: Any, level: str | None = None) -> str:
         parent = self.eval(of)
+        # Several parent countries ("districts along the Danube"), or a natural feature: the level filter of each
+        # country.
+        codes = self.level_countries(parent)
         country = self.country_of(parent)
+        country = country if country in codes else codes[0]
         if level is None or level == "none":
             level = self.child_level(parent, country)
-        lf = self.level_filter(level, country)
-        # A direction part has the id of its source but only a part of its geometry: use the geometry.
-        if self.ids_of(parent) and not (isinstance(of, dict) and of.get("op") == "Direction"):
+        lf = self.levels_filter(level, codes)
+        # A direction part has the id of its source but only a part of its geometry, and a natural feature is not
+        # an ancestor of divisions: use the geometry.
+        natural = self.run(f"SELECT count(*) FROM {parent} WHERE subtype = 'natural'").fetchone()[0] > 0
+        if self.ids_of(parent) and not (isinstance(of, dict) and of.get("op") == "Direction") and not natural:
             return self.divisions_rel(
                 f"{lf} AND EXISTS (SELECT 1 FROM {parent} p "
                 f"WHERE p.id IS NOT NULL AND p.id <> d.id AND list_contains(d.ancestors, p.id))")
@@ -313,7 +339,9 @@ class _Run:
         src = self.eval(of)
         lat = self.lat_of(src)
         tol = self.deg(float(self.policy["neighbor_tolerance_m"]), lat)
+        codes = self.level_countries(src)
         country = self.country_of(src)
+        country = country if country in codes else codes[0]
         if level is None or level == "none":
             subtypes = [r[0] for r in self.run(f"SELECT DISTINCT subtype FROM {src}").fetchall()]
             levels = country_policy(self.policy, country)["admin_levels"]
@@ -322,7 +350,7 @@ class _Run:
                 raise ExecutionError(f"cannot find a level for neighbors of subtypes {subtypes}")
             level = lvl
         return self.divisions_rel(
-            f"{self.level_filter(level, country)} AND a.id IS NOT NULL "
+            f"{self.levels_filter(level, codes)} AND a.id IS NOT NULL "
             f"AND d.id NOT IN (SELECT id FROM {src} WHERE id IS NOT NULL) "
             f"AND ST_DWithin(crs84(a.gs), {self.union_geom(src, 'gs')}, {tol})")
 

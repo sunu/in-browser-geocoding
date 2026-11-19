@@ -6,8 +6,10 @@ import { list, q, type Db } from "./db.ts";
 
 const PRIOR: Record<string, number> = {
   country: 0.40, region: 0.38, county: 0.30, "locality|city": 0.32, "locality|town": 0.20, "locality|": 0.12,
-  macrohood: 0.16, neighborhood: 0.10, microhood: 0.06, "locality|village": 0.02, "locality|hamlet": 0.0,
+  macrohood: 0.16, neighborhood: 0.10, microhood: 0.06, "locality|village": 0.02, "locality|hamlet": 0.0, natural: 0.3,
 };
+// geoparse.execute.data.NATURAL_COUNTRY: natural features are in no country.
+const NATURAL_COUNTRY = "XN";
 
 // geoparse.execute.data.KIND_SCORE and FUZZY_PREFIX
 // Level words at the end of region names that have no short form. The search also tries "<name> <suffix>".
@@ -44,6 +46,16 @@ export class Gazetteer {
   }
 
   /** Extent of the division points of each country: the manifest bbox, or the divisions table (flat layout). */
+  /** Port of Store.countries_around: the countries whose simplified shape is near a division or natural feature
+   * (its area, else its point; policy.around_tolerance_deg), in code order. */
+  async countriesAround(id: string): Promise<string[]> {
+    await this.db.store?.ensureCountryShapes();
+    const tol = Number(this.bundle.config.policy.around_tolerance_deg);
+    return (await this.db.query(`SELECT country FROM country_shapes WHERE ST_DWithin(geometry,
+      (SELECT coalesce(a.gs, d.geometry) FROM divisions d LEFT JOIN areas a ON a.id = d.id WHERE d.id = ${q(id)}), ${tol})
+      ORDER BY 1`)).map((x) => x.country);
+  }
+
   private countryExtents(): Promise<Record<string, number[]>> {
     const m = this.db.store?.manifest;
     if (m) return Promise.resolve(Object.fromEntries(Object.entries<any>(m.countries).map(([c, d]) => [c, d.bbox])));
@@ -95,9 +107,16 @@ export class Gazetteer {
     if (!n) return [];
     const levelWords = new Set(["district", "state", "city", "town", "taluk", "village"]);
     const words = n.split(" ");
-    const hintFromName = words.length > 1 && levelWords.has(words[words.length - 1]) ? words[words.length - 1] : null;
+    let hintFromName = words.length > 1 && levelWords.has(words[words.length - 1]) ? words[words.length - 1] : null;
     const qList = [n];
     if (hintFromName) qList.push(words.slice(0, -1).join(" "));
+    else {
+      // "Ganga river" -> name "ganga", hint "natural:river" (policy.natural_hints)
+      for (const [kind, ws] of Object.entries<string[]>(this.bundle.config.policy.natural_hints)) {
+        const w = ws.find((w) => n.endsWith(" " + w));
+        if (w) { hintFromName = `natural:${kind}`; qList.push(n.slice(0, -w.length - 1)); break; }
+      }
+    }
     for (const x of [...qList]) {
       const ws = x.split(" ");
       ws.forEach((w, i) => { if (w in this.aliases) qList.push([...ws.slice(0, i), this.aliases[w], ...ws.slice(i + 1)].join(" ")); });
@@ -118,7 +137,8 @@ export class Gazetteer {
       if (d.has_area) score += 0.1;
       if (d.population) score += Math.min(0.1, Math.log10(Math.max(d.population, 1)) / 100);
       if (h && (policy.admin_levels[h] ?? []).includes(d.subtype)) score += 0.5;
-      if (d.country !== viewCountry) score -= ranking.view_other_country;
+      if (h?.startsWith("natural:") && d.subtype === "natural" && d.class === h.slice(8)) score += 0.5;
+      if (d.country !== viewCountry && d.country !== NATURAL_COUNTRY) score -= ranking.view_other_country;
       return score;
     };
 
@@ -205,9 +225,10 @@ export class Gazetteer {
       if (d.has_area) score += 0.1;
       if (d.population) score += Math.min(0.1, Math.log10(Math.max(d.population, 1)) / 100);
       if (h && (policy.admin_levels[h] ?? []).includes(d.subtype)) score += 0.5;
+      if (h?.startsWith("natural:") && d.subtype === "natural" && d.class === h.slice(8)) score += 0.5;
       if (ctx && d.ancestors.some((a: string) => normName(a).includes(ctx) || ctx.includes(normName(a)))) score += 0.3;
       if (d.lon == null || !(d.lon >= x0 && d.lon <= x1 && d.lat >= y0 && d.lat <= y1)) score -= ranking.view_outside;
-      if (d.country !== viewCountry) score -= ranking.view_other_country;
+      if (d.country !== viewCountry && d.country !== NATURAL_COUNTRY) score -= ranking.view_other_country;
       const where = d.ancestors.length ? d.ancestors.slice(-2).reverse().join(", ") : "";
       const kind = d.class ? `${d.subtype} (${d.class})` : d.subtype;
       const desc = `${d.name}: ${kind}` + (where ? ` in ${where}` : "") + (d.country === viewCountry ? "" : `, country ${d.country}`);

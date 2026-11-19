@@ -1,0 +1,45 @@
+# Held-out set for natural features (plan-026, phase 11). Written on 2026-11-19, after the phase 11 changes and
+# before any run on it. Do not tune on these records. Same format as world_src.yaml.
+# `ids` pins the natural feature (Natural Earth, id ne-<kind>-<Wikidata id>).
+# Not in the set: "the Amazon rainforest" (Natural Earth has no forests; plan-026 section 3).
+views:
+  IN: [68, 8, 97, 37]
+  DZ: [-8.7, 19, 12, 37]
+  KE: [33.9, -4.7, 41.9, 5]
+  CH: [5.9, 45.8, 10.5, 47.8]
+  PH: [116.9, 4.6, 126.6, 21.1]
+  VN: [104.5, 12.5, 110.5, 19.5]
+  DE: [5.8, 47.2, 15.1, 55.1]
+  MN: [87.7, 41.5, 119.9, 52.1]
+  EG: [24.7, 22, 36.9, 31.7]
+  PE: [-81.3, -18.4, -68.7, -0.1]
+  US: [-125, 24, -66, 50]
+  AU: [112, -44, 154, -10]
+
+records:
+  # The queries of the user (plan-025 section 1)
+  - {cc: IN, q: "Ganga river", t: lookup_place, s: {anchor: "Ganga river"}, src: {anchor: overture}, ids: {anchor: ne-river-Q5089}}
+  - {cc: IN, q: "the Himalayas", t: lookup_place, s: {anchor: "Himalayas"}, src: {anchor: overture}, ids: {anchor: ne-range-Q5451}}
+  - {cc: DZ, q: "Sahara desert", t: lookup_place, s: {anchor: "Sahara desert"}, src: {anchor: overture}, ids: {anchor: ne-desert-Q6583}}
+  - {cc: IN, q: "districts of Uttar Pradesh along the Ganga river", t: children_touching, s: {level: district, parent: "Uttar Pradesh", other: "Ganga river"}, ids: {other: ne-river-Q5089}}
+
+  # Other natural features
+  - {cc: KE, q: "Lake Victoria", t: lookup_place, s: {anchor: "Lake Victoria"}, src: {anchor: overture}, ids: {anchor: ne-lake-Q5505}}
+  - {cc: CH, q: "10 km around Lake Geneva", t: buffer, s: {distance: 10000, target: "Lake Geneva"}, src: {target: overture}, ids: {target: ne-lake-Q6403}}
+  - {cc: IN, q: "districts of Haryana along the Yamuna", t: children_touching, s: {level: district, parent: "Haryana", other: "Yamuna"}, ids: {other: ne-river-Q132726}}
+  - {cc: IN, q: "districts along the Yamuna", t: children_touching, s: {level: district, parent: "India", other: "Yamuna"}, ids: {other: ne-river-Q132726}, n: "No parent in the text: the parse uses the countries whose extent overlaps the river; the DAG can differ, the executed result is the measure."}
+  - {cc: IN, q: "states bordering the Bay of Bengal", t: neighbors, s: {level: state, of: "Bay of Bengal"}, ids: {of: ne-bay-Q38684}}
+  - {cc: PH, q: "northern Luzon", t: direction_part, s: {dir: north, target: "Luzon"}, src: {target: overture}, ids: {target: ne-island-Q125384}}
+  - {cc: IN, q: "Thar desert", t: lookup_place, s: {anchor: "Thar desert"}, src: {anchor: overture}, ids: {anchor: ne-desert-Q172691}}
+  - {cc: VN, q: "Mekong Delta", t: lookup_place, s: {anchor: "Mekong Delta"}, src: {anchor: overture}, ids: {anchor: ne-delta-Q1052867}}
+  - {cc: CH, q: "the Alps", t: lookup_place, s: {anchor: "Alps"}, src: {anchor: overture}, ids: {anchor: ne-range-Q1286}}
+  - {cc: IN, q: "districts in the Western Ghats", t: children, s: {level: district, parent: "Western Ghats"}, ids: {parent: ne-range-Q4527}}
+  - {cc: DE, q: "within 5 km of the Rhine", t: buffer, s: {distance: 5000, target: "Rhine"}, src: {target: overture}, ids: {target: ne-river-Q584}}
+  - {cc: MN, q: "Gobi desert", t: lookup_place, s: {anchor: "Gobi desert"}, src: {anchor: overture}, ids: {anchor: ne-desert-Q42070}}
+  - {cc: EG, q: "the Nile", t: lookup_place, s: {anchor: "Nile"}, src: {anchor: overture}, ids: {anchor: ne-river-Q3392}}
+  - {cc: PE, q: "the Andes", t: lookup_place, s: {anchor: "Andes"}, src: {anchor: overture}, ids: {anchor: ne-range-Q5456}}
+
+  # Must not change (admin divisions with the name of a natural feature or near one)
+  - {cc: IN, q: "Kerala", t: lookup_place, s: {anchor: "Kerala"}, src: {anchor: overture}}
+  - {cc: US, q: "Georgia", t: lookup_place, s: {anchor: "Georgia"}, src: {anchor: overture}}
+  - {cc: AU, q: "Victoria", t: lookup_place, s: {anchor: "Victoria"}, src: {anchor: overture}}

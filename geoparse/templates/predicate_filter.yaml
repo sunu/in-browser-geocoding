@@ -17,12 +17,15 @@ templates:
 
   - id: children_touching
     description: "Divisions of one level inside a place that share a border with another place"
-    examples: ["districts of Karnataka that border Goa", "districts in Odisha bordering Andhra Pradesh"]
+    examples: ["districts of Karnataka that border Goa", "districts in Odisha bordering Andhra Pradesh",
+               "districts along the Yamuna"]
     slots:
       level: {type: admin_level, options_ref: admin_levels}
-      parent: {type: region}
+      parent: {type: region, optional: true, default: country}
       other: {type: region}
     patterns:
+      - "{level} (of|in|within) {parent} (along|on the banks of|beside) {other}"
+      - "{level} (along|on the banks of|beside) {other}"
       - "{level} (of|in|within) {parent} (that|which) (border|borders|touch|touches|adjoin|adjoins) {other}"
       - "{level} (of|in|within) {parent} (bordering|adjoining|adjacent to|next to|touching|sharing a border with|on the border with|on the border of) {other}"
       - "{parent} {level} (bordering|adjoining|adjacent to|next to|touching|that border|that touch) {other}"

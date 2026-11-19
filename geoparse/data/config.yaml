@@ -21,6 +21,14 @@ data:
     hospitals: [hospital]
     schools: [school, preschool]
   natural_earth_coastline: "https://naciscdn.org/naturalearth/10m/physical/ne_10m_coastline.zip"
+  # Natural features (plan-026): Natural Earth 10m physical files, and the Wikidata endpoint for their English names.
+  natural_earth_physical: "https://naciscdn.org/naturalearth/10m/physical/"
+  natural_earth_files: [ne_10m_rivers_lake_centerlines, ne_10m_lakes, ne_10m_geography_regions_polys,
+                        ne_10m_geography_marine_polys]
+  wikidata_sparql: "https://query.wikidata.org/sparql"
+  # Simplified country shapes (table country_shapes, web file country_shapes.parquet): the countries around a natural
+  # feature. Parts smaller than min_part_deg2 are dropped (the largest part of each country stays).
+  country_shapes: {simplify_deg: 0.05, min_part_deg2: 0.05}
 
 policy:
   # Values from here to `countries` are the defaults. `countries.<ISO code>` changes them for one country.
@@ -61,6 +69,23 @@ policy:
     SE: {level_words: {state: [county, counties, län]}}
     PT: {level_words: {state: [district, districts]}}
     UA: {level_words: {state: [oblast, oblasts, region, regions], district: [raion, raions]}}
+  # A natural feature is around a country if it is this near (degrees) to the simplified country shape.
+  around_tolerance_deg: 0.05
+  # Natural features: words in a name that are a type hint for a kind ("Ganga river", "Thar desert").
+  natural_hints:
+    river: [river, rivers, nadi]
+    lake: [lake, lakes, reservoir]
+    range: [mountains, mountain range, mountain ranges, range, ranges, hills]
+    desert: [desert]
+    plateau: [plateau]
+    plain: [plain, plains]
+    basin: [basin]
+    delta: [delta]
+    island: [island]
+    island_group: [islands]
+    peninsula: [peninsula]
+    sea: [sea, ocean]
+    bay: [bay, gulf]
   # Distance in meters to the Natural Earth coastline for an area to count as coastal.
   # Natural Earth 10m is about 1 km from the OSM-based Overture boundaries.
   coastal_tolerance_m: 3000

@@ -7,13 +7,17 @@ Outputs (in the build directory):
   divisions.parquet      one row per Overture division (point geometry and attributes)
   division_area.parquet  one area polygon per division (land polygon if there is one)
   coastline.parquet      Natural Earth 10m coastline lines, clipped to the bbox
+  natural.parquet        Natural Earth natural features (rivers, lakes, ranges, deserts, seas, ...)
 Also writes geoparse/data/lexicon.json.
+
+  uv run python -m geoparse.data.build_extract --only-natural   # natural.parquet into the existing geoparse.duckdb
 """
 from __future__ import annotations
 
 import argparse
 import json
 import time
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -185,6 +189,165 @@ def build_coastline(con, cfg, out: Path) -> None:
     """)
     print(f"coastline: {con.execute('SELECT count(*) FROM coastline').fetchone()[0]} lines")
     con.execute(f"COPY coastline TO '{out / 'coastline.parquet'}' (FORMAT parquet, COMPRESSION zstd)")
+
+
+# Natural Earth classes (featurecla, lower case) to the kind of a natural feature. Other classes are not used.
+NATURAL_KINDS = {
+    "river": "river", "lake centerline": "river", "river (intermittent)": "river", "canal": "river",
+    "lake": "lake", "reservoir": "lake", "alkaline lake": "lake", "lagoon": "lake",
+    "range/mtn": "range", "desert": "desert", "plateau": "plateau", "plain": "plain", "basin": "basin",
+    "delta": "delta", "island": "island", "island group": "island_group", "pen/cape": "peninsula",
+    "peninsula": "peninsula", "geoarea": "area", "coast": "coast", "valley": "valley",
+    "sea": "sea", "ocean": "sea", "gulf": "bay", "bay": "bay", "sound": "bay", "fjord": "bay",
+    "strait": "strait", "channel": "strait",
+}
+
+
+def _download(url: str, path: Path) -> None:
+    if not path.exists():
+        print(f"downloading {url}")
+        req = urllib.request.Request(url, headers={"User-Agent": "geoparse-build/0.1"})
+        with urllib.request.urlopen(req) as r, path.open("wb") as f:
+            f.write(r.read())
+
+
+def _proper_case(name: str) -> str:
+    """Natural Earth region names are in capitals ("HIMALAYAS", "GANGES PLAIN")."""
+    if not name.isupper():
+        return name
+    small = {"of", "the", "and", "de", "del", "la", "le"}
+    return " ".join(w.lower() if i and w.lower() in small else w.capitalize() for i, w in enumerate(name.split()))
+
+
+def _wikidata_names(qids: list[str], url: str, cache: Path) -> dict[str, dict]:
+    """English label and aliases of Wikidata items: {qid: {"label": str | None, "aliases": [str]}}. Cached in
+    `cache` (JSON)."""
+    known = json.loads(cache.read_text()) if cache.exists() else {}
+    known = {q: v for q, v in known.items() if isinstance(v, dict)}
+    todo = sorted(set(qids) - set(known))
+    for i in range(0, len(todo), 200):
+        values = " ".join(f"wd:{q}" for q in todo[i:i + 200])
+        query = f"""SELECT ?item ?name ?alias WHERE {{ VALUES ?item {{ {values} }}
+            {{ ?item rdfs:label ?name BIND(false AS ?alias) }} UNION {{ ?item skos:altLabel ?name BIND(true AS ?alias) }}
+            FILTER(lang(?name) = "en") }}"""
+        req = urllib.request.Request(url, data=urllib.parse.urlencode({"query": query, "format": "json"}).encode(),
+                                     headers={"User-Agent": "geoparse-build/0.1", "Accept": "application/sparql-results+json"})
+        with urllib.request.urlopen(req, timeout=120) as r:
+            rows = json.loads(r.read())["results"]["bindings"]
+        for q in todo[i:i + 200]:
+            known.setdefault(q, {"label": None, "aliases": []})
+        for b in rows:
+            v = known[b["item"]["value"].rsplit("/", 1)[1]]
+            if b["alias"]["value"] == "true":
+                v["aliases"].append(b["name"]["value"])
+            else:
+                v["label"] = b["name"]["value"]
+        print(f"wikidata: {min(i + 200, len(todo))}/{len(todo)} items")
+        time.sleep(1)
+    cache.write_text(json.dumps(known, ensure_ascii=False, indent=0))
+    return {q: known[q] for q in qids if q in known}
+
+
+def build_natural(con, cfg, out: Path) -> None:
+    """natural.parquet: one row for each natural feature of the Natural Earth physical files (river segments
+    merged by Wikidata id or name), with its names (Natural Earth and the English Wikidata names)."""
+    d = cfg["data"]
+    raw = out / "raw"
+    raw.mkdir(parents=True, exist_ok=True)
+    feats: dict[tuple[str, str], dict] = {}
+    for f in d["natural_earth_files"]:
+        _download(f"{d['natural_earth_physical']}{f}.zip", raw / f"{f}.zip")
+        rel = con.sql(f"SELECT * FROM ST_Read('/vsizip/{raw / f}.zip/{f}.shp')")
+        cols = {c.lower(): c for c in rel.columns}
+        get = lambda c: f'"{cols[c]}"' if c in cols else "NULL"
+        rows = con.execute(f"""
+            SELECT lower({get('featurecla')}), {get('name')}, {get('name_en')}, {get('name_alt')}, {get('namealt')},
+                   {get('wikidataid')}, {get('scalerank')}, ST_AsWKB(geom)
+            FROM ST_Read('/vsizip/{raw / f}.zip/{f}.shp') WHERE geom IS NOT NULL""").fetchall()
+        for fc, name, name_en, alt1, alt2, qid, rank, wkb in rows:
+            kind = NATURAL_KINDS.get((fc or "").strip())
+            name = _proper_case((name_en or name or "").strip())
+            if not kind or not name:
+                continue
+            key = (kind, qid or name.lower())
+            ft = feats.setdefault(key, {"kind": kind, "name": name, "names": set(), "qid": qid, "rank": rank, "geoms": []})
+            ft["names"].update(_proper_case(n.strip()) for n in (name, name_en, alt1, alt2) if n and n.strip())
+            ranks = [x for x in (ft["rank"], rank) if x is not None]
+            ft["rank"] = min(ranks) if ranks else None
+            ft["geoms"].append(shapely.from_wkb(bytes(wkb)))
+    # A feature without a Wikidata id and a feature with one, of the same kind and name, are one feature (rows of
+    # different files: "Western Ghats").
+    with_qid = {(k[0], ft["name"].lower()): ft for k, ft in feats.items() if ft["qid"]}
+    for key in [k for k, ft in feats.items() if not ft["qid"] and (k[0], ft["name"].lower()) in with_qid]:
+        ft = feats.pop(key)
+        target = with_qid[(key[0], ft["name"].lower())]
+        target["names"] |= ft["names"]
+        target["geoms"] += ft["geoms"]
+    qids = sorted({ft["qid"] for ft in feats.values() if ft["qid"]})
+    wd = _wikidata_names(qids, d["wikidata_sparql"], raw / "wikidata_natural.json")
+    xmin, ymin, xmax, ymax = [-180.0, -90.0, 180.0, 90.0] if scope(cfg) == "world" else d["bbox"]
+    box = shapely.box(xmin, ymin, xmax, ymax)
+    recs = []
+    for (kind, key), ft in feats.items():
+        g = shapely.union_all(ft["geoms"])
+        if g.geom_type in ("MultiLineString", "LineString"):
+            g = shapely.line_merge(g)
+        if not g.intersects(box):
+            continue
+        w = wd.get(ft["qid"]) or {}
+        # The English Wikidata label is the name ("Lake Victoria"; Natural Earth has "Nyanza").
+        name = w.get("label") or ft["name"]
+        names = sorted((ft["names"] | set(w.get("aliases", []))) - {name})
+        slug = norm_name(ft["name"]).replace(" ", "-")
+        recs.append({"id": f"ne-{kind}-{ft['qid'] or slug}", "kind": kind, "name": name, "alt_names": names,
+                     "wikidata": ft["qid"], "scalerank": ft["rank"], "wkb": shapely.to_wkb(g)})
+    con.execute("""CREATE OR REPLACE TEMP TABLE natural_rows (id VARCHAR, kind VARCHAR, name VARCHAR, alt_names VARCHAR[],
+                   wikidata VARCHAR, scalerank INTEGER, wkb BLOB)""")
+    con.executemany("INSERT INTO natural_rows VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    [[r["id"], r["kind"], r["name"], r["alt_names"], r["wikidata"], r["scalerank"], r["wkb"]] for r in recs])
+    con.execute(f"""COPY (SELECT id, kind, name, alt_names, wikidata, scalerank, ST_GeomFromWKB(wkb) AS geometry
+                    FROM natural_rows ORDER BY id) TO '{out / 'natural.parquet'}' (FORMAT parquet, COMPRESSION zstd)""")
+    print(f"natural: {len(recs)} features ({len(qids)} with a Wikidata id)")
+
+
+def add_natural(con, out: Path, simplify_deg: float = 0.001) -> None:
+    """Put natural.parquet into the divisions (subtype natural, country XN), areas and names tables. Replaces the
+    natural rows that are there."""
+    con.execute("CREATE OR REPLACE TEMP TABLE nat AS SELECT * FROM read_parquet(?)", [str(out / "natural.parquet")])
+    for t in ("names", "areas", "divisions"):
+        con.execute(f"DELETE FROM {t} WHERE id IN (SELECT id FROM nat) OR id LIKE 'ne-%'")
+    con.execute("""
+        INSERT INTO divisions BY NAME
+        SELECT id, 'natural' AS subtype, kind AS class, name, alt_names, []::VARCHAR[] AS common_names, 'XN' AS country,
+               []::VARCHAR[] AS ancestors, wikidata, kind AS local_type, ST_PointOnSurface(geometry) AS geometry
+        FROM nat""")
+    con.execute(f"""
+        INSERT INTO areas BY NAME
+        SELECT id, 'natural' AS subtype, geometry, ST_SimplifyPreserveTopology(geometry, {simplify_deg}) AS gs FROM nat""")
+    con.create_function("norm_name", norm_name, ["VARCHAR"], "VARCHAR", side_effects=False)
+    con.execute("""
+        INSERT INTO names BY NAME
+        SELECT DISTINCT id, k AS name_norm, replace(k, ' ', '') AS name_nospace, kind
+        FROM (SELECT id, norm_name(n) AS k, kind FROM (
+              SELECT id, name AS n, 'primary' AS kind FROM nat
+              UNION ALL SELECT id, unnest(alt_names), 'alt' FROM nat))
+        WHERE k <> ''""")
+    n = con.execute("SELECT count(*) FROM divisions WHERE subtype = 'natural'").fetchone()[0]
+    print(f"natural in the database: {n} features")
+
+
+def build_country_shapes(con, cfg) -> None:
+    """Table country_shapes: one simplified polygon for each country and dependency (data.country_shapes)."""
+    p = cfg["data"]["country_shapes"]
+    con.execute(f"""
+        CREATE OR REPLACE TABLE country_shapes AS
+        WITH parts AS (SELECT country, unnest(ST_Dump(gs)).geom AS g FROM (
+                         SELECT d.country, a.gs FROM areas a JOIN divisions d USING (id)
+                         WHERE d.subtype IN ('country', 'dependency') AND d.country IS NOT NULL)),
+             ranked AS (SELECT country, g, row_number() OVER (PARTITION BY country ORDER BY ST_Area(g) DESC) AS r FROM parts)
+        SELECT country, ST_SimplifyPreserveTopology(ST_Union_Agg(g), {p['simplify_deg']}) AS geometry FROM ranked
+        WHERE r = 1 OR ST_Area(g) >= {p['min_part_deg2']} GROUP BY 1 ORDER BY 1""")
+    print(f"country_shapes: {con.execute('SELECT count(*) FROM country_shapes').fetchone()[0]} countries")
 
 
 def build_lexicon(con, out: Path) -> None:
@@ -361,6 +524,9 @@ def build_db(cfg, out: Path, simplify_deg: float = 0.001) -> None:
         t1 = time.time()
         con.execute(f"CREATE TABLE places AS SELECT * FROM read_parquet('{out / 'places.parquet'}')")
         print(f"places table in {time.time() - t1:.1f}s")
+    build_country_shapes(con, cfg)
+    if (out / "natural.parquet").exists():
+        add_natural(con, out, simplify_deg)
     con.execute("CREATE INDEX names_norm ON names (name_norm)")
     con.execute("CREATE INDEX names_nospace ON names (name_nospace)")
     con.execute("CREATE INDEX div_id ON divisions (id)")
@@ -376,6 +542,8 @@ def main() -> None:
     ap.add_argument("--db-only", action="store_true", help="Only build geoparse.duckdb from the existing files.")
     ap.add_argument("--skip-places", action="store_true", help="Keep the existing places file.")
     ap.add_argument("--only-poi", action="store_true", help="Only build the world point datasets (poi/).")
+    ap.add_argument("--only-natural", action="store_true",
+                    help="Only build natural.parquet and put it into the existing geoparse.duckdb.")
     args = ap.parse_args()
     cfg = load_config()
     out = build_dir(cfg)
@@ -384,6 +552,14 @@ def main() -> None:
     print(f"scope: {scope(cfg)}, output: {out}")
     if args.only_poi:
         build_poi(connect(), cfg, out)
+        return
+    if args.only_natural:
+        build_natural(connect(), cfg, out)
+        con = duckdb.connect(str(out / "geoparse.duckdb"))
+        con.execute("LOAD spatial; SET geometry_always_xy = true;")
+        add_natural(con, out)
+        build_country_shapes(con, cfg)
+        con.close()
         return
     if not args.db_only:
         con = connect()
@@ -394,6 +570,7 @@ def main() -> None:
         if not args.skip_places:
             (build_poi if world else build_places)(con, cfg, out)
         build_coastline(con, cfg, out)
+        build_natural(con, cfg, out)
         if not world:
             build_lexicon(con, out)
         con.close()

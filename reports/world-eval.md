@@ -235,3 +235,35 @@ unit tests together, then the parity checks (each in 4 processes, `parity.ts --s
 The live smoke tests run on the desktop in Chromium. Headless Firefox and WebKit on the desktop (Pop!_OS 22.04)
 have no WebGL, and the map needs WebGL. Run them on the Mac when a change touches the loading, the data or the
 drawing code. Open item: the page shows no message if WebGL is not available.
+
+Results:
+
+| Set | Template | DAG | Executed result |
+|---|---|---|---|
+| Held-out 4 (21, new: natural features), first run | 16/21 | 14/21 | 14/21 (67%) |
+| Held-out 4, after change 2 | 16/21 | 16/21 | 16/21 (76%) |
+| Held-out 3, held-out 2, held-out 1, world | no change | no change | no change |
+| India gold, India held-out | no change | no change | no change |
+
+The first run is the fair value. Change 2 used its two errors ("Lake Victoria", "10 km around Lake Geneva": Photon,
+because "lake" is a street word). The India reference parse did not change (696 queries). JS parity: 696/696 (flat
+and country layout), int8 681/696, executor 88/88.
+
+The 5 remaining errors are template choices of the T5 model, which has no training examples for these forms:
+
+| Query | T5 template | Correct |
+|---|---|---|
+| Ganga river | along_border | lookup_place |
+| districts along the Yamuna | children_with_predicate | children_touching (no parent) |
+| the Alps, the Andes | children ("Alps" as a level word) | lookup_place |
+| districts in the Western Ghats | lookup_place | children (natural parent) |
+
+The data, the search and the executor give the correct result for these queries when the template is correct
+(gold DAGs, exec_parity). Add training examples for them in plan-025 phase 13.
+
+Limits:
+
+- "the Amazon rainforest": Natural Earth has no forests. "Amazon basin" is the nearest feature. An open data set of
+  ecoregions (for example WWF, CC BY 4.0) can add forests.
+- "Amazon" alone: the state Amazonas and the Amazon River have close scores (the decision model chooses).
+- The browser loads the name shards again after this release: the new names change most shards (about 195 MB).

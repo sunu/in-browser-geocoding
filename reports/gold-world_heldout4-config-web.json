@@ -1,0 +1,1831 @@
+{
+ "isolated": [
+  {
+   "id": "n001",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.981776,
+   "n_options": 2
+  },
+  {
+   "id": "n001",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n001",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 0.16338999999999998,
+   "n_options": 3
+  },
+  {
+   "id": "n001",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "gold": {
+    "anchor": "Ganga river"
+   }
+  },
+  {
+   "id": "n001",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Ganga river",
+   "conf": 0.8
+  },
+  {
+   "id": "n002",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "got": "hierarchy",
+   "gold": "lookup",
+   "conf": 0.8799600000000001,
+   "n_options": 2
+  },
+  {
+   "id": "n002",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n002",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "got": "children",
+   "gold": "lookup_place",
+   "conf": 0.009538000000000046,
+   "n_options": 2
+  },
+  {
+   "id": "n002",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Himalayas"
+   },
+   "gold": {
+    "anchor": "Himalayas"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n002",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Himalayas",
+   "conf": 0.8
+  },
+  {
+   "id": "n003",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "got": "hierarchy",
+   "gold": "lookup",
+   "conf": 0.8405274999999998,
+   "n_options": 3
+  },
+  {
+   "id": "n003",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n003",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 0.10449100000000004,
+   "n_options": 3
+  },
+  {
+   "id": "n003",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Sahara desert"
+   },
+   "gold": {
+    "anchor": "Sahara desert"
+   },
+   "conf": 0.985082,
+   "n_options": 2
+  },
+  {
+   "id": "n003",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Sahara desert",
+   "conf": 0.8
+  },
+  {
+   "id": "n004",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n004",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 0.977184,
+   "n_options": 2
+  },
+  {
+   "id": "n004",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 0.0982860000000001,
+   "n_options": 2
+  },
+  {
+   "id": "n004",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": false,
+   "coverage_miss": true,
+   "gold": {
+    "level": "district",
+    "parent": "Uttar Pradesh",
+    "other": "Ganga river"
+   }
+  },
+  {
+   "id": "n004",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Uttar Pradesh",
+   "conf": 0.988206
+  },
+  {
+   "id": "n004",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Ganga river",
+   "conf": 0.98306
+  },
+  {
+   "id": "n005",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.9575100000000001,
+   "n_options": 2
+  },
+  {
+   "id": "n005",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n005",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 0.124722,
+   "n_options": 2
+  },
+  {
+   "id": "n005",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Lake Victoria"
+   },
+   "gold": {
+    "anchor": "Lake Victoria"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n005",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "got": "photon",
+   "gold": "overture",
+   "text": "Lake Victoria",
+   "conf": 0.8
+  },
+  {
+   "id": "n006",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "modifier",
+   "gold": "modifier",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n006",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "buffer",
+   "gold": "buffer",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n006",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "buffer",
+   "gold": "buffer",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n006",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": {
+    "distance": "10 km",
+    "target": "Lake Geneva"
+   },
+   "gold": {
+    "distance": "10 km",
+    "target": "Lake Geneva"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n006",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Lake Geneva",
+   "conf": 0.947162
+  },
+  {
+   "id": "n006",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "modifier",
+   "correct": false,
+   "got": "photon",
+   "gold": "overture",
+   "text": "Lake Geneva",
+   "conf": 0.8
+  },
+  {
+   "id": "n007",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n007",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 0.991466,
+   "n_options": 2
+  },
+  {
+   "id": "n007",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 0.317906,
+   "n_options": 2
+  },
+  {
+   "id": "n007",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "districts",
+    "parent": "Haryana",
+    "other": "Yamuna"
+   },
+   "gold": {
+    "level": "districts",
+    "parent": "Haryana",
+    "other": "Yamuna"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n007",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "districts",
+   "conf": 1.0
+  },
+  {
+   "id": "n007",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Haryana",
+   "conf": 0.98649
+  },
+  {
+   "id": "n007",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Yamuna",
+   "conf": 0.988964
+  },
+  {
+   "id": "n008",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n008",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": false,
+   "got": "children_with_predicate",
+   "gold": "children_touching",
+   "conf": 0.987816,
+   "n_options": 2
+  },
+  {
+   "id": "n008",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": false,
+   "got": "children_with_predicate",
+   "gold": "children_touching",
+   "conf": 0.28917400000000004,
+   "n_options": 2
+  },
+  {
+   "id": "n008",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": false,
+   "coverage_miss": true,
+   "gold": {
+    "level": "district",
+    "parent": "India",
+    "other": "Yamuna"
+   }
+  },
+  {
+   "id": "n008",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "India",
+   "conf": 0.985348
+  },
+  {
+   "id": "n008",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Yamuna",
+   "conf": 0.988964
+  },
+  {
+   "id": "n009",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 0.9365060000000001,
+   "n_options": 2
+  },
+  {
+   "id": "n009",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n009",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 0.15861999999999998,
+   "n_options": 2
+  },
+  {
+   "id": "n009",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "of": "Bay of Bengal"
+   },
+   "gold": {
+    "level": "states",
+    "of": "Bay of Bengal"
+   },
+   "conf": 0.942302,
+   "n_options": 2
+  },
+  {
+   "id": "n009",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 1.0
+  },
+  {
+   "id": "n009",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Bay of Bengal",
+   "conf": 0.852642
+  },
+  {
+   "id": "n010",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "modifier",
+   "gold": "modifier",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n010",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n010",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n010",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": {
+    "dir": "northern",
+    "target": "Luzon"
+   },
+   "gold": {
+    "dir": "northern",
+    "target": "Luzon"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n010",
+   "decision": "fill_closed_slot.direction",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "north",
+   "gold": "north",
+   "text": "northern",
+   "conf": 0.99934975
+  },
+  {
+   "id": "n010",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Luzon",
+   "conf": 0.958
+  },
+  {
+   "id": "n010",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Luzon",
+   "conf": 0.8
+  },
+  {
+   "id": "n011",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n011",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n011",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n011",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Thar desert"
+   },
+   "gold": {
+    "anchor": "Thar desert"
+   },
+   "conf": 0.98763,
+   "n_options": 2
+  },
+  {
+   "id": "n011",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Thar desert",
+   "conf": 0.8
+  },
+  {
+   "id": "n012",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n012",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n012",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n012",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Mekong Delta"
+   },
+   "gold": {
+    "anchor": "Mekong Delta"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n012",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Mekong Delta",
+   "conf": 0.8
+  },
+  {
+   "id": "n013",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "got": "hierarchy",
+   "gold": "lookup",
+   "conf": 0.84433,
+   "n_options": 2
+  },
+  {
+   "id": "n013",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n013",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 0.048122,
+   "n_options": 2
+  },
+  {
+   "id": "n013",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Alps"
+   },
+   "gold": {
+    "anchor": "Alps"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n013",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Alps",
+   "conf": 0.8
+  },
+  {
+   "id": "n014",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n014",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n014",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n014",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "districts",
+    "parent": "Western Ghats"
+   },
+   "gold": {
+    "level": "districts",
+    "parent": "Western Ghats"
+   },
+   "conf": 0.9713160000000001,
+   "n_options": 2
+  },
+  {
+   "id": "n014",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "districts",
+   "conf": 1.0
+  },
+  {
+   "id": "n014",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": false,
+   "got": true,
+   "gold": false,
+   "text": "Western Ghats",
+   "conf": 0.81192
+  },
+  {
+   "id": "n015",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "modifier",
+   "gold": "modifier",
+   "conf": 0.9748300000000001,
+   "n_options": 2
+  },
+  {
+   "id": "n015",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "buffer",
+   "gold": "buffer",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n015",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "buffer",
+   "gold": "buffer",
+   "conf": 0.6857219999999999,
+   "n_options": 2
+  },
+  {
+   "id": "n015",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": {
+    "distance": "5 km",
+    "target": "Rhine"
+   },
+   "gold": {
+    "distance": "5 km",
+    "target": "Rhine"
+   },
+   "conf": 0.97553,
+   "n_options": 2
+  },
+  {
+   "id": "n015",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Rhine",
+   "conf": 0.977386
+  },
+  {
+   "id": "n015",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Rhine",
+   "conf": 0.8
+  },
+  {
+   "id": "n016",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.9581759999999999,
+   "n_options": 2
+  },
+  {
+   "id": "n016",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n016",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "got": "direction_part",
+   "gold": "lookup_place",
+   "conf": 0.13874600000000004,
+   "n_options": 2
+  },
+  {
+   "id": "n016",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Gobi desert"
+   },
+   "gold": {
+    "anchor": "Gobi desert"
+   },
+   "conf": 0.9888440000000001,
+   "n_options": 2
+  },
+  {
+   "id": "n016",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Gobi desert",
+   "conf": 0.8
+  },
+  {
+   "id": "n017",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.950064,
+   "n_options": 2
+  },
+  {
+   "id": "n017",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n017",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "got": "direction_part",
+   "gold": "lookup_place",
+   "conf": 0.30604999999999993,
+   "n_options": 2
+  },
+  {
+   "id": "n017",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Nile"
+   },
+   "gold": {
+    "anchor": "Nile"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n017",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Nile",
+   "conf": 0.8
+  },
+  {
+   "id": "n018",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "got": "hierarchy",
+   "gold": "lookup",
+   "conf": 0.824714,
+   "n_options": 2
+  },
+  {
+   "id": "n018",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n018",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "got": "children",
+   "gold": "lookup_place",
+   "conf": 0.03947400000000001,
+   "n_options": 2
+  },
+  {
+   "id": "n018",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Andes"
+   },
+   "gold": {
+    "anchor": "Andes"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n018",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Andes",
+   "conf": 0.8
+  },
+  {
+   "id": "n019",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.952688,
+   "n_options": 2
+  },
+  {
+   "id": "n019",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n019",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 0.88626,
+   "n_options": 2
+  },
+  {
+   "id": "n019",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Kerala"
+   },
+   "gold": {
+    "anchor": "Kerala"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n019",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Kerala",
+   "conf": 0.8
+  },
+  {
+   "id": "n020",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n020",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n020",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n020",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Georgia"
+   },
+   "gold": {
+    "anchor": "Georgia"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n020",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Georgia",
+   "conf": 0.8
+  },
+  {
+   "id": "n021",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n021",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n021",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n021",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Victoria"
+   },
+   "gold": {
+    "anchor": "Victoria"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "n021",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Victoria",
+   "conf": 0.8
+  }
+ ],
+ "pipeline": [
+  {
+   "id": "n001",
+   "query": "Ganga river",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": false,
+   "ok": true,
+   "latency_s": 0.4328758716583252,
+   "model_calls": 5,
+   "requests_in_sequence": 3,
+   "unsupported": null,
+   "got_template": "along_border",
+   "path": "complex",
+   "slots_ok": false,
+   "diffs": [
+    "template"
+   ],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "0 ids vs 1"
+  },
+  {
+   "id": "n002",
+   "query": "the Himalayas",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.103170156478882,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "n003",
+   "query": "Sahara desert",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.8774549961090088,
+   "model_calls": 5,
+   "requests_in_sequence": 3,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "n004",
+   "query": "districts of Uttar Pradesh along the Ganga river",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.490919589996338,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": false,
+   "diffs": [
+    "other: expected 'Ganga river', got 'Ganga'"
+   ],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "27 ids vs 27"
+  },
+  {
+   "id": "n005",
+   "query": "Lake Victoria",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.3341829776763916,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "n006",
+   "query": "10 km around Lake Geneva",
+   "family": "modifier",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.2293553352355957,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "buffer",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 2433.096 vs 2433.096"
+  },
+  {
+   "id": "n007",
+   "query": "districts of Haryana along the Yamuna",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.7709074020385742,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "6 ids vs 6"
+  },
+  {
+   "id": "n008",
+   "query": "districts along the Yamuna",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": false,
+   "ok": true,
+   "latency_s": 1.5205886363983154,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_with_predicate",
+   "path": "complex",
+   "slots_ok": false,
+   "diffs": [
+    "template"
+   ],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "85 ids vs 36"
+  },
+  {
+   "id": "n009",
+   "query": "states bordering the Bay of Bengal",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.1912167072296143,
+   "model_calls": 6,
+   "requests_in_sequence": 3,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "15 ids vs 15"
+  },
+  {
+   "id": "n010",
+   "query": "northern Luzon",
+   "family": "modifier",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.7003130912780762,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "direction_part",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 62821.119 vs 62821.119"
+  },
+  {
+   "id": "n011",
+   "query": "Thar desert",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.0101962089538574,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "n012",
+   "query": "Mekong Delta",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.972203254699707,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "n013",
+   "query": "the Alps",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": false,
+   "ok": false,
+   "latency_s": 1.1093368530273438,
+   "model_calls": 3,
+   "requests_in_sequence": 2,
+   "unsupported": {
+    "reason": "the text 'Alps' names no known admin_level",
+    "decision": "fill_closed_slot",
+    "depth": 0,
+    "text": "Alps"
+   },
+   "got_template": null,
+   "path": null,
+   "slots_ok": false,
+   "dag_ok": false,
+   "exec_ok": false
+  },
+  {
+   "id": "n014",
+   "query": "districts in the Western Ghats",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": false,
+   "ok": false,
+   "latency_s": 2.7671585083007812,
+   "model_calls": 7,
+   "requests_in_sequence": 4,
+   "unsupported": {
+    "reason": "the text is not one place name, and no other template matches",
+    "decision": "is_subquery",
+    "depth": 1,
+    "text": "Western Ghats"
+   },
+   "got_template": null,
+   "path": null,
+   "slots_ok": false,
+   "dag_ok": false,
+   "exec_ok": false
+  },
+  {
+   "id": "n015",
+   "query": "within 5 km of the Rhine",
+   "family": "modifier",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.2275147438049316,
+   "model_calls": 5,
+   "requests_in_sequence": 3,
+   "unsupported": null,
+   "got_template": "buffer",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 10633.0 vs 10633.0"
+  },
+  {
+   "id": "n016",
+   "query": "Gobi desert",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.3892076015472412,
+   "model_calls": 5,
+   "requests_in_sequence": 3,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "n017",
+   "query": "the Nile",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.6434872150421143,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "n018",
+   "query": "the Andes",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": false,
+   "ok": false,
+   "latency_s": 1.328071117401123,
+   "model_calls": 3,
+   "requests_in_sequence": 2,
+   "unsupported": {
+    "reason": "the text 'Andes' names no known admin_level",
+    "decision": "fill_closed_slot",
+    "depth": 0,
+    "text": "Andes"
+   },
+   "got_template": null,
+   "path": null,
+   "slots_ok": false,
+   "dag_ok": false,
+   "exec_ok": false
+  },
+  {
+   "id": "n019",
+   "query": "Kerala",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.3547561168670654,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "n020",
+   "query": "Georgia",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.2893562316894531,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "n021",
+   "query": "Victoria",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.3361351490020752,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  }
+ ],
+ "summary": {
+  "pick_family": {
+   "n": 21,
+   "correct": 17
+  },
+  "pick_template": {
+   "n": 21,
+   "correct": 20
+  },
+  "pick_template_flat": {
+   "n": 21,
+   "correct": 16
+  },
+  "pick_split": {
+   "n": 21,
+   "correct": 18
+  },
+  "is_subquery": {
+   "n": 11,
+   "correct": 10
+  },
+  "select_source": {
+   "n": 16,
+   "correct": 14
+  },
+  "fill_closed_slot.admin_level": {
+   "n": 3,
+   "correct": 3
+  },
+  "fill_closed_slot.direction": {
+   "n": 1,
+   "correct": 1
+  },
+  "pipeline": {
+   "hierarchy": {
+    "n": 2,
+    "dag_ok": 1
+   },
+   "lookup": {
+    "n": 13,
+    "dag_ok": 10
+   },
+   "modifier": {
+    "n": 3,
+    "dag_ok": 3
+   },
+   "predicate_filter": {
+    "n": 3,
+    "dag_ok": 2
+   },
+   "ALL": {
+    "n": 21,
+    "dag_ok": 16
+   }
+  }
+ }
+}

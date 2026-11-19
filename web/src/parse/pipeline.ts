@@ -33,6 +33,10 @@ function stop(reason: string, depth = 0, text = "", decision: string | null = nu
 
 function fmt(x: number) { return x.toFixed(2); }
 
+// geoparse.parse.pipeline.AROUND_DEFAULT: the optional parent (first) without text is the countries around the
+// other slot (second).
+const AROUND_DEFAULT: Record<string, [string, string]> = { children_touching: ["parent", "other"] };
+
 export class Parser {
   templates: Record<string, Template>;
   maxDepth: number;
@@ -197,9 +201,11 @@ export class Parser {
       const lv = await jobs.level;
       levelHint = lv.value !== "none" ? lv.value : null;
     }
+    let around: string | null = null;
     for (const [name, sd] of Object.entries(tpl.slots)) {
       if (!OPEN.has(sd.type)) continue;
-      if (!(name in m.segments)) { values[name] = await this.defaultRegion(sd); slots[name] = null; continue; }
+      if (!(name in m.segments) && AROUND_DEFAULT[tpl.id]?.[0] === name) { around = name; continue; }
+      if (!(name in m.segments)) { values[name] = await this.defaultRegion(sd, dec); slots[name] = null; continue; }
       const hint = tpl.id === "neighbors" ? levelHint : null;
       jobs[name] = this.region(dec, tpl, m.segments[name], text, depth, hint);
     }
@@ -219,6 +225,7 @@ export class Parser {
       slots[name] = r.value;
       values[name] = sd.type === "predicate" ? this.bundle.predicate_dags[r.value] : r.value;
     });
+    if (around) { values[around] = await this.around(dec, tpl.slots[around], values[AROUND_DEFAULT[tpl.id][1]]); slots[around] = null; }
     if (this.bundle.structure_level.includes(tpl.id) && values.level == null && "level" in m.segments) {
       // Port: the level from the data only below a country that the text names.
       const pid = "parent" in m.segments ? values.parent?.args?.id : null;
@@ -229,9 +236,25 @@ export class Parser {
     return [values, slots];
   }
 
-  private async defaultRegion(sd: SlotDef) {
+  /** Port of _around: the countries whose extent overlaps the extent of the other place, else the view country. */
+  private async around(dec: Decider, sd: SlotDef, other: any) {
+    const oid = other?.op === "Resolve" ? other.args?.id : null;
+    const codes = oid ? await this.gaz.countriesAround(oid) : [];
+    if (!codes.length) return this.defaultRegion(sd, dec);
+    const rows = await this.gaz.db.query(`SELECT country, id, name FROM divisions WHERE subtype = 'country'
+      AND country IN (${codes.map((c) => `'${c}'`).join(", ")}) ORDER BY country`);
+    let node: any = null;
+    for (const r of rows) {
+      const res = { op: "Resolve", args: { name: r.name, source: "overture", id: r.id } };
+      node = node ? { op: "Union", args: { a: node, b: res } } : res;
+    }
+    return node ?? this.defaultRegion(sd, dec);
+  }
+
+  /** Port of _default_region: the country of the map view. */
+  private async defaultRegion(sd: SlotDef, dec: Decider) {
     if (sd.default !== "country") stop(`no default for open slot (${sd.default})`);
-    const code = this.bundle.config.data.country;
+    const code = dec.viewCountry ?? this.bundle.config.data.country;
     const rows = await this.gaz.db.query(`SELECT id, name FROM divisions WHERE subtype = 'country' AND country = '${code}'`);
     if (!rows.length) stop(`country ${code} is not in the extract`);
     return { op: "Resolve", args: { name: rows[0].name, source: "overture", id: rows[0].id } };
@@ -304,7 +327,7 @@ export class Parser {
     if (allowGeocoder) {
       const cands = exact.length ? exact : await this.gaz.search(text, { typeHint, limit: 3, view: dec.view });
       const top = cands[0];
-      const sd = await dec.selectSource(text, { gazetteer_match: top?.description ?? null, gazetteer_top_score: top?.score ?? 0 }, depth);
+      const sd = await dec.selectSource(text, { gazetteer_match: top?.description ?? null, gazetteer_top_score: top?.score ?? 0, gazetteer_top_subtype: top?.subtype ?? null }, depth);
       if (dec.below("select_source", sd)) stop(`low confidence for select_source (${fmt(sd.confidence)})`, depth, text, "select_source");
       if (sd.value === "photon") return { op: "Resolve", args: { name: text, source: "photon" } };
     }

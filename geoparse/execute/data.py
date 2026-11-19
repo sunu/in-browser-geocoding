@@ -27,8 +27,11 @@ FUZZY_PREFIX = 3
 SUBTYPE_PRIOR = {
     "country": 0.40, "region": 0.38, "county": 0.30, ("locality", "city"): 0.32, ("locality", "town"): 0.20,
     ("locality", None): 0.12, "macrohood": 0.16, "neighborhood": 0.10, "microhood": 0.06,
-    ("locality", "village"): 0.02, ("locality", "hamlet"): 0.0,
+    ("locality", "village"): 0.02, ("locality", "hamlet"): 0.0, "natural": 0.3,
 }
+# The pseudo country of the natural features (plan-026). They are in no country, so the map-view country does not
+# change their score.
+NATURAL_COUNTRY = "XN"
 
 
 @lru_cache(maxsize=1)
@@ -145,6 +148,23 @@ class Store:
                         "has_area": has_area, "lon": lon, "lat": lat, "ancestor_ids": anc_ids}
         return out
 
+    def country_extents(self) -> dict[str, tuple[float, ...]]:
+        """Extent of the division points of each country (the manifest bbox of the browser version)."""
+        if self._extents is None:
+            self._extents = {c: tuple(round(v, 5) for v in b) for c, *b in self.cursor().execute("""
+                SELECT country, min(ST_X(geometry)), min(ST_Y(geometry)), max(ST_X(geometry)), max(ST_Y(geometry))
+                FROM divisions WHERE country IS NOT NULL GROUP BY 1""").fetchall()}
+        return self._extents
+
+    def countries_around(self, id_: str) -> list[str]:
+        """The countries whose simplified shape (country_shapes) is near a division or natural feature (its area,
+        else its point; policy.around_tolerance_deg), in code order."""
+        return [r[0] for r in self.cursor().execute("""
+            SELECT country FROM country_shapes
+            WHERE ST_DWithin(geometry, (SELECT coalesce(a.gs, d.geometry) FROM divisions d LEFT JOIN areas a ON a.id = d.id
+                                        WHERE d.id = ?), ?) ORDER BY 1""",
+            [id_, float(load_config()["policy"]["around_tolerance_deg"])]).fetchall()]
+
     def view(self, view: Sequence[float] | None, cfg: dict[str, Any]) -> tuple[Sequence[float], str | None]:
         """Map view (xmin, ymin, xmax, ymax) and the country of its center: the nearest admin point of the countries
         whose extent (of the division points) contains the center, or of all countries if none does. The extent
@@ -153,11 +173,7 @@ class Store:
         if not view:
             return cfg["data"]["bbox"], cfg["data"]["country"]
         cx, cy = (view[0] + view[2]) / 2, (view[1] + view[3]) / 2
-        if self._extents is None:
-            self._extents = {c: tuple(round(v, 5) for v in b) for c, *b in self.cursor().execute("""
-                SELECT country, min(ST_X(geometry)), min(ST_Y(geometry)), max(ST_X(geometry)), max(ST_Y(geometry))
-                FROM divisions WHERE country IS NOT NULL GROUP BY 1""").fetchall()}
-        inside = [c for c, b in self._extents.items() if b[0] <= cx <= b[2] and b[1] <= cy <= b[3]]
+        inside = [c for c, b in self.country_extents().items() if b[0] <= cx <= b[2] and b[1] <= cy <= b[3]]
         row = self.cursor().execute(f"""
             SELECT country FROM divisions WHERE subtype IN ('country', 'dependency', 'region') AND country IS NOT NULL
               {"AND country IN (SELECT unnest(?))" if inside else ""}
@@ -193,13 +209,20 @@ class Store:
         level_words = {"district", "state", "city", "town", "taluk", "village"}
         words = n.split()
         hint_from_name = None
+        q_list = [n]
         if len(words) > 1 and words[-1] in level_words:
             # "Pune district" -> name "pune", hint "district"
             hint_from_name = words[-1]
-        cur = self.cursor()
-        q_list = [n]
-        if hint_from_name:
             q_list.append(" ".join(words[:-1]))
+        else:
+            # "Ganga river" -> name "ganga", hint "natural:river" (policy.natural_hints)
+            for kind, ws in load_config()["policy"]["natural_hints"].items():
+                w = next((w for w in ws if n.endswith(" " + w)), None)
+                if w:
+                    hint_from_name = f"natural:{kind}"
+                    q_list.append(n[: -len(w) - 1])
+                    break
+        cur = self.cursor()
         # Short forms and old names (data file).
         aliases = name_aliases()
         for x in list(q_list):
@@ -272,11 +295,13 @@ class Store:
                 score += min(0.1, math.log10(max(d["population"], 1)) / 100)
             if h and d["subtype"] in policy["admin_levels"].get(h, []):
                 score += 0.5
+            if h and h.startswith("natural:") and d["subtype"] == "natural" and d["class"] == h[8:]:
+                score += 0.5
             if ctx and any(ctx in norm_name(a) or norm_name(a) in ctx for a in d["ancestors"]):
                 score += 0.3
             if d["lon"] is None or not (x0 <= d["lon"] <= x1 and y0 <= d["lat"] <= y1):
                 score -= ranking["view_outside"]
-            if d["country"] != view_country:
+            if d["country"] not in (view_country, NATURAL_COUNTRY):
                 score -= ranking["view_other_country"]
             where = ", ".join(a for a in reversed(d["ancestors"][-2:])) if d["ancestors"] else ""
             kind = d["subtype"] if not d["class"] else f"{d['subtype']} ({d['class']})"

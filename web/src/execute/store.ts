@@ -47,6 +47,7 @@ export class CountryStore {
   loadedShards = new Map<number, Promise<void>>();
   adminAreas: Promise<void> | null = null;
   layers: Promise<void> | null = null;
+  countryShapes: Promise<void> | null = null;
   private lock: Promise<unknown> = Promise.resolve();
 
   constructor(public engine: Engine) {}
@@ -73,6 +74,7 @@ export class CountryStore {
          population INTEGER, name VARCHAR, name_en VARCHAR, region_n INTEGER, county_n INTEGER, locality_name VARCHAR,
          has_area BOOLEAN)`,
       "CREATE TABLE layers (name VARCHAR, geometry GEOMETRY)",
+      "CREATE TABLE country_shapes (country VARCHAR, geometry GEOMETRY)",
       // Attributes of all admin divisions. The country files replace these rows when they are loaded.
       `INSERT INTO divisions BY NAME SELECT *, ST_Point(lon, lat) AS geometry FROM read_parquet(${q(admin)})`,
     ]) await e.query(s);
@@ -98,7 +100,10 @@ export class CountryStore {
 
   private async loadCountry(c: string) {
     const e = this.engine;
-    const [dv, ar, ld] = await Promise.all(["divisions", "areas", "layer_dist"].map((f) => e.file(`country=${c}/${f}.parquet`)));
+    // The files of the country in the manifest: the natural features (XN) have no layer_dist file.
+    const has = this.manifest.countries[c].bytes ?? {};
+    const [dv, ar] = await Promise.all(["divisions", "areas"].map((f) => e.file(`country=${c}/${f}.parquet`)));
+    const ld = "layer_dist" in has ? await e.file(`country=${c}/layer_dist.parquet`) : null;
     // The admin rows (and admin polygons) of the country are in the country files too.
     await this.serial([
       `DELETE FROM divisions WHERE country = ${q(c)}`,
@@ -106,9 +111,9 @@ export class CountryStore {
       `DELETE FROM areas WHERE country = ${q(c)}`,
       `INSERT INTO areas SELECT id, subtype, ST_GeomFromWKB(gs_wkb), ST_GeomFromWKB(gs_wkb), xmin, ymin, xmax, ymax, ${q(c)}
          FROM read_parquet(${q(ar)}, hive_partitioning = false)`,
-      `INSERT INTO layer_dist BY NAME SELECT * FROM read_parquet(${q(ld)}, hive_partitioning = false)`,
+      ...(ld ? [`INSERT INTO layer_dist BY NAME SELECT * FROM read_parquet(${q(ld)}, hive_partitioning = false)`] : []),
     ]);
-    await Promise.all([dv, ar, ld].map((f) => e.release(f)));
+    await Promise.all([dv, ar, ...(ld ? [ld] : [])].map((f) => e.release(f)));
   }
 
   /** Coastline and land borders (9 MB for the world): only DAGs with a Layer operator need them. */
@@ -119,6 +124,16 @@ export class CountryStore {
       await this.engine.release(f);
     })().catch((e) => { this.layers = null; throw e; });
     return this.layers;
+  }
+
+  /** Simplified country shapes (the countries around a natural feature). Loaded on the first use. */
+  ensureCountryShapes(): Promise<void> {
+    this.countryShapes ??= (async () => {
+      const f = await this.engine.file("global/country_shapes.parquet");
+      await this.serial([`INSERT INTO country_shapes SELECT country, ST_GeomFromWKB(wkb) FROM read_parquet(${q(f)})`]);
+      await this.engine.release(f);
+    })().catch((e) => { this.countryShapes = null; throw e; });
+    return this.countryShapes;
   }
 
   /** Polygons of the countries, dependencies and regions that are not loaded (operations across borders). */

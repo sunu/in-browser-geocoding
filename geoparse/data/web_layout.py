@@ -98,6 +98,9 @@ def export_country_layout(con: duckdb.DuckDBPyConnection, out: Path, release: st
                   FROM dv d JOIN areas a USING (id) WHERE d.subtype IN ('country', 'dependency', 'region')
                   ORDER BY d.n""", root / "global" / "admin_areas.parquet")
     _copy(con, "SELECT name, ST_AsWKB(geometry) AS wkb FROM layers", root / "global" / "layers.parquet")
+    if con.execute("SELECT count(*) FROM duckdb_tables() WHERE table_name = 'country_shapes'").fetchone()[0]:
+        _copy(con, "SELECT country, ST_AsWKB(geometry) AS wkb FROM country_shapes ORDER BY country",
+              root / "global" / "country_shapes.parquet")
 
     # Name shards. The key is the name key without spaces: two names with equal keys have equal keys without
     # spaces, so this one key gives the matches of "name_norm OR name_nospace". One row for each key and division.

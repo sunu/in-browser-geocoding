@@ -24,7 +24,7 @@ const SETUP = [
 ];
 
 // Small files: loaded into memory at start-up. Large files: read with HTTP range requests.
-const SMALL = ["divisions.parquet", "names.parquet", "areas.parquet", "layers.parquet", "layer_dist.parquet"];
+const SMALL = ["divisions.parquet", "names.parquet", "areas.parquet", "layers.parquet", "layer_dist.parquet", "country_shapes.parquet"];
 
 function tables(base: string, placesUrl?: string) {
   const f = (n: string) => (n === "places.parquet" && placesUrl ? `'${placesUrl}'` : `'${base}/${n}'`);
@@ -34,6 +34,7 @@ function tables(base: string, placesUrl?: string) {
     `CREATE TABLE areas AS SELECT id, subtype, ST_GeomFromWKB(gs_wkb) AS gs, ST_GeomFromWKB(gs_wkb) AS geometry, xmin, ymin, xmax, ymax FROM read_parquet(${f("areas.parquet")})`,
     `CREATE TABLE layers AS SELECT name, ST_GeomFromWKB(wkb) AS geometry FROM read_parquet(${f("layers.parquet")})`,
     `CREATE TABLE layer_dist AS SELECT * FROM read_parquet(${f("layer_dist.parquet")})`,
+    `CREATE TABLE country_shapes AS SELECT country, ST_GeomFromWKB(wkb) AS geometry FROM read_parquet(${f("country_shapes.parquet")})`,
     `CREATE VIEW places AS SELECT * FROM read_parquet(${f("places.parquet")})`,
   ];
 }
