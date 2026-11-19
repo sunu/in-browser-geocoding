@@ -68,6 +68,9 @@ def export_country_layout(con: duckdb.DuckDBPyConnection, out: Path, release: st
     root = out / release
     shutil.rmtree(root, ignore_errors=True)
     root.mkdir(parents=True)
+    # One thread: the same data gives the same bytes (the page uses the content hash of each file in its URL, so a
+    # file with new bytes is downloaded again).
+    con.execute("SET threads = 1")
     t0 = time.time()
     # n: integer id of a division in the web data (UUIDs do not compress). The country files map n to id. The natural
     # features (NATURAL_COUNTRY) come last, so that the n of the other countries do not change (cached country files
