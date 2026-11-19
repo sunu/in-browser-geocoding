@@ -1,0 +1,60 @@
+# Held-out set for the reviewed templates (plan-027, phase 13). Written on 2026-11-19, before the first run of the
+# new models. Do not tune on these records. Same format as world_src.yaml. The queries are new: not in the operator
+# tests (gold/ops.jsonl) or in the earlier sets.
+# Changed before the first run: "Assam and Meghalaya" -> "Assam and Arunachal Pradesh" (no state borders both
+# Assam and Meghalaya); the Godavari River is pinned (the top candidate of "Godavari" is the district East Godavari).
+views:
+  IN: [68, 8, 97, 37]
+  FR: [-5, 41, 10, 51.5]
+  DE: [5.8, 47.2, 15.1, 55.1]
+  FI: [20, 59.8, 31.6, 70.1]
+  PE: [-81.3, -18.4, -68.7, -0.1]
+  CN: [73.5, 18, 135, 53.6]
+  ES: [-9.3, 36, 3.3, 43.8]
+  US: [-125, 24, -66, 50]
+  LA: [100, 13.9, 107.7, 22.5]
+
+records:
+  # shared_border
+  - {cc: FR, q: "border between France and Germany", t: shared_border, s: {a: "France", b: "Germany"}}
+  - {cc: IN, q: "5 km zone along the border of Kerala and Tamil Nadu", t: shared_border, s: {distance: 5000, a: "Kerala", b: "Tamil Nadu"}}
+
+  # natural_in
+  - {cc: DE, q: "rivers in Germany", t: natural_in, s: {kind: river, region: "Germany"}}
+  - {cc: FI, q: "lakes in Finland", t: natural_in, s: {kind: lake, region: "Finland"}}
+  - {cc: PE, q: "mountain ranges of Peru", t: natural_in, s: {kind: range, region: "Peru"}}
+
+  # children_near
+  - {cc: IN, q: "districts within 30 km of Delhi", t: children_near, s: {level: district, parent: "India", distance: 30000, other: "Delhi"}}
+  - {cc: IN, q: "districts of Kerala within 20 km of Kochi", t: children_near, s: {level: district, parent: "Kerala", distance: 20000, other: "Kochi"}}
+
+  # children_top
+  - {cc: IN, q: "3 largest states of India", t: children_top, s: {n: 3, order: largest, by: area, level: state, parent: "India"}}
+  - {cc: IN, q: "the smallest district of Kerala", t: children_top, s: {n: 1, order: smallest, by: area, level: district, parent: "Kerala"}}
+  - {cc: ES, q: "the 2 largest regions of Spain", t: children_top, s: {n: 2, order: largest, by: area, level: state, parent: "Spain"}}
+
+  # neighbors_with_predicate
+  - {cc: CN, q: "landlocked countries that border China", t: neighbors_with_predicate, s: {pred: landlocked, level: country, of: "China"}}
+  - {cc: IN, q: "coastal states bordering Karnataka", t: neighbors_with_predicate, s: {pred: coastal, level: state, of: "Karnataka"}}
+
+  # neighbors_both
+  - {cc: FR, q: "countries bordering both France and Germany", t: neighbors_both, s: {level: country, a: "France", b: "Germany"}}
+  - {cc: IN, q: "states that border both Assam and Arunachal Pradesh", t: neighbors_both, s: {level: state, a: "Assam", b: "Arunachal Pradesh"}}
+
+  # Forms of the phase 11 T5 gaps, with other names
+  - {cc: IN, q: "Godavari river", t: lookup_place, s: {anchor: "Godavari river"}, src: {anchor: overture}, ids: {anchor: ne-river-Q191314}}
+  - {cc: ES, q: "the Pyrenees", t: lookup_place, s: {anchor: "Pyrenees"}, src: {anchor: overture}}
+  - {cc: IN, q: "districts along the Godavari", t: children_touching, s: {level: district, parent: "India", other: "Godavari"}, ids: {other: ne-river-Q191314}, n: "No parent in the text: the parse uses the countries around the river; the executed result is the measure."}
+  - {cc: IN, q: "districts in the Aravalli range", t: children, s: {level: district, parent: "Aravalli range"}}
+  - {cc: LA, q: "countries along the Mekong", t: neighbors, s: {level: country, of: "Mekong"}}
+
+  # Predicates on_river and in_mountains
+  - {cc: IN, q: "riverside districts of Bihar", t: children_with_predicate, s: {pred: on_river, level: district, parent: "Bihar"}}
+  - {cc: IN, q: "mountain districts of Himachal Pradesh", t: children_with_predicate, s: {pred: in_mountains, level: district, parent: "Himachal Pradesh"}}
+
+  # "A in B"
+  - {cc: US, q: "Portland in Oregon", t: lookup_place, s: {anchor: "Portland"}, src: {anchor: overture}, ids: {anchor: 20669090-f207-47bc-94de-ae92daac592f}}
+
+  # Must not change
+  - {cc: IN, q: "districts of Karnataka that border Goa", t: children_touching, s: {level: district, parent: "Karnataka", other: "Goa"}}
+  - {cc: IN, q: "coastal districts of Kerala", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Kerala"}}

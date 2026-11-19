@@ -1,5 +1,5 @@
 family: predicate_filter
-description: "The divisions of one level inside a place that have a yes-or-no property (coastal, landlocked, on the international border) or that share a border with another place, for example coastal states of a country"
+description: "The divisions of one level inside a place that have a yes-or-no property (coastal, landlocked, on the international border, on a river, in the mountains), that share a border with another place or are within a distance of it, or the divisions that border a place and have such a property, for example coastal states of a country"
 templates:
   - id: children_with_predicate
     description: "Divisions of one level inside a place that have a property such as coastal or landlocked"
@@ -30,3 +30,29 @@ templates:
       - "{level} (of|in|within) {parent} (bordering|adjoining|adjacent to|next to|touching|sharing a border with|on the border with|on the border of) {other}"
       - "{parent} {level} (bordering|adjoining|adjacent to|next to|touching|that border|that touch) {other}"
     dag: "Filter(Children(${parent}, level=${level}), Touches(${other}))"
+
+  - id: children_near
+    description: "Divisions of one level within a distance of a place"
+    examples: ["districts within 50 km of Goa", "districts of Maharashtra within 30 km of Pune", "states within 100 km of Delhi"]
+    slots:
+      level: {type: admin_level, options_ref: admin_levels}
+      parent: {type: region, optional: true, default: country}
+      distance: {type: distance, default: policy.default_near_m}
+      other: {type: region}
+    patterns:
+      - "{level} within {distance} (of|from) {other}"
+      - "{level} (of|in) {parent} within {distance} (of|from) {other}"
+      - "{level} (near|close to) {other}"
+    dag: "Filter(Children(${parent}, level=${level}), Touches(Buffer(${other}, ${distance})))"
+
+  - id: neighbors_with_predicate
+    description: "The divisions that border a place and have a property such as coastal or landlocked"
+    examples: ["coastal countries that border India", "landlocked states bordering Assam", "coastal districts next to Goa"]
+    slots:
+      pred: {type: predicate, options_ref: predicates}
+      level: {type: admin_level, options_ref: admin_levels, optional: true, default: none}
+      of: {type: region}
+    patterns:
+      - "{head:pred,level} (that|which) (border|borders|touch|touches) {of}"
+      - "{head:pred,level} (bordering|adjacent to|next to|touching|neighbouring|neighboring) {of}"
+    dag: "Filter(Neighbors(${of}, level=${level}), ${pred})"

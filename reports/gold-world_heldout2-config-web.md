@@ -6,11 +6,11 @@ Records: 34. Depth 0: 34. Depth 1 (two levels): 0.
 
 | Decision | Accuracy | Depth 0 | Depth 1 | Coverage misses | Mean confidence |
 |---|---|---|---|---|---|
-| pick_family | 100% (34/34) | 100% (34/34) | - | 0 | 0.99 |
+| pick_family | 94% (32/34) | 94% (32/34) | - | 0 | 0.99 |
 | pick_template | 100% (34/34) | 100% (34/34) | - | 0 | 1.00 |
-| pick_template_flat | 91% (31/34) | 91% (31/34) | - | 0 | 0.88 |
+| pick_template_flat | 97% (33/34) | 97% (33/34) | - | 0 | 0.77 |
 | pick_split | 100% (34/34) | 100% (34/34) | - | 0 | 0.99 |
-| is_subquery | 100% (27/27) | 100% (27/27) | - | 0 | 0.98 |
+| is_subquery | 100% (27/27) | 100% (27/27) | - | 0 | 1.00 |
 | select_source | 100% (9/9) | 100% (9/9) | - | 0 | 0.80 |
 | fill_closed_slot.admin_level | 100% (20/20) | 100% (20/20) | - | 0 | 1.00 |
 | fill_closed_slot.category | 100% (3/3) | 100% (3/3) | - | 0 | 1.00 |
@@ -20,9 +20,9 @@ Records: 34. Depth 0: 34. Depth 1 (two levels): 0.
 
 | Gold id | Decision | Depth | Gold | Got | Confidence |
 |---|---|---|---|---|---|
-| y012 | pick_template_flat | 0 | children | parent | 0.276524 |
-| y015 | pick_template_flat | 0 | children_with_predicate | along_coast | 0.196218 |
-| y034 | pick_template_flat | 0 | children | children_with_predicate | 0.09855799999999992 |
+| y015 | pick_family | 0 | predicate_filter | features | 0.9600346666666667 |
+| y015 | pick_template_flat | 0 | children_with_predicate | along_coast | 0.5556053333333333 |
+| y034 | pick_family | 0 | hierarchy | features | 0.8445400000000001 |
 
 ## Full pipeline
 
@@ -32,18 +32,19 @@ Records: 34. Depth 0: 34. Depth 1 (two levels): 0.
 | hierarchy | 100% (19/19) | 95% (18/19) | 95% (18/19) | 0 | 100% (19/19) |
 | lookup | 100% (8/8) | 100% (8/8) | 100% (8/8) | 0 | 100% (8/8) |
 | modifier | 100% (1/1) | 100% (1/1) | 100% (1/1) | 0 | 100% (1/1) |
-| predicate_filter | 100% (2/2) | 100% (2/2) | 100% (2/2) | 0 | 100% (2/2) |
+| predicate_filter | 50% (1/2) | 50% (1/2) | 50% (1/2) | 0 | 50% (1/2) |
 | set_algebra | 100% (1/1) | 100% (1/1) | 100% (1/1) | 0 | 100% (1/1) |
-| ALL | 100% (34/34) | 97% (33/34) | 97% (33/34) | 0 | 100% (34/34) |
+| ALL | 97% (33/34) | 94% (32/34) | 94% (32/34) | 0 | 97% (33/34) |
 
 ### By depth
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 97% (33/34) | 1.49 s | 4.3 | 1.3 |
+| 0 | 94% (32/34) | 1.53 s | 4.5 | 1.6 |
 
 ### Pipeline errors
 
 | Gold id | Query | Got template | Problem |
 |---|---|---|---|
+| y015 | coastal regions of Chile | along_coast | template |
 | y028 | regions bordering Dodoma | neighbors | level: expected 'state', got 'none' |

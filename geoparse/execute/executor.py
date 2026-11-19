@@ -309,7 +309,10 @@ class _Run:
             return self.divisions_rel(
                 f"{lf} AND EXISTS (SELECT 1 FROM {parent} p "
                 f"WHERE p.id IS NOT NULL AND p.id <> d.id AND list_contains(d.ancestors, p.id))")
-        # No IDs (a computed geometry): use the division point inside the geometry.
+        # A natural feature: the divisions that overlap it ("districts in the Aravalli range"; most of their points are
+        # outside a long, narrow range). A computed geometry (a direction part): the division point inside it.
+        if natural:
+            return self.divisions_rel(f"{lf} AND a.id IS NOT NULL AND ST_Intersects(crs84(a.gs), {self.union_geom(parent, 'gs')})")
         return self.divisions_rel(f"{lf} AND ST_Intersects(crs84(d.geometry), {self.union_geom(parent, 'gs')})")
 
     def child_level(self, parent: str, country: str) -> str:

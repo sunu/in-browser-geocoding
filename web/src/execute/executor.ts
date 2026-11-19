@@ -208,6 +208,8 @@ class Run {
     if ((await this.idsOf(parent)).length && a.of?.op !== "Direction" && !natural)
       return this.divisionsRel(`${lf} AND EXISTS (SELECT 1 FROM ${parent} p
         WHERE p.id IS NOT NULL AND p.id <> d.id AND list_contains(d.ancestors, p.id))`);
+    // A natural feature: the divisions that overlap it (a long, narrow range). A direction part: the point inside it.
+    if (natural) return this.divisionsRel(`${lf} AND a.id IS NOT NULL AND ST_Intersects(a.gs, ${this.unionGeom(parent, "gs")})`);
     return this.divisionsRel(`${lf} AND ST_Intersects(d.geometry, ${this.unionGeom(parent, "gs")})`);
   }
 

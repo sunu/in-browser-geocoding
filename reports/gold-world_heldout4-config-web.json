@@ -5,11 +5,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup",
+   "correct": false,
+   "got": "features",
    "gold": "lookup",
-   "conf": 0.981776,
-   "n_options": 2
+   "conf": 0.9134574999999999,
+   "n_options": 3
   },
   {
    "id": "n001",
@@ -27,10 +27,10 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup_place",
+   "correct": false,
+   "got": "natural_in",
    "gold": "lookup_place",
-   "conf": 0.16338999999999998,
+   "conf": 0.2738665,
    "n_options": 3
   },
   {
@@ -38,11 +38,15 @@
    "decision": "pick_split",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "coverage_miss": true,
+   "correct": true,
+   "got": {
+    "anchor": "Ganga river"
+   },
    "gold": {
     "anchor": "Ganga river"
-   }
+   },
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n001",
@@ -63,7 +67,7 @@
    "correct": false,
    "got": "hierarchy",
    "gold": "lookup",
-   "conf": 0.8799600000000001,
+   "conf": 0.9765699999999999,
    "n_options": 2
   },
   {
@@ -85,7 +89,7 @@
    "correct": false,
    "got": "children",
    "gold": "lookup_place",
-   "conf": 0.009538000000000046,
+   "conf": 0.25119800000000003,
    "n_options": 2
   },
   {
@@ -120,10 +124,10 @@
    "depth": 0,
    "family": "lookup",
    "correct": false,
-   "got": "hierarchy",
+   "got": "features",
    "gold": "lookup",
-   "conf": 0.8405274999999998,
-   "n_options": 3
+   "conf": 0.9167000000000001,
+   "n_options": 2
   },
   {
    "id": "n003",
@@ -141,11 +145,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup_place",
+   "correct": false,
+   "got": "natural_in",
    "gold": "lookup_place",
-   "conf": 0.10449100000000004,
-   "n_options": 3
+   "conf": 0.49911799999999995,
+   "n_options": 2
   },
   {
    "id": "n003",
@@ -159,8 +163,8 @@
    "gold": {
     "anchor": "Sahara desert"
    },
-   "conf": 0.985082,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n003",
@@ -192,8 +196,8 @@
    "correct": true,
    "got": "children_touching",
    "gold": "children_touching",
-   "conf": 0.977184,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n004",
@@ -203,21 +207,38 @@
    "correct": true,
    "got": "children_touching",
    "gold": "children_touching",
-   "conf": 0.0982860000000001,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n004",
    "decision": "pick_split",
    "depth": 0,
    "family": "predicate_filter",
-   "correct": false,
-   "coverage_miss": true,
-   "gold": {
-    "level": "district",
+   "correct": true,
+   "got": {
+    "level": "districts",
     "parent": "Uttar Pradesh",
     "other": "Ganga river"
-   }
+   },
+   "gold": {
+    "level": "districts",
+    "parent": "Uttar Pradesh",
+    "other": "Ganga river"
+   },
+   "conf": 0.8077915,
+   "n_options": 3
+  },
+  {
+   "id": "n004",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "districts",
+   "conf": 1.0
   },
   {
    "id": "n004",
@@ -228,7 +249,7 @@
    "got": false,
    "gold": false,
    "text": "Uttar Pradesh",
-   "conf": 0.988206
+   "conf": 0.990326
   },
   {
    "id": "n004",
@@ -239,17 +260,17 @@
    "got": false,
    "gold": false,
    "text": "Ganga river",
-   "conf": 0.98306
+   "conf": 0.9941
   },
   {
    "id": "n005",
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup",
+   "correct": false,
+   "got": "features",
    "gold": "lookup",
-   "conf": 0.9575100000000001,
+   "conf": 0.90717,
    "n_options": 2
   },
   {
@@ -271,7 +292,7 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.124722,
+   "conf": 0.11728000000000005,
    "n_options": 2
   },
   {
@@ -359,7 +380,7 @@
    "got": false,
    "gold": false,
    "text": "Lake Geneva",
-   "conf": 0.947162
+   "conf": 0.989008
   },
   {
    "id": "n006",
@@ -391,8 +412,8 @@
    "correct": true,
    "got": "children_touching",
    "gold": "children_touching",
-   "conf": 0.991466,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n007",
@@ -402,8 +423,8 @@
    "correct": true,
    "got": "children_touching",
    "gold": "children_touching",
-   "conf": 0.317906,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n007",
@@ -414,15 +435,15 @@
    "got": {
     "level": "districts",
     "parent": "Haryana",
-    "other": "Yamuna"
+    "other": "the Yamuna"
    },
    "gold": {
     "level": "districts",
     "parent": "Haryana",
-    "other": "Yamuna"
+    "other": "the Yamuna"
    },
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.8640779999999999,
+   "n_options": 2
   },
   {
    "id": "n007",
@@ -444,7 +465,7 @@
    "got": false,
    "gold": false,
    "text": "Haryana",
-   "conf": 0.98649
+   "conf": 0.988608
   },
   {
    "id": "n007",
@@ -455,39 +476,39 @@
    "got": false,
    "gold": false,
    "text": "Yamuna",
-   "conf": 0.988964
+   "conf": 0.995348
   },
   {
    "id": "n008",
    "decision": "pick_family",
    "depth": 0,
    "family": "predicate_filter",
-   "correct": true,
-   "got": "predicate_filter",
+   "correct": false,
+   "got": "hierarchy",
    "gold": "predicate_filter",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9754320000000001,
+   "n_options": 2
   },
   {
    "id": "n008",
    "decision": "pick_template",
    "depth": 0,
    "family": "predicate_filter",
-   "correct": false,
-   "got": "children_with_predicate",
+   "correct": true,
+   "got": "children_touching",
    "gold": "children_touching",
-   "conf": 0.987816,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n008",
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "predicate_filter",
-   "correct": false,
-   "got": "children_with_predicate",
+   "correct": true,
+   "got": "children_touching",
    "gold": "children_touching",
-   "conf": 0.28917400000000004,
+   "conf": 0.40463800000000005,
    "n_options": 2
   },
   {
@@ -512,7 +533,7 @@
    "got": false,
    "gold": false,
    "text": "India",
-   "conf": 0.985348
+   "conf": 0.993856
   },
   {
    "id": "n008",
@@ -523,7 +544,7 @@
    "got": false,
    "gold": false,
    "text": "Yamuna",
-   "conf": 0.988964
+   "conf": 0.995348
   },
   {
    "id": "n009",
@@ -533,8 +554,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.9365060000000001,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n009",
@@ -555,8 +576,8 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 0.15861999999999998,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n009",
@@ -566,13 +587,13 @@
    "correct": true,
    "got": {
     "level": "states",
-    "of": "Bay of Bengal"
+    "of": "the Bay of Bengal"
    },
    "gold": {
     "level": "states",
-    "of": "Bay of Bengal"
+    "of": "the Bay of Bengal"
    },
-   "conf": 0.942302,
+   "conf": 0.8282860000000001,
    "n_options": 2
   },
   {
@@ -595,7 +616,7 @@
    "got": false,
    "gold": false,
    "text": "Bay of Bengal",
-   "conf": 0.852642
+   "conf": 0.991052
   },
   {
    "id": "n010",
@@ -656,7 +677,7 @@
    "got": "north",
    "gold": "north",
    "text": "northern",
-   "conf": 0.99934975
+   "conf": 0.999985375
   },
   {
    "id": "n010",
@@ -667,7 +688,7 @@
    "got": false,
    "gold": false,
    "text": "Luzon",
-   "conf": 0.958
+   "conf": 0.994892
   },
   {
    "id": "n010",
@@ -685,11 +706,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup",
+   "correct": false,
+   "got": "features",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.913254,
+   "n_options": 2
   },
   {
    "id": "n011",
@@ -707,11 +728,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup_place",
+   "correct": false,
+   "got": "natural_in",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.3914679999999999,
+   "n_options": 2
   },
   {
    "id": "n011",
@@ -725,8 +746,8 @@
    "gold": {
     "anchor": "Thar desert"
    },
-   "conf": 0.98763,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n011",
@@ -744,11 +765,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup",
+   "correct": false,
+   "got": "features",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.8915420000000001,
+   "n_options": 2
   },
   {
    "id": "n012",
@@ -766,11 +787,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup_place",
+   "correct": false,
+   "got": "natural_in",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.0826579999999999,
+   "n_options": 2
   },
   {
    "id": "n012",
@@ -804,9 +825,9 @@
    "depth": 0,
    "family": "lookup",
    "correct": false,
-   "got": "hierarchy",
+   "got": "features",
    "gold": "lookup",
-   "conf": 0.84433,
+   "conf": 0.948366,
    "n_options": 2
   },
   {
@@ -825,10 +846,10 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup_place",
+   "correct": false,
+   "got": "natural_in",
    "gold": "lookup_place",
-   "conf": 0.048122,
+   "conf": 0.5719700000000001,
    "n_options": 2
   },
   {
@@ -898,13 +919,13 @@
    "correct": true,
    "got": {
     "level": "districts",
-    "parent": "Western Ghats"
+    "parent": "the Western Ghats"
    },
    "gold": {
     "level": "districts",
-    "parent": "Western Ghats"
+    "parent": "the Western Ghats"
    },
-   "conf": 0.9713160000000001,
+   "conf": 0.9272720000000001,
    "n_options": 2
   },
   {
@@ -927,7 +948,7 @@
    "got": true,
    "gold": false,
    "text": "Western Ghats",
-   "conf": 0.81192
+   "conf": 0.8810739999999999
   },
   {
    "id": "n015",
@@ -937,8 +958,8 @@
    "correct": true,
    "got": "modifier",
    "gold": "modifier",
-   "conf": 0.9748300000000001,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n015",
@@ -959,8 +980,8 @@
    "correct": true,
    "got": "buffer",
    "gold": "buffer",
-   "conf": 0.6857219999999999,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n015",
@@ -970,13 +991,13 @@
    "correct": true,
    "got": {
     "distance": "5 km",
-    "target": "Rhine"
+    "target": "the Rhine"
    },
    "gold": {
     "distance": "5 km",
-    "target": "Rhine"
+    "target": "the Rhine"
    },
-   "conf": 0.97553,
+   "conf": 0.931716,
    "n_options": 2
   },
   {
@@ -988,7 +1009,7 @@
    "got": false,
    "gold": false,
    "text": "Rhine",
-   "conf": 0.977386
+   "conf": 0.99554
   },
   {
    "id": "n015",
@@ -1006,10 +1027,10 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup",
+   "correct": false,
+   "got": "features",
    "gold": "lookup",
-   "conf": 0.9581759999999999,
+   "conf": 0.8904080000000001,
    "n_options": 2
   },
   {
@@ -1029,9 +1050,9 @@
    "depth": 0,
    "family": "lookup",
    "correct": false,
-   "got": "direction_part",
+   "got": "natural_in",
    "gold": "lookup_place",
-   "conf": 0.13874600000000004,
+   "conf": 0.5591459999999999,
    "n_options": 2
   },
   {
@@ -1046,8 +1067,8 @@
    "gold": {
     "anchor": "Gobi desert"
    },
-   "conf": 0.9888440000000001,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n016",
@@ -1068,8 +1089,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 0.950064,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n017",
@@ -1087,11 +1108,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "got": "direction_part",
+   "correct": true,
+   "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.30604999999999993,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n017",
@@ -1125,10 +1146,10 @@
    "depth": 0,
    "family": "lookup",
    "correct": false,
-   "got": "hierarchy",
+   "got": "features",
    "gold": "lookup",
-   "conf": 0.824714,
-   "n_options": 2
+   "conf": 0.9501114999999998,
+   "n_options": 3
   },
   {
    "id": "n018",
@@ -1147,10 +1168,10 @@
    "depth": 0,
    "family": "lookup",
    "correct": false,
-   "got": "children",
+   "got": "natural_in",
    "gold": "lookup_place",
-   "conf": 0.03947400000000001,
-   "n_options": 2
+   "conf": 0.5676399999999999,
+   "n_options": 3
   },
   {
    "id": "n018",
@@ -1186,8 +1207,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 0.952688,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n019",
@@ -1208,8 +1229,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.88626,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n019",
@@ -1362,21 +1383,19 @@
    "query": "Ganga river",
    "family": "lookup",
    "depth": 0,
-   "template_ok": false,
+   "template_ok": true,
    "ok": true,
-   "latency_s": 1.1607167720794678,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
+   "latency_s": 1.5785713195800781,
+   "model_calls": 3,
+   "requests_in_sequence": 2,
    "unsupported": null,
-   "got_template": "along_border",
-   "path": "complex",
-   "slots_ok": false,
-   "diffs": [
-    "template"
-   ],
-   "dag_ok": false,
-   "exec_ok": false,
-   "exec_note": "0 ids vs 1"
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
   },
   {
    "id": "n002",
@@ -1385,7 +1404,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8218326568603516,
+   "latency_s": 2.2575981616973877,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -1404,9 +1423,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5696415901184082,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
+   "latency_s": 0.37987399101257324,
+   "model_calls": 3,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -1423,16 +1442,14 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.8295671939849854,
+   "latency_s": 0.9547197818756104,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_touching",
    "path": "complex",
-   "slots_ok": false,
-   "diffs": [
-    "other: expected 'Ganga river', got 'Ganga'"
-   ],
+   "slots_ok": true,
+   "diffs": [],
    "dag_ok": true,
    "exec_ok": true,
    "exec_note": "27 ids vs 27"
@@ -1444,7 +1461,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.93898606300354,
+   "latency_s": 2.284996509552002,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -1463,7 +1480,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.272271156311035,
+   "latency_s": 1.377035140991211,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1482,7 +1499,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.7510945796966553,
+   "latency_s": 1.3012280464172363,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -1501,19 +1518,19 @@
    "depth": 0,
    "template_ok": false,
    "ok": true,
-   "latency_s": 1.8810627460479736,
-   "model_calls": 4,
+   "latency_s": 1.4616374969482422,
+   "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
-   "got_template": "children_with_predicate",
+   "got_template": "neighbors",
    "path": "complex",
    "slots_ok": false,
    "diffs": [
     "template"
    ],
    "dag_ok": false,
-   "exec_ok": false,
-   "exec_note": "85 ids vs 36"
+   "exec_ok": true,
+   "exec_note": "36 ids vs 36"
   },
   {
    "id": "n009",
@@ -1522,9 +1539,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.28157114982605,
-   "model_calls": 6,
-   "requests_in_sequence": 3,
+   "latency_s": 1.5920956134796143,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -1541,7 +1558,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.331251382827759,
+   "latency_s": 1.6521899700164795,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1560,7 +1577,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.055044174194336,
+   "latency_s": 1.4189152717590332,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -1579,9 +1596,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.985990047454834,
-   "model_calls": 3,
-   "requests_in_sequence": 1,
+   "latency_s": 1.1702120304107666,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -1596,44 +1613,40 @@
    "query": "the Alps",
    "family": "lookup",
    "depth": 0,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 1.1675806045532227,
-   "model_calls": 3,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.3932933807373047,
+   "model_calls": 4,
    "requests_in_sequence": 2,
-   "unsupported": {
-    "reason": "the text 'Alps' names no known admin_level",
-    "decision": "fill_closed_slot",
-    "depth": 0,
-    "text": "Alps"
-   },
-   "got_template": null,
-   "path": null,
-   "slots_ok": false,
-   "dag_ok": false,
-   "exec_ok": false
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
   },
   {
    "id": "n014",
    "query": "districts in the Western Ghats",
    "family": "hierarchy",
    "depth": 0,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 2.7630467414855957,
-   "model_calls": 7,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 3.5509753227233887,
+   "model_calls": 10,
    "requests_in_sequence": 4,
-   "unsupported": {
-    "reason": "the text is not one place name, and no other template matches",
-    "decision": "is_subquery",
-    "depth": 1,
-    "text": "Western Ghats"
-   },
-   "got_template": null,
-   "path": null,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
    "slots_ok": false,
+   "diffs": [
+    "parent: expected 'Western Ghats', got {'q': 'Western Ghats', 't': 'direction_part', 's': {'dir': 'west', 'target': 'Ghats'}}"
+   ],
    "dag_ok": false,
-   "exec_ok": false
+   "exec_ok": false,
+   "exec_note": "0 ids vs 36"
   },
   {
    "id": "n015",
@@ -1642,9 +1655,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.196885585784912,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
+   "latency_s": 1.436021327972412,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "buffer",
    "path": "simple",
@@ -1661,9 +1674,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3881149291992188,
-   "model_calls": 5,
-   "requests_in_sequence": 3,
+   "latency_s": 1.450699806213379,
+   "model_calls": 3,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -1680,9 +1693,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5888731479644775,
-   "model_calls": 4,
-   "requests_in_sequence": 2,
+   "latency_s": 1.4130008220672607,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -1697,22 +1710,19 @@
    "query": "the Andes",
    "family": "lookup",
    "depth": 0,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 1.3652522563934326,
-   "model_calls": 3,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.9079573154449463,
+   "model_calls": 5,
    "requests_in_sequence": 2,
-   "unsupported": {
-    "reason": "the text 'Andes' names no known admin_level",
-    "decision": "fill_closed_slot",
-    "depth": 0,
-    "text": "Andes"
-   },
-   "got_template": null,
-   "path": null,
-   "slots_ok": false,
-   "dag_ok": false,
-   "exec_ok": false
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
   },
   {
    "id": "n019",
@@ -1721,9 +1731,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3737149238586426,
-   "model_calls": 4,
-   "requests_in_sequence": 2,
+   "latency_s": 1.857100009918213,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -1740,7 +1750,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3223066329956055,
+   "latency_s": 1.8076844215393066,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1759,7 +1769,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3380773067474365,
+   "latency_s": 1.2375059127807617,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1775,19 +1785,19 @@
  "summary": {
   "pick_family": {
    "n": 21,
-   "correct": 17
+   "correct": 11
   },
   "pick_template": {
    "n": 21,
-   "correct": 20
+   "correct": 21
   },
   "pick_template_flat": {
    "n": 21,
-   "correct": 16
+   "correct": 13
   },
   "pick_split": {
    "n": 21,
-   "correct": 18
+   "correct": 20
   },
   "is_subquery": {
    "n": 11,
@@ -1798,8 +1808,8 @@
    "correct": 14
   },
   "fill_closed_slot.admin_level": {
-   "n": 3,
-   "correct": 3
+   "n": 4,
+   "correct": 4
   },
   "fill_closed_slot.direction": {
    "n": 1,
@@ -1812,7 +1822,7 @@
    },
    "lookup": {
     "n": 13,
-    "dag_ok": 10
+    "dag_ok": 13
    },
    "modifier": {
     "n": 3,
@@ -1824,7 +1834,7 @@
    },
    "ALL": {
     "n": 21,
-    "dag_ok": 16
+    "dag_ok": 19
    }
   }
  }

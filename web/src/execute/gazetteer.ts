@@ -111,8 +111,8 @@ export class Gazetteer {
     const qList = [n];
     if (hintFromName) qList.push(words.slice(0, -1).join(" "));
     else {
-      // "Ganga river" -> name "ganga", hint "natural:river" (policy.natural_hints)
-      for (const [kind, ws] of Object.entries<string[]>(this.bundle.config.policy.natural_hints)) {
+      // "Ganga river" -> name "ganga", hint "natural:river" (the keywords of the option list natural_kinds)
+      for (const [kind, ws] of Object.entries<string[]>(Object.fromEntries(Object.entries<any>(this.bundle.options.natural_kinds).map(([k, v]) => [k, v.keywords])))) {
         const w = ws.find((w) => n.endsWith(" " + w));
         if (w) { hintFromName = `natural:${kind}`; qList.push(n.slice(0, -w.length - 1)); break; }
       }

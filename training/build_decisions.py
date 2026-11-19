@@ -32,7 +32,8 @@ from training.gen_synthetic import typo_always
 
 DATA = REPO_ROOT / "training" / "data"
 CLOSED_REF = {"admin_level": "admin_levels", "predicate": "predicates", "direction": "directions",
-              "category": "categories", "attr": "attrs", "op": "ops"}
+              "category": "categories", "attr": "attrs", "op": "ops", "natural_kind": "natural_kinds",
+              "rank_order": "rank_orders"}
 
 
 def split_of(query: str) -> str:
@@ -54,7 +55,8 @@ def category_group(leaf: str) -> str:
 
 
 def ex(decision, state, options, label, query, source, soft=None):
-    instr = INSTRUCTIONS.get(decision, INSTRUCTIONS.get(decision.split(".")[0], ""))
+    # The parser uses the same text (Decider._choose); a decision without instructions is an error.
+    instr = INSTRUCTIONS[decision] if decision in INSTRUCTIONS else INSTRUCTIONS[decision.split(".")[0]]
     if decision == "is_subquery":
         instr = INSTRUCTIONS["is_subquery"]
     return {"decision": decision, "instructions": instr, "state": state, "options": options, "label": label,
@@ -205,10 +207,9 @@ def main() -> None:
     for line in (DATA / "beams.jsonl").read_text().splitlines():
         r = json.loads(line)
         beams[r["query"]] = r["beams"]
-    eval_queries = set()
-    for p in [REPO_ROOT / "gold" / "gold.jsonl", REPO_ROOT / "gold" / "heldout.jsonl", DATA / "llm_dev.jsonl",
-              DATA / "llm_test.jsonl"]:
-        eval_queries |= {norm(json.loads(l)["query"]) for l in p.read_text().splitlines() if l.strip()}
+    from training.evalset import eval_queries as all_eval
+
+    eval_queries = {norm(q) for q in all_eval()}
     rows = from_generator(parser, beams, rng) + from_logs(eval_queries)
     # Remove any example whose query is an evaluation query.
     rows = [r for r in rows if norm(r["query"]) not in eval_queries]

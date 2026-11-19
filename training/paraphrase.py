@@ -2,6 +2,8 @@
 
 Paraphrases (training):
   uv run python -m training.paraphrase para --n-seeds 3000 --per-seed 3
+  uv run python -m training.paraphrase para --n-seeds 1700 --templates shared_border,natural_in --natural
+    (seeds of some templates, or with a natural feature name in a slot; plan-027)
 Test set (separate prompt and model, never used for training):
   uv run python -m training.paraphrase testset --per-template 15
 
@@ -121,11 +123,34 @@ def para_prompt(seeds: list[dict], per_seed: int) -> str:
     return "\n".join(lines)
 
 
-def run_para(n_seeds: int, per_seed: int, batch: int, workers: int, seed: int) -> None:
+def natural_names() -> set[str]:
+    """Lower-case names of the natural features of the world data (empty if it is not built)."""
+    import duckdb
+
+    path = REPO_ROOT / "data" / "build-world" / "geoparse.duckdb"
+    if not path.exists():
+        return set()
+    con = duckdb.connect(str(path), read_only=True)
+    return {r[0].lower() for r in con.execute("SELECT name FROM divisions WHERE subtype = 'natural'").fetchall()}
+
+
+def run_para(n_seeds: int, per_seed: int, batch: int, workers: int, seed: int, only: list[str] | None = None,
+             natural: bool = False) -> None:
     rng = random.Random(seed)
     syn = [json.loads(l) for l in (DATA / "synthetic.jsonl").read_text().splitlines()]
     rng.shuffle(syn)
+    if only or natural:
+        names = natural_names() if natural else set()
+
+        def has_natural(r):
+            f = Frame.from_text(r["frame"])
+            return f is not None and any(str(v).lower().removeprefix("the ") in names for v in f.slots.values())
+
+        syn = [r for r in syn if (only and r["template"] in only) or (natural and has_natural(r))]
     seeds = syn[:n_seeds]
+    from training.evalset import eval_queries
+
+    evq = eval_queries()
     templates = all_templates()
     out_path = DATA / "paraphrase.jsonl"
     done = set()
@@ -152,13 +177,18 @@ def run_para(n_seeds: int, per_seed: int, batch: int, workers: int, seed: int) -
                 bad += 1
                 continue
             q = re.sub(r"\s+", " ", str(it.get("query", ""))).strip()
+            # An evaluation query is never a training example.
             if (f is None or f.template != sf.template or check_frame(f, q, templates) or quantities(f) != quantities(sf)
-                    or set(f.slots) != set(sf.slots) or not is_english(q)):
+                    or set(f.slots) != set(sf.slots) or not is_english(q) or q.lower() in evq):
                 bad += 1
                 continue
             f = exact_spans(f, q)
-            good.append({"query": q, "frame": f.to_text(), "template": f.template, "source": "paraphrase",
-                         "seed_query": sd["query"]})
+            rec = {"query": q, "frame": f.to_text(), "template": f.template, "source": "paraphrase",
+                   "seed_query": sd["query"]}
+            # The paraphrase keeps the slot names of the seed: the option keys of its closed slots are the seed's.
+            if sd.get("closed_keys") is not None:
+                rec["closed_keys"], rec["sub_slots"] = sd["closed_keys"], sd.get("sub_slots", [])
+            good.append(rec)
         return good, {"bad": bad, **usage}
 
     with ThreadPoolExecutor(workers) as pool, out_path.open("a") as out:
@@ -241,13 +271,16 @@ def main() -> None:
     p.add_argument("--batch", type=int, default=10)
     p.add_argument("--workers", type=int, default=8)
     p.add_argument("--seed", type=int, default=11)
+    p.add_argument("--templates", default="", help="only seeds of these templates (comma list)")
+    p.add_argument("--natural", action="store_true", help="also seeds with a natural feature name in a slot")
     t = sub.add_parser("testset")
     t.add_argument("--per-template", type=int, default=15)
     t.add_argument("--workers", type=int, default=8)
     t.add_argument("--name", default="llm_test", help="llm_test (final) or llm_dev (error analysis)")
     args = ap.parse_args()
     if args.cmd == "para":
-        run_para(args.n_seeds, args.per_seed, args.batch, args.workers, args.seed)
+        run_para(args.n_seeds, args.per_seed, args.batch, args.workers, args.seed,
+                 [t for t in args.templates.split(",") if t], args.natural)
     else:
         run_testset(args.per_template, args.workers, args.name)
 

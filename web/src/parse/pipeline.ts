@@ -12,7 +12,7 @@ import type { Photon } from "../execute/photon.ts";
 import type { T5Frames } from "../models/t5.ts";
 
 const OPEN = new Set(["region", "anchor"]);
-const CLOSED = new Set(["admin_level", "predicate", "direction", "category", "attr", "op"]);
+const CLOSED = new Set(["admin_level", "predicate", "direction", "category", "attr", "op", "natural_kind", "rank_order"]);
 const SIMPLE_FAMILIES = new Set(["lookup", "modifier"]);
 const GEOCODER_FAMILIES = new Set(["lookup", "modifier", "features"]);
 const LABELS: Record<string, string> = { region: "place or area", anchor: "place", admin_level: "level", predicate: "property",
@@ -36,7 +36,9 @@ function fmt(x: number) { return x.toFixed(2); }
 
 // geoparse.parse.pipeline.AROUND_DEFAULT: the optional parent (first) without text is the countries around the
 // other slot (second).
-const AROUND_DEFAULT: Record<string, [string, string]> = { children_touching: ["parent", "other"] };
+// geoparse.parse.pipeline.HAS_DISTANCE: a number with a distance unit in a text.
+const HAS_DISTANCE = /\b\d+(?:\.\d+)?\s*(?:km|kms|kilometres?|kilometers?|m|metres?|meters?|mi|miles?)\b/i;
+const AROUND_DEFAULT: Record<string, [string, string]> = { children_touching: ["parent", "other"], children_near: ["parent", "other"] };
 
 export class Parser {
   templates: Record<string, Template>;
@@ -124,6 +126,15 @@ export class Parser {
     const td = await dec.pickTemplate(text, fd.value, topts, depth);
     if (dec.below("pick_template", td)) stop(`low confidence for pick_template (${fmt(td.confidence)})`, depth, text, "pick_template");
     const tpl = this.templates[td.value];
+    if (tpl.id === "natural_in") {
+      // Port: "Ganga river", "Sahara desert" is one natural feature, not the features of a kind in a place.
+      const top = await this.gaz.search(text, { fuzzy: false, limit: 1, view: dec.view });
+      if (top.length && top[0].subtype === "natural") {
+        dec.recordStep("natural_name", depth, { text }, top[0].id, "rules", {});
+        return [{ op: "Resolve", args: { name: text, source: "overture", id: top[0].id } },
+          { family: "lookup", template: "lookup_place", slots: { anchor: text } }];
+      }
+    }
     if (tpl.family === "lookup") {
       const g = await dec.isSubquery(text, depth);
       if (g.value || dec.below("is_subquery", g)) stop("the text is not one place name, and no other template matches", depth, text, "is_subquery");
@@ -277,6 +288,19 @@ export class Parser {
       const [sub, info] = await this.parseLevel(dec, text, depth + 1);
       return [sub, { q: text, t: info.template, s: info.slots }];
     }
+    const levelWords = Object.values<any>(this.bundle.options.admin_levels).flatMap((v) => v.keywords ?? []);
+    if (isRegion && !exact.length && (keywordHits(text, levelWords, false) || HAS_DISTANCE.test(text))) {
+      // Port: a set by a level or a distance ("coastal districts of Odisha"), not a place name. A sub-query.
+      dec.recordStep("is_subquery", depth, { text }, true, "rules", { level_or_distance: true });
+      if (depth + 1 > this.maxDepth) stop("depth limit", depth, text);
+      const [sub, info] = await this.parseLevel(dec, text, depth + 1);
+      return [sub, { q: text, t: info.template, s: info.slots }];
+    }
+    if (isRegion && exact.length && !keywordHits(text, levelWords, false) && !this.directionRest(text)) {
+      // Port: the whole text is an exact place name ("Western Ghats"): a place, not a sub-query.
+      dec.recordStep("is_subquery", depth, { text }, false, "rules", { exact_name: true });
+      return [await this.anchor(dec, tpl, text, query, depth, typeHint, exact), text];
+    }
     if (isRegion) {
       const d = await dec.isSubquery(text, depth);
       if (dec.below("is_subquery", d)) stop(`low confidence for is_subquery (${fmt(d.confidence)})`, depth, text, "is_subquery");
@@ -324,8 +348,7 @@ export class Parser {
     const o = this.bundle.options;
     const opt = (ref: string) => Object.values<any>(o[ref]).flatMap((v) => v.keywords ?? []);
     const cats = Object.values(this.bundle.categories).flatMap((g) => Object.values(g.items).flatMap((i) => i.keywords));
-    return [...opt("admin_levels"), ...cats, ...opt("predicates"), ...opt("directions"),
-      ...Object.values<string[]>(this.bundle.config.policy.natural_hints).flat()];
+    return [...opt("admin_levels"), ...cats, ...opt("predicates"), ...opt("directions"), ...opt("natural_kinds")];
   }
 
   /** Port of _direction_rest: the text after a leading direction word of 4 or more letters. */

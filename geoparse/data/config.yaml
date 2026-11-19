@@ -71,21 +71,6 @@ policy:
     UA: {level_words: {state: [oblast, oblasts, region, regions], district: [raion, raions]}}
   # A natural feature is around a country if it is this near (degrees) to the simplified country shape.
   around_tolerance_deg: 0.05
-  # Natural features: words in a name that are a type hint for a kind ("Ganga river", "Thar desert").
-  natural_hints:
-    river: [river, rivers, nadi]
-    lake: [lake, lakes, reservoir]
-    range: [mountains, mountain range, mountain ranges, range, ranges, hills]
-    desert: [desert]
-    plateau: [plateau]
-    plain: [plain, plains]
-    basin: [basin]
-    delta: [delta]
-    island: [island]
-    island_group: [islands]
-    peninsula: [peninsula]
-    sea: [sea, ocean]
-    bay: [bay, gulf]
   # Distance in meters to the Natural Earth coastline for an area to count as coastal.
   # Natural Earth 10m is about 1 km from the OSM-based Overture boundaries.
   coastal_tolerance_m: 3000

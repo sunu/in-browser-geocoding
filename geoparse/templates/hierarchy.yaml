@@ -1,5 +1,5 @@
 family: hierarchy
-description: "The administrative divisions inside a place, the division that contains a place, or the divisions that border a place"
+description: "The administrative divisions inside a place, the division that contains a place, or the divisions that border a place (or both of two places)"
 templates:
   - id: children
     description: "All divisions of one level inside a place, for example the districts of a state"
@@ -43,3 +43,15 @@ templates:
       - "(neighbours|neighbors|neighbouring regions|neighboring regions) of {of}"
       - "{of} (neighbours|neighbors|neighbouring|neighboring)"
     dag: "Neighbors(${of}, level=${level})"
+
+  - id: neighbors_both
+    description: "The divisions that border both of two places"
+    examples: ["states that border both Karnataka and Kerala", "countries bordering both China and India"]
+    slots:
+      level: {type: admin_level, options_ref: admin_levels, optional: true, default: none}
+      a: {type: region}
+      b: {type: region}
+    patterns:
+      - "{level} (that|which) (border|touch) both {a} and {b}"
+      - "{level} (bordering|adjacent to|next to|touching) both {a} and {b}"
+    dag: "Common(Neighbors(${a}, level=${level}), Neighbors(${b}, level=${level}))"

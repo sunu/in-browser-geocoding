@@ -67,8 +67,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.997198,
+   "n_options": 2
   },
   {
    "id": "w002",
@@ -89,8 +89,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.5808120000000001,
+   "n_options": 2
   },
   {
    "id": "w002",
@@ -129,7 +129,7 @@
    "got": false,
    "gold": false,
    "text": "Nevada",
-   "conf": 0.972154
+   "conf": 0.989996
   },
   {
    "id": "w003",
@@ -139,8 +139,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.990564,
+   "n_options": 2
   },
   {
    "id": "w003",
@@ -161,8 +161,8 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.598714,
+   "n_options": 2
   },
   {
    "id": "w003",
@@ -201,7 +201,7 @@
    "got": false,
    "gold": false,
    "text": "Oregon",
-   "conf": 0.97923
+   "conf": 0.99435
   },
   {
    "id": "w004",
@@ -222,8 +222,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9782439999999999,
+   "n_options": 2
   },
   {
    "id": "w004",
@@ -233,8 +233,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.28377600000000003,
+   "n_options": 2
   },
   {
    "id": "w004",
@@ -252,7 +252,7 @@
     "pred": "coastal",
     "parent": "Georgia"
    },
-   "conf": 0.83162,
+   "conf": 0.9471780000000001,
    "n_options": 2
   },
   {
@@ -264,7 +264,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "w004",
@@ -286,7 +286,7 @@
    "got": false,
    "gold": false,
    "text": "Georgia",
-   "conf": 0.971164
+   "conf": 0.9923960000000001
   },
   {
    "id": "w005",
@@ -307,8 +307,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9798640000000001,
+   "n_options": 2
   },
   {
    "id": "w005",
@@ -318,8 +318,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.620878,
+   "n_options": 2
   },
   {
    "id": "w005",
@@ -347,7 +347,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitals",
-   "conf": 0.998702875
+   "conf": 0.9996988
   },
   {
    "id": "w005",
@@ -358,7 +358,7 @@
    "got": false,
    "gold": false,
    "text": "San Francisco",
-   "conf": 0.979716
+   "conf": 0.9942
   },
   {
    "id": "w006",
@@ -430,7 +430,7 @@
    "got": false,
    "gold": false,
    "text": "Boise",
-   "conf": 0.9703
+   "conf": 0.994976
   },
   {
    "id": "w007",
@@ -491,7 +491,7 @@
    "got": false,
    "gold": false,
    "text": "Texas",
-   "conf": 0.975252
+   "conf": 0.992664
   },
   {
    "id": "w007",
@@ -502,7 +502,7 @@
    "got": false,
    "gold": false,
    "text": "Harris County",
-   "conf": 0.6981040000000001
+   "conf": 0.980934
   },
   {
    "id": "w008",
@@ -571,7 +571,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.9721299999999999,
+   "conf": 0.9979800000000001,
    "n_options": 2
   },
   {
@@ -590,10 +590,10 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "hierarchy",
-   "correct": false,
-   "got": "children_with_predicate",
+   "correct": true,
+   "got": "children",
    "gold": "children",
-   "conf": 0.03692800000000007,
+   "conf": 0.59694,
    "n_options": 2
   },
   {
@@ -633,7 +633,7 @@
    "got": false,
    "gold": false,
    "text": "Wales",
-   "conf": 0.974446
+   "conf": 0.996236
   },
   {
    "id": "w010",
@@ -654,8 +654,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 0.9928140000000001,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "w010",
@@ -665,8 +665,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 0.773682,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "w010",
@@ -694,7 +694,7 @@
    "got": "school",
    "gold": "school",
    "text": "schools",
-   "conf": 0.9975700000000001
+   "conf": 0.9972975000000001
   },
   {
    "id": "w010",
@@ -705,7 +705,7 @@
    "got": false,
    "gold": false,
    "text": "Oxford",
-   "conf": 0.979046
+   "conf": 0.996026
   },
   {
    "id": "w011",
@@ -766,7 +766,7 @@
    "got": false,
    "gold": false,
    "text": "York",
-   "conf": 0.985274
+   "conf": 0.995598
   },
   {
    "id": "w011",
@@ -787,7 +787,7 @@
    "correct": false,
    "got": "lookup",
    "gold": "modifier",
-   "conf": 0.931656,
+   "conf": 0.9750920000000001,
    "n_options": 2
   },
   {
@@ -809,7 +809,7 @@
    "correct": true,
    "got": "direction_part",
    "gold": "direction_part",
-   "conf": 0.823636,
+   "conf": 0.889084,
    "n_options": 2
   },
   {
@@ -838,7 +838,7 @@
    "got": "north",
    "gold": "north",
    "text": "northern",
-   "conf": 0.99934975
+   "conf": 0.999985375
   },
   {
    "id": "w012",
@@ -849,7 +849,7 @@
    "got": false,
    "gold": false,
    "text": "Scotland",
-   "conf": 0.98189
+   "conf": 0.995884
   },
   {
    "id": "w012",
@@ -867,11 +867,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "set_algebra",
-   "correct": true,
-   "got": "set_algebra",
+   "correct": false,
+   "got": "lookup",
    "gold": "set_algebra",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9996499999999999,
+   "n_options": 2
   },
   {
    "id": "w013",
@@ -889,11 +889,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "set_algebra",
-   "correct": true,
-   "got": "union",
+   "correct": false,
+   "got": "lookup_place",
    "gold": "union",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.439438,
+   "n_options": 2
   },
   {
    "id": "w013",
@@ -909,7 +909,7 @@
     "a": "England",
     "b": "Wales"
    },
-   "conf": 0.9643630000000001,
+   "conf": 0.9554440000000001,
    "n_options": 3
   },
   {
@@ -921,7 +921,7 @@
    "got": false,
    "gold": false,
    "text": "England",
-   "conf": 0.984308
+   "conf": 0.996648
   },
   {
    "id": "w013",
@@ -932,7 +932,7 @@
    "got": false,
    "gold": false,
    "text": "Wales",
-   "conf": 0.974446
+   "conf": 0.996236
   },
   {
    "id": "w014",
@@ -1060,7 +1060,7 @@
    "correct": false,
    "got": "features",
    "gold": "hierarchy",
-   "conf": 0.12614799999999993,
+   "conf": 0.952534,
    "n_options": 2
   },
   {
@@ -1079,10 +1079,10 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "hierarchy",
-   "correct": false,
-   "got": "features_in",
+   "correct": true,
+   "got": "children",
    "gold": "children",
-   "conf": 0.07769000000000004,
+   "conf": 0.13300200000000006,
    "n_options": 2
   },
   {
@@ -1122,7 +1122,7 @@
    "got": false,
    "gold": false,
    "text": "Bretagne",
-   "conf": 0.947808
+   "conf": 0.995806
   },
   {
    "id": "w017",
@@ -1132,8 +1132,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.988898,
+   "n_options": 2
   },
   {
    "id": "w017",
@@ -1154,8 +1154,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.05461399999999994,
+   "n_options": 2
   },
   {
    "id": "w017",
@@ -1194,7 +1194,7 @@
    "got": false,
    "gold": false,
    "text": "France",
-   "conf": 0.981366
+   "conf": 0.996472
   },
   {
    "id": "w018",
@@ -1215,8 +1215,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9845680000000001,
+   "n_options": 2
   },
   {
    "id": "w018",
@@ -1226,8 +1226,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.6483920000000001,
+   "n_options": 2
   },
   {
    "id": "w018",
@@ -1255,7 +1255,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitals",
-   "conf": 0.998702875
+   "conf": 0.9996988
   },
   {
    "id": "w018",
@@ -1266,7 +1266,7 @@
    "got": false,
    "gold": false,
    "text": "Lyon",
-   "conf": 0.983968
+   "conf": 0.99544
   },
   {
    "id": "w019",
@@ -1329,7 +1329,7 @@
    "got": "landlocked",
    "gold": "landlocked",
    "text": "landlocked",
-   "conf": 1.0
+   "conf": 0.9972868
   },
   {
    "id": "w019",
@@ -1351,7 +1351,7 @@
    "got": false,
    "gold": false,
    "text": "Occitanie",
-   "conf": 0.988428
+   "conf": 0.99588
   },
   {
    "id": "w020",
@@ -1361,8 +1361,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9935940000000001,
+   "n_options": 2
   },
   {
    "id": "w020",
@@ -1383,8 +1383,8 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.836822,
+   "n_options": 2
   },
   {
    "id": "w020",
@@ -1423,7 +1423,7 @@
    "got": false,
    "gold": false,
    "text": "France",
-   "conf": 0.981366
+   "conf": 0.996472
   },
   {
    "id": "w021",
@@ -1492,8 +1492,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 0.9565159999999999,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "w022",
@@ -1514,8 +1514,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.15886599999999995,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "w022",
@@ -1613,7 +1613,7 @@
    "got": false,
    "gold": false,
    "text": "Germany",
-   "conf": 0.980206
+   "conf": 0.996092
   },
   {
    "id": "w024",
@@ -1623,8 +1623,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9917039999999999,
+   "n_options": 2
   },
   {
    "id": "w024",
@@ -1645,8 +1645,8 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.16012000000000004,
+   "n_options": 2
   },
   {
    "id": "w024",
@@ -1685,7 +1685,7 @@
    "got": false,
    "gold": false,
    "text": "Bavaria",
-   "conf": 0.963892
+   "conf": 0.995774
   },
   {
    "id": "w025",
@@ -1746,7 +1746,7 @@
    "got": "school",
    "gold": "school",
    "text": "schools",
-   "conf": 0.9975700000000001
+   "conf": 0.9972975000000001
   },
   {
    "id": "w025",
@@ -1757,7 +1757,7 @@
    "got": false,
    "gold": false,
    "text": "Munich",
-   "conf": 0.976184
+   "conf": 0.995252
   },
   {
    "id": "w026",
@@ -1808,7 +1808,7 @@
     "pred": "coastal",
     "parent": "Germany"
    },
-   "conf": 0.813472,
+   "conf": 0.9396880000000001,
    "n_options": 2
   },
   {
@@ -1820,7 +1820,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "w026",
@@ -1842,7 +1842,7 @@
    "got": false,
    "gold": false,
    "text": "Germany",
-   "conf": 0.980206
+   "conf": 0.996092
   },
   {
    "id": "w027",
@@ -1903,7 +1903,7 @@
    "got": false,
    "gold": false,
    "text": "Cologne",
-   "conf": 0.976666
+   "conf": 0.995448
   },
   {
    "id": "w027",
@@ -1963,7 +1963,7 @@
     "a": "Berlin",
     "b": "Brandenburg"
    },
-   "conf": 0.964944,
+   "conf": 0.9489920000000001,
    "n_options": 2
   },
   {
@@ -1975,7 +1975,7 @@
    "got": false,
    "gold": false,
    "text": "Berlin",
-   "conf": 0.979912
+   "conf": 0.996022
   },
   {
    "id": "w028",
@@ -1986,7 +1986,7 @@
    "got": false,
    "gold": false,
    "text": "Brandenburg",
-   "conf": 0.983504
+   "conf": 0.99648
   },
   {
    "id": "w029",
@@ -2114,8 +2114,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9893400000000001,
+   "n_options": 2
   },
   {
    "id": "w031",
@@ -2136,8 +2136,8 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.10719600000000007,
+   "n_options": 2
   },
   {
    "id": "w031",
@@ -2176,7 +2176,7 @@
    "got": false,
    "gold": false,
    "text": "Bahia",
-   "conf": 0.983172
+   "conf": 0.995646
   },
   {
    "id": "w032",
@@ -2197,8 +2197,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9871859999999999,
+   "n_options": 2
   },
   {
    "id": "w032",
@@ -2208,8 +2208,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.3320939999999999,
+   "n_options": 2
   },
   {
    "id": "w032",
@@ -2227,7 +2227,7 @@
     "pred": "coastal",
     "parent": "Brazil"
    },
-   "conf": 0.7699339999999999,
+   "conf": 0.940288,
    "n_options": 2
   },
   {
@@ -2239,7 +2239,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "w032",
@@ -2261,7 +2261,7 @@
    "got": false,
    "gold": false,
    "text": "Brazil",
-   "conf": 0.981778
+   "conf": 0.99581
   },
   {
    "id": "w033",
@@ -2322,7 +2322,7 @@
    "got": "school",
    "gold": "school",
    "text": "schools",
-   "conf": 0.9975700000000001
+   "conf": 0.9972975000000001
   },
   {
    "id": "w033",
@@ -2333,7 +2333,7 @@
    "got": false,
    "gold": false,
    "text": "Recife",
-   "conf": 0.98391
+   "conf": 0.994522
   },
   {
    "id": "w034",
@@ -2376,16 +2376,16 @@
    "correct": true,
    "got": {
     "level": "cities",
-    "attr": "population",
     "op": "over",
     "value": "1 million",
+    "attr": "population",
     "parent": "Minas Gerais"
    },
    "gold": {
     "level": "cities",
-    "attr": "population",
     "op": "over",
     "value": "1 million",
+    "attr": "population",
     "parent": "Minas Gerais"
    },
    "conf": 1.0,
@@ -2422,7 +2422,7 @@
    "got": "gt",
    "gold": "gt",
    "text": "over",
-   "conf": 0.9959960000000001
+   "conf": 0.995652
   },
   {
    "id": "w034",
@@ -2433,7 +2433,7 @@
    "got": false,
    "gold": false,
    "text": "Minas Gerais",
-   "conf": 0.976938
+   "conf": 0.99372
   },
   {
    "id": "w035",
@@ -2505,7 +2505,7 @@
    "got": false,
    "gold": false,
    "text": "Campinas",
-   "conf": 0.986824
+   "conf": 0.982644
   },
   {
    "id": "w036",
@@ -2515,8 +2515,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9999720000000001,
+   "n_options": 2
   },
   {
    "id": "w036",
@@ -2537,8 +2537,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.678766,
+   "n_options": 2
   },
   {
    "id": "w036",
@@ -2574,8 +2574,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9999499999999999,
+   "n_options": 2
   },
   {
    "id": "w037",
@@ -2596,8 +2596,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.54602,
+   "n_options": 2
   },
   {
    "id": "w037",
@@ -2630,11 +2630,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "hierarchy",
-   "correct": true,
-   "got": "hierarchy",
+   "correct": false,
+   "got": "features",
    "gold": "hierarchy",
-   "conf": 0.9855780000000001,
-   "n_options": 2
+   "conf": 0.684913,
+   "n_options": 3
   },
   {
    "id": "w038",
@@ -2655,8 +2655,8 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 0.19762400000000002,
-   "n_options": 2
+   "conf": 0.270796,
+   "n_options": 3
   },
   {
    "id": "w038",
@@ -2695,7 +2695,7 @@
    "got": false,
    "gold": false,
    "text": "Kyoto",
-   "conf": 0.97884
+   "conf": 0.995856
   },
   {
    "id": "w039",
@@ -2716,8 +2716,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9918039999999999,
+   "n_options": 2
   },
   {
    "id": "w039",
@@ -2727,8 +2727,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.796384,
+   "n_options": 2
   },
   {
    "id": "w039",
@@ -2756,7 +2756,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitals",
-   "conf": 0.998702875
+   "conf": 0.9996988
   },
   {
    "id": "w039",
@@ -2767,7 +2767,7 @@
    "got": false,
    "gold": false,
    "text": "Sapporo",
-   "conf": 0.987366
+   "conf": 0.993208
   },
   {
    "id": "w040",
@@ -2818,8 +2818,8 @@
     "pred": "landlocked",
     "parent": "Japan"
    },
-   "conf": 0.9534959999999999,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "w040",
@@ -2830,7 +2830,7 @@
    "got": "landlocked",
    "gold": "landlocked",
    "text": "landlocked",
-   "conf": 1.0
+   "conf": 0.9972868
   },
   {
    "id": "w040",
@@ -2852,7 +2852,7 @@
    "got": false,
    "gold": false,
    "text": "Japan",
-   "conf": 0.984206
+   "conf": 0.996474
   },
   {
    "id": "w041",
@@ -2913,7 +2913,7 @@
    "got": "south",
    "gold": "south",
    "text": "southern",
-   "conf": 0.9981066250000001
+   "conf": 0.9999561250000001
   },
   {
    "id": "w041",
@@ -2924,7 +2924,7 @@
    "got": false,
    "gold": false,
    "text": "Nagano",
-   "conf": 0.986686
+   "conf": 0.995804
   },
   {
    "id": "w041",
@@ -3125,7 +3125,7 @@
    "got": false,
    "gold": false,
    "text": "Australia",
-   "conf": 0.982812
+   "conf": 0.995626
   },
   {
    "id": "w045",
@@ -3135,8 +3135,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.985846,
+   "n_options": 2
   },
   {
    "id": "w045",
@@ -3157,8 +3157,8 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.19131600000000004,
+   "n_options": 2
   },
   {
    "id": "w045",
@@ -3197,7 +3197,7 @@
    "got": false,
    "gold": false,
    "text": "New South Wales",
-   "conf": 0.982704
+   "conf": 0.989856
   },
   {
    "id": "w046",
@@ -3218,8 +3218,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.97851,
+   "n_options": 2
   },
   {
    "id": "w046",
@@ -3229,8 +3229,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.42533200000000004,
+   "n_options": 2
   },
   {
    "id": "w046",
@@ -3258,7 +3258,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitals",
-   "conf": 0.998702875
+   "conf": 0.9996988
   },
   {
    "id": "w046",
@@ -3269,7 +3269,7 @@
    "got": false,
    "gold": false,
    "text": "Perth",
-   "conf": 0.979816
+   "conf": 0.994112
   },
   {
    "id": "w047",
@@ -3318,8 +3318,8 @@
     "level": "state",
     "child": "Cairns"
    },
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9582759999999999,
+   "n_options": 2
   },
   {
    "id": "w047",
@@ -3341,7 +3341,7 @@
    "got": false,
    "gold": false,
    "text": "Cairns",
-   "conf": 0.964512
+   "conf": 0.985462
   },
   {
    "id": "w048",
@@ -3402,7 +3402,7 @@
    "got": false,
    "gold": false,
    "text": "Canberra",
-   "conf": 0.968314
+   "conf": 0.995314
   },
   {
    "id": "w048",
@@ -3541,8 +3541,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9928840000000001,
+   "n_options": 2
   },
   {
    "id": "w051",
@@ -3560,11 +3560,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "hierarchy",
-   "correct": true,
-   "got": "neighbors",
+   "correct": false,
+   "got": "children_touching",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.016788000000000025,
+   "n_options": 2
   },
   {
    "id": "w051",
@@ -3603,7 +3603,7 @@
    "got": false,
    "gold": false,
    "text": "Kano",
-   "conf": 0.986118
+   "conf": 0.995678
   },
   {
    "id": "w052",
@@ -3645,11 +3645,11 @@
    "family": "hierarchy",
    "correct": true,
    "got": {
-    "level": "local government areas",
+    "level": "areas",
     "parent": "Lagos"
    },
    "gold": {
-    "level": "local government areas",
+    "level": "areas",
     "parent": "Lagos"
    },
    "conf": 1.0,
@@ -3663,7 +3663,7 @@
    "correct": true,
    "got": "district",
    "gold": "district",
-   "text": "local government areas",
+   "text": "areas",
    "conf": 1.0
   },
   {
@@ -3675,7 +3675,7 @@
    "got": false,
    "gold": false,
    "text": "Lagos",
-   "conf": 0.982454
+   "conf": 0.995692
   },
   {
    "id": "w053",
@@ -3696,8 +3696,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.98546,
+   "n_options": 2
   },
   {
    "id": "w053",
@@ -3707,8 +3707,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.45263600000000004,
+   "n_options": 2
   },
   {
    "id": "w053",
@@ -3726,7 +3726,7 @@
     "pred": "coastal",
     "parent": "Nigeria"
    },
-   "conf": 0.903478,
+   "conf": 0.9495579999999999,
    "n_options": 2
   },
   {
@@ -3738,7 +3738,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "w053",
@@ -3760,7 +3760,7 @@
    "got": false,
    "gold": false,
    "text": "Nigeria",
-   "conf": 0.984428
+   "conf": 0.994042
   },
   {
    "id": "w054",
@@ -3781,8 +3781,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.980736,
+   "n_options": 2
   },
   {
    "id": "w054",
@@ -3792,8 +3792,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.572656,
+   "n_options": 2
   },
   {
    "id": "w054",
@@ -3821,7 +3821,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitals",
-   "conf": 0.998702875
+   "conf": 0.9996988
   },
   {
    "id": "w054",
@@ -3832,7 +3832,7 @@
    "got": false,
    "gold": false,
    "text": "Abuja",
-   "conf": 0.98931
+   "conf": 0.996754
   },
   {
    "id": "w055",
@@ -3904,7 +3904,7 @@
    "got": false,
    "gold": false,
    "text": "Ibadan",
-   "conf": 0.98947
+   "conf": 0.997372
   },
   {
    "id": "w056",
@@ -3953,8 +3953,8 @@
     "a": "Kano",
     "b": "Kaduna"
    },
-   "conf": 0.961468,
-   "n_options": 2
+   "conf": 0.9524005,
+   "n_options": 3
   },
   {
    "id": "w056",
@@ -3965,7 +3965,7 @@
    "got": false,
    "gold": false,
    "text": "Kano",
-   "conf": 0.986118
+   "conf": 0.995678
   },
   {
    "id": "w056",
@@ -3976,7 +3976,7 @@
    "got": false,
    "gold": false,
    "text": "Kaduna",
-   "conf": 0.989822
+   "conf": 0.99626
   },
   {
    "id": "w057",
@@ -3986,8 +3986,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.99997,
+   "n_options": 2
   },
   {
    "id": "w057",
@@ -4008,8 +4008,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.34103799999999995,
+   "n_options": 2
   },
   {
    "id": "w057",
@@ -4045,8 +4045,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.976022,
+   "n_options": 2
   },
   {
    "id": "w058",
@@ -4064,11 +4064,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "hierarchy",
-   "correct": true,
-   "got": "neighbors",
+   "correct": false,
+   "got": "children_touching",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.22042000000000006,
+   "n_options": 2
   },
   {
    "id": "w058",
@@ -4107,7 +4107,7 @@
    "got": false,
    "gold": false,
    "text": "Jalisco",
-   "conf": 0.990708
+   "conf": 0.996424
   },
   {
    "id": "w059",
@@ -4179,7 +4179,7 @@
    "got": false,
    "gold": false,
    "text": "Yucatan",
-   "conf": 0.981452
+   "conf": 0.995456
   },
   {
    "id": "w060",
@@ -4200,8 +4200,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.988032,
+   "n_options": 2
   },
   {
    "id": "w060",
@@ -4211,8 +4211,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.2718339999999999,
+   "n_options": 2
   },
   {
    "id": "w060",
@@ -4230,7 +4230,7 @@
     "pred": "landlocked",
     "parent": "Mexico"
    },
-   "conf": 0.920674,
+   "conf": 0.934018,
    "n_options": 2
   },
   {
@@ -4242,7 +4242,7 @@
    "got": "landlocked",
    "gold": "landlocked",
    "text": "landlocked",
-   "conf": 1.0
+   "conf": 0.9972868
   },
   {
    "id": "w060",
@@ -4264,7 +4264,7 @@
    "got": false,
    "gold": false,
    "text": "Mexico",
-   "conf": 0.985414
+   "conf": 0.99582
   },
   {
    "id": "w061",
@@ -4285,8 +4285,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9808220000000001,
+   "n_options": 2
   },
   {
    "id": "w061",
@@ -4296,8 +4296,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.57969,
+   "n_options": 2
   },
   {
    "id": "w061",
@@ -4325,7 +4325,7 @@
    "got": "school",
    "gold": "school",
    "text": "schools",
-   "conf": 0.9975700000000001
+   "conf": 0.9972975000000001
   },
   {
    "id": "w061",
@@ -4336,7 +4336,7 @@
    "got": false,
    "gold": false,
    "text": "Monterrey",
-   "conf": 0.984252
+   "conf": 0.995634
   },
   {
    "id": "w062",
@@ -4376,17 +4376,17 @@
    "decision": "pick_split",
    "depth": 0,
    "family": "set_algebra",
-   "correct": true,
+   "correct": false,
    "got": {
     "a": "Oaxaca",
-    "b": "Oaxaca de Juarez"
+    "b": "Juarez"
    },
    "gold": {
     "a": "Oaxaca",
     "b": "Oaxaca de Juarez"
    },
-   "conf": 0.949608,
-   "n_options": 2
+   "conf": 0.9238554999999998,
+   "n_options": 3
   },
   {
    "id": "w062",
@@ -4397,7 +4397,7 @@
    "got": false,
    "gold": false,
    "text": "Oaxaca",
-   "conf": 0.979254
+   "conf": 0.994058
   },
   {
    "id": "w062",
@@ -4408,7 +4408,7 @@
    "got": false,
    "gold": false,
    "text": "Oaxaca de Juarez",
-   "conf": 0.20354799999999995
+   "conf": 0.985082
   },
   {
    "id": "w063",
@@ -4457,8 +4457,8 @@
     "dir": "eastern",
     "target": "Chihuahua"
    },
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9313039999999999,
+   "n_options": 2
   },
   {
    "id": "w063",
@@ -4469,7 +4469,7 @@
    "got": "east",
    "gold": "east",
    "text": "eastern",
-   "conf": 0.9992113750000001
+   "conf": 0.999996625
   },
   {
    "id": "w063",
@@ -4480,7 +4480,7 @@
    "got": false,
    "gold": false,
    "text": "Chihuahua",
-   "conf": 0.95761
+   "conf": 0.992724
   },
   {
    "id": "w063",
@@ -4501,7 +4501,7 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 0.953886,
+   "conf": 0.9996560000000001,
    "n_options": 2
   },
   {
@@ -4523,7 +4523,7 @@
    "correct": false,
    "got": "direction_part",
    "gold": "lookup_place",
-   "conf": 0.2110939999999999,
+   "conf": 0.2952699999999999,
    "n_options": 2
   },
   {
@@ -4560,8 +4560,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.997962,
+   "n_options": 2
   },
   {
    "id": "w065",
@@ -4582,8 +4582,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.410226,
+   "n_options": 2
   },
   {
    "id": "w065",
@@ -4622,7 +4622,7 @@
    "got": false,
    "gold": false,
    "text": "South Africa",
-   "conf": 0.98407
+   "conf": 0.99132
   },
   {
    "id": "w066",
@@ -4632,8 +4632,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9905219999999999,
+   "n_options": 2
   },
   {
    "id": "w066",
@@ -4651,11 +4651,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "hierarchy",
-   "correct": true,
-   "got": "neighbors",
+   "correct": false,
+   "got": "children_touching",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.017702000000000107,
+   "n_options": 2
   },
   {
    "id": "w066",
@@ -4694,7 +4694,7 @@
    "got": false,
    "gold": false,
    "text": "Gauteng",
-   "conf": 0.988976
+   "conf": 0.995094
   },
   {
    "id": "w067",
@@ -4745,8 +4745,8 @@
     "pred": "coastal",
     "parent": "South Africa"
    },
-   "conf": 0.96871,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "w067",
@@ -4757,7 +4757,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "w067",
@@ -4779,7 +4779,7 @@
    "got": false,
    "gold": false,
    "text": "South Africa",
-   "conf": 0.98407
+   "conf": 0.99132
   },
   {
    "id": "w068",
@@ -4800,8 +4800,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.975822,
+   "n_options": 2
   },
   {
    "id": "w068",
@@ -4811,8 +4811,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.427932,
+   "n_options": 2
   },
   {
    "id": "w068",
@@ -4840,7 +4840,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitals",
-   "conf": 0.998702875
+   "conf": 0.9996988
   },
   {
    "id": "w068",
@@ -4851,7 +4851,7 @@
    "got": false,
    "gold": false,
    "text": "Cape Town",
-   "conf": 0.985026
+   "conf": 0.993326
   },
   {
    "id": "w069",
@@ -4923,7 +4923,7 @@
    "got": false,
    "gold": false,
    "text": "South Africa",
-   "conf": 0.98407
+   "conf": 0.99132
   },
   {
    "id": "w070",
@@ -4984,7 +4984,7 @@
    "got": false,
    "gold": false,
    "text": "Stellenbosch",
-   "conf": 0.988172
+   "conf": 0.991156
   },
   {
    "id": "w070",
@@ -5006,7 +5006,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.269291877746582,
+   "latency_s": 1.380722999572754,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5025,9 +5025,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.8562049865722656,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 0.9718737602233887,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -5044,9 +5044,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.3072335720062256,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 0.41283345222473145,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -5063,9 +5063,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6282064914703369,
-   "model_calls": 6,
-   "requests_in_sequence": 2,
+   "latency_s": 1.9042375087738037,
+   "model_calls": 7,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -5082,9 +5082,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4763705730438232,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 2.0066115856170654,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -5101,7 +5101,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.082308053970337,
+   "latency_s": 1.9758377075195312,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5120,7 +5120,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4269728660583496,
+   "latency_s": 2.1672472953796387,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5139,7 +5139,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.602949619293213,
+   "latency_s": 1.3438756465911865,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5158,7 +5158,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6122190952301025,
+   "latency_s": 1.2458992004394531,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -5177,9 +5177,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.7277934551239014,
-   "model_calls": 7,
-   "requests_in_sequence": 2,
+   "latency_s": 1.5114033222198486,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -5196,7 +5196,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.581660509109497,
+   "latency_s": 1.518960952758789,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5215,7 +5215,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5680344104766846,
+   "latency_s": 1.4751720428466797,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -5232,19 +5232,21 @@
    "query": "England and Wales",
    "family": "set_algebra",
    "depth": 0,
-   "template_ok": true,
+   "template_ok": false,
    "ok": true,
-   "latency_s": 1.3237907886505127,
-   "model_calls": 6,
+   "latency_s": 1.3495328426361084,
+   "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
-   "got_template": "union",
-   "path": "complex",
-   "slots_ok": true,
-   "diffs": [],
-   "dag_ok": true,
-   "exec_ok": true,
-   "exec_note": "2 ids vs 2"
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": false,
+   "diffs": [
+    "template"
+   ],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "1 ids vs 2"
   },
   {
    "id": "w014",
@@ -5253,7 +5255,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4099855422973633,
+   "latency_s": 1.4251189231872559,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5272,7 +5274,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5508408546447754,
+   "latency_s": 1.5266714096069336,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5291,7 +5293,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4330804347991943,
+   "latency_s": 1.4175622463226318,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -5310,9 +5312,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2970805168151855,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 1.2854812145233154,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -5329,9 +5331,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5163841247558594,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 1.56394624710083,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -5348,7 +5350,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6877710819244385,
+   "latency_s": 1.698758602142334,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5367,9 +5369,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6367168426513672,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 1.8772265911102295,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -5386,7 +5388,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6770071983337402,
+   "latency_s": 1.8442542552947998,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5405,9 +5407,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.830345869064331,
-   "model_calls": 4,
-   "requests_in_sequence": 2,
+   "latency_s": 1.935309886932373,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -5424,7 +5426,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.201099157333374,
+   "latency_s": 1.383934736251831,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5443,9 +5445,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.0408406257629395,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 1.027710199356079,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -5462,7 +5464,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3649063110351562,
+   "latency_s": 1.323523759841919,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5481,7 +5483,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5216853618621826,
+   "latency_s": 1.52656888961792,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -5500,7 +5502,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4774107933044434,
+   "latency_s": 1.5203862190246582,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5519,7 +5521,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6990914344787598,
+   "latency_s": 1.6103270053863525,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -5538,7 +5540,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6969618797302246,
+   "latency_s": 1.7552711963653564,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5557,7 +5559,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2679383754730225,
+   "latency_s": 1.3292725086212158,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5576,9 +5578,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5176208019256592,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 1.5876555442810059,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -5595,9 +5597,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5756514072418213,
-   "model_calls": 6,
-   "requests_in_sequence": 2,
+   "latency_s": 1.7362127304077148,
+   "model_calls": 7,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -5614,7 +5616,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.7387242317199707,
+   "latency_s": 1.712674856185913,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5633,7 +5635,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.1279854774475098,
+   "latency_s": 2.0301311016082764,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5652,7 +5654,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.302276134490967,
+   "latency_s": 2.0729432106018066,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5671,9 +5673,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.9696967601776123,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 1.975945234298706,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -5690,9 +5692,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.2715635299682617,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 2.4276764392852783,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -5709,7 +5711,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2900846004486084,
+   "latency_s": 1.5145392417907715,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -5728,9 +5730,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.316159725189209,
-   "model_calls": 6,
-   "requests_in_sequence": 1,
+   "latency_s": 1.3850831985473633,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -5747,9 +5749,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.730325698852539,
-   "model_calls": 6,
-   "requests_in_sequence": 2,
+   "latency_s": 1.8442728519439697,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -5766,7 +5768,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.742588996887207,
+   "latency_s": 1.7823739051818848,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5785,7 +5787,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6110680103302002,
+   "latency_s": 1.8451712131500244,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5804,7 +5806,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.568434715270996,
+   "latency_s": 1.7980549335479736,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5823,7 +5825,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8936812877655029,
+   "latency_s": 1.157149314880371,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5842,9 +5844,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.071589469909668,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 1.4739408493041992,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -5861,9 +5863,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2730112075805664,
-   "model_calls": 6,
-   "requests_in_sequence": 1,
+   "latency_s": 1.616612434387207,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -5880,9 +5882,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.303896427154541,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 1.65218186378479,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "parent",
    "path": "complex",
@@ -5899,7 +5901,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2548809051513672,
+   "latency_s": 1.381765365600586,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5918,7 +5920,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.290492296218872,
+   "latency_s": 1.391810417175293,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5937,7 +5939,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3102359771728516,
+   "latency_s": 1.3394081592559814,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5956,9 +5958,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2531416416168213,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 1.3178486824035645,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -5975,7 +5977,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.264298915863037,
+   "latency_s": 1.3647944927215576,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5994,9 +5996,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4324352741241455,
-   "model_calls": 6,
-   "requests_in_sequence": 2,
+   "latency_s": 1.545705795288086,
+   "model_calls": 7,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -6013,9 +6015,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5536749362945557,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 1.5742416381835938,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -6032,7 +6034,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.52769136428833,
+   "latency_s": 1.4667489528656006,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -6051,7 +6053,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6522440910339355,
+   "latency_s": 1.5600864887237549,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -6070,9 +6072,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4328653812408447,
-   "model_calls": 3,
-   "requests_in_sequence": 1,
+   "latency_s": 1.5394172668457031,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -6089,9 +6091,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5168392658233643,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 1.717318058013916,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -6108,7 +6110,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5553357601165771,
+   "latency_s": 1.8146228790283203,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -6127,9 +6129,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.014578104019165,
-   "model_calls": 7,
-   "requests_in_sequence": 2,
+   "latency_s": 2.2983827590942383,
+   "model_calls": 8,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -6146,9 +6148,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.0364298820495605,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 2.110959053039551,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -6165,15 +6167,17 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.3595752716064453,
+   "latency_s": 2.2777788639068604,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "difference",
    "path": "complex",
-   "slots_ok": true,
-   "diffs": [],
-   "dag_ok": true,
+   "slots_ok": false,
+   "diffs": [
+    "b: expected 'Oaxaca de Juarez', got 'Juarez'"
+   ],
+   "dag_ok": false,
    "exec_ok": true,
    "exec_note": "1 ids vs 1"
   },
@@ -6184,9 +6188,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5885047912597656,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 1.7106685638427734,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "direction_part",
    "path": "simple",
@@ -6203,7 +6207,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.570631742477417,
+   "latency_s": 1.7422685623168945,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -6222,9 +6226,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.7987141609191895,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 2.11285400390625,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -6241,9 +6245,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4695374965667725,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 1.914076566696167,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -6260,9 +6264,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6704771518707275,
-   "model_calls": 6,
-   "requests_in_sequence": 2,
+   "latency_s": 1.8008601665496826,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -6279,9 +6283,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.584951639175415,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 1.831531047821045,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -6298,7 +6302,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5038690567016602,
+   "latency_s": 1.504380226135254,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -6317,7 +6321,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6924893856048584,
+   "latency_s": 1.7073090076446533,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -6333,7 +6337,7 @@
  "summary": {
   "pick_family": {
    "n": 70,
-   "correct": 68
+   "correct": 66
   },
   "pick_template": {
    "n": 70,
@@ -6341,11 +6345,11 @@
   },
   "pick_template_flat": {
    "n": 70,
-   "correct": 67
+   "correct": 65
   },
   "pick_split": {
    "n": 70,
-   "correct": 70
+   "correct": 69
   },
   "is_subquery": {
    "n": 59,
@@ -6406,11 +6410,11 @@
    },
    "set_algebra": {
     "n": 5,
-    "dag_ok": 5
+    "dag_ok": 3
    },
    "ALL": {
     "n": 70,
-    "dag_ok": 70
+    "dag_ok": 68
    }
   }
  }

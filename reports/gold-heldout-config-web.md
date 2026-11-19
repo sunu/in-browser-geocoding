@@ -7,9 +7,9 @@ Records: 30. Depth 0: 27. Depth 1 (two levels): 3.
 | Decision | Accuracy | Depth 0 | Depth 1 | Coverage misses | Mean confidence |
 |---|---|---|---|---|---|
 | pick_family | 97% (32/33) | 97% (29/30) | 100% (3/3) | 0 | 1.00 |
-| pick_template | 100% (33/33) | 100% (30/30) | 100% (3/3) | 0 | 1.00 |
-| pick_template_flat | 100% (33/33) | 100% (30/30) | 100% (3/3) | 0 | 0.96 |
-| pick_split | 100% (33/33) | 100% (30/30) | 100% (3/3) | 0 | 0.98 |
+| pick_template | 100% (33/33) | 100% (30/30) | 100% (3/3) | 0 | 0.99 |
+| pick_template_flat | 94% (31/33) | 97% (29/30) | 67% (2/3) | 0 | 0.78 |
+| pick_split | 100% (33/33) | 100% (30/30) | 100% (3/3) | 0 | 0.99 |
 | is_subquery | 100% (36/36) | 100% (33/33) | 100% (3/3) | 0 | 0.96 |
 | select_source | 100% (9/9) | 100% (9/9) | - | 0 | 0.80 |
 | fill_closed_slot.admin_level | 100% (14/14) | 100% (11/11) | 100% (3/3) | 0 | 1.00 |
@@ -23,7 +23,9 @@ Records: 30. Depth 0: 27. Depth 1 (two levels): 3.
 
 | Gold id | Decision | Depth | Gold | Got | Confidence |
 |---|---|---|---|---|---|
-| h030 | pick_family | 0 | set_algebra | predicate_filter | 0.9514180000000001 |
+| h014 | pick_template_flat | 0 | neighbors | children_touching | 0.387958 |
+| h028 | pick_template_flat | 1 | neighbors | children_touching | 0.026820000000000066 |
+| h030 | pick_family | 0 | set_algebra | predicate_filter | 0.9920720000000001 |
 
 ## Full pipeline
 
@@ -43,8 +45,8 @@ Records: 30. Depth 0: 27. Depth 1 (two levels): 3.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 100% (27/27) | 1.17 s | 4.7 | 1.3 |
-| 1 | 100% (3/3) | 3.32 s | 9.7 | 3.0 |
+| 0 | 100% (27/27) | 1.27 s | 4.9 | 1.5 |
+| 1 | 100% (3/3) | 3.00 s | 11.0 | 4.3 |
 
 ### Nested template pairs in the gold suite
 

@@ -60,7 +60,7 @@ def choices() -> dict[str, list[str]]:
         "layers": LAYERS,
         "direction_modes": DIRECTION_MODES,
         "sources": SOURCES,
-        "natural_kinds": list(load_config()["policy"]["natural_hints"]),
+        "natural_kinds": list(o["natural_kinds"]),
         "rank_by": RANK_BY,
         "rank_orders": RANK_ORDERS,
     }

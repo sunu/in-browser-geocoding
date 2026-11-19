@@ -81,3 +81,42 @@ Data limit: Natural Earth 10m has only the large rivers (no river in Kerala).
 Other results: the India reference parse changed for 1 query: "hilly districts of Uttarakhand" is now supported (the
 new predicate in_mountains). All gold sets and the JS parity checks are unchanged (696/696, int8 681/696, executor
 88/88). Two Jev replay answers were recorded again (the predicate options changed).
+
+## 5. Phase 13 result (2026-11-19)
+
+Six templates (shared_border, natural_in, children_near, children_top, neighbors_with_predicate, neighbors_both;
+27 in all), two closed option lists (natural_kinds, rank_orders), T5 t5-small v4 and cross-encoder v3.
+
+Training data: synthetic 30,000 (world names and natural features added), paraphrases 13,783 (3,782 new by
+anthropic/claude-haiku-5.5, $0.21), decisions 141,975. All evaluation queries (all gold sets, LLM dev and test) are
+now removed from every training source (`training/evalset.py`); before, only the two India sets were, and 8
+evaluation queries were in the data (6 of them in the data of v3 too). T5 v4: validation exact match 94.6% (v3
+94.9%), 246 s on the RTX 3090. Cross-encoder v3: 12.5 minutes.
+
+Rules added in this phase (Python and the browser version), because the decisions were not stable between
+training runs:
+
+- A region text with an admin level word or a distance and no exact gazetteer match is a sub-query ("coastal
+  districts of Odisha"). The cross-encoder gave 0.14 (v3) and 0.44 (v2) for this; the threshold is 0.2.
+- A region text that is an exact gazetteer name, without a level word, a distance or a leading direction word, is a
+  place ("Western Ghats").
+- If T5 gives natural_in and the whole text is an exact natural feature, the parse is a lookup ("Ganga river").
+
+Results (executed result):
+
+| Set | Phase 12 | Phase 13 |
+|---|---|---|
+| India gold | 88/89 (DAG 97/98) | 89/89 (DAG 98/98) |
+| India held-out | 27/27 | 27/27 |
+| World | 70/70 | 69/70 |
+| World held-out 1, 2, 3 | 29/29, 34/34, 17/19 | 29/29, 33/34, 17/19 |
+| World held-out 4 (natural features) | 16/21 | 20/21 |
+| World held-out 5 (new templates, first run of the new models) | - | 23/24 |
+
+JS parity 696/696 (flat and country layout), int8 678/696 (681 before), executor 88/88, operator tests 11/11.
+The India reference parse changed for 53 of 696 queries: 20 unsupported queries now parse, 2 parsed queries are now
+unsupported, 25 parse to another DAG.
+
+Open errors: "England and Wales" (T5: one place), "coastal regions of Chile" (T5: along_coast), "districts in the
+Western Ghats" (the parent becomes a direction part), "districts along the Godavari" (T5: neighbors, 5 of 24
+districts), "London, Ontario" and "Alexandria, Virginia" (city or county with the same name, phase 10).

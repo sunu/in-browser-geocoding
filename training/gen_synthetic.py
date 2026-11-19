@@ -52,8 +52,35 @@ def load_places(rng: random.Random) -> dict[str, list[str]]:
                 "bus stop", "flyover", "signal", "cross"]
     pois = landmarks + [f"{rng.choice(hoods)} {rng.choice(suffixes)}" for _ in range(1500)]
     lex = [a for e in lexicon().values() for a in e["aliases"]]
-    return {"state": states, "district": districts, "city": cities, "hood": hoods, "country": countries,
-            "poi": pois, "lex": lex}
+    places = {"state": states, "district": districts, "city": cities, "hood": hoods, "country": countries,
+              "poi": pois, "lex": lex}
+    places.update(load_world(rng))
+    return places
+
+
+def load_world(rng: random.Random) -> dict[str, list[str]]:
+    """Names from the world data (plan-027): countries, regions and counties of other countries, natural features by
+    kind. Empty lists if the world data is not built."""
+    import duckdb
+
+    path = ROOT / "data" / "build-world" / "geoparse.duckdb"
+    if not path.exists():
+        return {"w_country": [], "w_region": [], "w_county": [], **{f"n_{k}": [] for k in NATURAL_KINDS}}
+    con = duckdb.connect(str(path), read_only=True)
+
+    def names(sql):
+        return sorted({re.sub(r"\s+", " ", r[0]).strip() for r in con.execute(sql).fetchall()
+                       if r[0] and re.match(r"^[A-Za-z][A-Za-z .'-]+$", r[0]) and len(r[0]) < 32})
+
+    out = {
+        "w_country": names("SELECT coalesce(name_en, name) FROM divisions WHERE subtype = 'country'"),
+        "w_region": names("SELECT coalesce(name_en, name) FROM divisions WHERE subtype = 'region' AND country <> 'IN' AND region IS NOT NULL"),
+        "w_county": names("SELECT coalesce(name_en, name) FROM divisions WHERE subtype = 'county' AND country <> 'IN' USING SAMPLE 6000 ROWS"),
+    }
+    for k in NATURAL_KINDS:
+        out[f"n_{k}"] = names(f"SELECT name FROM divisions WHERE subtype = 'natural' AND class = '{k}'")
+    con.close()
+    return out
 
 
 LEVEL = {
@@ -67,11 +94,15 @@ LEVEL = {
               "sub-districts", "circles", "localities", "neighbourhoods", "areas"],
 }
 PRED_PRE = {
+    "on_river": ["riverside", "riverine", "river"],
+    "in_mountains": ["mountain", "mountainous", "hilly", "hill", "highland"],
     "coastal": ["coastal", "seaside", "sea-facing", "maritime", "littoral", "beach", "shoreline"],
     "landlocked": ["landlocked", "inland", "interior", "non-coastal", "land-locked"],
     "border": ["border", "frontier", "bordering", "boundary"],
 }
 PRED_POST = {
+    "on_river": ["on a river", "along a river", "on the river", "with a river", "that a river flows through"],
+    "in_mountains": ["in the mountains", "on a mountain range", "in the hills", "in the highlands"],
     "coastal": ["on the coast", "near the sea", "by the sea", "along the coast", "touching the sea", "with a coastline",
                 "that touch the sea", "on the seashore", "facing the sea", "near the coast", "with a beach",
                 "that have a coastline", "on the shore", "next to the ocean", "by the ocean"],
@@ -115,6 +146,17 @@ CAT_KEY = {
 assert set(CATEGORIES) <= set(CAT_KEY), set(CATEGORIES) - set(CAT_KEY)
 
 ATTR = ["population", "people", "residents", "inhabitants", "a population"]
+# Natural features (plan-027): kind words for natural_in, words after a name for lookups.
+NATURAL_KINDS = ["river", "lake", "range", "desert", "plateau", "plain", "basin", "delta", "island", "island_group",
+                 "peninsula", "sea", "bay"]
+NATURAL_WORDS = {"river": ["rivers", "river", "rivers and streams"], "lake": ["lakes", "lake", "reservoirs"],
+                 "range": ["mountain ranges", "mountains", "ranges", "hills", "mountain range"], "desert": ["deserts"],
+                 "plateau": ["plateaus", "uplands"], "plain": ["plains"], "basin": ["basins"], "delta": ["deltas"],
+                 "island": ["islands"], "island_group": ["island groups", "archipelagos"], "peninsula": ["peninsulas"],
+                 "sea": ["seas", "oceans", "seas and oceans"], "bay": ["bays", "gulfs", "bays and gulfs"]}
+NATURAL_SUFFIX = {"river": ["river", "River", "nadi"], "range": ["mountains", "range", "hills"], "desert": ["desert", "Desert"],
+                  "lake": [], "plateau": ["plateau"], "plain": ["plains"], "basin": ["basin"], "delta": ["delta"]}
+RANK = {"largest": ["largest", "biggest", "largest by area"], "smallest": ["smallest", "tiniest", "smallest by area"]}
 OP = {"gt": ["over", "more than", "above", "at least", "exceeding", "greater than", "bigger than", "upwards of"],
       "lt": ["under", "less than", "below", "fewer than", "at most", "smaller than"]}
 
@@ -294,10 +336,30 @@ class Gen:
         self.subs.add(q)
         return q, f, 1
 
+    def natural(self, kinds=("river", "river", "range", "range", "lake", "desert", "sea", "bay", "plateau", "delta",
+                             "island", "island_group", "plain")) -> str:
+        """A natural feature name: "the Alps", "Ganga river", "Lake Victoria" (plan-027)."""
+        k = self.pick(kinds)
+        pool = self.p.get(f"n_{k}") or self.p["n_river"]
+        n = self.pick(pool)
+        if NATURAL_SUFFIX.get(k) and self.r.random() < 0.35 and not n.lower().endswith(tuple(NATURAL_SUFFIX[k])):
+            n = f"{n} {self.pick(NATURAL_SUFFIX[k])}"
+        if self.r.random() < 0.4:
+            n = "the " + n
+        return case(self.r, typo(self.r, n))
+
+    def world(self, kinds=("w_country", "w_country", "w_region", "w_county")) -> str:
+        return case(self.r, typo(self.r, self.pick(self.p[self.pick(kinds)])))
+
+    def has_world(self) -> bool:
+        return bool(self.p.get("w_country")) and bool(self.p.get("n_river"))
+
     # Each t_* returns (query, slots). Slot values are spans of the query (or quantities).
 
     def t_lookup_place(self, depth=0):
         a = self.anchor()
+        if self.has_world() and self.r.random() < 0.3:
+            a = self.natural() if self.r.random() < 0.6 else self.world()
         if self.r.random() < 0.12:
             a = f"{self.pick(self.p['district'])} {self.pick(['district', 'dist', 'city', 'town'])}"
         elif self.r.random() < 0.25:
@@ -308,6 +370,8 @@ class Gen:
     def t_buffer(self, depth=0):
         d, dv = distance(self.r)
         t, _ = (self.anchor(), 0) if depth else self.region(depth)
+        if self.has_world() and not depth and self.r.random() < 0.2:
+            t = self.natural(("river", "lake", "lake", "range", "bay"))
         form = self.pick(["{d} around {t}", "within {d} of {t}", "{d} radius around {t}", "area within {d} of {t}",
                           "everything within {d} from {t}", "{d} from {t}", "{d} buffer around {t}", "{t} {d} radius",
                           "places within {d} of {t}", "{d} near {t}", "around {t} within {d}", "within a {d} radius of {t}"])
@@ -342,6 +406,9 @@ class Gen:
     def t_children(self, depth=0):
         k, lv = self.level(exclude=("country",))
         p = self.parent_for(k, depth)
+        if self.has_world() and self.r.random() < 0.2:
+            # A natural region as the parent ("districts in the Western Ghats"), or a parent in another country.
+            p = self.natural(("range", "range", "desert", "plateau", "delta", "island", "plain")) if self.r.random() < 0.5 else self.world(("w_country", "w_region"))
         if self.r.random() < 0.08:
             form = self.pick(["{l}", "all {l}", "list of {l}", "{l} of India"])
             q = form.format(l=lv)
@@ -367,6 +434,11 @@ class Gen:
         if self.r.random() < 0.15:
             form = self.pick(["neighbours of {o}", "neighbors of {o}", "{o} neighbours", "what borders {o}"])
             return form.format(o=o), {"of": o}
+        if self.has_world() and self.r.random() < 0.25:
+            # A natural feature ("countries along the Danube", "states bordering the Bay of Bengal").
+            o = self.natural(("river", "river", "sea", "bay", "lake", "range"))
+            form = self.pick(["{l} along {o}", "{l} bordering {o}", "{l} that border {o}", "which {l} does {o} flow through",
+                              "{l} that {o} passes through", "{l} on {o}", "{l} touching {o}"])
         return form.format(l=lv, o=o), {"level": lv, "of": o}
 
     def t_children_with_predicate(self, depth=0):
@@ -395,6 +467,15 @@ class Gen:
         k, lv = self.level(exclude=("country", "union_territory"))
         p = self.parent_for(k, 1)
         o = self.area()
+        if self.has_world() and self.r.random() < 0.4:
+            # Along a river, with or without a parent ("districts along the Yamuna").
+            o = self.natural(("river", "river", "river", "range", "lake"))
+            if self.r.random() < 0.5:
+                form = self.pick(["{l} along {o}", "{l} on the banks of {o}", "{l} beside {o}", "{l} that {o} flows through",
+                                  "{l} on {o}"])
+                return form.format(l=lv, o=o), {"level": lv, "other": o}
+            form = self.pick(["{l} of {p} along {o}", "{l} in {p} on the banks of {o}", "{p} {l} along {o}"])
+            return form.format(l=lv, p=p, o=o), {"level": lv, "parent": p, "other": o}
         form = self.pick(["{l} of {p} that border {o}", "{l} in {p} bordering {o}", "{p} {l} next to {o}",
                           "{l} of {p} adjacent to {o}", "{l} in {p} touching {o}", "{l} of {p} on the border with {o}"])
         return form.format(l=lv, p=p, o=o), {"level": lv, "parent": p, "other": o}
@@ -475,6 +556,81 @@ class Gen:
                           "within {d} of the international boundary in {r}", "{d} of the country border in {r}"])
         return form.format(d=d, r=r), {"distance": dv, "region": r}
 
+    def t_shared_border(self, depth=0):
+        if self.has_world() and self.r.random() < 0.6:
+            a, b = self.world(("w_country",)), self.world(("w_country",))
+        else:
+            a, b = self.place(("state", "state", "district")), self.place(("state", "state", "district"))
+        if self.r.random() < 0.35:
+            d, dv = distance(self.r)
+            form = self.pick(["{d} along the border between {a} and {b}", "{d} zone along the border of {a} and {b}",
+                              "{d} corridor along the {a} {b} border", "{d} strip along the border between {a} and {b}"])
+            return form.format(d=d, a=a, b=b), {"distance": dv, "a": a, "b": b}
+        form = self.pick(["border between {a} and {b}", "the border between {a} and {b}", "boundary between {a} and {b}",
+                          "border of {a} and {b}", "{a}-{b} border", "{a} {b} border", "the frontier between {a} and {b}",
+                          "where {a} meets {b}", "shared border of {a} and {b}"])
+        return form.format(a=a, b=b), {"a": a, "b": b}
+
+    def t_natural_in(self, depth=0):
+        k = self.pick(NATURAL_KINDS)
+        kw = self.note(self.word_typo(self.pick(NATURAL_WORDS[k])), "natural_kind", k)
+        r = self.world(("w_country", "w_region")) if self.has_world() and self.r.random() < 0.5 else self.place(("state", "state", "district", "country"))
+        form = self.pick(["{k} in {r}", "{k} of {r}", "which {k} are in {r}", "{k} that flow through {r}", "{k} crossing {r}",
+                          "{k} that touch {r}", "{r} {k}", "list the {k} in {r}", "what {k} are there in {r}"])
+        if k != "river" and "flow" in form:
+            form = "{k} in {r}"
+        return form.format(k=kw, r=r), {"kind": kw, "region": r}
+
+    def t_children_near(self, depth=0):
+        k, lv = self.level(exclude=("country", "union_territory"))
+        d, dv = distance(self.r)
+        o = self.area() if self.r.random() < 0.7 or not self.has_world() else self.natural(("river", "lake", "range"))
+        if self.r.random() < 0.5:
+            form = self.pick(["{l} within {d} of {o}", "{l} within {d} from {o}", "{l} less than {d} from {o}",
+                              "which {l} are within {d} of {o}"])
+            return form.format(l=lv, d=d, o=o), {"level": lv, "distance": dv, "other": o}
+        p = self.parent_for(k, 1)
+        form = self.pick(["{l} of {p} within {d} of {o}", "{l} in {p} within {d} of {o}", "{p} {l} within {d} of {o}"])
+        return form.format(l=lv, p=p, d=d, o=o), {"level": lv, "parent": p, "distance": dv, "other": o}
+
+    def t_children_top(self, depth=0):
+        k, lv = self.level(exclude=("country",))
+        ok = self.pick(list(RANK))
+        p = self.parent_for(k, 1)
+        if self.r.random() < 0.3:
+            # "the most populous state of India": order "most", by "populous".
+            o = self.note(self.pick({"largest": ["most", "most"], "smallest": ["least"]}[ok]), "rank_order", ok)
+            by = self.note(self.pick(["populous", "populated"]), "attr", "population")
+            head, slots = f"{o} {by}", {"order": o, "by": by}
+        else:
+            o = self.note(self.pick(RANK[ok]), "rank_order", ok)
+            head, slots = o, {"order": o}
+        slots.update({"level": lv, "parent": p})
+        if self.r.random() < 0.6:
+            n = self.r.choice([2, 3, 3, 5, 5, 10])
+            ns = str(n) if self.r.random() < 0.7 else NUM_WORDS[n]
+            slots["n"] = str(n)
+            form = self.pick(["{n} {h} {l} of {p}", "top {n} {h} {l} in {p}", "the {n} {h} {l} of {p}"])
+            return form.format(n=ns, h=head, l=lv, p=p), slots
+        form = self.pick(["the {h} {l} of {p}", "{h} {l} in {p}", "which is the {h} {l} of {p}", "{h} {l} of {p}"])
+        return form.format(h=head, l=lv, p=p), slots
+
+    def t_neighbors_with_predicate(self, depth=0):
+        k, lv = self.level(exclude=("union_territory",))
+        pk = self.pick(["coastal", "landlocked", "coastal", "on_river", "in_mountains"])
+        pr = self.note(self.word_typo(self.pick(PRED_PRE[pk])), "predicate", pk)
+        o = self.world(("w_country",)) if self.has_world() and k == "country" else self.area()
+        form = self.pick(["{p} {l} that border {o}", "{p} {l} bordering {o}", "{p} {l} next to {o}", "{p} {l} adjacent to {o}",
+                          "which {p} {l} border {o}", "{p} {l} touching {o}"])
+        return form.format(p=pr, l=lv, o=o), {"pred": pr, "level": lv, "of": o}
+
+    def t_neighbors_both(self, depth=0):
+        k, lv = self.level(exclude=("union_territory",))
+        a, b = (self.world(("w_country",)), self.world(("w_country",))) if self.has_world() and k == "country" else (self.area(), self.area())
+        form = self.pick(["{l} that border both {a} and {b}", "{l} bordering both {a} and {b}", "{l} next to both {a} and {b}",
+                          "which {l} touch both {a} and {b}", "{l} adjacent to both {a} and {b}"])
+        return form.format(l=lv, a=a, b=b), {"level": lv, "a": a, "b": b}
+
     def t_features_in(self, depth=0):
         c0 = self.pick(CATEGORIES)
         c = self.note(self.word_typo(c0), "category", CAT_KEY[c0])
@@ -538,17 +694,17 @@ TEMPLATE_WEIGHTS = {
     "parent": 3, "neighbors": 5, "children_with_predicate": 9, "children_touching": 4, "union": 4, "union3": 2,
     "difference": 4, "intersection": 3, "between": 3, "along_coast": 3, "along_border": 2, "along_intl_border": 2,
     "features_in": 8, "features_near": 8, "children_attr": 6, "unsupported": 5,
+    "shared_border": 4, "natural_in": 5, "children_near": 4, "children_top": 5, "neighbors_with_predicate": 3,
+    "neighbors_both": 3,
 }
 
 
 def generate(n: int, seed: int = 7) -> list[dict]:
     rng = random.Random(seed)
     g = Gen(rng, load_places(rng))
-    exclude = set()
-    for name in ("gold", "heldout"):
-        p = ROOT / "gold" / f"{name}.jsonl"
-        if p.exists():
-            exclude |= {json.loads(l)["query"].lower().strip() for l in p.read_text().splitlines() if l.strip()}
+    from training.evalset import eval_queries
+
+    exclude = eval_queries()
     names, weights = zip(*TEMPLATE_WEIGHTS.items())
     from geoparse.templates.model import all_templates
 

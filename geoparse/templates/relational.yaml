@@ -1,5 +1,5 @@
 family: relational
-description: "An area defined by a relation to places or lines: the land between two places, or a strip along a coast or border"
+description: "An area defined by a relation to places or lines: the land between two places, a strip along a coast or border, or the border that two places share"
 templates:
   - id: between
     description: "The area between two places"
@@ -49,3 +49,18 @@ templates:
       - "{distance} (along|from|of) the (international border|international boundary|country border|national border|indian border) (in|of|within) {region}"
       - "(international border|international boundary) (strip|belt|area|areas|region|zone) (of|in) {region}"
     dag: "Along(Layer(country_boundary), ${distance}, within=${region})"
+
+  - id: shared_border
+    description: "The border line that two places share, or a strip along it"
+    examples: ["border between Spain and Portugal", "10 km zone along the border of India and Pakistan", "India Pakistan border"]
+    slots:
+      distance: {type: distance, default: policy.default_strip_m}
+      a: {type: region}
+      b: {type: region}
+    patterns:
+      - "[the] (border|boundary|frontier) between {a} and {b}"
+      - "[the] (border|boundary|frontier) of {a} and {b}"
+      - "{distance} [zone|strip|belt|corridor] along the (border|boundary) between {a} and {b}"
+      - "{distance} [zone|strip|belt|corridor] along the (border|boundary) of {a} and {b}"
+      - "{a} {b} (border|boundary)"
+    dag: "Along(SharedBorder(${a}, ${b}), ${distance})"

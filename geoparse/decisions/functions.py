@@ -35,6 +35,8 @@ INSTRUCTIONS = {
     "fill_closed_slot.category": "Which type of place does the text name?",
     "fill_closed_slot.attr": "Which measured quantity of places does the text name?",
     "fill_closed_slot.op": "Which comparison does the text name?",
+    "fill_closed_slot.natural_kind": "Which kind of natural feature does the text name?",
+    "fill_closed_slot.rank_order": "Does the text ask for the largest or for the smallest?",
 }
 
 IS_SUBQUERY_CRITERIA = {

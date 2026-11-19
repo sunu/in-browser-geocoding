@@ -1,5 +1,5 @@
 family: attribute
-description: "The divisions of one level inside a place where a number (population or area) is above or below a value, for example cities with a population over 1 million"
+description: "The divisions of one level inside a place where a number (population or area) is above or below a value, or the largest or smallest of them, for example cities with a population over 1 million or the 5 largest districts"
 templates:
   - id: children_attr
     description: "Divisions of one level inside a place where a number such as population is above or below a value"
@@ -18,3 +18,18 @@ templates:
       - "{level} with {opseg:op} {value} {attrseg:attr} (in|of|within) {parent}"
       - "{level} (in|of|within) {parent} (with|having|where|whose) {attrseg:attr} [is|are|of] {opseg:op} {value}"
     dag: "AttrFilter(Children(${parent}, level=${level}), attr=${attr}, op=${op}, value=${value})"
+
+  - id: children_top
+    description: "The largest or smallest divisions of one level inside a place, by area or population"
+    examples: ["5 largest districts of Karnataka", "the smallest state of India", "3 most populous cities in Maharashtra"]
+    slots:
+      n: {type: value, default: 1}
+      order: {type: rank_order, options_ref: rank_orders}
+      by: {type: attr, options_ref: attrs, optional: true, default: area}
+      level: {type: admin_level, options_ref: admin_levels}
+      parent: {type: region, optional: true, default: country}
+    patterns:
+      - "[the] [top] {n} {order} {level} (of|in) {parent}"
+      - "[the] {order} {level} (of|in) {parent}"
+      - "[the] {n} {level} (of|in) {parent} with the {order} {by}"
+    dag: "Top(Children(${parent}, level=${level}), ${by}, ${n}, ${order})"

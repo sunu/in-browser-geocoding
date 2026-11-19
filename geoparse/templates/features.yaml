@@ -1,5 +1,5 @@
 family: features
-description: "Points of interest of one category, for example hospitals, schools, or banks, inside or near an area"
+description: "Points of interest of one category (for example hospitals, schools, or banks) inside or near an area, or natural features of one kind (rivers, mountain ranges, lakes, seas) in a place"
 templates:
   - id: features_in
     description: "Points of one category inside an area"
@@ -26,3 +26,15 @@ templates:
       - "{category} (in|within) [a] {distance} radius (of|from|around) {region}"
       - "{category} (near|around|within|close to) {region} [within] {distance}"
     dag: "Features(${category}, Buffer(${region}, ${distance}))"
+
+  - id: natural_in
+    description: "Natural features of one kind (rivers, lakes, mountain ranges, deserts, seas) in or touching a place"
+    examples: ["rivers in Karnataka", "mountain ranges of Nepal", "seas that touch India", "lakes in Kenya"]
+    slots:
+      kind: {type: natural_kind, options_ref: natural_kinds}
+      region: {type: region}
+    patterns:
+      - "{kind} (in|of|within|inside|across|through) {region}"
+      - "{kind} (that|which) (flow through|cross|touch|border|are in) {region}"
+      - "{region} {kind}"
+    dag: "Naturals(${kind}, within=${region})"

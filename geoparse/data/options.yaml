@@ -77,10 +77,59 @@ directions:
 attrs:
   population:
     description: "Number of people who live there (population, people, residents, inhabitants)"
-    keywords: [population, populaton, people, inhabitants, residents, populous, pop]
+    keywords: [population, populaton, people, inhabitants, residents, populous, populated, pop]
   area:
     description: "Size of the land area (area, size, square kilometres)"
     keywords: [area, size, sq km, square km, km2, square kilometers, square kilometres, larger, bigger]
+
+natural_kinds:
+  river:
+    description: "Rivers"
+    keywords: [river, rivers, nadi, stream, streams]
+  lake:
+    description: "Lakes and reservoirs"
+    keywords: [lake, lakes, reservoir, reservoirs]
+  range:
+    description: "Mountain ranges and hills"
+    keywords: [mountains, mountain range, mountain ranges, range, ranges, hills, mountain]
+  desert:
+    description: "Deserts"
+    keywords: [desert, deserts]
+  plateau:
+    description: "Plateaus and uplands"
+    keywords: [plateau, plateaus, uplands]
+  plain:
+    description: "Plains"
+    keywords: [plain, plains]
+  basin:
+    description: "Basins and valleys"
+    keywords: [basin, basins]
+  delta:
+    description: "River deltas"
+    keywords: [delta, deltas]
+  island:
+    description: "Islands"
+    keywords: [island]
+  island_group:
+    description: "Groups of islands"
+    keywords: [islands, archipelago]
+  peninsula:
+    description: "Peninsulas and capes"
+    keywords: [peninsula, peninsulas, cape]
+  sea:
+    description: "Seas and oceans"
+    keywords: [sea, seas, ocean, oceans]
+  bay:
+    description: "Bays and gulfs"
+    keywords: [bay, bays, gulf, gulfs]
+
+rank_orders:
+  largest:
+    description: "The largest or the most (biggest, top, most populous)"
+    keywords: [largest, biggest, top, most, most populous, most populated, highest, largest by area, greatest]
+  smallest:
+    description: "The smallest or the least (tiniest, least populous)"
+    keywords: [smallest, tiniest, least, least populous, least populated, lowest, bottom, smallest by area]
 
 ops:
   gt:

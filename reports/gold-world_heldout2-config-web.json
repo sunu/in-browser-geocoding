@@ -8,8 +8,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.998006,
+   "n_options": 2
   },
   {
    "id": "y001",
@@ -30,8 +30,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.653648,
+   "n_options": 2
   },
   {
    "id": "y001",
@@ -70,7 +70,7 @@
    "got": false,
    "gold": false,
    "text": "Turkey",
-   "conf": 0.98368
+   "conf": 0.99484
   },
   {
    "id": "y002",
@@ -80,8 +80,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9933080000000001,
+   "n_options": 2
   },
   {
    "id": "y002",
@@ -102,8 +102,8 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.30182200000000003,
+   "n_options": 2
   },
   {
    "id": "y002",
@@ -142,7 +142,7 @@
    "got": false,
    "gold": false,
    "text": "Ankara",
-   "conf": 0.973124
+   "conf": 0.995412
   },
   {
    "id": "y003",
@@ -222,8 +222,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9918260000000001,
+   "n_options": 2
   },
   {
    "id": "y004",
@@ -233,8 +233,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.8290660000000001,
+   "n_options": 2
   },
   {
    "id": "y004",
@@ -262,7 +262,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitals",
-   "conf": 0.998702875
+   "conf": 0.9996988
   },
   {
    "id": "y004",
@@ -273,7 +273,7 @@
    "got": false,
    "gold": false,
    "text": "Izmir",
-   "conf": 0.99114
+   "conf": 0.997318
   },
   {
    "id": "y005",
@@ -283,8 +283,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9983219999999999,
+   "n_options": 2
   },
   {
    "id": "y005",
@@ -305,8 +305,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.5213000000000001,
+   "n_options": 2
   },
   {
    "id": "y005",
@@ -345,7 +345,7 @@
    "got": false,
    "gold": false,
    "text": "Pakistan",
-   "conf": 0.986186
+   "conf": 0.993392
   },
   {
    "id": "y006",
@@ -355,7 +355,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.9689700000000001,
+   "conf": 0.9973320000000001,
    "n_options": 2
   },
   {
@@ -377,7 +377,7 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 0.6167499999999999,
+   "conf": 0.696132,
    "n_options": 2
   },
   {
@@ -417,7 +417,7 @@
    "got": false,
    "gold": false,
    "text": "Punjab",
-   "conf": 0.986034
+   "conf": 0.990264
   },
   {
    "id": "y007",
@@ -427,8 +427,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.999976,
+   "n_options": 2
   },
   {
    "id": "y007",
@@ -449,8 +449,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.5063820000000001,
+   "n_options": 2
   },
   {
    "id": "y007",
@@ -486,8 +486,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.990964,
+   "n_options": 2
   },
   {
    "id": "y008",
@@ -508,8 +508,8 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.1840059999999999,
+   "n_options": 2
   },
   {
    "id": "y008",
@@ -548,7 +548,7 @@
    "got": false,
    "gold": false,
    "text": "Hanoi",
-   "conf": 0.98206
+   "conf": 0.994834
   },
   {
    "id": "y009",
@@ -668,7 +668,7 @@
    "got": "school",
    "gold": "school",
    "text": "schools",
-   "conf": 0.9975700000000001
+   "conf": 0.9972975000000001
   },
   {
    "id": "y010",
@@ -679,7 +679,7 @@
    "got": false,
    "gold": false,
    "text": "Ho Chi Minh City",
-   "conf": 0.985616
+   "conf": 0.992954
   },
   {
    "id": "y011",
@@ -751,7 +751,7 @@
    "got": false,
    "gold": false,
    "text": "Peru",
-   "conf": 0.982714
+   "conf": 0.995568
   },
   {
    "id": "y012",
@@ -761,8 +761,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9966980000000001,
+   "n_options": 2
   },
   {
    "id": "y012",
@@ -772,18 +772,18 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 0.9824459999999999,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "y012",
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "hierarchy",
-   "correct": false,
-   "got": "parent",
+   "correct": true,
+   "got": "children",
    "gold": "children",
-   "conf": 0.276524,
+   "conf": 0.267922,
    "n_options": 2
   },
   {
@@ -823,7 +823,7 @@
    "got": false,
    "gold": false,
    "text": "Cusco",
-   "conf": 0.988626
+   "conf": 0.996018
   },
   {
    "id": "y013",
@@ -954,18 +954,18 @@
    "got": false,
    "gold": false,
    "text": "Chile",
-   "conf": 0.979142
+   "conf": 0.994654
   },
   {
    "id": "y015",
    "decision": "pick_family",
    "depth": 0,
    "family": "predicate_filter",
-   "correct": true,
-   "got": "predicate_filter",
+   "correct": false,
+   "got": "features",
    "gold": "predicate_filter",
-   "conf": 0.948984,
-   "n_options": 2
+   "conf": 0.9600346666666667,
+   "n_options": 4
   },
   {
    "id": "y015",
@@ -986,8 +986,8 @@
    "correct": false,
    "got": "along_coast",
    "gold": "children_with_predicate",
-   "conf": 0.196218,
-   "n_options": 2
+   "conf": 0.5556053333333333,
+   "n_options": 4
   },
   {
    "id": "y015",
@@ -1005,8 +1005,8 @@
     "pred": "coastal",
     "parent": "Chile"
    },
-   "conf": 0.837764,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "y015",
@@ -1017,7 +1017,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "y015",
@@ -1039,7 +1039,7 @@
    "got": false,
    "gold": false,
    "text": "Chile",
-   "conf": 0.979142
+   "conf": 0.994654
   },
   {
    "id": "y016",
@@ -1108,8 +1108,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.997066,
+   "n_options": 2
   },
   {
    "id": "y017",
@@ -1130,8 +1130,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.636814,
+   "n_options": 2
   },
   {
    "id": "y017",
@@ -1170,7 +1170,7 @@
    "got": false,
    "gold": false,
    "text": "Sweden",
-   "conf": 0.981232
+   "conf": 0.995822
   },
   {
    "id": "y018",
@@ -1242,7 +1242,7 @@
    "got": false,
    "gold": false,
    "text": "Skane",
-   "conf": 0.98443
+   "conf": 0.994938
   },
   {
    "id": "y019",
@@ -1311,8 +1311,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.998006,
+   "n_options": 2
   },
   {
    "id": "y020",
@@ -1333,8 +1333,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.5581879999999999,
+   "n_options": 2
   },
   {
    "id": "y020",
@@ -1344,13 +1344,13 @@
    "correct": true,
    "got": {
     "level": "provinces",
-    "parent": "the Netherlands"
+    "parent": "Netherlands"
    },
    "gold": {
     "level": "provinces",
-    "parent": "the Netherlands"
+    "parent": "Netherlands"
    },
-   "conf": 0.91048,
+   "conf": 0.8278620000000001,
    "n_options": 2
   },
   {
@@ -1373,7 +1373,7 @@
    "got": false,
    "gold": false,
    "text": "Netherlands",
-   "conf": 0.980464
+   "conf": 0.996198
   },
   {
    "id": "y021",
@@ -1417,15 +1417,15 @@
    "got": {
     "level": "provinces",
     "pred": "coastal",
-    "parent": "the Netherlands"
+    "parent": "Netherlands"
    },
    "gold": {
     "level": "provinces",
     "pred": "coastal",
-    "parent": "the Netherlands"
+    "parent": "Netherlands"
    },
-   "conf": 0.903619,
-   "n_options": 3
+   "conf": 0.8886339999999999,
+   "n_options": 2
   },
   {
    "id": "y021",
@@ -1436,7 +1436,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "y021",
@@ -1458,7 +1458,7 @@
    "got": false,
    "gold": false,
    "text": "Netherlands",
-   "conf": 0.980464
+   "conf": 0.996198
   },
   {
    "id": "y022",
@@ -1530,7 +1530,7 @@
    "got": false,
    "gold": false,
    "text": "Utrecht",
-   "conf": 0.9837
+   "conf": 0.996452
   },
   {
    "id": "y023",
@@ -1579,7 +1579,7 @@
     "a": "Amsterdam",
     "b": "Rotterdam"
    },
-   "conf": 0.8736060000000001,
+   "conf": 0.924742,
    "n_options": 2
   },
   {
@@ -1591,7 +1591,7 @@
    "got": false,
    "gold": false,
    "text": "Amsterdam",
-   "conf": 0.984518
+   "conf": 0.996374
   },
   {
    "id": "y023",
@@ -1602,7 +1602,7 @@
    "got": false,
    "gold": false,
    "text": "Rotterdam",
-   "conf": 0.978758
+   "conf": 0.995492
   },
   {
    "id": "y024",
@@ -1612,7 +1612,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.966404,
+   "conf": 0.99796,
    "n_options": 2
   },
   {
@@ -1634,7 +1634,7 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 0.49599799999999994,
+   "conf": 0.851356,
    "n_options": 2
   },
   {
@@ -1674,7 +1674,7 @@
    "got": false,
    "gold": false,
    "text": "Portugal",
-   "conf": 0.98276
+   "conf": 0.996286
   },
   {
    "id": "y025",
@@ -1794,7 +1794,7 @@
    "got": false,
    "gold": false,
    "text": "Coimbra",
-   "conf": 0.990048
+   "conf": 0.995006
   },
   {
    "id": "y026",
@@ -1877,7 +1877,7 @@
    "got": false,
    "gold": false,
    "text": "Tanzania",
-   "conf": 0.983948
+   "conf": 0.994118
   },
   {
    "id": "y028",
@@ -1936,7 +1936,7 @@
    "got": false,
    "gold": false,
    "text": "Dodoma",
-   "conf": 0.988216
+   "conf": 0.996492
   },
   {
    "id": "y029",
@@ -1957,8 +1957,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.99301,
+   "n_options": 2
   },
   {
    "id": "y029",
@@ -1968,8 +1968,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.8149679999999999,
+   "n_options": 2
   },
   {
    "id": "y029",
@@ -1997,7 +1997,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitals",
-   "conf": 0.998702875
+   "conf": 0.9996988
   },
   {
    "id": "y029",
@@ -2008,7 +2008,7 @@
    "got": false,
    "gold": false,
    "text": "Dar es Salaam",
-   "conf": 0.98158
+   "conf": 0.992744
   },
   {
    "id": "y030",
@@ -2018,8 +2018,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9835179999999999,
+   "n_options": 2
   },
   {
    "id": "y030",
@@ -2040,8 +2040,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.363418,
+   "n_options": 2
   },
   {
    "id": "y030",
@@ -2080,7 +2080,7 @@
    "got": false,
    "gold": false,
    "text": "New Zealand",
-   "conf": 0.980876
+   "conf": 0.993236
   },
   {
    "id": "y031",
@@ -2149,7 +2149,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.97908,
+   "conf": 0.996278,
    "n_options": 2
   },
   {
@@ -2171,7 +2171,7 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 0.39648799999999995,
+   "conf": 0.7333400000000001,
    "n_options": 2
   },
   {
@@ -2211,7 +2211,7 @@
    "got": false,
    "gold": false,
    "text": "Canterbury",
-   "conf": 0.981188
+   "conf": 0.995756
   },
   {
    "id": "y033",
@@ -2221,8 +2221,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.99796,
+   "n_options": 2
   },
   {
    "id": "y033",
@@ -2243,8 +2243,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.25299399999999994,
+   "n_options": 2
   },
   {
    "id": "y033",
@@ -2283,18 +2283,18 @@
    "got": false,
    "gold": false,
    "text": "Switzerland",
-   "conf": 0.980332
+   "conf": 0.99585
   },
   {
    "id": "y034",
    "decision": "pick_family",
    "depth": 0,
    "family": "hierarchy",
-   "correct": true,
-   "got": "hierarchy",
+   "correct": false,
+   "got": "features",
    "gold": "hierarchy",
-   "conf": 0.9658599999999999,
-   "n_options": 2
+   "conf": 0.8445400000000001,
+   "n_options": 3
   },
   {
    "id": "y034",
@@ -2312,11 +2312,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "hierarchy",
-   "correct": false,
-   "got": "children_with_predicate",
+   "correct": true,
+   "got": "children",
    "gold": "children",
-   "conf": 0.09855799999999992,
-   "n_options": 2
+   "conf": 0.2960245,
+   "n_options": 3
   },
   {
    "id": "y034",
@@ -2355,7 +2355,7 @@
    "got": false,
    "gold": false,
    "text": "Ukraine",
-   "conf": 0.981992
+   "conf": 0.995582
   }
  ],
  "pipeline": [
@@ -2366,9 +2366,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8063244819641113,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 1.4166786670684814,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -2385,9 +2385,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.456273078918457,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 0.5382187366485596,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -2404,7 +2404,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5147209167480469,
+   "latency_s": 0.9420337677001953,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2423,9 +2423,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.2819504737854004,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 2.26466703414917,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -2442,9 +2442,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.0708603858947754,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 2.1791841983795166,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -2461,7 +2461,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4796719551086426,
+   "latency_s": 2.4168894290924072,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2480,9 +2480,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3902184963226318,
-   "model_calls": 3,
-   "requests_in_sequence": 1,
+   "latency_s": 1.6800625324249268,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -2499,9 +2499,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.522536277770996,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 1.6925625801086426,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -2518,7 +2518,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4882473945617676,
+   "latency_s": 1.7159183025360107,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2537,7 +2537,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.322810411453247,
+   "latency_s": 1.6165485382080078,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2556,7 +2556,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3748886585235596,
+   "latency_s": 1.3972423076629639,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2575,7 +2575,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.285823106765747,
+   "latency_s": 1.3692827224731445,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2594,7 +2594,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6719543933868408,
+   "latency_s": 1.7030551433563232,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2613,7 +2613,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5037658214569092,
+   "latency_s": 1.5198345184326172,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2630,19 +2630,21 @@
    "query": "coastal regions of Chile",
    "family": "predicate_filter",
    "depth": 0,
-   "template_ok": true,
+   "template_ok": false,
    "ok": true,
-   "latency_s": 1.7235195636749268,
-   "model_calls": 7,
-   "requests_in_sequence": 3,
+   "latency_s": 1.6621460914611816,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
-   "got_template": "children_with_predicate",
+   "got_template": "along_coast",
    "path": "complex",
-   "slots_ok": true,
-   "diffs": [],
-   "dag_ok": true,
-   "exec_ok": true,
-   "exec_note": "15 ids vs 15"
+   "slots_ok": false,
+   "diffs": [
+    "template"
+   ],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "0 ids vs 15"
   },
   {
    "id": "y016",
@@ -2651,7 +2653,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.7374799251556396,
+   "latency_s": 1.548020601272583,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2670,9 +2672,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6311709880828857,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 1.6730608940124512,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -2689,7 +2691,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.450141429901123,
+   "latency_s": 1.5079765319824219,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2708,7 +2710,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.0866374969482422,
+   "latency_s": 1.265857219696045,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2727,9 +2729,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3201398849487305,
-   "model_calls": 5,
-   "requests_in_sequence": 2,
+   "latency_s": 1.0270273685455322,
+   "model_calls": 6,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -2746,7 +2748,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6107590198516846,
+   "latency_s": 1.5810010433197021,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2765,7 +2767,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4937691688537598,
+   "latency_s": 1.6664440631866455,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2784,7 +2786,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.9220249652862549,
+   "latency_s": 1.9558489322662354,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2803,7 +2805,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.8908817768096924,
+   "latency_s": 1.8508999347686768,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2822,7 +2824,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5932016372680664,
+   "latency_s": 1.5839450359344482,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2841,7 +2843,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5311908721923828,
+   "latency_s": 1.3780145645141602,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2860,7 +2862,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4944274425506592,
+   "latency_s": 1.4054884910583496,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2879,7 +2881,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2413954734802246,
+   "latency_s": 1.1877288818359375,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2900,9 +2902,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.462261438369751,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 1.3982961177825928,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -2919,9 +2921,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4260127544403076,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 1.3794267177581787,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -2938,7 +2940,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2855560779571533,
+   "latency_s": 1.1890060901641846,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2957,7 +2959,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6045310497283936,
+   "latency_s": 1.4334006309509277,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2976,9 +2978,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5506110191345215,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 1.5645818710327148,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -2995,7 +2997,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2601025104522705,
+   "latency_s": 1.45961332321167,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -3011,7 +3013,7 @@
  "summary": {
   "pick_family": {
    "n": 34,
-   "correct": 34
+   "correct": 32
   },
   "pick_template": {
    "n": 34,
@@ -3019,7 +3021,7 @@
   },
   "pick_template_flat": {
    "n": 34,
-   "correct": 31
+   "correct": 33
   },
   "pick_split": {
    "n": 34,
@@ -3064,7 +3066,7 @@
    },
    "predicate_filter": {
     "n": 2,
-    "dag_ok": 2
+    "dag_ok": 1
    },
    "set_algebra": {
     "n": 1,
@@ -3072,7 +3074,7 @@
    },
    "ALL": {
     "n": 34,
-    "dag_ok": 33
+    "dag_ok": 32
    }
   }
  }

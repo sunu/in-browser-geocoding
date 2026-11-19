@@ -14,6 +14,7 @@ import duckdb
 
 from geoparse.config import build_dir, country_policy, load_config
 from geoparse.decisions.types import Candidate
+from geoparse.options import option_keywords
 
 # Level words at the end of region names that have no short form ("Kyoto Prefecture"). The search also tries
 # "<name> <suffix>".
@@ -215,8 +216,8 @@ class Store:
             hint_from_name = words[-1]
             q_list.append(" ".join(words[:-1]))
         else:
-            # "Ganga river" -> name "ganga", hint "natural:river" (policy.natural_hints)
-            for kind, ws in load_config()["policy"]["natural_hints"].items():
+            # "Ganga river" -> name "ganga", hint "natural:river" (the keywords of the option list natural_kinds)
+            for kind, ws in option_keywords("natural_kinds").items():
                 w = next((w for w in ws if n.endswith(" " + w)), None)
                 if w:
                     hint_from_name = f"natural:{kind}"

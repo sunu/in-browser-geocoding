@@ -31,7 +31,9 @@ SIMPLE_FAMILIES = {"lookup", "modifier"}
 # Families whose anchors can go to the geocoder. "features" is here because plan-002 routes POIs to Photon.
 GEOCODER_FAMILIES = {"lookup", "modifier", "features"}
 # Templates whose optional parent (first name) without text is the countries around another slot (second name).
-AROUND_DEFAULT = {"children_touching": ("parent", "other")}
+AROUND_DEFAULT = {"children_touching": ("parent", "other"), "children_near": ("parent", "other")}
+# A number with a distance unit in a text ("10 km around Whitefield"; not "Sector 5").
+HAS_DISTANCE = re.compile(r"\b\d+(?:\.\d+)?\s*(?:km|kms|kilometres?|kilometers?|m|metres?|meters?|mi|miles?)\b", re.I)
 # Templates where the admin level can be empty (an unknown level word). The executor uses the data.
 STRUCTURE_LEVEL = {"children", "children_with_predicate"}
 
@@ -336,6 +338,13 @@ class Parser:
         if dec.below("pick_template", td):
             raise _Stop(Unsupported(reason=f"low confidence for pick_template ({td.confidence:.2f})", decision="pick_template", depth=depth, text=text))
         tpl = self.templates[td.value]
+        if tpl.id == "natural_in":
+            # "Ganga river", "Sahara desert": one natural feature, not the features of a kind in a place.
+            top = self.store.search(text, fuzzy=False, limit=1, view=dec.view)
+            if top and top[0].subtype == "natural":
+                dec.record_step("natural_name", depth, {"text": text}, top[0].id, "rules", {})
+                return ({"op": "Resolve", "args": {"name": text, "source": "overture", "id": top[0].id}},
+                        {"family": "lookup", "template": "lookup_place", "slots": {"anchor": text}})
         if tpl.family == "lookup":
             # Guard: the lookup template takes the whole text as one name. If the text describes a set
             # of places (and no other template matched), it is not supported. Do not geocode it.
@@ -549,6 +558,18 @@ class Parser:
                 raise _Stop(Unsupported(reason="depth limit", depth=depth, text=text))
             sub_dag, info = self._parse_level(dec, text, depth + 1)
             return sub_dag, {"q": text, "t": info["template"], "s": info["slots"]}
+        if is_region and not exact and (keyword_hits(text, _level_words(), typo=False) or HAS_DISTANCE.search(text)):
+            # "coastal districts of Odisha", "10 km around Whitefield": a set by a level or a distance, not a place
+            # name. A sub-query, without the model.
+            dec.record_step("is_subquery", depth, {"text": text}, True, "rules", {"level_or_distance": True})
+            if depth + 1 > self.max_depth:
+                raise _Stop(Unsupported(reason="depth limit", depth=depth, text=text))
+            sub_dag, info = self._parse_level(dec, text, depth + 1)
+            return sub_dag, {"q": text, "t": info["template"], "s": info["slots"]}
+        if is_region and exact and not keyword_hits(text, _level_words(), typo=False) and not _direction_rest(text):
+            # The whole text is an exact place name ("Western Ghats", "Central Delhi"): a place, not a sub-query.
+            dec.record_step("is_subquery", depth, {"text": text}, False, "rules", {"exact_name": True})
+            return self._anchor(dec, tpl, text, spans, query, depth, type_hint, exact), text
         if is_region:
             d = dec.is_subquery(text, depth=depth, context={"gazetteer_exact": bool(exact),
                                                              "has_distance": parse_distance(text) is not None
@@ -662,10 +683,15 @@ class Parser:
         return out
 
 
+def _level_words() -> list[str]:
+    """The keywords of the admin levels ("districts", "states")."""
+    return [k for ks in option_keywords("admin_levels").values() for k in ks]
+
+
 def _set_words() -> list[str]:
     """Words of a set or a part, not of a place name: admin levels, categories, predicates, directions, natural kinds."""
-    words = [k for ref in ("admin_levels", "categories", "predicates", "directions") for ks in option_keywords(ref).values() for k in ks]
-    return words + [w for ws in load_config()["policy"]["natural_hints"].values() for w in ws]
+    refs = ("admin_levels", "categories", "predicates", "directions", "natural_kinds")
+    return [k for ref in refs for ks in option_keywords(ref).values() for k in ks]
 
 
 def _direction_rest(text: str) -> str | None:

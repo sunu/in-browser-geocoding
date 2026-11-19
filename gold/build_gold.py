@@ -57,7 +57,8 @@ def gold_dag(t: str, s: dict[str, Any], src: dict[str, str] | None = None, view:
         elif sd.type == "admin_level" and v == "none":
             values[name] = None
         elif sd.type == "distance":
-            values[name] = float(v) if v is not None else _slot_default(sd)
+            policy_default = v is None or (isinstance(v, str) and v.startswith("policy."))
+            values[name] = _slot_default(sd) if policy_default else float(v)
         elif sd.type in CLOSED_TYPES or sd.type == "value":
             values[name] = v
     dag = substitute(tpl.dag_json, values)
@@ -106,7 +107,7 @@ def needs_network(dag: Any) -> bool:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-execute", action="store_true")
-    ap.add_argument("--set", default="gold", help="gold, heldout, world, world_heldout, world_heldout2, world_heldout3 or world_heldout4 (world sets: GEOPARSE_SCOPE=world)")
+    ap.add_argument("--set", default="gold", help="gold, heldout, world, world_heldout, world_heldout2, world_heldout3, world_heldout4 or world_heldout5 (world sets: GEOPARSE_SCOPE=world)")
     args = ap.parse_args()
     src = yaml.safe_load((GOLD_DIR / f"{args.set}_src.yaml").read_text())
     # The world set: {views: {cc: bbox}, records: [... {cc: ...}]}. Each record gets the view of its country.
@@ -120,7 +121,7 @@ def main() -> None:
         view = views.get(r.get("cc"))
         dag = gold_dag(t, r["s"], r.get("src"), view, r.get("ids"))
         rec = {
-            "id": f"{ {'gold': 'g', 'heldout': 'h', 'world': 'w', 'world_heldout': 'x', 'world_heldout2': 'y', 'world_heldout3': 'z', 'world_heldout4': 'n'}[args.set]}{i + 1:03d}", "query": r["q"], "lang": "en", "family": templates[t].family, "template": t,
+            "id": f"{ {'gold': 'g', 'heldout': 'h', 'world': 'w', 'world_heldout': 'x', 'world_heldout2': 'y', 'world_heldout3': 'z', 'world_heldout4': 'n', 'world_heldout5': 'v'}[args.set]}{i + 1:03d}", "query": r["q"], "lang": "en", "family": templates[t].family, "template": t,
             "slots": r["s"], "src": r.get("src", {}), "depth": depth_of(r["s"]), "dag": dag,
             "expected_ids": None, "notes": r.get("n", ""),
         }

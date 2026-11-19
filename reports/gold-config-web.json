@@ -8,8 +8,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9999439999999999,
+   "n_options": 2
   },
   {
    "id": "g001",
@@ -30,8 +30,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9858439999999999,
+   "n_options": 2
   },
   {
    "id": "g001",
@@ -67,8 +67,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 0.952688,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g002",
@@ -89,8 +89,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.88626,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g002",
@@ -222,8 +222,8 @@
    "gold": {
     "anchor": "MG Road, Bangalore"
    },
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9961880000000001,
+   "n_options": 2
   },
   {
    "id": "g004",
@@ -303,8 +303,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 0.982844,
-   "n_options": 2
+   "conf": 0.9964479999999998,
+   "n_options": 3
   },
   {
    "id": "g006",
@@ -325,8 +325,8 @@
    "correct": false,
    "got": "union",
    "gold": "lookup_place",
-   "conf": 0.10104599999999997,
-   "n_options": 2
+   "conf": 0.40619049999999995,
+   "n_options": 3
   },
   {
    "id": "g006",
@@ -480,8 +480,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 0.9548964999999998,
-   "n_options": 3
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g009",
@@ -502,8 +502,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.2210635,
-   "n_options": 3
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g009",
@@ -539,7 +539,7 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 0.9508479999999999,
+   "conf": 0.997614,
    "n_options": 2
   },
   {
@@ -561,7 +561,7 @@
    "correct": false,
    "got": "direction_part",
    "gold": "lookup_place",
-   "conf": 0.013128000000000029,
+   "conf": 0.533676,
    "n_options": 2
   },
   {
@@ -686,7 +686,7 @@
    "got": false,
    "gold": false,
    "text": "MG Road Bangalore",
-   "conf": 0.990036
+   "conf": 0.996278
   },
   {
    "id": "g012",
@@ -758,7 +758,7 @@
    "got": false,
    "gold": false,
    "text": "Charminar",
-   "conf": 0.98968
+   "conf": 0.996538
   },
   {
    "id": "g013",
@@ -828,7 +828,7 @@
    "got": false,
    "gold": false,
    "text": "Koramangala",
-   "conf": 0.989582
+   "conf": 0.995132
   },
   {
    "id": "g014",
@@ -900,7 +900,7 @@
    "got": false,
    "gold": false,
    "text": "Indiranagar metro station",
-   "conf": 0.990052
+   "conf": 0.991532
   },
   {
    "id": "g015",
@@ -972,7 +972,7 @@
    "got": false,
    "gold": false,
    "text": "mysore",
-   "conf": 0.987104
+   "conf": 0.992734
   },
   {
    "id": "g016",
@@ -1042,7 +1042,7 @@
    "got": false,
    "gold": false,
    "text": "Karnataka",
-   "conf": 0.986806
+   "conf": 0.989106
   },
   {
    "id": "g017",
@@ -1112,7 +1112,7 @@
    "got": false,
    "gold": false,
    "text": "Bengaluru",
-   "conf": 0.989488
+   "conf": 0.993574
   },
   {
    "id": "g018",
@@ -1184,7 +1184,7 @@
    "got": "north",
    "gold": "north",
    "text": "northern",
-   "conf": 0.99934975
+   "conf": 0.999985375
   },
   {
    "id": "g019",
@@ -1195,7 +1195,7 @@
    "got": false,
    "gold": false,
    "text": "Karnataka",
-   "conf": 0.986806
+   "conf": 0.989106
   },
   {
    "id": "g019",
@@ -1213,11 +1213,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "modifier",
-   "correct": true,
-   "got": "modifier",
+   "correct": false,
+   "got": "lookup",
    "gold": "modifier",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.997722,
+   "n_options": 2
   },
   {
    "id": "g020",
@@ -1227,8 +1227,8 @@
    "correct": true,
    "got": "direction_part",
    "gold": "direction_part",
-   "conf": 0.988756,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g020",
@@ -1238,7 +1238,7 @@
    "correct": true,
    "got": "direction_part",
    "gold": "direction_part",
-   "conf": 0.39331399999999994,
+   "conf": 0.8616299999999999,
    "n_options": 2
   },
   {
@@ -1267,7 +1267,7 @@
    "got": "south",
    "gold": "south",
    "text": "south",
-   "conf": 0.9975002500000001
+   "conf": 0.9999775000000001
   },
   {
    "id": "g020",
@@ -1278,7 +1278,7 @@
    "got": false,
    "gold": false,
    "text": "bangalore",
-   "conf": 0.98758
+   "conf": 0.995626
   },
   {
    "id": "g020",
@@ -1350,7 +1350,7 @@
    "got": "west",
    "gold": "west",
    "text": "western",
-   "conf": 0.9977545000000001
+   "conf": 0.99997525
   },
   {
    "id": "g021",
@@ -1361,7 +1361,7 @@
    "got": false,
    "gold": false,
    "text": "Odisha",
-   "conf": 0.984616
+   "conf": 0.987714
   },
   {
    "id": "g021",
@@ -1393,8 +1393,8 @@
    "correct": true,
    "got": "direction_outside",
    "gold": "direction_outside",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.993128,
+   "n_options": 2
   },
   {
    "id": "g022",
@@ -1404,8 +1404,8 @@
    "correct": true,
    "got": "direction_outside",
    "gold": "direction_outside",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9422900000000001,
+   "n_options": 2
   },
   {
    "id": "g022",
@@ -1433,7 +1433,7 @@
    "got": "north",
    "gold": "north",
    "text": "north",
-   "conf": 0.9974968750000001
+   "conf": 0.9999235000000001
   },
   {
    "id": "g022",
@@ -1444,7 +1444,7 @@
    "got": false,
    "gold": false,
    "text": "Bangalore",
-   "conf": 0.98758
+   "conf": 0.995626
   },
   {
    "id": "g022",
@@ -1516,7 +1516,7 @@
    "got": "east",
    "gold": "east",
    "text": "east",
-   "conf": 0.998743375
+   "conf": 0.9999977500000001
   },
   {
    "id": "g023",
@@ -1527,7 +1527,7 @@
    "got": false,
    "gold": false,
    "text": "Pune",
-   "conf": 0.987662
+   "conf": 0.996218
   },
   {
    "id": "g023",
@@ -1548,8 +1548,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.99613,
+   "n_options": 2
   },
   {
    "id": "g024",
@@ -1570,8 +1570,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.762966,
+   "n_options": 2
   },
   {
    "id": "g024",
@@ -1610,7 +1610,7 @@
    "got": false,
    "gold": false,
    "text": "Karnataka",
-   "conf": 0.986806
+   "conf": 0.989106
   },
   {
    "id": "g025",
@@ -1620,8 +1620,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9956039999999999,
+   "n_options": 2
   },
   {
    "id": "g025",
@@ -1642,8 +1642,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.607494,
+   "n_options": 2
   },
   {
    "id": "g025",
@@ -1682,7 +1682,7 @@
    "got": false,
    "gold": false,
    "text": "India",
-   "conf": 0.985348
+   "conf": 0.993856
   },
   {
    "id": "g026",
@@ -1692,8 +1692,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9979979999999999,
+   "n_options": 2
   },
   {
    "id": "g026",
@@ -1714,8 +1714,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.555482,
+   "n_options": 2
   },
   {
    "id": "g026",
@@ -1754,7 +1754,7 @@
    "got": false,
    "gold": false,
    "text": "Kerala",
-   "conf": 0.987626
+   "conf": 0.992946
   },
   {
    "id": "g027",
@@ -1764,8 +1764,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.99668,
+   "n_options": 2
   },
   {
    "id": "g027",
@@ -1786,8 +1786,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.6941360000000001,
+   "n_options": 2
   },
   {
    "id": "g027",
@@ -1826,7 +1826,7 @@
    "got": false,
    "gold": false,
    "text": "tamil nadu",
-   "conf": 0.986818
+   "conf": 0.984008
   },
   {
    "id": "g028",
@@ -1836,8 +1836,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9986139999999999,
+   "n_options": 2
   },
   {
    "id": "g028",
@@ -1847,8 +1847,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 0.9942204999999998,
-   "n_options": 3
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g028",
@@ -1858,8 +1858,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 0.18671350000000003,
-   "n_options": 3
+   "conf": 0.18325199999999997,
+   "n_options": 2
   },
   {
    "id": "g028",
@@ -1898,7 +1898,7 @@
    "got": false,
    "gold": false,
    "text": "odisha",
-   "conf": 0.984616
+   "conf": 0.987714
   },
   {
    "id": "g029",
@@ -1970,7 +1970,7 @@
    "got": false,
    "gold": false,
    "text": "Koramangala",
-   "conf": 0.989582
+   "conf": 0.995132
   },
   {
    "id": "g030",
@@ -2042,7 +2042,7 @@
    "got": false,
    "gold": false,
    "text": "Whitefield",
-   "conf": 0.97386
+   "conf": 0.977492
   },
   {
    "id": "g031",
@@ -2052,8 +2052,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9931099999999999,
+   "n_options": 2
   },
   {
    "id": "g031",
@@ -2074,8 +2074,8 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.2339960000000001,
+   "n_options": 2
   },
   {
    "id": "g031",
@@ -2114,7 +2114,7 @@
    "got": false,
    "gold": false,
    "text": "Karnataka",
-   "conf": 0.986806
+   "conf": 0.989106
   },
   {
    "id": "g032",
@@ -2124,8 +2124,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.989474,
+   "n_options": 2
   },
   {
    "id": "g032",
@@ -2146,8 +2146,8 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.24209199999999997,
+   "n_options": 2
   },
   {
    "id": "g032",
@@ -2186,7 +2186,7 @@
    "got": false,
    "gold": false,
    "text": "Palakkad",
-   "conf": 0.989418
+   "conf": 0.991174
   },
   {
    "id": "g033",
@@ -2196,8 +2196,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.997266,
+   "n_options": 2
   },
   {
    "id": "g033",
@@ -2207,8 +2207,8 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 0.9887319999999999,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g033",
@@ -2218,7 +2218,7 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 0.772966,
+   "conf": 0.668866,
    "n_options": 2
   },
   {
@@ -2245,7 +2245,7 @@
    "got": false,
    "gold": false,
    "text": "Kerala",
-   "conf": 0.987626
+   "conf": 0.992946
   },
   {
    "id": "g034",
@@ -2317,7 +2317,7 @@
    "got": false,
    "gold": false,
    "text": "India",
-   "conf": 0.985348
+   "conf": 0.993856
   },
   {
    "id": "g035",
@@ -2368,7 +2368,7 @@
     "pred": "coastal",
     "parent": "India"
    },
-   "conf": 0.8823160000000001,
+   "conf": 0.9055500000000001,
    "n_options": 2
   },
   {
@@ -2380,7 +2380,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "g035",
@@ -2402,7 +2402,7 @@
    "got": false,
    "gold": false,
    "text": "India",
-   "conf": 0.985348
+   "conf": 0.993856
   },
   {
    "id": "g036",
@@ -2423,8 +2423,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.99546,
+   "n_options": 2
   },
   {
    "id": "g036",
@@ -2434,8 +2434,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.8538840000000001,
+   "n_options": 2
   },
   {
    "id": "g036",
@@ -2453,8 +2453,8 @@
     "pred": "landlocked",
     "parent": "Karnataka"
    },
-   "conf": 0.851234,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g036",
@@ -2465,7 +2465,7 @@
    "got": "landlocked",
    "gold": "landlocked",
    "text": "landlocked",
-   "conf": 1.0
+   "conf": 0.9972868
   },
   {
    "id": "g036",
@@ -2487,7 +2487,7 @@
    "got": false,
    "gold": false,
    "text": "Karnataka",
-   "conf": 0.986806
+   "conf": 0.989106
   },
   {
    "id": "g037",
@@ -2508,8 +2508,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.980272,
+   "n_options": 2
   },
   {
    "id": "g037",
@@ -2519,8 +2519,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.556368,
+   "n_options": 2
   },
   {
    "id": "g037",
@@ -2538,8 +2538,8 @@
     "pred": "coastal",
     "parent": "Odisha"
    },
-   "conf": 0.901754,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g037",
@@ -2550,7 +2550,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "g037",
@@ -2572,7 +2572,7 @@
    "got": false,
    "gold": false,
    "text": "Odisha",
-   "conf": 0.984616
+   "conf": 0.987714
   },
   {
    "id": "g038",
@@ -2623,7 +2623,7 @@
     "pred": "coastl",
     "parent": "india"
    },
-   "conf": 0.885216,
+   "conf": 0.9235120000000001,
    "n_options": 2
   },
   {
@@ -2635,7 +2635,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastl",
-   "conf": 1.0
+   "conf": 0.9997192
   },
   {
    "id": "g038",
@@ -2657,7 +2657,7 @@
    "got": false,
    "gold": false,
    "text": "india",
-   "conf": 0.985348
+   "conf": 0.993856
   },
   {
    "id": "g039",
@@ -2720,7 +2720,7 @@
    "got": "border",
    "gold": "border",
    "text": "border",
-   "conf": 1.0
+   "conf": 0.9980932
   },
   {
    "id": "g039",
@@ -2742,7 +2742,7 @@
    "got": false,
    "gold": false,
    "text": "Punjab",
-   "conf": 0.986034
+   "conf": 0.990264
   },
   {
    "id": "g040",
@@ -2763,8 +2763,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.99028,
+   "n_options": 2
   },
   {
    "id": "g040",
@@ -2774,8 +2774,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.7293259999999999,
+   "n_options": 2
   },
   {
    "id": "g040",
@@ -2793,7 +2793,7 @@
     "pred": "inland",
     "parent": "Kerala"
    },
-   "conf": 0.7873239999999999,
+   "conf": 0.9422919999999999,
    "n_options": 2
   },
   {
@@ -2805,7 +2805,7 @@
    "got": "landlocked",
    "gold": "landlocked",
    "text": "inland",
-   "conf": 1.0
+   "conf": 0.9995524
   },
   {
    "id": "g040",
@@ -2827,7 +2827,7 @@
    "got": false,
    "gold": false,
    "text": "Kerala",
-   "conf": 0.987626
+   "conf": 0.992946
   },
   {
    "id": "g041",
@@ -2878,7 +2878,7 @@
     "pred": "landlocked",
     "parent": "India"
    },
-   "conf": 0.906714,
+   "conf": 0.9065460000000001,
    "n_options": 2
   },
   {
@@ -2890,7 +2890,7 @@
    "got": "landlocked",
    "gold": "landlocked",
    "text": "landlocked",
-   "conf": 1.0
+   "conf": 0.9972868
   },
   {
    "id": "g041",
@@ -2912,7 +2912,7 @@
    "got": false,
    "gold": false,
    "text": "India",
-   "conf": 0.985348
+   "conf": 0.993856
   },
   {
    "id": "g042",
@@ -2933,8 +2933,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9813320000000001,
+   "n_options": 2
   },
   {
    "id": "g042",
@@ -2944,8 +2944,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.668128,
+   "n_options": 2
   },
   {
    "id": "g042",
@@ -2975,7 +2975,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "on the coast",
-   "conf": 1.0
+   "conf": 0.9996916
   },
   {
    "id": "g042",
@@ -2997,7 +2997,7 @@
    "got": false,
    "gold": false,
    "text": "Maharashtra",
-   "conf": 0.985806
+   "conf": 0.993556
   },
   {
    "id": "g043",
@@ -3071,7 +3071,7 @@
    "got": false,
    "gold": false,
    "text": "Karnataka",
-   "conf": 0.986806
+   "conf": 0.989106
   },
   {
    "id": "g043",
@@ -3082,7 +3082,7 @@
    "got": false,
    "gold": false,
    "text": "Goa",
-   "conf": 0.98784
+   "conf": 0.997146
   },
   {
    "id": "g044",
@@ -3156,7 +3156,7 @@
    "got": false,
    "gold": false,
    "text": "Odisha",
-   "conf": 0.984616
+   "conf": 0.987714
   },
   {
    "id": "g044",
@@ -3167,7 +3167,7 @@
    "got": false,
    "gold": false,
    "text": "Andhra Pradesh",
-   "conf": 0.987944
+   "conf": 0.98773
   },
   {
    "id": "g045",
@@ -3216,7 +3216,7 @@
     "a": "Kerala",
     "b": "Tamil Nadu"
    },
-   "conf": 0.9114500000000001,
+   "conf": 0.9336599999999999,
    "n_options": 2
   },
   {
@@ -3228,7 +3228,7 @@
    "got": false,
    "gold": false,
    "text": "Kerala",
-   "conf": 0.987626
+   "conf": 0.992946
   },
   {
    "id": "g045",
@@ -3239,7 +3239,7 @@
    "got": false,
    "gold": false,
    "text": "Tamil Nadu",
-   "conf": 0.986818
+   "conf": 0.984008
   },
   {
    "id": "g046",
@@ -3288,7 +3288,7 @@
     "a": "Goa",
     "b": "Karnataka"
    },
-   "conf": 0.6926779999999999,
+   "conf": 0.923746,
    "n_options": 2
   },
   {
@@ -3300,7 +3300,7 @@
    "got": false,
    "gold": false,
    "text": "Goa",
-   "conf": 0.98784
+   "conf": 0.997146
   },
   {
    "id": "g046",
@@ -3311,7 +3311,7 @@
    "got": false,
    "gold": false,
    "text": "Karnataka",
-   "conf": 0.986806
+   "conf": 0.989106
   },
   {
    "id": "g047",
@@ -3362,8 +3362,8 @@
     "b": "Goa",
     "c": "Karnataka"
    },
-   "conf": 0.6368215,
-   "n_options": 3
+   "conf": 0.9108266666666666,
+   "n_options": 4
   },
   {
    "id": "g047",
@@ -3374,7 +3374,7 @@
    "got": false,
    "gold": false,
    "text": "Kerala",
-   "conf": 0.987626
+   "conf": 0.992946
   },
   {
    "id": "g047",
@@ -3385,7 +3385,7 @@
    "got": false,
    "gold": false,
    "text": "Goa",
-   "conf": 0.98784
+   "conf": 0.997146
   },
   {
    "id": "g047",
@@ -3396,7 +3396,7 @@
    "got": false,
    "gold": false,
    "text": "Karnataka",
-   "conf": 0.986806
+   "conf": 0.989106
   },
   {
    "id": "g048",
@@ -3447,8 +3447,8 @@
     "b": "Haryana",
     "c": "Punjab"
    },
-   "conf": 0.8373714999999999,
-   "n_options": 3
+   "conf": 0.905636,
+   "n_options": 4
   },
   {
    "id": "g048",
@@ -3459,7 +3459,7 @@
    "got": false,
    "gold": false,
    "text": "Delhi",
-   "conf": 0.987368
+   "conf": 0.99713
   },
   {
    "id": "g048",
@@ -3470,7 +3470,7 @@
    "got": false,
    "gold": false,
    "text": "Haryana",
-   "conf": 0.98649
+   "conf": 0.988608
   },
   {
    "id": "g048",
@@ -3481,7 +3481,7 @@
    "got": false,
    "gold": false,
    "text": "Punjab",
-   "conf": 0.986034
+   "conf": 0.990264
   },
   {
    "id": "g049",
@@ -3542,7 +3542,7 @@
    "got": false,
    "gold": false,
    "text": "Kerala",
-   "conf": 0.987626
+   "conf": 0.992946
   },
   {
    "id": "g049",
@@ -3553,7 +3553,7 @@
    "got": false,
    "gold": false,
    "text": "Palakkad",
-   "conf": 0.989418
+   "conf": 0.991174
   },
   {
    "id": "g050",
@@ -3614,7 +3614,7 @@
    "got": false,
    "gold": false,
    "text": "Kerala",
-   "conf": 0.987626
+   "conf": 0.992946
   },
   {
    "id": "g051",
@@ -3675,7 +3675,7 @@
    "got": false,
    "gold": false,
    "text": "Karnataka",
-   "conf": 0.986806
+   "conf": 0.989106
   },
   {
    "id": "g051",
@@ -3686,7 +3686,7 @@
    "got": false,
    "gold": false,
    "text": "Bengaluru Urban",
-   "conf": 0.990034
+   "conf": 0.960234
   },
   {
    "id": "g052",
@@ -3747,7 +3747,7 @@
    "got": false,
    "gold": false,
    "text": "assam",
-   "conf": 0.986326
+   "conf": 0.989178
   },
   {
    "id": "g053",
@@ -3808,18 +3808,18 @@
    "got": false,
    "gold": false,
    "text": "Bengaluru Urban",
-   "conf": 0.990034
+   "conf": 0.960234
   },
   {
    "id": "g053",
    "decision": "is_subquery",
    "depth": 0,
    "family": "set_algebra",
-   "correct": true,
-   "got": true,
+   "correct": false,
+   "got": false,
    "gold": true,
    "text": "10 km around Whitefield",
-   "conf": 0.021921999999999997
+   "conf": 0.118286
   },
   {
    "id": "g053",
@@ -3880,7 +3880,7 @@
    "got": false,
    "gold": false,
    "text": "Whitefield",
-   "conf": 0.97386
+   "conf": 0.977492
   },
   {
    "id": "g054",
@@ -3929,8 +3929,8 @@
     "a": "Karnataka",
     "b": "50 km of Goa"
    },
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.922202,
+   "n_options": 2
   },
   {
    "id": "g054",
@@ -3941,18 +3941,18 @@
    "got": false,
    "gold": false,
    "text": "Karnataka",
-   "conf": 0.986806
+   "conf": 0.989106
   },
   {
    "id": "g054",
    "decision": "is_subquery",
    "depth": 0,
    "family": "set_algebra",
-   "correct": true,
-   "got": true,
+   "correct": false,
+   "got": false,
    "gold": true,
    "text": "50 km of Goa",
-   "conf": 0.7690619999999999
+   "conf": 0.649678
   },
   {
    "id": "g054",
@@ -4013,7 +4013,7 @@
    "got": false,
    "gold": false,
    "text": "Goa",
-   "conf": 0.98784
+   "conf": 0.997146
   },
   {
    "id": "g055",
@@ -4062,8 +4062,8 @@
     "a": "Mysore",
     "b": "Bengaluru"
    },
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9698359999999999,
+   "n_options": 2
   },
   {
    "id": "g055",
@@ -4074,7 +4074,7 @@
    "got": false,
    "gold": false,
    "text": "Mysore",
-   "conf": 0.987104
+   "conf": 0.992734
   },
   {
    "id": "g055",
@@ -4085,7 +4085,7 @@
    "got": false,
    "gold": false,
    "text": "Bengaluru",
-   "conf": 0.989488
+   "conf": 0.993574
   },
   {
    "id": "g056",
@@ -4134,7 +4134,7 @@
     "a": "Pune",
     "b": "Mumbai"
    },
-   "conf": 0.898034,
+   "conf": 0.9528620000000001,
    "n_options": 2
   },
   {
@@ -4146,7 +4146,7 @@
    "got": false,
    "gold": false,
    "text": "Pune",
-   "conf": 0.987662
+   "conf": 0.996218
   },
   {
    "id": "g056",
@@ -4157,7 +4157,7 @@
    "got": false,
    "gold": false,
    "text": "Mumbai",
-   "conf": 0.985966
+   "conf": 0.996634
   },
   {
    "id": "g057",
@@ -4167,8 +4167,8 @@
    "correct": true,
    "got": "relational",
    "gold": "relational",
-   "conf": 0.970256,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g057",
@@ -4189,8 +4189,8 @@
    "correct": true,
    "got": "between",
    "gold": "between",
-   "conf": 0.3769,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g057",
@@ -4218,7 +4218,7 @@
    "got": false,
    "gold": false,
    "text": "chennai",
-   "conf": 0.98736
+   "conf": 0.994962
   },
   {
    "id": "g057",
@@ -4229,7 +4229,7 @@
    "got": false,
    "gold": false,
    "text": "pondicherry",
-   "conf": 0.989316
+   "conf": 0.991422
   },
   {
    "id": "g058",
@@ -4290,7 +4290,7 @@
    "got": false,
    "gold": false,
    "text": "Kerala",
-   "conf": 0.987626
+   "conf": 0.992946
   },
   {
    "id": "g059",
@@ -4349,7 +4349,7 @@
    "got": false,
    "gold": false,
    "text": "Odisha",
-   "conf": 0.984616
+   "conf": 0.987714
   },
   {
    "id": "g060",
@@ -4410,7 +4410,7 @@
    "got": false,
    "gold": false,
    "text": "Goa",
-   "conf": 0.98784
+   "conf": 0.997146
   },
   {
    "id": "g061",
@@ -4471,7 +4471,7 @@
    "got": false,
    "gold": false,
    "text": "Goa",
-   "conf": 0.98784
+   "conf": 0.997146
   },
   {
    "id": "g062",
@@ -4492,8 +4492,8 @@
    "correct": true,
    "got": "along_border",
    "gold": "along_border",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.999288,
+   "n_options": 2
   },
   {
    "id": "g062",
@@ -4503,8 +4503,8 @@
    "correct": true,
    "got": "along_border",
    "gold": "along_border",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9770620000000001,
+   "n_options": 2
   },
   {
    "id": "g062",
@@ -4530,7 +4530,7 @@
    "got": false,
    "gold": false,
    "text": "Karnataka",
-   "conf": 0.986806
+   "conf": 0.989106
   },
   {
    "id": "g063",
@@ -4591,7 +4591,7 @@
    "got": false,
    "gold": false,
    "text": "Punjab",
-   "conf": 0.986034
+   "conf": 0.990264
   },
   {
    "id": "g064",
@@ -4650,7 +4650,7 @@
    "got": false,
    "gold": false,
    "text": "Rajasthan",
-   "conf": 0.987094
+   "conf": 0.988868
   },
   {
    "id": "g065",
@@ -4671,8 +4671,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.999582,
+   "n_options": 2
   },
   {
    "id": "g065",
@@ -4682,8 +4682,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.99098,
+   "n_options": 2
   },
   {
    "id": "g065",
@@ -4711,7 +4711,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitals",
-   "conf": 0.998702875
+   "conf": 0.9996988
   },
   {
    "id": "g065",
@@ -4722,7 +4722,7 @@
    "got": false,
    "gold": false,
    "text": "Koramangala",
-   "conf": 0.989582
+   "conf": 0.995132
   },
   {
    "id": "g066",
@@ -4743,7 +4743,7 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 0.939532,
+   "conf": 0.7175560000000001,
    "n_options": 2
   },
   {
@@ -4754,7 +4754,7 @@
    "correct": false,
    "got": "features_near",
    "gold": "features_in",
-   "conf": 0.10424999999999995,
+   "conf": 0.7263820000000001,
    "n_options": 2
   },
   {
@@ -4783,7 +4783,7 @@
    "got": "cafe",
    "gold": "cafe",
    "text": "cafes",
-   "conf": 0.996823
+   "conf": 0.9987399999999999
   },
   {
    "id": "g066",
@@ -4794,7 +4794,7 @@
    "got": false,
    "gold": false,
    "text": "Indiranagar",
-   "conf": 0.990786
+   "conf": 0.995754
   },
   {
    "id": "g067",
@@ -4815,7 +4815,7 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 0.998508,
+   "conf": 0.991724,
    "n_options": 2
   },
   {
@@ -4826,7 +4826,7 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 0.831202,
+   "conf": 0.63381,
    "n_options": 2
   },
   {
@@ -4855,7 +4855,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitls",
-   "conf": 0.9952637499999999
+   "conf": 0.99952525
   },
   {
    "id": "g067",
@@ -4866,7 +4866,7 @@
    "got": false,
    "gold": false,
    "text": "jayanagar",
-   "conf": 0.990222
+   "conf": 0.995348
   },
   {
    "id": "g068",
@@ -4927,7 +4927,7 @@
    "got": "police",
    "gold": "police",
    "text": "police stations",
-   "conf": 0.9943975
+   "conf": 0.9997502500000001
   },
   {
    "id": "g068",
@@ -4938,7 +4938,7 @@
    "got": false,
    "gold": false,
    "text": "Mysuru",
-   "conf": 0.990088
+   "conf": 0.997254
   },
   {
    "id": "g069",
@@ -4999,7 +4999,7 @@
    "got": "restaurant",
    "gold": "restaurant",
    "text": "restaurants",
-   "conf": 0.9981797500000001
+   "conf": 0.99919125
   },
   {
    "id": "g069",
@@ -5010,7 +5010,7 @@
    "got": false,
    "gold": false,
    "text": "Koramangala",
-   "conf": 0.989582
+   "conf": 0.995132
   },
   {
    "id": "g070",
@@ -5031,7 +5031,7 @@
    "correct": true,
    "got": "features_near",
    "gold": "features_near",
-   "conf": 0.994516,
+   "conf": 0.998588,
    "n_options": 2
   },
   {
@@ -5042,7 +5042,7 @@
    "correct": true,
    "got": "features_near",
    "gold": "features_near",
-   "conf": 0.914606,
+   "conf": 0.974844,
    "n_options": 2
   },
   {
@@ -5071,7 +5071,7 @@
    "got": "school",
    "gold": "school",
    "text": "schools",
-   "conf": 0.9975700000000001
+   "conf": 0.9972975000000001
   },
   {
    "id": "g070",
@@ -5082,7 +5082,7 @@
    "got": false,
    "gold": false,
    "text": "Indiranagar",
-   "conf": 0.990786
+   "conf": 0.995754
   },
   {
    "id": "g071",
@@ -5103,8 +5103,8 @@
    "correct": true,
    "got": "features_near",
    "gold": "features_near",
-   "conf": 0.9995860000000001,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g071",
@@ -5114,8 +5114,8 @@
    "correct": true,
    "got": "features_near",
    "gold": "features_near",
-   "conf": 0.985296,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g071",
@@ -5145,7 +5145,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitals",
-   "conf": 0.998702875
+   "conf": 0.9996988
   },
   {
    "id": "g071",
@@ -5156,7 +5156,7 @@
    "got": false,
    "gold": false,
    "text": "MG Road",
-   "conf": 0.989778
+   "conf": 0.997834
   },
   {
    "id": "g071",
@@ -5230,7 +5230,7 @@
    "got": "atm",
    "gold": "atm",
    "text": "atms",
-   "conf": 0.99778375
+   "conf": 0.999498
   },
   {
    "id": "g072",
@@ -5241,7 +5241,7 @@
    "got": false,
    "gold": false,
    "text": "Brigade Road",
-   "conf": 0.988508
+   "conf": 0.996876
   },
   {
    "id": "g072",
@@ -5273,7 +5273,7 @@
    "correct": true,
    "got": "features_near",
    "gold": "features_near",
-   "conf": 0.920366,
+   "conf": 0.953762,
    "n_options": 2
   },
   {
@@ -5284,7 +5284,7 @@
    "correct": true,
    "got": "features_near",
    "gold": "features_near",
-   "conf": 0.6074459999999999,
+   "conf": 0.659114,
    "n_options": 2
   },
   {
@@ -5313,7 +5313,7 @@
    "got": "fuel",
    "gold": "fuel",
    "text": "petrol pumps",
-   "conf": 0.9972111250000001
+   "conf": 0.999303625
   },
   {
    "id": "g073",
@@ -5324,7 +5324,7 @@
    "got": false,
    "gold": false,
    "text": "Whitefield",
-   "conf": 0.97386
+   "conf": 0.977492
   },
   {
    "id": "g074",
@@ -5345,8 +5345,8 @@
    "correct": true,
    "got": "features_near",
    "gold": "features_near",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9904660000000001,
+   "n_options": 2
   },
   {
    "id": "g074",
@@ -5356,8 +5356,8 @@
    "correct": true,
    "got": "features_near",
    "gold": "features_near",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.6811119999999999,
+   "n_options": 2
   },
   {
    "id": "g074",
@@ -5387,7 +5387,7 @@
    "got": "bus_station",
    "gold": "bus_station",
    "text": "bus stops",
-   "conf": 0.9988738749999999
+   "conf": 0.9996989999999999
   },
   {
    "id": "g074",
@@ -5398,7 +5398,7 @@
    "got": false,
    "gold": false,
    "text": "Majestic",
-   "conf": 0.984772
+   "conf": 0.99534
   },
   {
    "id": "g074",
@@ -5452,16 +5452,16 @@
    "correct": true,
    "got": {
     "level": "cities",
-    "attr": "population",
     "op": "over",
     "value": "1 million",
+    "attr": "population",
     "parent": "Maharashtra"
    },
    "gold": {
     "level": "cities",
-    "attr": "population",
     "op": "over",
     "value": "1 million",
+    "attr": "population",
     "parent": "Maharashtra"
    },
    "conf": 1.0,
@@ -5498,7 +5498,7 @@
    "got": "gt",
    "gold": "gt",
    "text": "over",
-   "conf": 0.9959960000000001
+   "conf": 0.995652
   },
   {
    "id": "g075",
@@ -5509,7 +5509,7 @@
    "got": false,
    "gold": false,
    "text": "Maharashtra",
-   "conf": 0.985806
+   "conf": 0.993556
   },
   {
    "id": "g076",
@@ -5552,16 +5552,16 @@
    "correct": true,
    "got": {
     "level": "cities",
-    "attr": "populaton",
     "op": "over",
     "value": "1 million",
+    "attr": "populaton",
     "parent": "maharastra"
    },
    "gold": {
     "level": "cities",
-    "attr": "populaton",
     "op": "over",
     "value": "1 million",
+    "attr": "populaton",
     "parent": "maharastra"
    },
    "conf": 1.0,
@@ -5598,7 +5598,7 @@
    "got": "gt",
    "gold": "gt",
    "text": "over",
-   "conf": 0.9959960000000001
+   "conf": 0.995652
   },
   {
    "id": "g076",
@@ -5609,7 +5609,7 @@
    "got": false,
    "gold": false,
    "text": "maharastra",
-   "conf": 0.989568
+   "conf": 0.99675
   },
   {
    "id": "g077",
@@ -5698,7 +5698,7 @@
    "got": "gt",
    "gold": "gt",
    "text": "more than",
-   "conf": 0.997072
+   "conf": 0.9949319999999999
   },
   {
    "id": "g077",
@@ -5709,7 +5709,7 @@
    "got": false,
    "gold": false,
    "text": "Kerala",
-   "conf": 0.987626
+   "conf": 0.992946
   },
   {
    "id": "g078",
@@ -5798,7 +5798,7 @@
    "got": "gt",
    "gold": "gt",
    "text": "above",
-   "conf": 0.998092
+   "conf": 0.996632
   },
   {
    "id": "g078",
@@ -5809,7 +5809,7 @@
    "got": false,
    "gold": false,
    "text": "Karnataka",
-   "conf": 0.986806
+   "conf": 0.989106
   },
   {
    "id": "g079",
@@ -5852,16 +5852,16 @@
    "correct": true,
    "got": {
     "level": "districts",
-    "attr": "population",
     "op": "under",
     "value": "10 lakh",
+    "attr": "population",
     "parent": "Odisha"
    },
    "gold": {
     "level": "districts",
-    "attr": "population",
     "op": "under",
     "value": "10 lakh",
+    "attr": "population",
     "parent": "Odisha"
    },
    "conf": 1.0,
@@ -5898,7 +5898,7 @@
    "got": "lt",
    "gold": "lt",
    "text": "under",
-   "conf": 0.99932
+   "conf": 0.9982
   },
   {
    "id": "g079",
@@ -5909,7 +5909,7 @@
    "got": false,
    "gold": false,
    "text": "Odisha",
-   "conf": 0.984616
+   "conf": 0.987714
   },
   {
    "id": "g080",
@@ -5952,16 +5952,16 @@
    "correct": true,
    "got": {
     "level": "states",
-    "attr": "population",
     "op": "over",
     "value": "10 crore",
+    "attr": "population",
     "parent": "India"
    },
    "gold": {
     "level": "states",
-    "attr": "population",
     "op": "over",
     "value": "10 crore",
+    "attr": "population",
     "parent": "India"
    },
    "conf": 1.0,
@@ -5998,7 +5998,7 @@
    "got": "gt",
    "gold": "gt",
    "text": "over",
-   "conf": 0.9959960000000001
+   "conf": 0.995652
   },
   {
    "id": "g080",
@@ -6009,7 +6009,7 @@
    "got": false,
    "gold": false,
    "text": "India",
-   "conf": 0.985348
+   "conf": 0.993856
   },
   {
    "id": "g081",
@@ -6098,7 +6098,7 @@
    "got": "lt",
    "gold": "lt",
    "text": "less than",
-   "conf": 0.9984660000000001
+   "conf": 0.996718
   },
   {
    "id": "g081",
@@ -6109,7 +6109,7 @@
    "got": false,
    "gold": false,
    "text": "Kerala",
-   "conf": 0.987626
+   "conf": 0.992946
   },
   {
    "id": "g082",
@@ -6152,16 +6152,16 @@
    "correct": true,
    "got": {
     "level": "cities",
-    "attr": "population",
     "op": "over",
     "value": "1 million",
+    "attr": "population",
     "parent": "Gujarat"
    },
    "gold": {
     "level": "cities",
-    "attr": "population",
     "op": "over",
     "value": "1 million",
+    "attr": "population",
     "parent": "Gujarat"
    },
    "conf": 1.0,
@@ -6198,7 +6198,7 @@
    "got": "gt",
    "gold": "gt",
    "text": "over",
-   "conf": 0.9959960000000001
+   "conf": 0.995652
   },
   {
    "id": "g082",
@@ -6209,7 +6209,7 @@
    "got": false,
    "gold": false,
    "text": "Gujarat",
-   "conf": 0.985252
+   "conf": 0.993382
   },
   {
    "id": "g083",
@@ -6252,16 +6252,16 @@
    "correct": true,
    "got": {
     "level": "districts",
-    "attr": "population",
     "op": "above",
     "value": "2 million",
+    "attr": "population",
     "parent": "tamil nadu"
    },
    "gold": {
     "level": "districts",
-    "attr": "population",
     "op": "above",
     "value": "2 million",
+    "attr": "population",
     "parent": "tamil nadu"
    },
    "conf": 1.0,
@@ -6298,7 +6298,7 @@
    "got": "gt",
    "gold": "gt",
    "text": "above",
-   "conf": 0.998092
+   "conf": 0.996632
   },
   {
    "id": "g083",
@@ -6309,7 +6309,7 @@
    "got": false,
    "gold": false,
    "text": "tamil nadu",
-   "conf": 0.986818
+   "conf": 0.984008
   },
   {
    "id": "g084",
@@ -6352,16 +6352,16 @@
    "correct": true,
    "got": {
     "level": "districts",
-    "attr": "population",
     "op": "over",
     "value": "3 million",
+    "attr": "population",
     "parent": "Rajasthan"
    },
    "gold": {
     "level": "districts",
-    "attr": "population",
     "op": "over",
     "value": "3 million",
+    "attr": "population",
     "parent": "Rajasthan"
    },
    "conf": 1.0,
@@ -6398,7 +6398,7 @@
    "got": "gt",
    "gold": "gt",
    "text": "over",
-   "conf": 0.9959960000000001
+   "conf": 0.995652
   },
   {
    "id": "g084",
@@ -6409,7 +6409,7 @@
    "got": false,
    "gold": false,
    "text": "Rajasthan",
-   "conf": 0.987094
+   "conf": 0.988868
   },
   {
    "id": "g085",
@@ -6430,19 +6430,19 @@
    "correct": true,
    "got": "features_near",
    "gold": "features_near",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9378979999999999,
+   "n_options": 2
   },
   {
    "id": "g085",
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "features",
-   "correct": true,
-   "got": "features_near",
+   "correct": false,
+   "got": "features_in",
    "gold": "features_near",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.19387599999999994,
+   "n_options": 2
   },
   {
    "id": "g085",
@@ -6472,7 +6472,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitals",
-   "conf": 0.998702875
+   "conf": 0.9996988
   },
   {
    "id": "g085",
@@ -6483,7 +6483,7 @@
    "got": true,
    "gold": true,
    "text": "coastal districts of Odisha",
-   "conf": 0.4441900000000001
+   "conf": 0.13939400000000002
   },
   {
    "id": "g085",
@@ -6504,8 +6504,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.980272,
+   "n_options": 2
   },
   {
    "id": "g085",
@@ -6515,8 +6515,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.556368,
+   "n_options": 2
   },
   {
    "id": "g085",
@@ -6534,8 +6534,8 @@
     "pred": "coastal",
     "parent": "Odisha"
    },
-   "conf": 0.901754,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g085",
@@ -6546,7 +6546,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "g085",
@@ -6568,7 +6568,7 @@
    "got": false,
    "gold": false,
    "text": "Odisha",
-   "conf": 0.984616
+   "conf": 0.987714
   },
   {
    "id": "g086",
@@ -6589,8 +6589,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.99045,
+   "n_options": 2
   },
   {
    "id": "g086",
@@ -6600,8 +6600,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.7763420000000001,
+   "n_options": 2
   },
   {
    "id": "g086",
@@ -6629,7 +6629,7 @@
    "got": "school",
    "gold": "school",
    "text": "schools",
-   "conf": 0.9975700000000001
+   "conf": 0.9972975000000001
   },
   {
    "id": "g086",
@@ -6640,7 +6640,7 @@
    "got": true,
    "gold": true,
    "text": "landlocked districts of Goa",
-   "conf": 0.714764
+   "conf": 0.700982
   },
   {
    "id": "g086",
@@ -6661,8 +6661,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.985176,
+   "n_options": 2
   },
   {
    "id": "g086",
@@ -6672,8 +6672,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.4998579999999999,
+   "n_options": 2
   },
   {
    "id": "g086",
@@ -6691,7 +6691,7 @@
     "pred": "landlocked",
     "parent": "Goa"
    },
-   "conf": 0.9583740000000001,
+   "conf": 0.9690639999999999,
    "n_options": 2
   },
   {
@@ -6703,7 +6703,7 @@
    "got": "landlocked",
    "gold": "landlocked",
    "text": "landlocked",
-   "conf": 1.0
+   "conf": 0.9972868
   },
   {
    "id": "g086",
@@ -6725,7 +6725,7 @@
    "got": false,
    "gold": false,
    "text": "Goa",
-   "conf": 0.98784
+   "conf": 0.997146
   },
   {
    "id": "g087",
@@ -6786,7 +6786,7 @@
    "got": true,
    "gold": true,
    "text": "districts of Goa",
-   "conf": 0.8573440000000001
+   "conf": 0.60934
   },
   {
    "id": "g087",
@@ -6796,8 +6796,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9955099999999999,
+   "n_options": 2
   },
   {
    "id": "g087",
@@ -6818,8 +6818,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.7709619999999999,
+   "n_options": 2
   },
   {
    "id": "g087",
@@ -6858,7 +6858,7 @@
    "got": false,
    "gold": false,
    "text": "Goa",
-   "conf": 0.98784
+   "conf": 0.997146
   },
   {
    "id": "g088",
@@ -6868,7 +6868,7 @@
    "correct": false,
    "got": "predicate_filter",
    "gold": "set_algebra",
-   "conf": 0.945862,
+   "conf": 0.9935020000000001,
    "n_options": 2
   },
   {
@@ -6887,10 +6887,10 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "set_algebra",
-   "correct": true,
-   "got": "union",
+   "correct": false,
+   "got": "children_with_predicate",
    "gold": "union",
-   "conf": 0.32926199999999994,
+   "conf": 0.10705199999999992,
    "n_options": 2
   },
   {
@@ -6907,8 +6907,8 @@
     "a": "Kerala",
     "b": "coastal districts of Karnataka"
    },
-   "conf": 0.6483080000000001,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g088",
@@ -6919,7 +6919,7 @@
    "got": false,
    "gold": false,
    "text": "Kerala",
-   "conf": 0.987626
+   "conf": 0.992946
   },
   {
    "id": "g088",
@@ -6930,7 +6930,7 @@
    "got": true,
    "gold": true,
    "text": "coastal districts of Karnataka",
-   "conf": 0.47071799999999997
+   "conf": 0.188952
   },
   {
    "id": "g088",
@@ -6951,8 +6951,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.994226,
+   "n_options": 2
   },
   {
    "id": "g088",
@@ -6962,8 +6962,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.840096,
+   "n_options": 2
   },
   {
    "id": "g088",
@@ -6981,8 +6981,8 @@
     "pred": "coastal",
     "parent": "Karnataka"
    },
-   "conf": 0.71814,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g088",
@@ -6993,7 +6993,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "g088",
@@ -7015,7 +7015,7 @@
    "got": false,
    "gold": false,
    "text": "Karnataka",
-   "conf": 0.986806
+   "conf": 0.989106
   },
   {
    "id": "g089",
@@ -7072,11 +7072,11 @@
    "decision": "is_subquery",
    "depth": 0,
    "family": "set_algebra",
-   "correct": true,
-   "got": true,
+   "correct": false,
+   "got": false,
    "gold": true,
    "text": "coastal states in India",
-   "conf": 0.521496
+   "conf": 0.07269999999999999
   },
   {
    "id": "g089",
@@ -7127,7 +7127,7 @@
     "pred": "coastal",
     "parent": "India"
    },
-   "conf": 0.8823160000000001,
+   "conf": 0.9055500000000001,
    "n_options": 2
   },
   {
@@ -7139,7 +7139,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "g089",
@@ -7161,7 +7161,7 @@
    "got": false,
    "gold": false,
    "text": "India",
-   "conf": 0.985348
+   "conf": 0.993856
   },
   {
    "id": "g090",
@@ -7171,7 +7171,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.97342,
+   "conf": 0.9917879999999999,
    "n_options": 2
   },
   {
@@ -7193,7 +7193,7 @@
    "correct": false,
    "got": "children_touching",
    "gold": "children",
-   "conf": 0.9137980000000001,
+   "conf": 0.917904,
    "n_options": 2
   },
   {
@@ -7233,7 +7233,7 @@
    "got": true,
    "gold": true,
    "text": "states that border Goa",
-   "conf": 0.762318
+   "conf": 0.79274
   },
   {
    "id": "g090",
@@ -7243,8 +7243,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.97811,
+   "n_options": 2
   },
   {
    "id": "g090",
@@ -7262,11 +7262,11 @@
    "decision": "pick_template_flat",
    "depth": 1,
    "family": "hierarchy",
-   "correct": true,
-   "got": "neighbors",
+   "correct": false,
+   "got": "children_touching",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.7674939999999999,
+   "n_options": 2
   },
   {
    "id": "g090",
@@ -7305,7 +7305,7 @@
    "got": false,
    "gold": false,
    "text": "Goa",
-   "conf": 0.98784
+   "conf": 0.997146
   },
   {
    "id": "g091",
@@ -7326,19 +7326,19 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9358839999999999,
+   "n_options": 2
   },
   {
    "id": "g091",
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "predicate_filter",
-   "correct": true,
-   "got": "children_with_predicate",
+   "correct": false,
+   "got": "neighbors_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.311134,
+   "n_options": 2
   },
   {
    "id": "g091",
@@ -7368,7 +7368,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "g091",
@@ -7390,7 +7390,7 @@
    "got": true,
    "gold": true,
    "text": "states that border Goa",
-   "conf": 0.762318
+   "conf": 0.79274
   },
   {
    "id": "g091",
@@ -7400,8 +7400,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.97811,
+   "n_options": 2
   },
   {
    "id": "g091",
@@ -7419,11 +7419,11 @@
    "decision": "pick_template_flat",
    "depth": 1,
    "family": "hierarchy",
-   "correct": true,
-   "got": "neighbors",
+   "correct": false,
+   "got": "children_touching",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.7674939999999999,
+   "n_options": 2
   },
   {
    "id": "g091",
@@ -7462,7 +7462,7 @@
    "got": false,
    "gold": false,
    "text": "Goa",
-   "conf": 0.98784
+   "conf": 0.997146
   },
   {
    "id": "g092",
@@ -7472,7 +7472,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.9569179999999999,
+   "conf": 0.9854,
    "n_options": 2
   },
   {
@@ -7492,10 +7492,10 @@
    "depth": 0,
    "family": "hierarchy",
    "correct": false,
-   "got": "children_with_predicate",
+   "got": "children_touching",
    "gold": "neighbors",
-   "conf": 0.6900580000000001,
-   "n_options": 2
+   "conf": 0.4860595,
+   "n_options": 3
   },
   {
    "id": "g092",
@@ -7534,7 +7534,7 @@
    "got": true,
    "gold": true,
    "text": "coastal districts of Odisha",
-   "conf": 0.4441900000000001
+   "conf": 0.13939400000000002
   },
   {
    "id": "g092",
@@ -7555,8 +7555,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.980272,
+   "n_options": 2
   },
   {
    "id": "g092",
@@ -7566,8 +7566,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.556368,
+   "n_options": 2
   },
   {
    "id": "g092",
@@ -7585,8 +7585,8 @@
     "pred": "coastal",
     "parent": "Odisha"
    },
-   "conf": 0.901754,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g092",
@@ -7597,7 +7597,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "g092",
@@ -7619,7 +7619,7 @@
    "got": false,
    "gold": false,
    "text": "Odisha",
-   "conf": 0.984616
+   "conf": 0.987714
   },
   {
    "id": "g093",
@@ -7729,8 +7729,8 @@
     "level": "districts",
     "parent": "the seven sisters"
    },
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9051180000000001,
+   "n_options": 2
   },
   {
    "id": "g094",
@@ -7762,8 +7762,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9862979999999999,
+   "n_options": 2
   },
   {
    "id": "g095",
@@ -7773,8 +7773,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.6178539999999999,
+   "n_options": 2
   },
   {
    "id": "g095",
@@ -7792,8 +7792,8 @@
     "pred": "coastal",
     "parent": "south india"
    },
-   "conf": 0.9744759999999999,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g095",
@@ -7804,7 +7804,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "g095",
@@ -7858,16 +7858,16 @@
    "correct": true,
    "got": {
     "level": "cities",
-    "attr": "population",
     "op": "over",
     "value": "1 million",
+    "attr": "population",
     "parent": "states that border Gujarat"
    },
    "gold": {
     "level": "cities",
-    "attr": "population",
     "op": "over",
     "value": "1 million",
+    "attr": "population",
     "parent": "states that border Gujarat"
    },
    "conf": 1.0,
@@ -7904,7 +7904,7 @@
    "got": "gt",
    "gold": "gt",
    "text": "over",
-   "conf": 0.9959960000000001
+   "conf": 0.995652
   },
   {
    "id": "g096",
@@ -7915,7 +7915,7 @@
    "got": true,
    "gold": true,
    "text": "states that border Gujarat",
-   "conf": 0.818406
+   "conf": 0.7283040000000001
   },
   {
    "id": "g096",
@@ -7925,8 +7925,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.991662,
+   "n_options": 2
   },
   {
    "id": "g096",
@@ -7944,11 +7944,11 @@
    "decision": "pick_template_flat",
    "depth": 1,
    "family": "hierarchy",
-   "correct": true,
-   "got": "neighbors",
+   "correct": false,
+   "got": "children_touching",
    "gold": "neighbors",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 5.0000000000105516e-05,
+   "n_options": 2
   },
   {
    "id": "g096",
@@ -7987,7 +7987,7 @@
    "got": false,
    "gold": false,
    "text": "Gujarat",
-   "conf": 0.985252
+   "conf": 0.993382
   },
   {
    "id": "g097",
@@ -8048,7 +8048,7 @@
    "got": false,
    "gold": false,
    "text": "Kerala",
-   "conf": 0.987626
+   "conf": 0.992946
   },
   {
    "id": "g097",
@@ -8059,7 +8059,7 @@
    "got": true,
    "gold": true,
    "text": "coastal districts of Karnataka",
-   "conf": 0.47071799999999997
+   "conf": 0.188952
   },
   {
    "id": "g097",
@@ -8080,8 +8080,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.994226,
+   "n_options": 2
   },
   {
    "id": "g097",
@@ -8091,8 +8091,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.840096,
+   "n_options": 2
   },
   {
    "id": "g097",
@@ -8110,8 +8110,8 @@
     "pred": "coastal",
     "parent": "Karnataka"
    },
-   "conf": 0.71814,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "g097",
@@ -8122,7 +8122,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 1.0
+   "conf": 0.9998020000000001
   },
   {
    "id": "g097",
@@ -8144,7 +8144,7 @@
    "got": false,
    "gold": false,
    "text": "Karnataka",
-   "conf": 0.986806
+   "conf": 0.989106
   },
   {
    "id": "g098",
@@ -8205,7 +8205,7 @@
    "got": "north",
    "gold": "north",
    "text": "northern",
-   "conf": 0.99934975
+   "conf": 0.999985375
   },
   {
    "id": "g098",
@@ -8216,7 +8216,7 @@
    "got": true,
    "gold": true,
    "text": "districts of Goa",
-   "conf": 0.8573440000000001
+   "conf": 0.60934
   },
   {
    "id": "g098",
@@ -8226,8 +8226,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9955099999999999,
+   "n_options": 2
   },
   {
    "id": "g098",
@@ -8248,8 +8248,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.7709619999999999,
+   "n_options": 2
   },
   {
    "id": "g098",
@@ -8288,7 +8288,7 @@
    "got": false,
    "gold": false,
    "text": "Goa",
-   "conf": 0.98784
+   "conf": 0.997146
   }
  ],
  "pipeline": [
@@ -8299,9 +8299,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6364634037017822,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 40.8074164390564,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -8318,9 +8318,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.38434314727783203,
-   "model_calls": 4,
-   "requests_in_sequence": 2,
+   "latency_s": 42.76917624473572,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -8337,7 +8337,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8955018520355225,
+   "latency_s": 41.64016270637512,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8356,9 +8356,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2963173389434814,
-   "model_calls": 3,
-   "requests_in_sequence": 1,
+   "latency_s": 44.82091021537781,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -8375,7 +8375,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.101302146911621,
+   "latency_s": 4.527475595474243,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8394,7 +8394,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.270799160003662,
+   "latency_s": 5.709782600402832,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8413,7 +8413,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.445404291152954,
+   "latency_s": 5.457513809204102,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8432,7 +8432,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2974936962127686,
+   "latency_s": 4.3829052448272705,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8451,9 +8451,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5107145309448242,
-   "model_calls": 4,
-   "requests_in_sequence": 2,
+   "latency_s": 4.783816576004028,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -8470,7 +8470,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.000186920166015625,
+   "latency_s": 0.0003802776336669922,
    "model_calls": 0,
    "requests_in_sequence": 0,
    "unsupported": null,
@@ -8489,7 +8489,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.0003743171691894531,
+   "latency_s": 0.00027060508728027344,
    "model_calls": 0,
    "requests_in_sequence": 0,
    "unsupported": null,
@@ -8508,7 +8508,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9680197238922119,
+   "latency_s": 2.987117052078247,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8527,7 +8527,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.285987377166748,
+   "latency_s": 4.229540109634399,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8546,7 +8546,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2244784832000732,
+   "latency_s": 4.912709951400757,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8565,7 +8565,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1877243518829346,
+   "latency_s": 5.850219964981079,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8584,7 +8584,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.126946210861206,
+   "latency_s": 5.427872180938721,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8603,7 +8603,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1496860980987549,
+   "latency_s": 5.090267896652222,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8622,7 +8622,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.253016471862793,
+   "latency_s": 5.0587615966796875,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8641,7 +8641,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.179750919342041,
+   "latency_s": 5.0381920337677,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8660,7 +8660,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3518733978271484,
+   "latency_s": 5.973251581192017,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8679,7 +8679,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2718098163604736,
+   "latency_s": 6.2305824756622314,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8698,9 +8698,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3058722019195557,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 6.546224117279053,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "direction_outside",
    "path": "simple",
@@ -8717,7 +8717,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.278991937637329,
+   "latency_s": 5.63881516456604,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8736,9 +8736,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3133912086486816,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 5.54806923866272,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -8755,9 +8755,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2081241607666016,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 5.8671510219573975,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -8774,9 +8774,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.213939905166626,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 5.810329914093018,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -8793,9 +8793,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2378435134887695,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 6.798054933547974,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -8812,7 +8812,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1858794689178467,
+   "latency_s": 7.614307403564453,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8831,7 +8831,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2352328300476074,
+   "latency_s": 7.024607181549072,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8850,7 +8850,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.24753737449646,
+   "latency_s": 6.796173810958862,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8869,9 +8869,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2304699420928955,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 6.613135814666748,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -8888,9 +8888,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.114238977432251,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
+   "latency_s": 5.108707666397095,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
@@ -8907,7 +8907,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1168758869171143,
+   "latency_s": 5.633613109588623,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8926,7 +8926,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.0917868614196777,
+   "latency_s": 5.198837995529175,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8945,7 +8945,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2066645622253418,
+   "latency_s": 5.801598072052002,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8964,7 +8964,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4803075790405273,
+   "latency_s": 6.791029214859009,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8983,7 +8983,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.7303481101989746,
+   "latency_s": 7.281195640563965,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9002,7 +9002,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6349525451660156,
+   "latency_s": 8.428489923477173,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9021,7 +9021,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.8039894104003906,
+   "latency_s": 7.480473041534424,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9040,9 +9040,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.7899694442749023,
-   "model_calls": 6,
-   "requests_in_sequence": 2,
+   "latency_s": 8.193319082260132,
+   "model_calls": 7,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -9059,7 +9059,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.7315645217895508,
+   "latency_s": 7.001376390457153,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9078,9 +9078,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.7088863849639893,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 7.056196451187134,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -9097,7 +9097,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.8526818752288818,
+   "latency_s": 7.335433483123779,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9116,7 +9116,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.839982032775879,
+   "latency_s": 7.242084264755249,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9135,7 +9135,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6988260746002197,
+   "latency_s": 7.57535195350647,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9154,7 +9154,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6073226928710938,
+   "latency_s": 6.4086267948150635,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9173,7 +9173,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5966236591339111,
+   "latency_s": 6.887858152389526,
    "model_calls": 8,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9192,7 +9192,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5564801692962646,
+   "latency_s": 6.0096423625946045,
    "model_calls": 9,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9211,7 +9211,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5040316581726074,
+   "latency_s": 5.692199945449829,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9230,7 +9230,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4302427768707275,
+   "latency_s": 5.782396554946899,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9249,7 +9249,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.343092441558838,
+   "latency_s": 5.4698920249938965,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9268,7 +9268,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1693625450134277,
+   "latency_s": 4.737394094467163,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9285,22 +9285,19 @@
    "query": "overlap of Bengaluru Urban and 10 km around Whitefield",
    "family": "set_algebra",
    "depth": 1,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 1.3118789196014404,
-   "model_calls": 4,
-   "requests_in_sequence": 1,
-   "unsupported": {
-    "reason": "low confidence for is_subquery (0.02)",
-    "decision": "is_subquery",
-    "depth": 0,
-    "text": "10 km around Whitefield"
-   },
-   "got_template": null,
-   "path": null,
-   "slots_ok": false,
-   "dag_ok": false,
-   "exec_ok": false
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 10.576937675476074,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "intersection",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
   },
   {
    "id": "g054",
@@ -9309,9 +9306,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.5819976329803467,
-   "model_calls": 7,
-   "requests_in_sequence": 2,
+   "latency_s": 10.049586296081543,
+   "model_calls": 8,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "intersection",
    "path": "complex",
@@ -9328,9 +9325,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4166007041931152,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 5.471181631088257,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "between",
    "path": "complex",
@@ -9347,7 +9344,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2278635501861572,
+   "latency_s": 5.2757580280303955,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9366,9 +9363,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5099072456359863,
-   "model_calls": 6,
-   "requests_in_sequence": 2,
+   "latency_s": 5.06962251663208,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "between",
    "path": "complex",
@@ -9385,7 +9382,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2550137042999268,
+   "latency_s": 5.211347341537476,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9404,7 +9401,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2580041885375977,
+   "latency_s": 5.53881049156189,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9423,7 +9420,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.136683702468872,
+   "latency_s": 5.740262269973755,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9442,7 +9439,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1478214263916016,
+   "latency_s": 5.625549077987671,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9461,9 +9458,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2247791290283203,
-   "model_calls": 3,
-   "requests_in_sequence": 1,
+   "latency_s": 5.853992938995361,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "along_border",
    "path": "complex",
@@ -9480,7 +9477,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.275078296661377,
+   "latency_s": 5.9557671546936035,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9499,7 +9496,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3129863739013672,
+   "latency_s": 6.294246435165405,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9518,9 +9515,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2884469032287598,
-   "model_calls": 6,
-   "requests_in_sequence": 1,
+   "latency_s": 7.197595119476318,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -9537,7 +9534,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1331579685211182,
+   "latency_s": 6.747425079345703,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9556,7 +9553,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.214637041091919,
+   "latency_s": 7.38103175163269,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9575,7 +9572,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4439032077789307,
+   "latency_s": 6.90312385559082,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9594,7 +9591,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.450989007949829,
+   "latency_s": 5.91255259513855,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9613,7 +9610,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4641082286834717,
+   "latency_s": 5.73459529876709,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9632,9 +9629,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.505763053894043,
-   "model_calls": 6,
-   "requests_in_sequence": 2,
+   "latency_s": 5.846999883651733,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "features_near",
    "path": "complex",
@@ -9651,7 +9648,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6031465530395508,
+   "latency_s": 6.371854543685913,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9670,7 +9667,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5568592548370361,
+   "latency_s": 5.73125696182251,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9689,9 +9686,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6844825744628906,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 6.377077341079712,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "features_near",
    "path": "complex",
@@ -9708,7 +9705,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.8541138172149658,
+   "latency_s": 5.993672609329224,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9727,7 +9724,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.240971326828003,
+   "latency_s": 7.469886064529419,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9746,7 +9743,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.57185697555542,
+   "latency_s": 8.283223867416382,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9765,7 +9762,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.7820045948028564,
+   "latency_s": 8.236035823822021,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9784,7 +9781,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.7868669033050537,
+   "latency_s": 7.956909418106079,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9803,7 +9800,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.6859827041625977,
+   "latency_s": 6.624469995498657,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9822,7 +9819,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.704206705093384,
+   "latency_s": 6.206113815307617,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9841,7 +9838,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.6646888256073,
+   "latency_s": 5.442911624908447,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9860,7 +9857,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.7840893268585205,
+   "latency_s": 5.572495460510254,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9879,7 +9876,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.679781913757324,
+   "latency_s": 5.351145029067993,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9898,9 +9895,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.242433071136475,
-   "model_calls": 10,
-   "requests_in_sequence": 3,
+   "latency_s": 9.020496845245361,
+   "model_calls": 11,
+   "requests_in_sequence": 4,
    "unsupported": null,
    "got_template": "features_near",
    "path": "complex",
@@ -9917,9 +9914,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.0766401290893555,
-   "model_calls": 10,
-   "requests_in_sequence": 3,
+   "latency_s": 8.638009071350098,
+   "model_calls": 12,
+   "requests_in_sequence": 5,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -9936,9 +9933,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.4926819801330566,
-   "model_calls": 6,
-   "requests_in_sequence": 2,
+   "latency_s": 7.828884124755859,
+   "model_calls": 7,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "buffer",
    "path": "simple",
@@ -9955,9 +9952,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.4191977977752686,
-   "model_calls": 12,
-   "requests_in_sequence": 5,
+   "latency_s": 7.7810962200164795,
+   "model_calls": 11,
+   "requests_in_sequence": 4,
    "unsupported": null,
    "got_template": "union",
    "path": "complex",
@@ -9974,7 +9971,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.376577854156494,
+   "latency_s": 7.552055597305298,
    "model_calls": 8,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9993,9 +9990,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.1444928646087646,
-   "model_calls": 8,
-   "requests_in_sequence": 3,
+   "latency_s": 7.574256658554077,
+   "model_calls": 9,
+   "requests_in_sequence": 4,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -10012,9 +10009,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.195003032684326,
-   "model_calls": 8,
-   "requests_in_sequence": 2,
+   "latency_s": 7.444119691848755,
+   "model_calls": 10,
+   "requests_in_sequence": 4,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
@@ -10031,7 +10028,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.23595929145813,
+   "latency_s": 7.220364570617676,
    "model_calls": 10,
    "requests_in_sequence": 4,
    "unsupported": null,
@@ -10050,7 +10047,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8578433990478516,
+   "latency_s": 1.921459436416626,
    "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -10069,9 +10066,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.913611650466919,
-   "model_calls": 2,
-   "requests_in_sequence": 1,
+   "latency_s": 2.0359795093536377,
+   "model_calls": 3,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -10088,7 +10085,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8118412494659424,
+   "latency_s": 2.81610369682312,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -10107,9 +10104,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.3018627166748047,
-   "model_calls": 9,
-   "requests_in_sequence": 2,
+   "latency_s": 6.047431230545044,
+   "model_calls": 10,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "children_attr",
    "path": "complex",
@@ -10126,7 +10123,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.8100287914276123,
+   "latency_s": 6.748183488845825,
    "model_calls": 10,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -10145,9 +10142,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.720470666885376,
-   "model_calls": 7,
-   "requests_in_sequence": 2,
+   "latency_s": 6.82522988319397,
+   "model_calls": 8,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "direction_part",
    "path": "simple",
@@ -10161,7 +10158,7 @@
  "summary": {
   "pick_family": {
    "n": 111,
-   "correct": 110
+   "correct": 109
   },
   "pick_template": {
    "n": 111,
@@ -10169,7 +10166,7 @@
   },
   "pick_template_flat": {
    "n": 111,
-   "correct": 106
+   "correct": 100
   },
   "pick_split": {
    "n": 111,
@@ -10177,7 +10174,7 @@
   },
   "is_subquery": {
    "n": 114,
-   "correct": 114
+   "correct": 111
   },
   "select_source": {
    "n": 24,
@@ -10238,11 +10235,11 @@
    },
    "set_algebra": {
     "n": 12,
-    "dag_ok": 11
+    "dag_ok": 12
    },
    "ALL": {
     "n": 98,
-    "dag_ok": 97
+    "dag_ok": 98
    }
   }
  }
