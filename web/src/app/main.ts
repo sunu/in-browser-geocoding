@@ -1,11 +1,20 @@
 import maplibregl from "maplibre-gl";
 import { onDownload, type Download } from "../core/progress.ts";
 import { load, type Geoparse } from "../geoparse.ts";
+import { decisions, esc, headline, HOW_IT_WORKS, reading } from "./explain.ts";
 
 const $ = (id: string) => document.getElementById(id)!;
 const status = $("status"), side = $("side"), q = $("q") as HTMLInputElement, go = $("go") as HTMLButtonElement;
-const EXAMPLES = ["districts near the sea in Gujarat", "hospitals within 2 km of coastal districts of Odisha", "2 km around MG Road Bangalore",
-  "Kerala except Palakkad", "states that border Karnataka", "cities in Maharashtra with population over 1 million", "northern Karnataka"];
+// Examples: tasks of geo analysis in many countries (plan-028; checked with SET=examples of scripts/world_smoke.ts).
+const EXAMPLES: [string, string[]][] = [
+  ["Study areas", ["counties of Kenya", "districts of Bavaria", "northern Italy", "Bavaria except Munich"]],
+  ["Around a place", ["20 km around Nairobi", "10 km around Manchester", "schools in Pune", "cities in California with population over 1 million"]],
+  ["Borders", ["states that border Texas", "provinces of South Africa that border Mozambique",
+    "10 km zone along the border of India and Pakistan", "border between the United States and Mexico"]],
+  ["Rivers", ["counties along the Mississippi", "districts along the Ganga"]],
+  ["Filters and ranks", ["coastal states of Mexico", "coastal provinces of Vietnam", "the 5 largest states of Brazil"]],
+  ["Same name, other place", ["Paris, Texas"]],
+];
 
 // Basemap: OpenFreeMap (free, no API key; data © OpenStreetMap contributors).
 // Without WebGL there is no map; the queries and the result list still work.
@@ -24,7 +33,6 @@ const mapReady = new Promise<void>((res) => (!map || map.loaded() ? res() : map.
 (window as any).geoparseMap = map;
 
 let gp: Geoparse;
-const esc = (s: any) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
 
 async function show(fc: any) {
   await mapReady;
@@ -45,6 +53,14 @@ async function show(fc: any) {
 
 async function runQuery(text: string) {
   go.disabled = true;
+  try { await runQuery_(text); } catch (e) {
+    queryStatus = "";
+    status.innerHTML = `<span class="err">Error: ${esc((e as Error).message)}</span>`;
+    console.error(e);
+  } finally { go.disabled = false; }
+}
+
+async function runQuery_(text: string) {
   files.clear();
   queryStatus = "Working…";
   status.textContent = queryStatus;
@@ -57,22 +73,31 @@ async function runQuery(text: string) {
   status.textContent = `${p.ok ? "OK" : "Unsupported"} · parse ${p.timings.parse_s.toFixed(2)} s · total ${total.toFixed(2)} s`;
   const fc = { type: "FeatureCollection", features: (r?.features ?? []).filter((f) => f.geometry).map((f) => ({ type: "Feature", geometry: f.geometry, properties: { name: f.name, id: f.id } })) };
   await show(fc);
+  const feats = r?.features ?? [];
   side.innerHTML = `
-    <h3>${p.ok ? `<span class="ok">${esc(p.template)}</span> (${esc(p.path)})` : `<span class="err">Unsupported</span>: ${esc(p.unsupported?.reason)}`}</h3>
-    ${r ? `<p>${r.ok ? `${r.features.length} feature(s), ${r.kind}, execute ${(r.timings.total_s ?? 0).toFixed(2)} s` : `<span class="err">${esc(r.error)}</span>`}</p>` : ""}
+    <h3>${headline(p, r)}</h3>
+    ${r ? `<p>${r.ok ? `${feats.length} result(s) in ${(r.timings.total_s ?? 0).toFixed(2)} s` : `<span class="err">${esc(r.error)}</span>`}</p>` : ""}
     ${(r?.notes ?? []).map((n) => `<p>⚠ ${esc(n)}</p>`).join("")}
-    <h4>Slots</h4><pre>${esc(JSON.stringify(p.slots, null, 1))}</pre>
+    ${HOW_IT_WORKS}
+    <h4>How the app read the query</h4>${reading(p, gp.bundle)}
+    ${feats.length ? `<h4>Results</h4><table id="features"><tr><th>Name</th><th>Type</th><th>Source</th></tr>${feats.slice(0, 200).map((f) =>
+      `<tr><td>${esc(f.name)}</td><td>${esc(f.subtype)}</td><td>${esc(f.source)}</td></tr>`).join("")}</table>
+      ${feats.length > 200 ? `<p class="muted">The first 200 of ${feats.length}.</p>` : ""}` : ""}
     <h4>Decisions</h4>
-    <table><tr><th>depth</th><th>decision</th><th>value</th><th>conf</th><th>impl</th><th>ms</th></tr>
-    ${p.trace.map((t) => `<tr><td>${t.depth}</td><td>${esc(t.decision)}</td><td>${esc(typeof t.value === "string" ? t.value : JSON.stringify(t.value)).slice(0, 140)}</td>
-      <td class="${t.confidence < t.threshold ? "err" : ""}">${t.confidence.toFixed(2)}</td><td>${esc(t.impl)}</td><td>${(t.latency_s * 1000).toFixed(0)}</td></tr>`).join("")}
-    </table>
-    ${p.dag ? `<h4>DAG</h4><pre>${esc(JSON.stringify(p.dag, null, 1))}</pre>` : ""}
-    ${r?.features?.length ? `<h4>Features</h4><table>${r.features.slice(0, 200).map((f) => `<tr><td>${esc(f.name)}</td><td>${esc(f.subtype)}</td><td>${esc(f.source)}</td></tr>`).join("")}</table>` : ""}`;
-  go.disabled = false;
+    <p class="muted">The questions that the models and the rules answered to read the query, in order. Indented questions are about a part of the query.</p>
+    ${decisions(p.trace, gp.bundle)}
+    ${p.dag ? `<h4>Plan</h4><p class="muted">The steps that make the answer. Each <code>op</code> is one step. Its <code>args</code> are its inputs; an input can be another step.</p>
+      <pre>${esc(JSON.stringify(p.dag, null, 1))}</pre>` : ""}
+    <details><summary>Technical details</summary>
+      <h4>Slots</h4><pre>${esc(JSON.stringify(p.slots, null, 1))}</pre>
+      <table><tr><th>depth</th><th>decision</th><th>value</th><th>conf</th><th>impl</th><th>ms</th></tr>
+      ${p.trace.map((t) => `<tr><td>${t.depth}</td><td>${esc(t.decision)}</td><td>${esc(typeof t.value === "string" ? t.value : JSON.stringify(t.value)).slice(0, 140)}</td>
+        <td class="${t.confidence < t.threshold ? "err" : ""}">${t.confidence.toFixed(2)}</td><td>${esc(t.impl)}</td><td>${(t.latency_s * 1000).toFixed(0)}</td></tr>`).join("")}
+      </table><p>Template ${esc(p.template)} (${esc(p.path)}), parse ${p.timings.parse_s.toFixed(2)} s.</p></details>`;
 }
 
-$("examples").innerHTML = EXAMPLES.map((e) => `<button data-q="${esc(e)}">${esc(e)}</button>`).join("");
+$("examples").innerHTML = EXAMPLES.map(([g, qs]) => `<span class="group"><span class="muted">${esc(g)}:</span>${qs.map((e) =>
+  `<button data-q="${esc(e)}">${esc(e)}</button>`).join("")}</span>`).join("");
 $("examples").addEventListener("click", (ev) => {
   const b = (ev.target as HTMLElement).closest("button");
   if (b && !go.disabled) { q.value = b.dataset.q!; runQuery(q.value); }

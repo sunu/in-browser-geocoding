@@ -5,6 +5,9 @@ import { chromium, firefox, webkit } from "playwright";
 
 const VIEWS: Record<string, number[]> = {
   IN: [68, 6.5, 97.5, 37.2], US: [-125, 24, -66, 50], FR: [-5, 41, 10, 51.5], BR: [-74, -34, -34, 5.5], JP: [129, 30, 146, 46],
+  KE: [33.9, -4.7, 41.9, 5.0], IT: [6.6, 36.6, 18.5, 47.1], DE: [5.8, 47.2, 15.1, 55.1], AU: [113, -44, 154, -10],
+  GB: [-8.2, 49.9, 1.8, 58.7], ZA: [16.4, -34.9, 32.9, -22.1], EG: [24.7, 22, 36.9, 31.7], CN: [73.5, 18, 135, 53.6],
+  VN: [102.1, 8.4, 109.5, 23.4], MX: [-117, 14.5, -86.7, 32.7], AF: [-18, -35, 52, 37.5],
 };
 const BASE: [string, string][] = [
   ["IN", "Kerala except Palakkad"], ["IN", "districts near the sea in Gujarat"],
@@ -25,7 +28,19 @@ const NEW: [string, string][] = [
   ["FR", "border between Spain and Portugal"], ["US", "Paris, Texas"], ["FR", "districts in northern France"],
   ["IN", "states that border both Karnataka and Kerala"], ["IN", "riverside districts of Bihar"],
 ];
-const QUERIES = process.env.SET === "poi" ? POI : process.env.SET === "new" ? NEW : BASE;
+// The examples of the page (plan-028; web/src/app/main.ts).
+const EXAMPLES: [string, string][] = [
+  ["KE", "counties of Kenya"], ["DE", "districts of Bavaria"], ["IT", "northern Italy"], ["DE", "Bavaria except Munich"],
+  ["KE", "20 km around Nairobi"], ["GB", "10 km around Manchester"], ["IN", "schools in Pune"],
+  ["US", "cities in California with population over 1 million"],
+  ["US", "states that border Texas"], ["ZA", "provinces of South Africa that border Mozambique"],
+  ["IN", "10 km zone along the border of India and Pakistan"], ["US", "border between the United States and Mexico"],
+  ["US", "counties along the Mississippi"], ["IN", "districts along the Ganga"],
+  ["MX", "coastal states of Mexico"], ["VN", "coastal provinces of Vietnam"], ["BR", "the 5 largest states of Brazil"],
+  ["US", "Paris, Texas"],
+];
+const QUERIES = (process.env.SET === "poi" ? POI : process.env.SET === "new" ? NEW : process.env.SET === "examples" ? EXAMPLES : BASE)
+  .slice(Number(process.env.FROM ?? 0));
 const name = process.argv[2] ?? "chromium";
 // Headless Firefox on Linux without a GPU driver has no WebGL (the map needs it): use the software renderer.
 const browser = await ({ chromium, firefox, webkit } as any)[name].launch(
@@ -66,6 +81,8 @@ for (const [cc, q] of QUERIES) {
   console.log(`[${cc}] ${((Date.now() - t) / 1000).toFixed(1)}s ${((bytes - b0) / 1e6).toFixed(1)} MB ${requests - r0} req`,
     JSON.stringify(q), "->", head, "|", p.slice(0, 140), "| loaded:", countries.join(" "), newFiles.filter((f) => f.startsWith("names/")).length, "shards",
     poiReq > pr0 ? `| poi ${poiReq - pr0} req ${((poiBytes - pb0) / 1e6).toFixed(2)} MB` : "");
+  // NAMES=1: the first result names (to check the result by eye).
+  if (process.env.NAMES) console.log("   ", (await page.$$eval("#features tr td:first-child", (els) => els.slice(0, 10).map((e) => e.textContent))).join("; "));
 }
 console.log("console errors:", errors.length, errors.slice(0, 5));
 await browser.close();
