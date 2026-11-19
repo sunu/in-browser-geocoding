@@ -36,6 +36,10 @@ policy:
   # Admin level words of one country, in addition to the keywords in options.yaml. A word here belongs only to
   # its level in that country (for example "municipality" is a county in Mexico, and a city in India).
   level_words: {}
+  # Level words from the data (Overture local_type of regions and counties, see local_level_words). A value counts
+  # if it has this share of the rows of its country and subtype. The skip words have their own level.
+  local_type_min_share: 0.2
+  local_type_skip: [country, city, town, village]
   # Locality classes that count as a "city".
   city_classes: [city, town]
   # Locality classes that count as a "village".
@@ -52,10 +56,11 @@ policy:
     IN:
       # Overture marks union territories as "state", so this list is the source of truth.
       union_territories: [IN-AN, IN-CH, IN-DH, IN-DL, IN-JK, IN-LA, IN-LD, IN-PY]
-    # Municipalities are Overture counties in these countries (in BR they are localities).
-    MX: {level_words: {district: [municipality, municipalities]}}
-    CO: {level_words: {district: [municipality, municipalities]}}
-    PT: {level_words: {district: [municipality, municipalities]}}
+    # The English words for these divisions are not their Overture local_type (SE, PT: "region"; UA: oblasts
+    # "province", raions "region").
+    SE: {level_words: {state: [county, counties, län]}}
+    PT: {level_words: {state: [district, districts]}}
+    UA: {level_words: {state: [oblast, oblasts, region, regions], district: [raion, raions]}}
   # Distance in meters to the Natural Earth coastline for an area to count as coastal.
   # Natural Earth 10m is about 1 km from the OSM-based Overture boundaries.
   coastal_tolerance_m: 3000

@@ -47,6 +47,7 @@ export class Parser {
     const dec = this.base.fork();
     dec.view = view;
     dec.viewCountry = (await this.gaz.view(view))[1];
+    dec.dataLevelWords = this.gaz.levelWords(dec.viewCountry);
     const t0 = performance.now();
     const res: ParseResult = { query, ok: false, dag: null, unsupported: null, family: null, template: null, slots: {}, path: null, trace: [], timings: {} };
     try {
@@ -153,11 +154,17 @@ export class Parser {
       let ok = true;
       for (const [name, p] of Object.entries(per[i])) {
         const r = await p;
-        if (dec.below("fill_closed_slot", r) || (r.value === "none" && !tpl.slots[name].optional)) { ok = false; break; }
+        if (dec.below("fill_closed_slot", r) || (r.value === "none" && !this.levelFree(tpl, name))) { ok = false; break; }
       }
       if (ok) out.push(matches[i]);
     }
     return out;
+  }
+
+  /** Port of _level_free: a slot that can be empty. In the structure_level templates the executor finds the level. */
+  private levelFree(tpl: Template, name: string): boolean {
+    const sd = tpl.slots[name];
+    return !!sd.optional || (sd.type === "admin_level" && this.bundle.structure_level.includes(tpl.id));
   }
 
   private slotDefault(sd: SlotDef): any {
@@ -201,7 +208,7 @@ export class Parser {
       const r = results[i];
       if (OPEN.has(sd.type)) { [values[name], slots[name]] = r; return; }
       if (dec.below("fill_closed_slot", r)) stop(`low confidence for slot ${name} (${fmt(r.confidence)})`, depth, text, "fill_closed_slot");
-      if (r.value === "none" && !sd.optional) stop(`the text '${m.segments[name]}' names no known ${sd.type}`, depth, text, "fill_closed_slot");
+      if (r.value === "none" && !this.levelFree(tpl, name)) stop(`the text '${m.segments[name]}' names no known ${sd.type}`, depth, text, "fill_closed_slot");
       if (r.value === "none") {
         values[name] = sd.type === "admin_level" ? null : sd.default ?? null;
         slots[name] = sd.default ?? null;
@@ -210,6 +217,13 @@ export class Parser {
       slots[name] = r.value;
       values[name] = sd.type === "predicate" ? this.bundle.predicate_dags[r.value] : r.value;
     });
+    if (this.bundle.structure_level.includes(tpl.id) && values.level == null && "level" in m.segments) {
+      // Port: the level from the data only below a country that the text names.
+      const pid = "parent" in m.segments ? values.parent?.args?.id : null;
+      const subtype = pid ? (await this.gaz.describe([pid]))[pid]?.subtype : null;
+      if (subtype !== "country" && subtype !== "dependency")
+        stop(`the text '${m.segments.level}' names no known admin_level`, depth, text, "fill_closed_slot");
+    }
     return [values, slots];
   }
 

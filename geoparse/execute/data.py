@@ -59,6 +59,31 @@ def norm_name(s: str) -> str:
     return " ".join(s.split())
 
 
+def plural(word: str) -> str:
+    """English plural of the last word ("county" -> "counties", "federal subject" -> "federal subjects")."""
+    if re.search(r"[^aeiou]y$", word):
+        return word[:-1] + "ies"
+    return word + ("es" if re.search(r"(s|x|z|ch|sh)$", word) else "s")
+
+
+def local_level_words(con: duckdb.DuckDBPyConnection) -> dict[str, dict[str, list[str]]]:
+    """Admin level words of each country from the Overture `local_type` of its regions (level `state`) and
+    counties (level `district`): the values of at least policy.local_type_min_share of the rows, singular and
+    plural. The words of policy.local_type_skip are not used."""
+    pol = load_config()["policy"]
+    skip = set(pol["local_type_skip"])
+    rows = con.execute("""
+        SELECT country, subtype, w, n / sum(n) OVER (PARTITION BY country, subtype)
+        FROM (SELECT country, subtype, lower(trim(local_type)) AS w, count(*) AS n FROM divisions
+              WHERE subtype IN ('region', 'county') AND country IS NOT NULL AND local_type IS NOT NULL GROUP BY 1, 2, 3)
+        ORDER BY 1, 2, 3""").fetchall()
+    out: dict[str, dict[str, list[str]]] = {}
+    for cc, subtype, w, share in rows:
+        if share >= pol["local_type_min_share"] and w and w not in skip:
+            out.setdefault(cc, {}).setdefault("state" if subtype == "region" else "district", []).extend([w, plural(w)])
+    return out
+
+
 class Store:
     """Read-only access to geoparse.duckdb. One connection; cursors per thread."""
 
@@ -69,6 +94,8 @@ class Store:
         self._con = duckdb.connect(str(self.path), read_only=True)
         self._con.execute("LOAD spatial; SET geometry_always_xy = true;")
         self._local = threading.local()
+        self._level_words: dict[str, dict[str, list[str]]] | None = None
+        self._extents: dict[str, tuple[float, ...]] | None = None
 
     def cursor(self) -> duckdb.DuckDBPyConnection:
         c = getattr(self._local, "cur", None)
@@ -87,37 +114,55 @@ class Store:
             c.execute(f"CREATE TEMP VIEW poi_{f.stem} AS SELECT * FROM read_parquet('{f}')")
         return c
 
+    def level_words(self, country: str | None) -> dict[str, list[str]]:
+        """Admin level words of one country from the data (local_level_words)."""
+        if self._level_words is None:
+            self._level_words = local_level_words(self.cursor())
+        return self._level_words.get(country or "", {})
+
     # ------------------------------------------------------------ gazetteer
 
     def describe(self, ids: list[str]) -> dict[str, dict[str, Any]]:
         if not ids:
             return {}
-        rows = self.cursor().execute("""
+        cur = self.cursor()
+        rows = cur.execute("""
             SELECT d.id, d.name, d.subtype, d.class, d.region, d.country, d.population,
-                   [h.name FOR h IN list_filter(
-                        (SELECT list(struct_pack(id := x.id, name := x.name, subtype := x.subtype)
-                                    ORDER BY list_position(d.ancestors, x.id) DESC)
-                         FROM divisions x WHERE list_contains(d.ancestors, x.id) AND x.id <> d.id),
-                        lambda h: h.subtype IN ('region', 'county', 'locality', 'macrohood'))] AS anc,
                    EXISTS (SELECT 1 FROM areas a WHERE a.id = d.id) AS has_area, d.ancestors,
                    ST_X(d.geometry) AS lon, ST_Y(d.geometry) AS lat
             FROM divisions d WHERE d.id IN (SELECT unnest(?))
         """, [ids]).fetchall()
+        # Names of the ancestors (region, county, locality, macrohood), the nearest first. One lookup for all rows.
+        names = dict(cur.execute("""
+            SELECT id, name FROM divisions WHERE id IN (SELECT unnest(?))
+              AND subtype IN ('region', 'county', 'locality', 'macrohood')""",
+            [sorted({a for r in rows for a in (r[8] or [])})]).fetchall())
         out = {}
-        for id_, name, subtype, cls, region, country, pop, anc, has_area, anc_ids, lon, lat in rows:
+        for id_, name, subtype, cls, region, country, pop, has_area, anc_ids, lon, lat in rows:
+            anc_ids = [a for a in (anc_ids or []) if a != id_]
             out[id_] = {"name": name, "subtype": subtype, "class": cls, "region": region, "country": country,
-                        "population": pop, "ancestors": anc or [], "has_area": has_area, "lon": lon, "lat": lat,
-                        "ancestor_ids": [a for a in (anc_ids or []) if a != id_]}
+                        "population": pop, "ancestors": [names[a] for a in reversed(anc_ids) if a in names],
+                        "has_area": has_area, "lon": lon, "lat": lat, "ancestor_ids": anc_ids}
         return out
 
     def view(self, view: Sequence[float] | None, cfg: dict[str, Any]) -> tuple[Sequence[float], str | None]:
-        """Map view (xmin, ymin, xmax, ymax) and the country of its center. No view: data.bbox and data.country."""
+        """Map view (xmin, ymin, xmax, ymax) and the country of its center: the nearest admin point of the countries
+        whose extent (of the division points) contains the center, or of all countries if none does. The extent
+        keeps out a small country near the center (the Vatican for a view of Italy). No view: data.bbox and
+        data.country."""
         if not view:
             return cfg["data"]["bbox"], cfg["data"]["country"]
         cx, cy = (view[0] + view[2]) / 2, (view[1] + view[3]) / 2
-        row = self.cursor().execute("""
+        if self._extents is None:
+            self._extents = {c: tuple(round(v, 5) for v in b) for c, *b in self.cursor().execute("""
+                SELECT country, min(ST_X(geometry)), min(ST_Y(geometry)), max(ST_X(geometry)), max(ST_Y(geometry))
+                FROM divisions WHERE country IS NOT NULL GROUP BY 1""").fetchall()}
+        inside = [c for c, b in self._extents.items() if b[0] <= cx <= b[2] and b[1] <= cy <= b[3]]
+        row = self.cursor().execute(f"""
             SELECT country FROM divisions WHERE subtype IN ('country', 'dependency', 'region') AND country IS NOT NULL
-            ORDER BY (ST_X(geometry) - ?) ** 2 + (ST_Y(geometry) - ?) ** 2, id LIMIT 1""", [cx, cy]).fetchone()
+              {"AND country IN (SELECT unnest(?))" if inside else ""}
+            ORDER BY (ST_X(geometry) - ?) ** 2 + (ST_Y(geometry) - ?) ** 2, id LIMIT 1""",
+            [inside, cx, cy] if inside else [cx, cy]).fetchone()
         return view, row[0] if row else None
 
     def match_points(self, ids: list[str], points: list[tuple[float, float]]) -> dict[str, int]:

@@ -268,6 +268,7 @@ def main() -> None:
             out: list[dict[str, Any]] = []
             dec = base.fork()
             dec.view_country = parser.store.view(rec.get("view"), parser.cfg)[1]
+            dec.data_level_words = parser.store.level_words(dec.view_country)
             eval_isolated(parser, dec, rec, normalize_query(rec["query"]), rec["template"], rec["slots"],
                           rec.get("src", {}), 0, rec["family"], out, not args.no_flat)
             return out

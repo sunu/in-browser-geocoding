@@ -75,9 +75,11 @@ class Decider:
         self.trace: list[dict[str, Any]] = []
         self._lock = threading.Lock()
         # Map view (xmin, ymin, xmax, ymax) of the parse and the country of its center. Parser.parse sets them on
-        # the fork; the gazetteer uses the view, the admin level words use the country.
+        # the fork; the gazetteer uses the view, the admin level words use the country. data_level_words: the
+        # level words of that country in the data (Store.level_words).
         self.view: list[float] | None = None
         self.view_country: str | None = None
+        self.data_level_words: dict[str, list[str]] = {}
 
     def fork(self) -> "Decider":
         """A Decider with the same providers and a new, empty trace. Use one fork for each parse."""
@@ -89,6 +91,7 @@ class Decider:
         d._lock = threading.Lock()
         d.view = None
         d.view_country = None
+        d.data_level_words = {}
         return d
 
     @staticmethod
@@ -258,12 +261,16 @@ class Decider:
 
     def _level_word(self, text: str, levels: dict[str, str]) -> str | None:
         """The level whose keyword is in the text with no typo, if exactly one level has one. The level words of
-        the view country (policy.countries.<CC>.level_words) belong only to their level."""
-        words = country_policy(load_config()["policy"], self.view_country).get("level_words", {})
+        the view country (policy.countries.<CC>.level_words and the data) belong only to their level. A word of
+        the config is not used from the data ("regions" is a raion in the data of UA, an oblast in the config)."""
+        cfg_words = country_policy(load_config()["policy"], self.view_country).get("level_words", {})
+        cfg_own = {w for ws in cfg_words.values() for w in ws}
+        words = {k: cfg_words.get(k, []) + [w for w in self.data_level_words.get(k, []) if w not in cfg_own]
+                 for k in levels}
         own = {w for ws in words.values() for w in ws}
         kws = option_keywords("admin_levels")
         hits = [k for k in levels
-                if keyword_hits(text, [w for w in kws.get(k, []) if w not in own] + words.get(k, []), typo=False)]
+                if keyword_hits(text, [w for w in kws.get(k, []) if w not in own] + words[k], typo=False)]
         return hits[0] if len(hits) == 1 else None
 
     def bind_anchor(self, query: str, slot_text: str, spans: list[Span], *, depth: int = 0) -> Decision[Span]:

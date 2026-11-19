@@ -19,6 +19,7 @@ export interface Bundle {
   direction_modes: string[];
   sources: string[];
   leading_fillers: string[];
+  structure_level: string[];
 }
 
 export async function loadBundle(url: string): Promise<Bundle> {

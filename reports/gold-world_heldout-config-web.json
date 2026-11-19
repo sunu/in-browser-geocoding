@@ -330,8 +330,8 @@
    "decision": "fill_closed_slot.admin_level",
    "depth": 0,
    "family": "hierarchy",
-   "correct": false,
-   "got": "state",
+   "correct": true,
+   "got": "district",
    "gold": "district",
    "text": "provinces",
    "conf": 1.0
@@ -893,8 +893,8 @@
    "decision": "fill_closed_slot.admin_level",
    "depth": 0,
    "family": "hierarchy",
-   "correct": false,
-   "got": "district",
+   "correct": true,
+   "got": "state",
    "gold": "state",
    "text": "counties",
    "conf": 1.0
@@ -1515,11 +1515,11 @@
    "decision": "fill_closed_slot.admin_level",
    "depth": 0,
    "family": "hierarchy",
-   "correct": false,
-   "got": "district",
+   "correct": true,
+   "got": "state",
    "gold": "state",
    "text": "departments",
-   "conf": 0.7793950000000001
+   "conf": 1.0
   },
   {
    "id": "x022",
@@ -1934,11 +1934,11 @@
    "decision": "fill_closed_slot.admin_level",
    "depth": 0,
    "family": "hierarchy",
-   "correct": false,
-   "got": "none",
+   "correct": true,
+   "got": "state",
    "gold": "state",
    "text": "governorates",
-   "conf": 0.9235191666666667
+   "conf": 1.0
   },
   {
    "id": "x028",
@@ -2032,7 +2032,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.9095311164855957,
+   "latency_s": 0.32897186279296875,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2051,7 +2051,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.048238754272461,
+   "latency_s": 0.5429458618164062,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2070,7 +2070,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.0548090934753418,
+   "latency_s": 1.1325695514678955,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2089,7 +2089,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1610107421875,
+   "latency_s": 0.7761523723602295,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2108,19 +2108,17 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3160250186920166,
+   "latency_s": 1.0092270374298096,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
-   "slots_ok": false,
-   "diffs": [
-    "level: expected 'district', got 'state'"
-   ],
-   "dag_ok": false,
-   "exec_ok": false,
-   "exec_note": "0 ids vs 10"
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "10 ids vs 10"
   },
   {
    "id": "x006",
@@ -2129,7 +2127,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.59059476852417,
+   "latency_s": 1.0205421447753906,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2148,7 +2146,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.9002771377563477,
+   "latency_s": 1.012110710144043,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2167,7 +2165,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 5.913417816162109,
+   "latency_s": 1.238647222518921,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2186,7 +2184,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.3199071884155273,
+   "latency_s": 1.3032183647155762,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2205,7 +2203,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.002923965454102,
+   "latency_s": 1.4322447776794434,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2224,7 +2222,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.6940579414367676,
+   "latency_s": 1.035538673400879,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2243,7 +2241,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.6327168941497803,
+   "latency_s": 1.1795732975006104,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2262,19 +2260,17 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.445559024810791,
+   "latency_s": 1.1259448528289795,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
-   "slots_ok": false,
-   "diffs": [
-    "level: expected 'state', got 'district'"
-   ],
-   "dag_ok": false,
-   "exec_ok": false,
-   "exec_note": "297 ids vs 47"
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "47 ids vs 47"
   },
   {
    "id": "x014",
@@ -2283,7 +2279,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.2282679080963135,
+   "latency_s": 1.1432409286499023,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2302,7 +2298,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 14.511905908584595,
+   "latency_s": 1.0736722946166992,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2321,7 +2317,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.104823112487793,
+   "latency_s": 0.47354888916015625,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2340,7 +2336,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 13.57347297668457,
+   "latency_s": 0.737154483795166,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2359,7 +2355,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.402371883392334,
+   "latency_s": 0.8179028034210205,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2378,7 +2374,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.433759927749634,
+   "latency_s": 1.0640122890472412,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2397,7 +2393,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.7661638259887695,
+   "latency_s": 0.8791284561157227,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2416,7 +2412,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 5.415933847427368,
+   "latency_s": 1.105295181274414,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2435,19 +2431,17 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 6.08823299407959,
+   "latency_s": 1.2911996841430664,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
-   "slots_ok": false,
-   "diffs": [
-    "level: expected 'state', got 'district'"
-   ],
-   "dag_ok": false,
-   "exec_ok": false,
-   "exec_note": "165 ids vs 7"
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "7 ids vs 7"
   },
   {
    "id": "x023",
@@ -2456,7 +2450,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.7155888080596924,
+   "latency_s": 1.5696189403533936,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2473,22 +2467,21 @@
    "query": "voivodeships of Poland",
    "family": "hierarchy",
    "depth": 0,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 0.6878871917724609,
-   "model_calls": 3,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.773832082748413,
+   "model_calls": 5,
    "requests_in_sequence": 2,
-   "unsupported": {
-    "reason": "the text 'voivodeships' names no known admin_level",
-    "decision": "fill_closed_slot",
-    "depth": 0,
-    "text": "voivodeships of Poland"
-   },
-   "got_template": null,
-   "path": null,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
    "slots_ok": false,
+   "diffs": [
+    "level: expected 'state', got None"
+   ],
    "dag_ok": false,
-   "exec_ok": false
+   "exec_ok": true,
+   "exec_note": "16 ids vs 16"
   },
   {
    "id": "x025",
@@ -2497,7 +2490,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.6100411415100098,
+   "latency_s": 1.3393516540527344,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2514,22 +2507,21 @@
    "query": "coastal voivodeships of Poland",
    "family": "predicate_filter",
    "depth": 0,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 0.604219913482666,
-   "model_calls": 3,
-   "requests_in_sequence": 1,
-   "unsupported": {
-    "reason": "no split of the text gives valid values for the slots of children_with_predicate",
-    "decision": "fill_closed_slot",
-    "depth": 0,
-    "text": "coastal voivodeships of Poland"
-   },
-   "got_template": null,
-   "path": null,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.426626443862915,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_with_predicate",
+   "path": "complex",
    "slots_ok": false,
+   "diffs": [
+    "level: expected 'state', got None"
+   ],
    "dag_ok": false,
-   "exec_ok": false
+   "exec_ok": true,
+   "exec_note": "3 ids vs 3"
   },
   {
    "id": "x027",
@@ -2538,7 +2530,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 6.510815143585205,
+   "latency_s": 1.5116240978240967,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2557,19 +2549,17 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 5.068758010864258,
+   "latency_s": 1.3089790344238281,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
-   "slots_ok": false,
-   "diffs": [
-    "level: expected 'state', got 'none'"
-   ],
-   "dag_ok": false,
-   "exec_ok": false,
-   "exec_note": "6 ids vs 5"
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "5 ids vs 5"
   },
   {
    "id": "x029",
@@ -2578,7 +2568,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.433804988861084,
+   "latency_s": 1.3258440494537354,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2618,7 +2608,7 @@
   },
   "fill_closed_slot.admin_level": {
    "n": 14,
-   "correct": 8
+   "correct": 12
   },
   "fill_closed_slot.category": {
    "n": 5,
@@ -2635,7 +2625,7 @@
    },
    "hierarchy": {
     "n": 12,
-    "dag_ok": 7
+    "dag_ok": 11
    },
    "lookup": {
     "n": 7,
@@ -2655,7 +2645,7 @@
    },
    "ALL": {
     "n": 29,
-    "dag_ok": 23
+    "dag_ok": 27
    }
   }
  }

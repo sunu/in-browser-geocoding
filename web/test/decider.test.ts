@@ -10,7 +10,10 @@ describe("admin level words", () => {
     expect(d.levelWord("prefectures", levels)).toBe("state");
     expect(d.levelWord("states and districts", levels)).toBeNull();
     expect(d.levelWord("municipalities", levels)).toBe("city");
-    d.viewCountry = "MX";
+    d.dataLevelWords = { state: ["county", "counties"], district: ["constituency", "constituencies"] };
+    expect(d.levelWord("counties", levels)).toBe("state");
+    d.dataLevelWords = { district: ["province", "provinces", "municipality", "municipalities"] };
+    expect(d.levelWord("provinces", levels)).toBe("district");
     expect(d.levelWord("municipalities", levels)).toBe("district");
   });
 });

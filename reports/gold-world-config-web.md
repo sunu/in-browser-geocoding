@@ -26,7 +26,7 @@ Records: 70. Depth 0: 70. Depth 1 (two levels): 0.
 | w009 | pick_template_flat | 0 | children | children_with_predicate | 0.03692800000000007 |
 | w012 | pick_family | 0 | modifier | lookup | 0.931656 |
 | w016 | pick_family | 0 | hierarchy | features | 0.12614799999999993 |
-| w016 | pick_template_flat | 0 | children | features_in | 0.0776920000000001 |
+| w016 | pick_template_flat | 0 | children | features_in | 0.07769000000000004 |
 | w064 | pick_template_flat | 0 | lookup_place | direction_part | 0.2110939999999999 |
 
 ## Full pipeline
@@ -46,4 +46,4 @@ Records: 70. Depth 0: 70. Depth 1 (two levels): 0.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 100% (70/70) | 3.02 s | 4.5 | 1.3 |
+| 0 | 100% (70/70) | 1.14 s | 4.5 | 1.3 |

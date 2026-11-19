@@ -6,6 +6,7 @@ Usage:
   GEOPARSE_SCOPE=world uv run python scripts/export_web.py data --out data/build-world/web
   GEOPARSE_SCOPE=world uv run python scripts/export_web.py data --layout country --out data/build-world/web
   GEOPARSE_SCOPE=world uv run python scripts/export_web.py poi --out data/build-world/web   # only the poi/ files
+  GEOPARSE_SCOPE=world uv run python scripts/export_web.py level-words --out data/build-world/web   # only the manifest
   uv run python scripts/export_web.py data --layout country --out web/public/countries   # India, for the parity checks
 
 The Python package stays the single source of truth for templates, options, and policy.
@@ -26,7 +27,8 @@ from geoparse.data.web_layout import export_country_layout, verify_country_layou
 from geoparse.decisions.functions import INSTRUCTIONS, IS_SUBQUERY_CRITERIA, NONE_OPTION, SOURCE_OPTIONS
 from geoparse.dsl.schema import CATALOG, DIRECTION_MODES, LAYERS, PREDICATE_DAGS, SOURCES
 from geoparse.options import categories, lexicon, options
-from geoparse.parse.pipeline import LEADING_FILLERS
+from geoparse.execute.data import local_level_words
+from geoparse.parse.pipeline import LEADING_FILLERS, STRUCTURE_LEVEL
 from geoparse.templates.model import load_families
 
 WEB = REPO_ROOT / "web" / "public"
@@ -64,6 +66,7 @@ def export_bundle() -> None:
         "direction_modes": DIRECTION_MODES,
         "sources": SOURCES,
         "leading_fillers": LEADING_FILLERS,
+        "structure_level": sorted(STRUCTURE_LEVEL),
     }
     WEB.mkdir(parents=True, exist_ok=True)
     (WEB / "bundle.json").write_text(json.dumps(bundle, ensure_ascii=False))
@@ -109,6 +112,7 @@ def export_country(out: Path) -> None:
         m["places"] = "places.parquet"
         (root / "manifest.json").write_text(json.dumps(m, indent=1))
     add_poi(root)
+    add_level_words(root)
     errors = verify_country_layout(con, root)
     for e in errors:
         print("ERROR", e)
@@ -137,9 +141,18 @@ def add_poi(root: Path) -> None:
     (root / "manifest.json").write_text(json.dumps(m, indent=1))
 
 
+def add_level_words(root: Path) -> None:
+    """The admin level words of each country from the data (local_level_words) in the manifest."""
+    con = duckdb.connect(str(build_dir() / "geoparse.duckdb"), read_only=True)
+    m = json.loads((root / "manifest.json").read_text())
+    m["level_words"] = local_level_words(con)
+    (root / "manifest.json").write_text(json.dumps(m, indent=1))
+    print(f"level_words: {len(m['level_words'])} countries")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("what", choices=["bundle", "data", "poi", "all"])
+    ap.add_argument("what", choices=["bundle", "data", "poi", "level-words", "all"])
     ap.add_argument("--simplify", type=float, default=0.0005)
     ap.add_argument("--out", type=Path, default=WEB / "data", help="Output directory of the data files.")
     ap.add_argument("--layout", choices=["flat", "country"], default="flat",
@@ -154,6 +167,8 @@ def main() -> None:
             export_data(args.simplify, args.out)
     if args.what == "poi":
         add_poi(args.out / load_config()["data"]["overture_release"])
+    if args.what == "level-words":
+        add_level_words(args.out / load_config()["data"]["overture_release"])
 
 
 if __name__ == "__main__":

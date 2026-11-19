@@ -174,12 +174,24 @@ class Run {
 
   async op_Children(a: any) {
     const parent = await this.eval(a.of);
-    await this.levelData(a.level);
-    const lf = this.levelFilter(a.level, await this.countryOf(parent));
+    const country = await this.countryOf(parent);
+    const level = !a.level || a.level === "none" ? await this.childLevel(parent, country) : a.level;
+    await this.levelData(level);
+    const lf = this.levelFilter(level, country);
     if ((await this.idsOf(parent)).length)
       return this.divisionsRel(`${lf} AND EXISTS (SELECT 1 FROM ${parent} p
         WHERE p.id IS NOT NULL AND p.id <> d.id AND list_contains(d.ancestors, p.id))`);
     return this.divisionsRel(`${lf} AND ST_Intersects(d.geometry, ${this.unionGeom(parent, "gs")})`);
+  }
+
+  /** Port of child_level: the level of the highest subtype (region, county, locality) of the divisions inside the parent. */
+  async childLevel(parent: string, country: string): Promise<string> {
+    const levels = countryPolicy(this.policy, country).admin_levels;
+    const found = new Set((await this.run(`SELECT DISTINCT d.subtype FROM divisions d, ${parent} p WHERE p.id IS NOT NULL
+      AND p.id <> d.id AND d.subtype IN ('region', 'county', 'locality') AND list_contains(d.ancestors, p.id)`)).map((r) => r.subtype));
+    for (const subtype of ["region", "county", "locality"])
+      if (found.has(subtype)) return Object.entries(levels).find(([, v]: any) => v.length === 1 && v[0] === subtype)![0];
+    throw new ExecError("cannot find a level for the divisions of the parent");
   }
 
   async op_Parent(a: any) {

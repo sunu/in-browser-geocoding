@@ -30,6 +30,8 @@ from geoparse.templates.model import CLOSED_TYPES, OPEN_TYPES, Template, load_fa
 SIMPLE_FAMILIES = {"lookup", "modifier"}
 # Families whose anchors can go to the geocoder. "features" is here because plan-002 routes POIs to Photon.
 GEOCODER_FAMILIES = {"lookup", "modifier", "features"}
+# Templates where the admin level can be empty (an unknown level word). The executor uses the data.
+STRUCTURE_LEVEL = {"children", "children_with_predicate"}
 
 LEADING_FILLERS = [
     "show me the", "show me", "show the", "show", "find me", "find the", "find", "list the", "list all", "list",
@@ -150,6 +152,7 @@ class Parser:
         dec = self.base_decider.fork()
         dec.view = list(view) if view else None
         dec.view_country = self.store.view(dec.view, self.cfg)[1]
+        dec.data_level_words = self.store.level_words(dec.view_country)
         t0 = time.time()
         res = ParseResult(query=query, ok=False)
         try:
@@ -406,7 +409,7 @@ class Parser:
             ok = True
             for name, fut in jobs.items():
                 r = fut.result()
-                if dec.below("fill_closed_slot", r) or (r.value == "none" and not tpl.slots[name].optional):
+                if dec.below("fill_closed_slot", r) or (r.value == "none" and not _level_free(tpl, name)):
                     ok = False
                     break
             if ok:
@@ -465,7 +468,7 @@ class Parser:
             if dec.below("fill_closed_slot", r):
                 raise _Stop(Unsupported(reason=f"low confidence for slot {name} ({r.confidence:.2f})",
                                         decision="fill_closed_slot", depth=depth, text=text))
-            if r.value == "none" and not sd.optional:
+            if r.value == "none" and not _level_free(tpl, name):
                 raise _Stop(Unsupported(reason=f"the text {match['segments'][seg_of[name]]!r} names no known {sd.type}",
                                         decision="fill_closed_slot", depth=depth, text=text))
             slots[name] = r.value
@@ -479,6 +482,13 @@ class Parser:
                 values[name] = None
             else:
                 values[name] = r.value
+        if tpl.id in STRUCTURE_LEVEL and values.get("level") is None and "level" in seg_of:
+            # The level from the data only below a country that the text names: an unknown word below a state is
+            # a level that the data does not have ("talukas of Maharashtra"), and "talukas" alone is not "states".
+            pid = (values.get("parent") or {}).get("args", {}).get("id")
+            if "parent" not in seg_of or not pid or self.store.describe([pid]).get(pid, {}).get("subtype") not in ("country", "dependency"):
+                raise _Stop(Unsupported(reason=f"the text {match['segments'][seg_of['level']]!r} names no known admin_level",
+                                        decision="fill_closed_slot", depth=depth, text=text))
         return values, slots
 
     def _default_region(self, sd) -> dict[str, Any]:
@@ -580,6 +590,13 @@ class Parser:
         out = [c.model_copy(update={"score": round(c.score + boosts.get(c.id, 0.0), 4)}) for c in cands]
         out.sort(key=lambda c: (-c.score, c.id))
         return out
+
+
+def _level_free(tpl: Template, name: str) -> bool:
+    """A slot that can be empty. In these templates the executor finds the admin level from the data
+    ("voivodeships of Poland": the level of the divisions below Poland)."""
+    sd = tpl.slots[name]
+    return sd.optional or (sd.type == "admin_level" and tpl.id in STRUCTURE_LEVEL)
 
 
 def merge_nested(cands: list) -> list:

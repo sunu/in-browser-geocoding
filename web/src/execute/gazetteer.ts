@@ -38,13 +38,33 @@ export class Gazetteer {
     return out;
   }
 
-  /** Map view and the country of its center (nearest admin point). No view: data.bbox and data.country. */
+  /** Admin level words of one country from the data (manifest level_words). The flat layout has none. */
+  levelWords(country: string | null): Record<string, string[]> {
+    return this.db.store?.manifest.level_words?.[country ?? ""] ?? {};
+  }
+
+  /** Extent of the division points of each country: the manifest bbox, or the divisions table (flat layout). */
+  private countryExtents(): Promise<Record<string, number[]>> {
+    const m = this.db.store?.manifest;
+    if (m) return Promise.resolve(Object.fromEntries(Object.entries<any>(m.countries).map(([c, d]) => [c, d.bbox])));
+    this.extents ??= this.db.query(`SELECT country, round(min(lon), 5) AS x0, round(min(lat), 5) AS y0,
+        round(max(lon), 5) AS x1, round(max(lat), 5) AS y1 FROM divisions WHERE country IS NOT NULL GROUP BY 1`)
+      .then((rs) => Object.fromEntries(rs.map((r) => [r.country, [r.x0, r.y0, r.x1, r.y1]])));
+    return this.extents;
+  }
+  private extents: Promise<Record<string, number[]>> | null = null;
+
+  /** Port of Store.view: the map view and the country of its center (the nearest admin point of the countries whose
+   * extent contains the center, or of all countries). No view: data.bbox and data.country. */
   async view(view: number[] | null | undefined): Promise<[number[], string | null]> {
     const { data } = this.bundle.config;
     if (!view?.length) return [data.bbox, data.country];
     const cx = (view[0] + view[2]) / 2, cy = (view[1] + view[3]) / 2;
+    const inside = Object.entries(await this.countryExtents())
+      .filter(([, b]) => b && b[0] <= cx && cx <= b[2] && b[1] <= cy && cy <= b[3]).map(([c]) => c);
     const r = await this.db.query(`SELECT country FROM divisions
       WHERE subtype IN ('country', 'dependency', 'region') AND country IS NOT NULL
+        ${inside.length ? `AND country IN (${inside.map((c) => `'${c}'`).join(", ")})` : ""}
       ORDER BY (lon - ${cx}) ** 2 + (lat - ${cy}) ** 2, id LIMIT 1`);
     return [view, r[0]?.country ?? null];
   }

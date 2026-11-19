@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 import time
 from typing import Any
 
@@ -191,11 +192,14 @@ class _Run:
         return " AND ".join(cond)
 
     def divisions_rel(self, where: str, params: list[Any] | None = None) -> str:
+        # The divisions first, then their areas. Without MATERIALIZED, DuckDB can join all world areas before the
+        # filter (minutes for "regions of Italy"). A filter on the areas (a.) joins them in the first step.
+        join = "LEFT JOIN areas a ON a.id = d.id" if re.search(r"\ba\.", where) else ""
         return self.new_rel(f"""
+            WITH sel AS MATERIALIZED (SELECT d.* FROM divisions d {join} WHERE {where})
             SELECT d.id, coalesce(d.name_en, d.name) AS name, d.subtype, 'overture' AS source,
                    crs84(coalesce(a.geometry, d.geometry)) AS geometry, crs84(coalesce(a.gs, d.geometry)) AS gs
-            FROM divisions d LEFT JOIN areas a ON a.id = d.id
-            WHERE {where}
+            FROM sel d LEFT JOIN areas a ON a.id = d.id
         """, params)
 
     # ------------------------------------------------------------ evaluation
@@ -268,15 +272,29 @@ class _Run:
 
     # ------------------------------------------------------------ hierarchy
 
-    def op_Children(self, of: Any, level: str) -> str:
+    def op_Children(self, of: Any, level: str | None = None) -> str:
         parent = self.eval(of)
-        lf = self.level_filter(level, self.country_of(parent))
+        country = self.country_of(parent)
+        if level is None or level == "none":
+            level = self.child_level(parent, country)
+        lf = self.level_filter(level, country)
         if self.ids_of(parent):
             return self.divisions_rel(
                 f"{lf} AND EXISTS (SELECT 1 FROM {parent} p "
                 f"WHERE p.id IS NOT NULL AND p.id <> d.id AND list_contains(d.ancestors, p.id))")
         # No IDs (a computed geometry): use the division point inside the geometry.
         return self.divisions_rel(f"{lf} AND ST_Intersects(crs84(d.geometry), {self.union_geom(parent, 'gs')})")
+
+    def child_level(self, parent: str, country: str) -> str:
+        """The level of the highest subtype (region, county, locality) of the divisions inside the parent."""
+        levels = country_policy(self.policy, country)["admin_levels"]
+        found = {r[0] for r in self.run(f"""
+            SELECT DISTINCT d.subtype FROM divisions d, {parent} p WHERE p.id IS NOT NULL AND p.id <> d.id
+              AND d.subtype IN ('region', 'county', 'locality') AND list_contains(d.ancestors, p.id)""").fetchall()}
+        for subtype in ("region", "county", "locality"):
+            if subtype in found:
+                return next(k for k, v in levels.items() if v == [subtype])
+        raise ExecutionError("cannot find a level for the divisions of the parent")
 
     def op_Parent(self, of: Any, level: str) -> str:
         child = self.eval(of)

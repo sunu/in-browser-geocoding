@@ -1,0 +1,64 @@
+# Second world held-out set (plan-024, phase 9). Written on 2026-11-19, after the phase 9 changes and before any
+# run on it. Do not tune on these records. Use them only to report. Same format as world_src.yaml.
+# The gold level is the Overture level of the correct divisions (for example the Swedish counties are regions).
+# Changed before the first run: the VN view. The center of the bbox of Vietnam is in Laos; the view is now centered
+# on central Vietnam.
+views:
+  TR: [26, 35.8, 44.8, 42.1]
+  PK: [60.9, 23.7, 77.8, 37.1]
+  VN: [104.5, 12.5, 110.5, 19.5]
+  PE: [-81.3, -18.4, -68.7, -0.1]
+  CL: [-75.7, -55.9, -66.4, -17.5]
+  SE: [11, 55.3, 24.2, 69.1]
+  NL: [3.3, 50.7, 7.2, 53.6]
+  PT: [-9.6, 36.9, -6.2, 42.2]
+  TZ: [29.3, -11.8, 40.5, -1]
+  NZ: [166.4, -47.3, 178.6, -34.4]
+  CH: [5.9, 45.8, 10.5, 47.8]
+  UA: [22.1, 44.4, 40.2, 52.4]
+
+records:
+  - {cc: TR, q: "provinces of Turkey", t: children, s: {level: state, parent: "Turkey"}}
+  - {cc: TR, q: "provinces bordering Ankara", t: neighbors, s: {level: state, of: "Ankara"}}
+  - {cc: TR, q: "Istanbul", t: lookup_place, s: {anchor: "Istanbul"}, src: {anchor: overture}}
+  - {cc: TR, q: "hospitals in Izmir", t: features_in, s: {category: "hospital", region: "Izmir"}}
+
+  - {cc: PK, q: "provinces of Pakistan", t: children, s: {level: state, parent: "Pakistan"}}
+  - {cc: PK, q: "districts of Punjab", t: children, s: {level: district, parent: "Punjab"}}
+  - {cc: PK, q: "Lahore", t: lookup_place, s: {anchor: "Lahore"}, src: {anchor: overture}}
+
+  - {cc: VN, q: "provinces bordering Hanoi", t: neighbors, s: {level: state, of: "Hanoi"}}
+  - {cc: VN, q: "Da Nang", t: lookup_place, s: {anchor: "Da Nang"}, src: {anchor: overture}}
+  - {cc: VN, q: "schools in Ho Chi Minh City", t: features_in, s: {category: "school", region: "Ho Chi Minh City"}}
+
+  - {cc: PE, q: "regions of Peru", t: children, s: {level: state, parent: "Peru"}}
+  - {cc: PE, q: "provinces of Cusco", t: children, s: {level: district, parent: "Cusco"}}
+  - {cc: PE, q: "Arequipa", t: lookup_place, s: {anchor: "Arequipa"}, src: {anchor: overture}}
+
+  - {cc: CL, q: "regions of Chile", t: children, s: {level: state, parent: "Chile"}}
+  - {cc: CL, q: "coastal regions of Chile", t: children_with_predicate, s: {pred: coastal, level: state, parent: "Chile"}}
+  - {cc: CL, q: "Valparaiso", t: lookup_place, s: {anchor: "Valparaiso"}, src: {anchor: overture}}
+
+  - {cc: SE, q: "counties of Sweden", t: children, s: {level: state, parent: "Sweden"}, n: "Swedish counties (län) are Overture regions."}
+  - {cc: SE, q: "municipalities of Skane", t: children, s: {level: district, parent: "Skane"}}
+  - {cc: SE, q: "Gothenburg", t: lookup_place, s: {anchor: "Gothenburg"}, src: {anchor: overture}}
+
+  - {cc: NL, q: "provinces of the Netherlands", t: children, s: {level: state, parent: "Netherlands"}}
+  - {cc: NL, q: "coastal provinces of the Netherlands", t: children_with_predicate, s: {pred: coastal, level: state, parent: "Netherlands"}}
+  - {cc: NL, q: "municipalities of Utrecht", t: children, s: {level: district, parent: "Utrecht"}}
+  - {cc: NL, q: "Amsterdam and Rotterdam", t: union, s: {a: "Amsterdam", b: "Rotterdam"}}
+
+  - {cc: PT, q: "districts of Portugal", t: children, s: {level: state, parent: "Portugal"}}
+  - {cc: PT, q: "Porto", t: lookup_place, s: {anchor: "Porto"}, src: {anchor: overture}}
+  - {cc: PT, q: "10 km around Coimbra", t: buffer, s: {distance: 10000, target: "Coimbra"}, src: {target: overture}}
+
+  - {cc: TZ, q: "regions of Tanzania", t: children, s: {level: state, parent: "Tanzania"}}
+  - {cc: TZ, q: "regions bordering Dodoma", t: neighbors, s: {level: state, of: "Dodoma"}}
+  - {cc: TZ, q: "hospitals in Dar es Salaam", t: features_in, s: {category: "hospital", region: "Dar es Salaam"}}
+
+  - {cc: NZ, q: "regions of New Zealand", t: children, s: {level: state, parent: "New Zealand"}}
+  - {cc: NZ, q: "Auckland", t: lookup_place, s: {anchor: "Auckland"}, src: {anchor: overture}}
+  - {cc: NZ, q: "districts of Canterbury", t: children, s: {level: district, parent: "Canterbury"}}
+
+  - {cc: CH, q: "cantons of Switzerland", t: children, s: {level: state, parent: "Switzerland"}}
+  - {cc: UA, q: "oblasts of Ukraine", t: children, s: {level: state, parent: "Ukraine"}}

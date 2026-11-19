@@ -86,8 +86,19 @@ def test_level_words_skip_the_model():
     assert d._level_word("local government areas", levels) == "district"
     assert d._level_word("states and districts", levels) is None
     assert d._level_word("municipalities", levels) == "city"
-    d.view_country = "MX"
+    # Words of the data belong only to their level in the view country.
+    d.data_level_words = {"state": ["county", "counties"], "district": ["constituency", "constituencies"]}
+    assert d._level_word("counties", levels) == "state"
+    d.data_level_words = {"district": ["province", "provinces", "municipality", "municipalities"]}
+    assert d._level_word("provinces", levels) == "district"
     assert d._level_word("municipalities", levels) == "district"
+    # A word of the config is not used from the data.
+    d.view_country = "UA"
+    d.data_level_words = {"state": ["province", "provinces"], "district": ["region", "regions"]}
+    assert d._level_word("regions", levels) == "state"
+    assert d._level_word("raions", levels) == "district"
+    d.view_country = None
+    d.data_level_words = {}
     r = d.fill_closed_slot("counties", "admin_level", "admin_levels")
     assert (r.value, r.impl) == ("district", "keyword")
 
@@ -103,3 +114,23 @@ def test_street_word_typo_needs_a_weak_gazetteer_match():
     assert src("Minas Gerais", 1.4) == "overture"
     assert src("Minas Gerais", 0.5) == "photon"
     assert src("Qutub Minar", 1.4) == "photon"
+
+
+def test_local_level_words():
+    import duckdb
+
+    from geoparse.execute.data import local_level_words, plural
+
+    assert [plural(w) for w in ["county", "province", "parish", "federal subject", "day"]] == [
+        "counties", "provinces", "parishes", "federal subjects", "days"]
+    con = duckdb.connect()
+    con.execute("CREATE TABLE divisions (country VARCHAR, subtype VARCHAR, local_type VARCHAR)")
+    con.execute("""INSERT INTO divisions VALUES ('KE', 'region', 'county'), ('KE', 'county', 'constituency'),
+        ('JP', 'region', 'prefecture'), ('JP', 'county', 'city'),
+        ('IN', 'region', 'state'), ('IN', 'county', 'County'), ('IN', 'county', 'county'), ('IN', 'county', 'county'),
+        ('IN', 'county', 'county'), ('IN', 'county', 'county'), ('IN', 'county', 'state')""")
+    assert local_level_words(con) == {
+        "IN": {"district": ["county", "counties"], "state": ["state", "states"]},
+        "JP": {"state": ["prefecture", "prefectures"]},
+        "KE": {"district": ["constituency", "constituencies"], "state": ["county", "counties"]},
+    }

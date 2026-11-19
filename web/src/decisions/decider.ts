@@ -28,9 +28,11 @@ function best(scores: Record<string, number>): [string, number] {
 export class Decider {
   trace: TraceRecord[] = [];
   /** Map view (xmin, ymin, xmax, ymax) of the parse and the country of its center. Parser.parse sets them on the
-   * fork; the gazetteer uses the view, the admin level words use the country. */
+   * fork; the gazetteer uses the view, the admin level words use the country. dataLevelWords: the level words of
+   * that country in the data (manifest level_words). */
   view: number[] | null = null;
   viewCountry: string | null = null;
+  dataLevelWords: Record<string, string[]> = {};
   constructor(public bundle: Bundle, public xenc: CrossEncoder) {}
 
   fork(): Decider { return new Decider(this.bundle, this.xenc); }
@@ -144,9 +146,12 @@ export class Decider {
   }
 
   /** Port of Decider._level_word: the level whose keyword is in the text with no typo, if exactly one level has one.
-   * The level words of the view country (policy.countries.<CC>.level_words) belong only to their level. */
+   * The level words of the view country (policy.countries.<CC>.level_words and the data) belong only to their level. */
   levelWord(text: string, levels: Record<string, string>): string | null {
-    const words: Record<string, string[]> = countryPolicy(this.bundle.config.policy, this.viewCountry).level_words ?? {};
+    const cfgWords: Record<string, string[]> = countryPolicy(this.bundle.config.policy, this.viewCountry).level_words ?? {};
+    const cfgOwn = new Set(Object.values(cfgWords).flat());
+    const words: Record<string, string[]> = Object.fromEntries(Object.keys(levels).map((k) =>
+      [k, [...(cfgWords[k] ?? []), ...(this.dataLevelWords[k] ?? []).filter((w) => !cfgOwn.has(w))]]));
     const own = new Set(Object.values(words).flat());
     const hits = Object.keys(levels).filter((k) => keywordHits(text,
       [...(this.bundle.options.admin_levels[k]?.keywords ?? []).filter((w: string) => !own.has(w)), ...(words[k] ?? [])], false));

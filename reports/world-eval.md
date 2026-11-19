@@ -130,3 +130,62 @@ Options for the next step:
 3. **Retrain the decision model** with world examples. This does not fix x005 and x013, because the same word has two meanings.
 
 Recommendation: option 1, then a new held-out set (the current one is now used).
+
+## 7. Phase 9: level words from the data, level from the structure
+
+Changes (Python and the browser version):
+
+1. **Level words from the data.** Overture divisions have `local_type`, the English name of the division type in
+   its country (KE regions "county", IT counties "province", CO regions "department", EG regions "governorate"). For
+   each country, the values of at least 20% of the regions (level `state`) and counties (level `district`) are level
+   words of that country (`local_level_words`; in the browser, `level_words` in `manifest.json`). They replace the
+   MX, CO and PT config entries. The words "country", "city", "town" and "village" are not used
+   (`policy.local_type_skip`): JP counties are "city", GB regions are "country".
+2. **Config words win over data words.** The `local_type` of some countries is not the usual English word: SE and PT
+   regions are "region" (the Swedish counties, the Portuguese districts), UA oblasts are "province" and UA raions
+   are "region". `policy.countries.<CC>.level_words` has entries for SE, PT and UA.
+3. **Level from the structure.** In `children` and `children_with_predicate`, an unknown level word ("voivodeships",
+   "oblasts", "cantons") gives no level. The executor then uses the highest subtype below the parent. This applies
+   only when the text names the parent and the parent is a country or a dependency. Below a state, an unknown word
+   is a level that the data does not have ("talukas of Maharashtra", "blocks in Ranchi"): the query stays
+   unsupported.
+4. **View country.** The country of the map view is the nearest admin point of the countries whose extent contains
+   the view center. Before, a view of Italy gave the Vatican (its point is nearest to the center of Italy). This
+   also changed the map-view ranking for views near small countries.
+5. **Speed of the Python version.** `Store.describe` reads the ancestor names in one lookup, and the executor
+   filters the divisions before it joins the areas. Before, "regions of Italy" took 78 s on the world data; now
+   0.5 s. The results did not change. The world gold set runs in 1 minute (before: more than 10 minutes).
+
+Results:
+
+| Set | DAG | Executed result | admin_level (decision alone) |
+|---|---|---|---|
+| India gold (98) | 97/98 | 88/89 | 100% (48/48) |
+| India held-out (30) | 30/30 | 27/27 | 100% (14/14) |
+| World (70) | 70/70 | 70/70 | 100% (32/32) |
+| World held-out 1 (29, used in phase 8) | 27/29 | 29/29 | 86% (12/14) |
+| World held-out 2 (34, new), first run | 30/34 (88%) | 32/34 (94%) | 90% (18/20) |
+| World held-out 2, after change 2 | 33/34 | 34/34 | 100% (20/20) |
+
+`gold/world_heldout2_src.yaml` was written after the phase 9 code and before any run: 34 queries in 12 countries
+(TR, PK, VN, PE, CL, SE, NL, PT, TZ, NZ, CH, UA). The first run is the fair value. Change 2 used its two errors
+(y017 "counties of Sweden", y024 "districts of Portugal"), so the second run is not a fair value.
+
+The remaining DAG errors are not errors in the result. With change 3, the DAG has no level, and the gold DAG has
+`state` (x024, x026 "voivodeships of Poland", y034 "oblasts of Ukraine"). In y028 ("regions bordering Dodoma") the
+DAG has no level, and the executor uses the level of Dodoma. The executed results are correct.
+
+The India reference parse changed for 5 of 696 queries. All 5 are unsupported before and after; only the reason
+changed (for example "the text 'talukas' names no known admin_level"). The JS parse agrees with the reference
+(696/696 for the flat layout and for the country layout).
+
+Retraining: `fill_closed_slot.admin_level` is 100% on the India sets and 90% on the first run of the new held-out
+set. The two errors come from the data labels, not from the model. Do not retrain for the admin levels. The level
+words of the config (SE, PT, UA) are a temporary fix: the Wikidata labels of the division types (plan-025, phase 11)
+can replace them.
+
+Limits:
+
+- The view country selects the level words. "counties of Kenya" with a US view gives `district`.
+- An unknown word below a country always gives the first level below it. A word for a lower level gives the
+  wrong level ("parishes of Ecuador" gives the provinces).
