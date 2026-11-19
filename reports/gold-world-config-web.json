@@ -114,11 +114,11 @@
    "decision": "fill_closed_slot.admin_level",
    "depth": 0,
    "family": "hierarchy",
-   "correct": false,
-   "got": "country",
+   "correct": true,
+   "got": "district",
    "gold": "district",
    "text": "counties",
-   "conf": 0.999004
+   "conf": 1.0
   },
   {
    "id": "w002",
@@ -190,7 +190,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9874700000000001
+   "conf": 1.0
   },
   {
    "id": "w003",
@@ -271,11 +271,11 @@
    "decision": "fill_closed_slot.admin_level",
    "depth": 0,
    "family": "predicate_filter",
-   "correct": false,
-   "got": "country",
+   "correct": true,
+   "got": "district",
    "gold": "district",
    "text": "counties",
-   "conf": 0.999004
+   "conf": 1.0
   },
   {
    "id": "w004",
@@ -419,7 +419,7 @@
    "got": "state",
    "gold": "state",
    "text": "state",
-   "conf": 0.9948952
+   "conf": 1.0
   },
   {
    "id": "w006",
@@ -618,11 +618,11 @@
    "decision": "fill_closed_slot.admin_level",
    "depth": 0,
    "family": "hierarchy",
-   "correct": false,
-   "got": "country",
+   "correct": true,
+   "got": "district",
    "gold": "district",
    "text": "counties",
-   "conf": 0.999004
+   "conf": 1.0
   },
   {
    "id": "w009",
@@ -1183,7 +1183,7 @@
    "got": "state",
    "gold": "state",
    "text": "regions",
-   "conf": 0.9968092000000001
+   "conf": 1.0
   },
   {
    "id": "w017",
@@ -1412,7 +1412,7 @@
    "got": "country",
    "gold": "country",
    "text": "countries",
-   "conf": 0.995856
+   "conf": 1.0
   },
   {
    "id": "w020",
@@ -1602,7 +1602,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9889288
+   "conf": 1.0
   },
   {
    "id": "w023",
@@ -1674,7 +1674,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9874700000000001
+   "conf": 1.0
   },
   {
    "id": "w024",
@@ -1831,7 +1831,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9889288
+   "conf": 1.0
   },
   {
    "id": "w026",
@@ -2100,8 +2100,8 @@
    "decision": "select_source",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "got": "photon",
+   "correct": true,
+   "got": "overture",
    "gold": "overture",
    "text": "Minas Gerais",
    "conf": 0.8
@@ -2165,7 +2165,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9874700000000001
+   "conf": 1.0
   },
   {
    "id": "w031",
@@ -2250,7 +2250,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9889288
+   "conf": 1.0
   },
   {
    "id": "w032",
@@ -2400,7 +2400,7 @@
    "got": "city",
    "gold": "city",
    "text": "cities",
-   "conf": 0.9997996
+   "conf": 1.0
   },
   {
    "id": "w034",
@@ -2494,7 +2494,7 @@
    "got": "state",
    "gold": "state",
    "text": "state",
-   "conf": 0.9948952
+   "conf": 1.0
   },
   {
    "id": "w035",
@@ -2680,11 +2680,11 @@
    "decision": "fill_closed_slot.admin_level",
    "depth": 0,
    "family": "hierarchy",
-   "correct": false,
-   "got": "none",
+   "correct": true,
+   "got": "state",
    "gold": "state",
    "text": "prefectures",
-   "conf": 0.8778324999999999
+   "conf": 1.0
   },
   {
    "id": "w038",
@@ -2841,7 +2841,7 @@
    "got": "state",
    "gold": "state",
    "text": "prefectures",
-   "conf": 0.42949960000000004
+   "conf": 1.0
   },
   {
    "id": "w040",
@@ -3114,7 +3114,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9889288
+   "conf": 1.0
   },
   {
    "id": "w044",
@@ -3186,7 +3186,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9874700000000001
+   "conf": 1.0
   },
   {
    "id": "w045",
@@ -3330,7 +3330,7 @@
    "got": "state",
    "gold": "state",
    "text": "state",
-   "conf": 0.9948952
+   "conf": 1.0
   },
   {
    "id": "w047",
@@ -3592,7 +3592,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9874700000000001
+   "conf": 1.0
   },
   {
    "id": "w051",
@@ -3664,7 +3664,7 @@
    "got": "district",
    "gold": "district",
    "text": "local government areas",
-   "conf": 0.18928119999999998
+   "conf": 1.0
   },
   {
    "id": "w052",
@@ -3749,7 +3749,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9889288
+   "conf": 1.0
   },
   {
    "id": "w053",
@@ -3893,7 +3893,7 @@
    "got": "state",
    "gold": "state",
    "text": "state",
-   "conf": 0.9948952
+   "conf": 1.0
   },
   {
    "id": "w055",
@@ -4096,7 +4096,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9874700000000001
+   "conf": 1.0
   },
   {
    "id": "w058",
@@ -4168,7 +4168,7 @@
    "got": "district",
    "gold": "district",
    "text": "municipalities",
-   "conf": 0.12376600000000003
+   "conf": 1.0
   },
   {
    "id": "w059",
@@ -4253,7 +4253,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9889288
+   "conf": 1.0
   },
   {
    "id": "w060",
@@ -4611,7 +4611,7 @@
    "got": "state",
    "gold": "state",
    "text": "provinces",
-   "conf": 0.9990604000000001
+   "conf": 1.0
   },
   {
    "id": "w065",
@@ -4683,7 +4683,7 @@
    "got": "state",
    "gold": "state",
    "text": "provinces",
-   "conf": 0.9974169999999998
+   "conf": 1.0
   },
   {
    "id": "w066",
@@ -4768,7 +4768,7 @@
    "got": "state",
    "gold": "state",
    "text": "provinces",
-   "conf": 0.9990604000000001
+   "conf": 1.0
   },
   {
    "id": "w067",
@@ -4912,7 +4912,7 @@
    "got": "country",
    "gold": "country",
    "text": "countries",
-   "conf": 0.995856
+   "conf": 1.0
   },
   {
    "id": "w069",
@@ -5006,7 +5006,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 7.488260746002197,
+   "latency_s": 8.581093072891235,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5025,19 +5025,17 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2831931114196777,
+   "latency_s": 2.0125668048858643,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
-   "slots_ok": false,
-   "diffs": [
-    "level: expected 'district', got 'country'"
-   ],
-   "dag_ok": false,
-   "exec_ok": false,
-   "exec_note": "0 ids vs 17"
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "17 ids vs 17"
   },
   {
    "id": "w003",
@@ -5046,7 +5044,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.9454219341278076,
+   "latency_s": 1.3412232398986816,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5065,19 +5063,17 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.9754300117492676,
+   "latency_s": 3.0747268199920654,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children_with_predicate",
    "path": "complex",
-   "slots_ok": false,
-   "diffs": [
-    "level: expected 'district', got 'country'"
-   ],
-   "dag_ok": false,
-   "exec_ok": false,
-   "exec_note": "0 ids vs 6"
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "6 ids vs 6"
   },
   {
    "id": "w005",
@@ -5086,7 +5082,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 7.827791929244995,
+   "latency_s": 13.284607887268066,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5105,7 +5101,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.6274991035461426,
+   "latency_s": 3.563314914703369,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5124,7 +5120,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.525128364562988,
+   "latency_s": 4.80515193939209,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5143,7 +5139,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 6.530240058898926,
+   "latency_s": 3.6751418113708496,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5162,19 +5158,17 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5204179286956787,
+   "latency_s": 2.0909368991851807,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
-   "slots_ok": false,
-   "diffs": [
-    "level: expected 'district', got 'country'"
-   ],
-   "dag_ok": false,
-   "exec_ok": false,
-   "exec_note": "0 ids vs 22"
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "22 ids vs 22"
   },
   {
    "id": "w010",
@@ -5183,7 +5177,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.102991819381714,
+   "latency_s": 6.466849088668823,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -5202,7 +5196,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.98774790763855,
+   "latency_s": 3.13364315032959,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5221,7 +5215,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.701357841491699,
+   "latency_s": 2.489722967147827,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -5240,7 +5234,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.5977180004119873,
+   "latency_s": 1.8597288131713867,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -5259,7 +5253,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.5921621322631836,
+   "latency_s": 2.6932790279388428,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5278,7 +5272,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.635683059692383,
+   "latency_s": 3.7431929111480713,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5297,7 +5291,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5475828647613525,
+   "latency_s": 2.2468559741973877,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -5316,7 +5310,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 6.800617933273315,
+   "latency_s": 9.764117240905762,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5335,7 +5329,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 6.908732175827026,
+   "latency_s": 9.097766160964966,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5354,7 +5348,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.7204720973968506,
+   "latency_s": 10.051344871520996,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5373,7 +5367,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 5.899447917938232,
+   "latency_s": 4.159693956375122,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5392,7 +5386,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.6401638984680176,
+   "latency_s": 1.870539903640747,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5411,7 +5405,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.5763540267944336,
+   "latency_s": 1.9187169075012207,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -5430,7 +5424,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5873429775238037,
+   "latency_s": 1.115394115447998,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5449,7 +5443,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.1636390686035156,
+   "latency_s": 3.5260488986968994,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5468,7 +5462,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 7.230817079544067,
+   "latency_s": 1.2277131080627441,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5487,7 +5481,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.5842397212982178,
+   "latency_s": 11.418426036834717,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -5506,7 +5500,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 5.030628681182861,
+   "latency_s": 9.429350852966309,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5525,7 +5519,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.783365964889526,
+   "latency_s": 2.318530797958374,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -5544,7 +5538,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.2908477783203125,
+   "latency_s": 1.9680030345916748,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5563,7 +5557,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.7669310569763184,
+   "latency_s": 2.6045010089874268,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5571,8 +5565,8 @@
    "path": "simple",
    "slots_ok": true,
    "diffs": [],
-   "dag_ok": false,
-   "exec_ok": false,
+   "dag_ok": true,
+   "exec_ok": true,
    "exec_note": "1 ids vs 1"
   },
   {
@@ -5582,7 +5576,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 9.870813369750977,
+   "latency_s": 3.867331027984619,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5601,7 +5595,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.9712750911712646,
+   "latency_s": 2.6869759559631348,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -5620,7 +5614,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.8995609283447266,
+   "latency_s": 3.712533950805664,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5639,7 +5633,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.786188125610352,
+   "latency_s": 1.4343039989471436,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5647,9 +5641,9 @@
    "path": "complex",
    "slots_ok": true,
    "diffs": [],
-   "dag_ok": false,
-   "exec_ok": false,
-   "exec_note": "0 ids vs 1"
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
   },
   {
    "id": "w035",
@@ -5658,7 +5652,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 10.185334920883179,
+   "latency_s": 12.065865278244019,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5677,7 +5671,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.8548972606658936,
+   "latency_s": 4.604055166244507,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5696,7 +5690,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.8634660243988037,
+   "latency_s": 2.03336501121521,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5715,19 +5709,17 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3008289337158203,
-   "model_calls": 6,
+   "latency_s": 2.9682669639587402,
+   "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "neighbors",
    "path": "complex",
-   "slots_ok": false,
-   "diffs": [
-    "level: expected 'state', got 'none'"
-   ],
-   "dag_ok": false,
-   "exec_ok": false,
-   "exec_note": "12 ids vs 6"
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "6 ids vs 6"
   },
   {
    "id": "w039",
@@ -5736,7 +5728,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.312095880508423,
+   "latency_s": 2.8599507808685303,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5753,22 +5745,19 @@
    "query": "landlocked prefectures of Japan",
    "family": "predicate_filter",
    "depth": 0,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 0.7178771495819092,
-   "model_calls": 3,
-   "requests_in_sequence": 1,
-   "unsupported": {
-    "reason": "no split of the text gives valid values for the slots of children_with_predicate",
-    "decision": "fill_closed_slot",
-    "depth": 0,
-    "text": "landlocked prefectures of Japan"
-   },
-   "got_template": null,
-   "path": null,
-   "slots_ok": false,
-   "dag_ok": false,
-   "exec_ok": false
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.7919256687164307,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_with_predicate",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "8 ids vs 8"
   },
   {
    "id": "w041",
@@ -5777,7 +5766,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 5.363962650299072,
+   "latency_s": 5.585069179534912,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5796,7 +5785,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 6.209320068359375,
+   "latency_s": 15.437688112258911,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5815,7 +5804,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 6.643968105316162,
+   "latency_s": 7.565906763076782,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5834,7 +5823,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.425981283187866,
+   "latency_s": 2.884866952896118,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5853,7 +5842,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.746403694152832,
+   "latency_s": 8.605939865112305,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5872,7 +5861,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.8516130447387695,
+   "latency_s": 24.770451068878174,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5891,7 +5880,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.9255118370056152,
+   "latency_s": 5.47006893157959,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5910,7 +5899,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.0568768978118896,
+   "latency_s": 2.3578238487243652,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5929,7 +5918,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 5.80708384513855,
+   "latency_s": 2.9000608921051025,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5948,7 +5937,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.20074200630188,
+   "latency_s": 2.5415780544281006,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5967,7 +5956,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.8944146633148193,
+   "latency_s": 2.3293259143829346,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -5984,22 +5973,19 @@
    "query": "local government areas of Lagos",
    "family": "hierarchy",
    "depth": 0,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 0.2812960147857666,
-   "model_calls": 2,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.0644540786743164,
+   "model_calls": 4,
    "requests_in_sequence": 1,
-   "unsupported": {
-    "reason": "the text 'local government areas' names no known admin_level",
-    "decision": "fill_closed_slot",
-    "depth": 0,
-    "text": "local government areas of Lagos"
-   },
-   "got_template": null,
-   "path": null,
-   "slots_ok": false,
-   "dag_ok": false,
-   "exec_ok": false
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "20 ids vs 20"
   },
   {
    "id": "w053",
@@ -6008,7 +5994,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.1310787200927734,
+   "latency_s": 1.9611780643463135,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -6027,7 +6013,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.058089017868042,
+   "latency_s": 8.799875020980835,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -6046,7 +6032,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.8631300926208496,
+   "latency_s": 2.329483985900879,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -6065,7 +6051,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 6.447109937667847,
+   "latency_s": 2.126708984375,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -6084,7 +6070,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 8.648313999176025,
+   "latency_s": 2.885970115661621,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -6103,7 +6089,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.341146230697632,
+   "latency_s": 2.227396249771118,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -6120,22 +6106,19 @@
    "query": "municipalities of Yucatan",
    "family": "hierarchy",
    "depth": 0,
-   "template_ok": false,
-   "ok": false,
-   "latency_s": 0.19847512245178223,
-   "model_calls": 2,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.8742101192474365,
+   "model_calls": 4,
    "requests_in_sequence": 1,
-   "unsupported": {
-    "reason": "the text 'municipalities' names no known admin_level",
-    "decision": "fill_closed_slot",
-    "depth": 0,
-    "text": "municipalities of Yucatan"
-   },
-   "got_template": null,
-   "path": null,
-   "slots_ok": false,
-   "dag_ok": false,
-   "exec_ok": false
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "106 ids vs 106"
   },
   {
    "id": "w060",
@@ -6144,7 +6127,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.744260311126709,
+   "latency_s": 7.007354021072388,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -6163,7 +6146,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 9.059683084487915,
+   "latency_s": 1.9689431190490723,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -6182,7 +6165,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.58649206161499,
+   "latency_s": 3.4530789852142334,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -6201,7 +6184,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.045430898666382,
+   "latency_s": 3.6141040325164795,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -6220,7 +6203,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.2900381088256836,
+   "latency_s": 15.427301168441772,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -6239,7 +6222,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.800584077835083,
+   "latency_s": 2.6375091075897217,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -6258,7 +6241,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.2573630809783936,
+   "latency_s": 2.187443971633911,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -6277,7 +6260,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6099340915679932,
+   "latency_s": 7.768877983093262,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -6296,7 +6279,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 4.920264005661011,
+   "latency_s": 14.983906030654907,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -6315,7 +6298,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.194406032562256,
+   "latency_s": 6.7028350830078125,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -6334,7 +6317,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.1026339530944824,
+   "latency_s": 6.187690019607544,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -6370,11 +6353,11 @@
   },
   "select_source": {
    "n": 23,
-   "correct": 22
+   "correct": 23
   },
   "fill_closed_slot.admin_level": {
    "n": 32,
-   "correct": 28
+   "correct": 32
   },
   "fill_closed_slot.attr": {
    "n": 1,
@@ -6399,7 +6382,7 @@
   "pipeline": {
    "attribute": {
     "n": 1,
-    "dag_ok": 0
+    "dag_ok": 1
    },
    "features": {
     "n": 10,
@@ -6407,11 +6390,11 @@
    },
    "hierarchy": {
     "n": 23,
-    "dag_ok": 18
+    "dag_ok": 23
    },
    "lookup": {
     "n": 16,
-    "dag_ok": 15
+    "dag_ok": 16
    },
    "modifier": {
     "n": 7,
@@ -6419,7 +6402,7 @@
    },
    "predicate_filter": {
     "n": 8,
-    "dag_ok": 6
+    "dag_ok": 8
    },
    "set_algebra": {
     "n": 5,
@@ -6427,7 +6410,7 @@
    },
    "ALL": {
     "n": 70,
-    "dag_ok": 61
+    "dag_ok": 70
    }
   }
  }

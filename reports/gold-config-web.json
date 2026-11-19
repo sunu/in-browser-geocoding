@@ -1599,7 +1599,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g024",
@@ -1671,7 +1671,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9889288
+   "conf": 1.0
   },
   {
    "id": "g025",
@@ -1743,7 +1743,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g026",
@@ -1815,7 +1815,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g027",
@@ -1887,7 +1887,7 @@
    "got": "district",
    "gold": "district",
    "text": "dists",
-   "conf": 0.9999256
+   "conf": 1.0
   },
   {
    "id": "g028",
@@ -1959,7 +1959,7 @@
    "got": "state",
    "gold": "state",
    "text": "state",
-   "conf": 0.9948952
+   "conf": 1.0
   },
   {
    "id": "g029",
@@ -2031,7 +2031,7 @@
    "got": "district",
    "gold": "district",
    "text": "district",
-   "conf": 0.9999376
+   "conf": 1.0
   },
   {
    "id": "g030",
@@ -2103,7 +2103,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9874700000000001
+   "conf": 1.0
   },
   {
    "id": "g031",
@@ -2175,7 +2175,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9980761666666667
+   "conf": 1.0
   },
   {
    "id": "g032",
@@ -2306,7 +2306,7 @@
    "got": "country",
    "gold": "country",
    "text": "countries",
-   "conf": 0.995856
+   "conf": 1.0
   },
   {
    "id": "g034",
@@ -2391,7 +2391,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9889288
+   "conf": 1.0
   },
   {
    "id": "g035",
@@ -2476,7 +2476,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g036",
@@ -2561,7 +2561,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g037",
@@ -2646,7 +2646,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9889288
+   "conf": 1.0
   },
   {
    "id": "g038",
@@ -2731,7 +2731,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g039",
@@ -2816,7 +2816,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g040",
@@ -2901,7 +2901,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9889288
+   "conf": 1.0
   },
   {
    "id": "g041",
@@ -2986,7 +2986,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g042",
@@ -3060,7 +3060,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g043",
@@ -3145,7 +3145,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g044",
@@ -5476,7 +5476,7 @@
    "got": "city",
    "gold": "city",
    "text": "cities",
-   "conf": 0.9997996
+   "conf": 1.0
   },
   {
    "id": "g075",
@@ -5576,7 +5576,7 @@
    "got": "city",
    "gold": "city",
    "text": "cities",
-   "conf": 0.9997996
+   "conf": 1.0
   },
   {
    "id": "g076",
@@ -5676,7 +5676,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g077",
@@ -5776,7 +5776,7 @@
    "got": "city",
    "gold": "city",
    "text": "cities",
-   "conf": 0.9997996
+   "conf": 1.0
   },
   {
    "id": "g078",
@@ -5876,7 +5876,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g079",
@@ -5976,7 +5976,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9889288
+   "conf": 1.0
   },
   {
    "id": "g080",
@@ -6076,7 +6076,7 @@
    "got": "city",
    "gold": "city",
    "text": "towns",
-   "conf": 0.999718
+   "conf": 1.0
   },
   {
    "id": "g081",
@@ -6176,7 +6176,7 @@
    "got": "city",
    "gold": "city",
    "text": "cities",
-   "conf": 0.9997996
+   "conf": 1.0
   },
   {
    "id": "g082",
@@ -6276,7 +6276,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g083",
@@ -6376,7 +6376,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g084",
@@ -6557,7 +6557,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g085",
@@ -6714,7 +6714,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g086",
@@ -6847,7 +6847,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g087",
@@ -7004,7 +7004,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g088",
@@ -7150,7 +7150,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9889288
+   "conf": 1.0
   },
   {
    "id": "g089",
@@ -7222,7 +7222,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g090",
@@ -7294,7 +7294,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9874700000000001
+   "conf": 1.0
   },
   {
    "id": "g090",
@@ -7379,7 +7379,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g091",
@@ -7451,7 +7451,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9874700000000001
+   "conf": 1.0
   },
   {
    "id": "g091",
@@ -7523,7 +7523,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9980761666666667
+   "conf": 1.0
   },
   {
    "id": "g092",
@@ -7608,7 +7608,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g092",
@@ -7680,7 +7680,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9874700000000001
+   "conf": 1.0
   },
   {
    "id": "g094",
@@ -7741,7 +7741,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g095",
@@ -7815,7 +7815,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g096",
@@ -7882,7 +7882,7 @@
    "got": "city",
    "gold": "city",
    "text": "cities",
-   "conf": 0.9997996
+   "conf": 1.0
   },
   {
    "id": "g096",
@@ -7976,7 +7976,7 @@
    "got": "state",
    "gold": "state",
    "text": "states",
-   "conf": 0.9874700000000001
+   "conf": 1.0
   },
   {
    "id": "g096",
@@ -8133,7 +8133,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g097",
@@ -8277,7 +8277,7 @@
    "got": "district",
    "gold": "district",
    "text": "districts",
-   "conf": 0.9998428
+   "conf": 1.0
   },
   {
    "id": "g098",
@@ -8299,7 +8299,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.23231983184814453,
+   "latency_s": 0.353395938873291,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8318,7 +8318,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5942771434783936,
+   "latency_s": 0.2509019374847412,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8337,7 +8337,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.44931602478027344,
+   "latency_s": 0.44484400749206543,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8356,7 +8356,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.29453611373901367,
+   "latency_s": 0.5145630836486816,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8375,7 +8375,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.42053699493408203,
+   "latency_s": 0.37927889823913574,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8394,7 +8394,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6204710006713867,
+   "latency_s": 0.5058128833770752,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8413,7 +8413,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8275430202484131,
+   "latency_s": 0.7232871055603027,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8432,7 +8432,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5756518840789795,
+   "latency_s": 0.5656840801239014,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8451,7 +8451,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7718570232391357,
+   "latency_s": 0.6685612201690674,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8470,7 +8470,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.00010704994201660156,
+   "latency_s": 0.0001239776611328125,
    "model_calls": 0,
    "requests_in_sequence": 0,
    "unsupported": null,
@@ -8489,7 +8489,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.00013113021850585938,
+   "latency_s": 0.00010895729064941406,
    "model_calls": 0,
    "requests_in_sequence": 0,
    "unsupported": null,
@@ -8508,7 +8508,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.31768202781677246,
+   "latency_s": 0.27468419075012207,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8527,7 +8527,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4457528591156006,
+   "latency_s": 0.3788440227508545,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8546,7 +8546,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.46312689781188965,
+   "latency_s": 0.4021949768066406,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8565,7 +8565,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4588589668273926,
+   "latency_s": 0.39802122116088867,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8584,7 +8584,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.52805495262146,
+   "latency_s": 0.4867572784423828,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8603,7 +8603,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.539398193359375,
+   "latency_s": 0.502892017364502,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8622,7 +8622,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5390398502349854,
+   "latency_s": 0.5069258213043213,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8641,7 +8641,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5565869808197021,
+   "latency_s": 0.5382030010223389,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8660,7 +8660,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5998220443725586,
+   "latency_s": 0.5729169845581055,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8679,7 +8679,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5397219657897949,
+   "latency_s": 0.536095142364502,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8698,7 +8698,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5843877792358398,
+   "latency_s": 0.5851688385009766,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8717,7 +8717,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5326340198516846,
+   "latency_s": 0.5405051708221436,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8736,7 +8736,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5970189571380615,
+   "latency_s": 0.5485618114471436,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8755,7 +8755,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5616440773010254,
+   "latency_s": 0.5141739845275879,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8774,7 +8774,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5595221519470215,
+   "latency_s": 0.5064740180969238,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8793,7 +8793,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6117138862609863,
+   "latency_s": 0.5519752502441406,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8812,7 +8812,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4587419033050537,
+   "latency_s": 0.4627079963684082,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8831,7 +8831,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.48087000846862793,
+   "latency_s": 0.45455002784729004,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8850,7 +8850,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4970438480377197,
+   "latency_s": 0.46104001998901367,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8869,7 +8869,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.47109317779541016,
+   "latency_s": 0.43108510971069336,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8888,7 +8888,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4134399890899658,
+   "latency_s": 0.3677067756652832,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8907,7 +8907,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4835801124572754,
+   "latency_s": 0.497844934463501,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8926,7 +8926,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.48868417739868164,
+   "latency_s": 0.45563483238220215,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -8945,7 +8945,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.581597089767456,
+   "latency_s": 0.540747880935669,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8964,7 +8964,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7139160633087158,
+   "latency_s": 0.6439008712768555,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -8983,7 +8983,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8474092483520508,
+   "latency_s": 0.7105998992919922,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9002,7 +9002,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7373261451721191,
+   "latency_s": 0.6881191730499268,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9021,7 +9021,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7439789772033691,
+   "latency_s": 0.6891801357269287,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9040,7 +9040,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7722001075744629,
+   "latency_s": 0.7469091415405273,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9059,7 +9059,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7631099224090576,
+   "latency_s": 0.7773940563201904,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9078,7 +9078,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7527720928192139,
+   "latency_s": 0.6995651721954346,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9097,7 +9097,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8332767486572266,
+   "latency_s": 0.8128399848937988,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9116,7 +9116,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7948119640350342,
+   "latency_s": 0.7994511127471924,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9135,7 +9135,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7254319190979004,
+   "latency_s": 0.7366011142730713,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9154,7 +9154,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6886050701141357,
+   "latency_s": 0.7528760433197021,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9173,7 +9173,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6822516918182373,
+   "latency_s": 0.7229681015014648,
    "model_calls": 8,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9192,7 +9192,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.627418041229248,
+   "latency_s": 0.684643030166626,
    "model_calls": 8,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9211,7 +9211,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6758217811584473,
+   "latency_s": 0.7034308910369873,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9230,7 +9230,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6309289932250977,
+   "latency_s": 0.6354379653930664,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9249,7 +9249,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.581787109375,
+   "latency_s": 0.6031270027160645,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9268,7 +9268,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.4985778331756592,
+   "latency_s": 0.5025749206542969,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9287,7 +9287,7 @@
    "depth": 1,
    "template_ok": false,
    "ok": false,
-   "latency_s": 0.5907139778137207,
+   "latency_s": 0.6016781330108643,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": {
@@ -9309,7 +9309,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1814930438995361,
+   "latency_s": 1.2420759201049805,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9328,7 +9328,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6219120025634766,
+   "latency_s": 0.6477179527282715,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9347,7 +9347,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5850808620452881,
+   "latency_s": 0.6315751075744629,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9366,7 +9366,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6876909732818604,
+   "latency_s": 0.7187910079956055,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9385,7 +9385,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5638248920440674,
+   "latency_s": 0.5741281509399414,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9404,7 +9404,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5480318069458008,
+   "latency_s": 0.554232120513916,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9423,7 +9423,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.482072114944458,
+   "latency_s": 0.49945712089538574,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9442,7 +9442,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5292689800262451,
+   "latency_s": 0.5248301029205322,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9461,7 +9461,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5710721015930176,
+   "latency_s": 0.5636379718780518,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9480,7 +9480,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6209850311279297,
+   "latency_s": 0.5957379341125488,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9499,7 +9499,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6522011756896973,
+   "latency_s": 0.5997238159179688,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9518,7 +9518,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6678929328918457,
+   "latency_s": 0.6292717456817627,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9537,7 +9537,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7304692268371582,
+   "latency_s": 0.7390058040618896,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9556,7 +9556,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6752462387084961,
+   "latency_s": 0.8824038505554199,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9575,7 +9575,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.728996753692627,
+   "latency_s": 1.0309360027313232,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9594,7 +9594,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7180888652801514,
+   "latency_s": 1.3490471839904785,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9613,7 +9613,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7201201915740967,
+   "latency_s": 1.6155939102172852,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9632,7 +9632,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7097640037536621,
+   "latency_s": 1.8499231338500977,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9651,7 +9651,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.779292106628418,
+   "latency_s": 2.064177989959717,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9670,7 +9670,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.7503199577331543,
+   "latency_s": 1.9017059803009033,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9689,7 +9689,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.6357338428497314,
+   "latency_s": 1.6458470821380615,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9708,7 +9708,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8996739387512207,
+   "latency_s": 1.677706003189087,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9727,7 +9727,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.0286610126495361,
+   "latency_s": 1.781540870666504,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9746,7 +9746,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1832058429718018,
+   "latency_s": 1.7997841835021973,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9765,7 +9765,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3225817680358887,
+   "latency_s": 1.870682954788208,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9784,7 +9784,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1425118446350098,
+   "latency_s": 1.5255379676818848,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9803,7 +9803,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1254281997680664,
+   "latency_s": 1.3973231315612793,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9822,7 +9822,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1128058433532715,
+   "latency_s": 1.3896079063415527,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9841,7 +9841,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.091905117034912,
+   "latency_s": 1.348883867263794,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9860,7 +9860,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1384060382843018,
+   "latency_s": 1.3384177684783936,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9879,7 +9879,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.0944077968597412,
+   "latency_s": 1.3289029598236084,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -9898,7 +9898,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.7357540130615234,
+   "latency_s": 1.9979240894317627,
    "model_calls": 10,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9917,7 +9917,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6908149719238281,
+   "latency_s": 1.9025499820709229,
    "model_calls": 10,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9936,7 +9936,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3830928802490234,
+   "latency_s": 1.5735061168670654,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -9955,7 +9955,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4076471328735352,
+   "latency_s": 1.4912080764770508,
    "model_calls": 12,
    "requests_in_sequence": 5,
    "unsupported": null,
@@ -9974,7 +9974,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1838099956512451,
+   "latency_s": 1.137463092803955,
    "model_calls": 8,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -9993,7 +9993,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2876081466674805,
+   "latency_s": 1.2547788619995117,
    "model_calls": 8,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -10012,7 +10012,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.352978229522705,
+   "latency_s": 1.2898900508880615,
    "model_calls": 8,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -10031,7 +10031,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4273107051849365,
+   "latency_s": 1.3287060260772705,
    "model_calls": 10,
    "requests_in_sequence": 4,
    "unsupported": null,
@@ -10050,7 +10050,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.3020670413970947,
+   "latency_s": 0.23056602478027344,
    "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -10069,7 +10069,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.29703497886657715,
+   "latency_s": 0.23999786376953125,
    "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -10088,7 +10088,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.3631429672241211,
+   "latency_s": 0.3535130023956299,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -10107,7 +10107,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9437150955200195,
+   "latency_s": 0.9572548866271973,
    "model_calls": 9,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -10126,7 +10126,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2052550315856934,
+   "latency_s": 1.2600607872009277,
    "model_calls": 10,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -10145,7 +10145,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1441009044647217,
+   "latency_s": 1.2308142185211182,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,

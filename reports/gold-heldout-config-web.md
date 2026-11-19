@@ -43,8 +43,8 @@ Records: 30. Depth 0: 27. Depth 1 (two levels): 3.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 100% (27/27) | 0.47 s | 4.7 | 1.3 |
-| 1 | 100% (3/3) | 1.29 s | 9.7 | 3.0 |
+| 0 | 100% (27/27) | 0.96 s | 4.7 | 1.3 |
+| 1 | 100% (3/3) | 2.43 s | 9.7 | 3.0 |
 
 ### Nested template pairs in the gold suite
 

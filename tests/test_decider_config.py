@@ -75,3 +75,31 @@ def test_local_provider_answers_closed_slots():
     assert r.value == "coastal" and r.impl.startswith("local:")
     r = d.fill_closed_slot("petrol bunks", "category", "categories", allow_none=True)
     assert r.value == "fuel"
+
+
+def test_level_words_skip_the_model():
+    # A keyword of one level with no typo gives that level ("counties" is one typo from "countries").
+    d = _decider({"fill_closed_slot": "jev"}).fork()
+    levels = {"country": "", "state": "", "district": "", "city": "", "village": "", "union_territory": ""}
+    assert d._level_word("counties", levels) == "district"
+    assert d._level_word("prefectures", levels) == "state"
+    assert d._level_word("local government areas", levels) == "district"
+    assert d._level_word("states and districts", levels) is None
+    assert d._level_word("municipalities", levels) == "city"
+    d.view_country = "MX"
+    assert d._level_word("municipalities", levels) == "district"
+    r = d.fill_closed_slot("counties", "admin_level", "admin_levels")
+    assert (r.value, r.impl) == ("district", "keyword")
+
+
+def test_street_word_typo_needs_a_weak_gazetteer_match():
+    from geoparse.decisions.rules import select_source
+    from geoparse.decisions.types import Question
+
+    def src(text, score):
+        return select_source(text, Question(id="select_source", instructions="", context={"text": text, "gazetteer_top_score": score}),
+                             {"overture": "", "photon": ""}).value
+
+    assert src("Minas Gerais", 1.4) == "overture"
+    assert src("Minas Gerais", 0.5) == "photon"
+    assert src("Qutub Minar", 1.4) == "photon"

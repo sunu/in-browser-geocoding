@@ -267,6 +267,7 @@ def main() -> None:
         def one_iso(rec):
             out: list[dict[str, Any]] = []
             dec = base.fork()
+            dec.view_country = parser.store.view(rec.get("view"), parser.cfg)[1]
             eval_isolated(parser, dec, rec, normalize_query(rec["query"]), rec["template"], rec["slots"],
                           rec.get("src", {}), 0, rec["family"], out, not args.no_flat)
             return out

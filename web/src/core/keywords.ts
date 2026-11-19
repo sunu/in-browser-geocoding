@@ -17,7 +17,8 @@ export function edit1(a: string, b: string): boolean {
   return a.slice(i) === b.slice(i + 1);
 }
 
-export function keywordHits(text: string, keywords: string[]): number {
+/** typo: words of 5 or more letters can have one typo. */
+export function keywordHits(text: string, keywords: string[], typo = true): number {
   const words = norm(text).split(" ").filter(Boolean);
   const covered = new Set<number>();
   for (const kw of [...keywords].sort((x, y) => y.length - x.length)) {
@@ -30,7 +31,7 @@ export function keywordHits(text: string, keywords: string[]): number {
       let ok = true;
       for (let j = 0; j < n; j++) {
         const w = words[i + j], k = kws[j];
-        if (!(w === k || (k.length >= 5 && edit1(w, k)))) { ok = false; break; }
+        if (!(w === k || (typo && k.length >= 5 && edit1(w, k)))) { ok = false; break; }
       }
       if (ok) for (let j = i; j < i + n; j++) covered.add(j);
     }

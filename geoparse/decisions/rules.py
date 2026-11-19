@@ -97,7 +97,8 @@ STREET_WORDS = ["road", "rd", "street", "st", "marg", "lane", "highway", "statio
 
 def select_source(text, q: Question, options_: dict[str, str]) -> Decision[str]:
     t = q.context["text"]
-    if keyword_hits(t, STREET_WORDS):
+    # A typo in a street word counts only if the gazetteer has no good match ("Minas Gerais" is not "minar").
+    if keyword_hits(t, STREET_WORDS, typo=q.context.get("gazetteer_top_score", 0) < 1.0):
         return _dec("photon", 0.8)
     if q.context.get("gazetteer_top_score", 0) >= 1.0:
         return _dec("overture", 0.8)

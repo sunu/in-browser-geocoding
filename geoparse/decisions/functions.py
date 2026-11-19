@@ -10,11 +10,11 @@ import time
 import uuid
 from typing import Any
 
-from geoparse.config import load_config
+from geoparse.config import country_policy, load_config
 from geoparse.decisions.log import DecisionLogger
 from geoparse.decisions.providers import DecisionProvider, JevProvider, LocalClassifierProvider, RulesProvider
 from geoparse.decisions.types import Candidate, Decision, Question, Span, Split
-from geoparse.options import option_descriptions
+from geoparse.options import keyword_hits, option_descriptions, option_keywords
 
 # Instructions for the decision model. Write them literally: the model reads them at face value.
 INSTRUCTIONS = {
@@ -74,8 +74,10 @@ class Decider:
         self.run_id = uuid.uuid4().hex[:12]
         self.trace: list[dict[str, Any]] = []
         self._lock = threading.Lock()
-        # Map view (xmin, ymin, xmax, ymax) of the parse. Parser.parse sets it on the fork; the gazetteer uses it.
+        # Map view (xmin, ymin, xmax, ymax) of the parse and the country of its center. Parser.parse sets them on
+        # the fork; the gazetteer uses the view, the admin level words use the country.
         self.view: list[float] | None = None
+        self.view_country: str | None = None
 
     def fork(self) -> "Decider":
         """A Decider with the same providers and a new, empty trace. Use one fork for each parse."""
@@ -86,6 +88,7 @@ class Decider:
         d.trace = []
         d._lock = threading.Lock()
         d.view = None
+        d.view_country = None
         return d
 
     @staticmethod
@@ -240,11 +243,28 @@ class Decider:
             return Decision[str](value=leaf.value, confidence=conf, impl=leaf.impl,
                                  trace={"group": g.value, "group_confidence": g.confidence})
         opts = {k: v for k, v in option_descriptions(options_ref).items() if k != "none"}
+        if options_ref == "admin_levels":
+            level = self._level_word(text, opts)
+            if level:
+                d = Decision[str](value=level, confidence=1.0, impl="keyword", trace={"view_country": self.view_country})
+                self._record(f"fill_closed_slot.{slot_type}", depth, {"text": text, "slot_type": slot_type, "query": query},
+                             opts, d, 0.0)
+                return d
         if allow_none:
             opts["none"] = none_desc if options_ref != "admin_levels" else option_descriptions(options_ref)["none"]
         return self._choose(f"fill_closed_slot.{slot_type}", depth, {"text": text}, opts,
                             {"options_ref": options_ref, "segment": text},
                             {"text": text, "slot_type": slot_type, "query": query})
+
+    def _level_word(self, text: str, levels: dict[str, str]) -> str | None:
+        """The level whose keyword is in the text with no typo, if exactly one level has one. The level words of
+        the view country (policy.countries.<CC>.level_words) belong only to their level."""
+        words = country_policy(load_config()["policy"], self.view_country).get("level_words", {})
+        own = {w for ws in words.values() for w in ws}
+        kws = option_keywords("admin_levels")
+        hits = [k for k in levels
+                if keyword_hits(text, [w for w in kws.get(k, []) if w not in own] + words.get(k, []), typo=False)]
+        return hits[0] if len(hits) == 1 else None
 
     def bind_anchor(self, query: str, slot_text: str, spans: list[Span], *, depth: int = 0) -> Decision[Span]:
         whole = Span(text=slot_text, start=0, end=len(slot_text), label="whole")

@@ -7,7 +7,7 @@ admin_levels:
     keywords: [country, countries, nation, nations]
   state:
     description: "States or union territories, the first level of division inside a country"
-    keywords: [state, states, province, provinces, region, regions]
+    keywords: [state, states, province, provinces, region, regions, prefecture, prefectures]
   village:
     description: "Villages and hamlets"
     keywords: [village, villages, gaon, hamlets]
@@ -16,7 +16,8 @@ admin_levels:
     keywords: [ut, uts, union territory, union territories]
   district:
     description: "Districts, the level of division inside a state"
-    keywords: [district, districts, dist, dists, zilla, zillas, county, counties]
+    keywords: [district, districts, dist, dists, zilla, zillas, county, counties, local government area,
+               local government areas, lga, lgas]
   city:
     description: "Cities and towns (also metros, big cities, urban centres)"
     keywords: [city, cities, town, towns, urban areas, municipalities]

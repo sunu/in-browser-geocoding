@@ -1,0 +1,54 @@
+# World held-out set (plan-022, phase 8). Written on 2026-11-18, after the phase 8 fixes and before any run on it.
+# Do not tune on these records. Use them only to report. Same format as world_src.yaml.
+# Removed before the first run: "northern Luzon" (Luzon is an island, not an admin division; the top candidate is a village).
+views:
+  CA: [-141, 41.7, -52.6, 83.1]
+  IT: [6.6, 36.6, 18.5, 47.1]
+  ES: [-9.3, 36, 3.3, 43.8]
+  AR: [-73.6, -55.1, -53.6, -21.8]
+  KE: [33.9, -4.7, 41.9, 5]
+  ID: [95, -11, 141, 6]
+  PH: [116.9, 4.6, 126.6, 21.1]
+  CO: [-79, -4.2, -66.9, 12.5]
+  PL: [14.1, 49, 24.2, 54.9]
+  EG: [24.7, 22, 36.9, 31.7]
+
+records:
+  - {cc: CA, q: "Toronto", t: lookup_place, s: {anchor: "Toronto"}, src: {anchor: overture}}
+  - {cc: CA, q: "provinces bordering Ontario", t: neighbors, s: {level: state, of: "Ontario"}}
+  - {cc: CA, q: "hospitals in Vancouver", t: features_in, s: {category: "hospital", region: "Vancouver"}}
+
+  - {cc: IT, q: "regions of Italy", t: children, s: {level: state, parent: "Italy"}}
+  - {cc: IT, q: "provinces of Tuscany", t: children, s: {level: district, parent: "Tuscany"}}
+  - {cc: IT, q: "Milan", t: lookup_place, s: {anchor: "Milan"}, src: {anchor: overture}}
+
+  - {cc: ES, q: "landlocked regions of Spain", t: children_with_predicate, s: {pred: landlocked, level: state, parent: "Spain"}}
+  - {cc: ES, q: "schools in Seville", t: features_in, s: {category: "school", region: "Seville"}}
+  - {cc: ES, q: "Catalonia and Aragon", t: union, s: {a: "Catalonia", b: "Aragon"}}
+
+  - {cc: AR, q: "Cordoba", t: lookup_place, s: {anchor: "Cordoba"}, src: {anchor: overture}}
+  - {cc: AR, q: "provinces bordering Mendoza", t: neighbors, s: {level: state, of: "Mendoza"}}
+  - {cc: AR, q: "countries that border Argentina", t: neighbors, s: {level: country, of: "Argentina"}}
+
+  - {cc: KE, q: "counties of Kenya", t: children, s: {level: state, parent: "Kenya"}, n: "Kenyan counties are Overture regions."}
+  - {cc: KE, q: "hospitals in Nairobi", t: features_in, s: {category: "hospital", region: "Nairobi"}}
+  - {cc: KE, q: "Mombasa", t: lookup_place, s: {anchor: "Mombasa"}, src: {anchor: overture}}
+
+  - {cc: ID, q: "provinces of Indonesia", t: children, s: {level: state, parent: "Indonesia"}}
+  - {cc: ID, q: "which province is Bandung in", t: parent, s: {level: state, child: "Bandung"}}
+  - {cc: ID, q: "10 km around Yogyakarta", t: buffer, s: {distance: 10000, target: "Yogyakarta"}, src: {target: overture}}
+
+  - {cc: PH, q: "Cebu", t: lookup_place, s: {anchor: "Cebu"}, src: {anchor: overture}}
+  - {cc: PH, q: "schools in Quezon City", t: features_in, s: {category: "school", region: "Quezon City"}}
+
+  - {cc: CO, q: "municipalities of Antioquia", t: children, s: {level: district, parent: "Antioquia"}}
+  - {cc: CO, q: "departments bordering Cundinamarca", t: neighbors, s: {level: state, of: "Cundinamarca"}}
+  - {cc: CO, q: "Medellin", t: lookup_place, s: {anchor: "Medellin"}, src: {anchor: overture}}
+
+  - {cc: PL, q: "voivodeships of Poland", t: children, s: {level: state, parent: "Poland"}}
+  - {cc: PL, q: "Krakow except Nowa Huta", t: difference, s: {a: "Krakow", b: "Nowa Huta"}}
+  - {cc: PL, q: "coastal voivodeships of Poland", t: children_with_predicate, s: {pred: coastal, level: state, parent: "Poland"}}
+
+  - {cc: EG, q: "Alexandria", t: lookup_place, s: {anchor: "Alexandria"}, src: {anchor: overture}}
+  - {cc: EG, q: "governorates bordering Cairo", t: neighbors, s: {level: state, of: "Cairo"}}
+  - {cc: EG, q: "hospitals in Giza", t: features_in, s: {category: "hospital", region: "Giza"}}

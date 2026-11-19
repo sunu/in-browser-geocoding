@@ -46,6 +46,7 @@ export class Parser {
   async parse(query: string, view: number[] | null = null): Promise<ParseResult> {
     const dec = this.base.fork();
     dec.view = view;
+    dec.viewCountry = (await this.gaz.view(view))[1];
     const t0 = performance.now();
     const res: ParseResult = { query, ok: false, dag: null, unsupported: null, family: null, template: null, slots: {}, path: null, trace: [], timings: {} };
     try {

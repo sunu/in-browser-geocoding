@@ -10,6 +10,8 @@ const PRIOR: Record<string, number> = {
 };
 
 // geoparse.execute.data.KIND_SCORE and FUZZY_PREFIX
+// Level words at the end of region names that have no short form. The search also tries "<name> <suffix>".
+const REGION_SUFFIXES = ["prefecture", "province"];
 const KIND_SCORE = "CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 WHEN kind = 'translit' THEN 0.9 ELSE 0.95 END";
 const FUZZY_PREFIX = 3;
 
@@ -145,6 +147,9 @@ export class Gazetteer {
       return Object.fromEntries(rs.map((r) => [r.id, Number(r.s) * f])) as Record<string, number>;
     };
     let scores = await exact(qList, 1);
+    // Overture names of some regions end with a level word and have no short form ("Kyoto Prefecture").
+    for (const [id, s] of Object.entries(await exact(qList.flatMap((x) => REGION_SUFFIXES.map((w) => `${x} ${w}`)), 0.98)))
+      scores[id] = Math.max(scores[id] ?? 0, s);
     if (!Object.keys(scores).length) scores = await exact(qList.flatMap((x) => [`${x} district`, `${x} city`]), 0.98);
     if (fuzzy && !Object.keys(scores).length && n.length >= 4) {
       const k = n.replaceAll(" ", ""), nk = q(k);

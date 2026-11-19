@@ -1,5 +1,5 @@
 // Port of geoparse/decisions/functions.py for the browser: providers "local" and "rules" (no Jev).
-import type { Bundle } from "../core/bundle.ts";
+import { countryPolicy, type Bundle } from "../core/bundle.ts";
 import { keywordHits } from "../core/keywords.ts";
 import type { CrossEncoder } from "../models/xenc.ts";
 import type { Candidate, Decision } from "./types.ts";
@@ -27,8 +27,10 @@ function best(scores: Record<string, number>): [string, number] {
 
 export class Decider {
   trace: TraceRecord[] = [];
-  /** Map view (xmin, ymin, xmax, ymax) of the parse. Parser.parse sets it on the fork; the gazetteer uses it. */
+  /** Map view (xmin, ymin, xmax, ymax) of the parse and the country of its center. Parser.parse sets them on the
+   * fork; the gazetteer uses the view, the admin level words use the country. */
   view: number[] | null = null;
+  viewCountry: string | null = null;
   constructor(public bundle: Bundle, public xenc: CrossEncoder) {}
 
   fork(): Decider { return new Decider(this.bundle, this.xenc); }
@@ -78,7 +80,8 @@ export class Decider {
   private rule(decision: string, state: any, options: Record<string, string>, ctx: any): Decision<string> {
     const base = decision.split(".")[0];
     if (base === "select_source") {
-      if (keywordHits(ctx.text, STREET_WORDS)) return { value: "photon", confidence: 0.8, impl: "rules-v1", trace: {} };
+      // A typo in a street word counts only if the gazetteer has no good match ("Minas Gerais" is not "minar").
+      if (keywordHits(ctx.text, STREET_WORDS, (ctx.gazetteer_top_score ?? 0) < 1.0)) return { value: "photon", confidence: 0.8, impl: "rules-v1", trace: {} };
       if ((ctx.gazetteer_top_score ?? 0) >= 1.0) return { value: "overture", confidence: 0.8, impl: "rules-v1", trace: {} };
       return { value: "photon", confidence: 0.6, impl: "rules-v1", trace: {} };
     }
@@ -128,8 +131,26 @@ export class Decider {
     const all = this.optionDescriptions(ref);
     const opts: Record<string, string> = {};
     for (const [k, v] of Object.entries(all)) if (k !== "none") opts[k] = v;
+    if (ref === "admin_levels") {
+      const level = this.levelWord(text, opts);
+      if (level) {
+        const d: Decision<string> = { value: level, confidence: 1, impl: "keyword", trace: { view_country: this.viewCountry } };
+        this.record(`fill_closed_slot.${slotType}`, depth, { text, slot_type: slotType, query }, opts, d, 0);
+        return d;
+      }
+    }
     if (allowNone) opts.none = ref !== "admin_levels" ? noneDesc : all.none;
     return this.choose(`fill_closed_slot.${slotType}`, depth, { text }, opts, {}, { text, slot_type: slotType, query });
+  }
+
+  /** Port of Decider._level_word: the level whose keyword is in the text with no typo, if exactly one level has one.
+   * The level words of the view country (policy.countries.<CC>.level_words) belong only to their level. */
+  levelWord(text: string, levels: Record<string, string>): string | null {
+    const words: Record<string, string[]> = countryPolicy(this.bundle.config.policy, this.viewCountry).level_words ?? {};
+    const own = new Set(Object.values(words).flat());
+    const hits = Object.keys(levels).filter((k) => keywordHits(text,
+      [...(this.bundle.options.admin_levels[k]?.keywords ?? []).filter((w: string) => !own.has(w)), ...(words[k] ?? [])], false));
+    return hits.length === 1 ? hits[0] : null;
   }
 
   async isSubquery(text: string, depth: number): Promise<Decision<boolean>> {

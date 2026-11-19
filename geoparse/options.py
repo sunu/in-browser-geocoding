@@ -90,8 +90,8 @@ def norm(text: str) -> str:
     return re.sub(r"\s+", " ", re.sub(r"[^\w\s<>=&+-]", " ", text.lower())).strip()
 
 
-def keyword_hits(text: str, keywords: list[str]) -> int:
-    """Number of words in `text` covered by keywords. Words of 5 or more letters can have one typo."""
+def keyword_hits(text: str, keywords: list[str], typo: bool = True) -> int:
+    """Number of words in `text` covered by keywords. With typo, words of 5 or more letters can have one typo."""
     t = norm(text)
     words = t.split()
     covered = set()
@@ -101,7 +101,7 @@ def keyword_hits(text: str, keywords: list[str]) -> int:
         for i in range(len(words) - n + 1):
             if any(j in covered for j in range(i, i + n)):
                 continue
-            ok = all(w == k or (len(k) >= 5 and _edit1(w, k)) for w, k in zip(words[i:i + n], kws))
+            ok = all(w == k or (typo and len(k) >= 5 and _edit1(w, k)) for w, k in zip(words[i:i + n], kws))
             if ok:
                 covered.update(range(i, i + n))
     return len(covered)

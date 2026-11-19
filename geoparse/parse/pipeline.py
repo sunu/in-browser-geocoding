@@ -149,6 +149,7 @@ class Parser:
         """view: map view (xmin, ymin, xmax, ymax) for the ranking of candidates. None: data.bbox."""
         dec = self.base_decider.fork()
         dec.view = list(view) if view else None
+        dec.view_country = self.store.view(dec.view, self.cfg)[1]
         t0 = time.time()
         res = ParseResult(query=query, ok=False)
         try:

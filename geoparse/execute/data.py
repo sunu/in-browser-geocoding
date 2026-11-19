@@ -15,6 +15,9 @@ import duckdb
 from geoparse.config import build_dir, country_policy, load_config
 from geoparse.decisions.types import Candidate
 
+# Level words at the end of region names that have no short form ("Kyoto Prefecture"). The search also tries
+# "<name> <suffix>".
+REGION_SUFFIXES = ("prefecture", "province")
 # Score of a name match for each name kind.
 KIND_SCORE = "CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 WHEN kind = 'translit' THEN 0.9 ELSE 0.95 END"
 # Fuzzy search compares only keys with the same first characters (no spaces).
@@ -166,6 +169,13 @@ class Store:
             GROUP BY id
         """, [q_list]).fetchall()
         scores = {r[0]: float(r[1]) for r in rows}
+        # Overture names of some regions end with a level word and have no short form ("Kyoto Prefecture").
+        rows = cur.execute(f"""
+            SELECT id, max({KIND_SCORE}) AS s FROM names WHERE name_nospace IN (SELECT replace(unnest(?), ' ', ''))
+            GROUP BY id
+        """, [[f"{x} {suffix}" for x in q_list for suffix in REGION_SUFFIXES]]).fetchall()
+        for id_, s in rows:
+            scores[id_] = max(scores.get(id_, 0.0), float(s) * 0.98)
         if not scores:
             # Fallback: Overture names can end with a level word ("Mumbai Suburban District").
             q2 = [f"{x} {suffix}" for x in q_list for suffix in ("district", "city")]

@@ -89,3 +89,44 @@ Other findings from the world data (not in the gold errors):
 - "Kyoto" ranks the city above the prefecture, also with the type hint `state`.
 - With the NG view, "Lagos" ranks Laos (country) second.
 - The gold set has 70 queries, so one error changes the accuracy by 1.4 points. Add more queries before the decision about retraining.
+
+## 6. Phase 8: admin level words and gazetteer fixes
+
+Changes (Python and the browser version):
+
+1. A level word in the text with no typo gives its level without the model, if only one level has the word. Before, "counties" matched "countries" with one typo.
+2. New level words: "prefecture", "local government area", "LGA" (options), and "municipality" for MX, CO and PT (`policy.countries.<CC>.level_words`). The country of the map view selects the words.
+3. A typo in a street word counts only if the gazetteer has no good match ("Minas Gerais" is not "minar").
+4. The gazetteer also tries "<name> prefecture" and "<name> province" (score × 0.98). "Kyoto" with the type hint `state` finds Kyoto Prefecture.
+
+Results:
+
+| Set | Before | After |
+|---|---|---|
+| India gold | 97/98 | 97/98 |
+| India held-out | 30/30 | 30/30 |
+| World (70, used to make the fixes) | 61/70 | 70/70 |
+| World held-out (29, written after the fixes, before any run) | - | 23/29 (79%) |
+
+The Python reference parse of the India queries changed for 13 of 696 queries. All 13 contain "Connaught Place": "place" was one typo from the street word "palace", so the anchor went to Photon. Now it is the Overture macrohood in New Delhi. The JS parse agrees with the new reference (696/696).
+
+The world set was used to make the fixes, so 70/70 is not a fair measure. The held-out set gives the fair value. Its 6 errors are all admin level words:
+
+| Id | Query | Got | Gold | Cause |
+|---|---|---|---|---|
+| x005 | provinces of Tuscany | state | district | Italian provinces are Overture counties. "province" is a keyword of `state`. |
+| x013 | counties of Kenya | district | state | Kenyan counties are Overture regions. "county" is a keyword of `district`. |
+| x022 | departments bordering Cundinamarca | district | state | Colombian departments are Overture regions. French departments are counties. |
+| x024 | voivodeships of Poland | unsupported | state | unknown word |
+| x026 | coastal voivodeships of Poland | unsupported | state | unknown word |
+| x028 | governorates bordering Cairo | none | state | unknown word |
+
+x005 and x013 are errors of change 1: the keyword gives a wrong level with confidence 1.0. The meaning of a level word depends on the country. A word list for each country does not scale to more than 200 countries.
+
+Options for the next step:
+
+1. **Level from the structure of the data.** For "X of <parent>", use the first level below the parent that has children. For "X bordering <place>", use the level of the place. Use the level word only when the data has more than one possible level. This needs no word list and works in all countries.
+2. **Level words for each country from a data source** (for example Wikidata "instance of" labels of the divisions: "province of Italy", "county of Kenya"). This is accurate but needs a new build step.
+3. **Retrain the decision model** with world examples. This does not fix x005 and x013, because the same word has two meanings.
+
+Recommendation: option 1, then a new held-out set (the current one is now used).
