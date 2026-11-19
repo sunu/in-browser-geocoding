@@ -19,7 +19,13 @@ const POI: [string, string][] = [
   ["IN", "hospitals in Ernakulam"], ["IN", "schools in Pune"], ["US", "hospitals in San Francisco"], ["US", "schools in Reno"],
   ["FR", "hospitals in Lyon"], ["BR", "schools in Recife"], ["JP", "hospitals in Sapporo"], ["FR", "pharmacies in Lyon"],
 ];
-const QUERIES = process.env.SET === "poi" ? POI : BASE;
+// Natural features, qualified names and the reviewed templates (plan-025, phases 10 to 13).
+const NEW: [string, string][] = [
+  ["IN", "Ganga river"], ["IN", "districts along the Yamuna"], ["IN", "5 largest districts of Karnataka"],
+  ["FR", "border between Spain and Portugal"], ["US", "Paris, Texas"], ["FR", "districts in northern France"],
+  ["IN", "states that border both Karnataka and Kerala"], ["IN", "riverside districts of Bihar"],
+];
+const QUERIES = process.env.SET === "poi" ? POI : process.env.SET === "new" ? NEW : BASE;
 const name = process.argv[2] ?? "chromium";
 // Headless Firefox on Linux without a GPU driver has no WebGL (the map needs it): use the software renderer.
 const browser = await ({ chromium, firefox, webkit } as any)[name].launch(
