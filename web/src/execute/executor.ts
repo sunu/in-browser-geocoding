@@ -267,10 +267,12 @@ class Run {
       }
       const rel = await this.eval(t);
       const tol = this.deg(Number(this.policy.neighbor_tolerance_m), await this.latOf(rel));
-      return `(ST_DWithin(${al}.gs, ${this.unionGeom(rel, "gs")}, ${tol}) AND coalesce(${al}.id NOT IN (SELECT id FROM ${rel} WHERE id IS NOT NULL), true))`;
+      // Each member of the target (no union: the union of many features, for example all rivers, is slow).
+      return `(EXISTS (SELECT 1 FROM ${rel} x WHERE ST_DWithin(${al}.gs, x.gs, ${tol}))
+        AND NOT coalesce(${al}.id IN (SELECT id::VARCHAR FROM ${rel} WHERE id IS NOT NULL), false))`;
     }
     if (p.op === "Within") return `ST_Intersects(ST_PointOnSurface(${al}.gs), ${this.unionGeom(await this.eval(t), "gs")})`;
-    if (p.op === "Intersects") return `ST_Intersects(${al}.gs, ${this.unionGeom(await this.eval(t), "gs")})`;
+    if (p.op === "Intersects") return `EXISTS (SELECT 1 FROM ${await this.eval(t)} x WHERE ST_Intersects(${al}.gs, x.gs))`;
     if (p.op === "WithinDistance") {
       const g = t.op === "Layer" ? this.layerGeom(t.args.name) : this.unionGeom(await this.eval(t), "gs");
       return `ST_DWithin(to_m(${al}.gs, utm(${al}.gs)), to_m(${g}, utm(${al}.gs)), ${Number(args.distance_m)})`;
@@ -297,6 +299,35 @@ class Run {
   }
 
   // ------------------------------------------------------------ geometry
+
+  async op_Naturals(a: any) {
+    await this.ex.db.store?.ensureCountries(["XN"]);
+    const where = `d.subtype = 'natural' AND d.class = ${q(a.kind)}`;
+    if (!a.within) return this.divisionsRel(where);
+    return this.divisionsRel(`${where} AND a.id IS NOT NULL AND ST_Intersects(a.gs, ${this.unionGeom(await this.eval(a.within), "gs")})`);
+  }
+
+  async op_Top(a: any) {
+    const src = await this.eval(a.set);
+    const expr = a.by === "population" ? "(SELECT d.population FROM divisions d WHERE d.id = s.id)" : "(ST_Area(to_m(s.gs, utm(s.gs))) / 1e6)";
+    return this.newRel(`SELECT s.* FROM ${src} s WHERE ${expr} IS NOT NULL ORDER BY ${expr} ${a.order === "largest" ? "DESC" : "ASC"}, s.id LIMIT ${Math.trunc(Number(a.n))}`);
+  }
+
+  async op_Common(a: any) {
+    const ra = await this.eval(a.a), rb = await this.eval(a.b);
+    return this.newRel(`SELECT * FROM ${ra} WHERE id IS NOT NULL AND id IN (SELECT id FROM ${rb} WHERE id IS NOT NULL)`);
+  }
+
+  async op_SharedBorder(a: any) {
+    const ra = await this.eval(a.a), rb = await this.eval(a.b);
+    const tol = this.deg(Number(this.policy.neighbor_tolerance_m), await this.latOf(ra));
+    const rel = await this.newRel(`WITH u AS (SELECT ST_Intersection(ST_Boundary(${this.unionGeom(ra, "gs")}),
+        ST_Buffer(${this.unionGeom(rb, "gs")}, ${tol})) AS g)
+      SELECT NULL AS id, 'shared border' AS name, 'geometry' AS subtype, 'computed' AS source, u.g AS geometry, u.g AS gs
+      FROM u WHERE NOT ST_IsEmpty(u.g)`);
+    if (!(await this.run(`SELECT count(*) AS n FROM ${rel}`))[0].n) throw new ExecError("the two places do not share a border");
+    return rel;
+  }
 
   async op_Buffer(a: any) {
     const g = this.unionGeom(await this.eval(a.of), "gs");
@@ -389,7 +420,8 @@ class Run {
       const pad = this.deg(d, await this.latOf(rw)) * 1.5;
       clip = `ST_Intersection(${lg}, ST_MakeEnvelope(ST_XMin(${wg}) - ${pad}, ST_YMin(${wg}) - ${pad}, ST_XMax(${wg}) + ${pad}, ST_YMax(${wg}) + ${pad}))`;
     } else {
-      clip = `ST_Boundary(${this.unionGeom(await this.eval(a.line), "gs")})`;
+      // A line (a river, a shared border) is the line itself; an area is its boundary.
+      clip = `(SELECT CASE WHEN ST_Dimension(x) = 1 THEN x ELSE ST_Boundary(x) END FROM (SELECT ${this.unionGeom(await this.eval(a.line), "gs")} AS x))`;
     }
     const out = wg ? `ST_Intersection(b.g, ${wg})` : "b.g";
     return this.newRel(`WITH l AS (SELECT ${clip} AS g),

@@ -98,6 +98,9 @@ def export_country_layout(con: duckdb.DuckDBPyConnection, out: Path, release: st
                   FROM dv d JOIN areas a USING (id) WHERE d.subtype IN ('country', 'dependency', 'region')
                   ORDER BY d.n""", root / "global" / "admin_areas.parquet")
     _copy(con, "SELECT name, ST_AsWKB(geometry) AS wkb FROM layers", root / "global" / "layers.parquet")
+    # Layer distances of countries, dependencies and regions (predicates on them when their country is not loaded).
+    _copy(con, """SELECT l.* FROM layer_dist l JOIN dv d USING (id) WHERE d.subtype IN ('country', 'dependency', 'region')
+                  ORDER BY l.id""", root / "global" / "admin_layer_dist.parquet")
     if con.execute("SELECT count(*) FROM duckdb_tables() WHERE table_name = 'country_shapes'").fetchone()[0]:
         _copy(con, "SELECT country, ST_AsWKB(geometry) AS wkb FROM country_shapes ORDER BY country",
               root / "global" / "country_shapes.parquet")

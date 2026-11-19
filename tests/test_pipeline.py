@@ -124,3 +124,12 @@ def test_qualified_name(rules_parser):
     assert blr & set(jay["ancestor_ids"])
     assert rules_parser._qualified(dec, "Kerala, Tamil Nadu", 0) is None
     assert rules_parser._qualified(dec, "Kerala, Goa and Karnataka", 0) is None
+
+
+def test_qualified_name_with_in(rules_parser):
+    # "A in B" (template review G10): exact names only, and never a set ("districts in Kerala").
+    dec = rules_parser.base_decider.fork()
+    q = rules_parser._qualified(dec, "Jayanagar in Bengaluru", 0)
+    assert q and q["args"]["name"] == "Jayanagar" and q["args"]["context"] == "Bengaluru"
+    for text in ("districts in Kerala", "hospitals in Pune", "rivers in Kerala", "northern Kerala in India"):
+        assert rules_parser._qualified(dec, text, 0) is None, text

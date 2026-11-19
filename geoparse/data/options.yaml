@@ -38,6 +38,12 @@ predicates:
   not_border:
     description: "Not on the international border of the country"
     keywords: [non-border, non border, not on the border]
+  on_river:
+    description: "On a river (a river flows through or along it)"
+    keywords: [riverside, river, rivers, on a river, on the river, along a river, riverine]
+  in_mountains:
+    description: "In the mountains (a mountain range crosses it)"
+    keywords: [mountain, mountains, mountainous, hilly, hill, hills, highland, highlands]
 
 directions:
   north:

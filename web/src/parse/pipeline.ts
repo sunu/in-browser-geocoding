@@ -3,6 +3,7 @@
 import type { Bundle, SlotDef, Template } from "../core/bundle.ts";
 import { substitute, validate } from "../core/dsl.ts";
 import { distanceM, frameToMatch, frameToText, groupFrames, UNSUPPORTED, valueNum, type Match } from "../core/frames.ts";
+import { keywordHits } from "../core/keywords.ts";
 import { lexiconMatch, norm, normalizeQuery } from "../core/text.ts";
 import { Decider, type TraceRecord } from "../decisions/decider.ts";
 import type { Candidate, Decision } from "../decisions/types.ts";
@@ -290,7 +291,15 @@ export class Parser {
 
   /** Port of _qualified: "Paris, Texas" is the Paris inside an exact match of each later name, or null. */
   private async qualified(dec: Decider, text: string, depth: number): Promise<any | null> {
-    const parts = text.split(",").map((p) => p.trim());
+    let parts = text.split(",").map((p) => p.trim());
+    let exactOnly = false;
+    if (parts.length === 1) {
+      // "Springfield in Illinois": exact names only, and not a set ("districts in Kerala", "hospitals in Pune").
+      const m = text.trim().match(/^(.+?)\s+in\s+(.+)$/i);
+      if (!m || keywordHits(m[1], this.setWords(), false)) return null;
+      parts = [m[1], m[2]];
+      exactOnly = true;
+    }
     if (parts.length < 2 || parts.length > 3 || parts.some((p) => !p || /\band\b|&/i.test(p))) return null;
     const outer: Set<string>[] = [];
     for (const p of parts.slice(1)) {
@@ -299,7 +308,7 @@ export class Parser {
       outer.push(ids);
     }
     const context = parts.slice(1).join(", ");
-    for (const fuzzy of [true, "only"] as const) {
+    for (const fuzzy of exactOnly ? [false] as const : [true, "only"] as const) {
       for (const c of await this.gaz.search(parts[0], { context, limit: 20, fuzzy, view: dec.view })) {
         if (outer.every((ids) => c.ancestors.some((a) => ids.has(a)))) {
           dec.recordStep("qualified_name", depth, { text }, c.id, "rules", { name: parts[0], context, fuzzy });
@@ -308,6 +317,15 @@ export class Parser {
       }
     }
     return null;
+  }
+
+  /** Port of _set_words: admin levels, categories, predicates, directions and natural kinds. */
+  private setWords(): string[] {
+    const o = this.bundle.options;
+    const opt = (ref: string) => Object.values<any>(o[ref]).flatMap((v) => v.keywords ?? []);
+    const cats = Object.values(this.bundle.categories).flatMap((g) => Object.values(g.items).flatMap((i) => i.keywords));
+    return [...opt("admin_levels"), ...cats, ...opt("predicates"), ...opt("directions"),
+      ...Object.values<string[]>(this.bundle.config.policy.natural_hints).flat()];
   }
 
   /** Port of _direction_rest: the text after a leading direction word of 4 or more letters. */

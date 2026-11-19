@@ -30,6 +30,7 @@ export function choices(bundle: Bundle): Record<string, string[]> {
     directions: Object.keys(o.directions), predicates: Object.keys(o.predicates), attrs: Object.keys(o.attrs),
     ops: Object.keys(o.ops), categories: leaves, lexicon: Object.keys(bundle.lexicon), layers: bundle.layers,
     direction_modes: bundle.direction_modes, sources: bundle.sources,
+    natural_kinds: Object.keys(bundle.config.policy.natural_hints), rank_by: bundle.rank_by, rank_orders: bundle.rank_orders,
   };
 }
 

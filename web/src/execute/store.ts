@@ -79,6 +79,12 @@ export class CountryStore {
       `INSERT INTO divisions BY NAME SELECT *, ST_Point(lon, lat) AS geometry FROM read_parquet(${q(admin)})`,
     ]) await e.query(s);
     await e.release(admin);
+    // Layer distances of the admin rows (coastal countries and states that are not loaded).
+    if ("admin_layer_dist.parquet" in (this.manifest.global ?? {})) {
+      const ald = await e.file("global/admin_layer_dist.parquet");
+      await this.serial([`INSERT INTO layer_dist BY NAME SELECT * FROM read_parquet(${q(ald)})`]);
+      await e.release(ald);
+    }
     const places = this.manifest.places;
     await e.query(places
       ? `CREATE VIEW places AS SELECT * FROM read_parquet(${q(await e.file(places))})`
@@ -111,7 +117,8 @@ export class CountryStore {
       `DELETE FROM areas WHERE country = ${q(c)}`,
       `INSERT INTO areas SELECT id, subtype, ST_GeomFromWKB(gs_wkb), ST_GeomFromWKB(gs_wkb), xmin, ymin, xmax, ymax, ${q(c)}
          FROM read_parquet(${q(ar)}, hive_partitioning = false)`,
-      ...(ld ? [`INSERT INTO layer_dist BY NAME SELECT * FROM read_parquet(${q(ld)}, hive_partitioning = false)`] : []),
+      ...(ld ? [`INSERT INTO layer_dist BY NAME SELECT * FROM read_parquet(${q(ld)}, hive_partitioning = false)
+         WHERE id NOT IN (SELECT id FROM layer_dist)`] : []),
     ]);
     await Promise.all([dv, ar, ...(ld ? [ld] : [])].map((f) => e.release(f)));
   }

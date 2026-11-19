@@ -613,6 +613,13 @@ class Parser:
         California, USA"). The Resolve of the best candidate of the first name that is inside one exact match of
         each later name; None if there is no such candidate ("Kerala, Tamil Nadu" is a union)."""
         parts = [p.strip() for p in text.split(",")]
+        exact_only = False
+        if len(parts) == 1:
+            # "Springfield in Illinois": exact names only, and not a set ("districts in Kerala", "hospitals in Pune").
+            m = re.fullmatch(r"(.+?)\s+in\s+(.+)", text.strip(), re.I)
+            if not m or keyword_hits(m.group(1), _set_words(), typo=False):
+                return None
+            parts, exact_only = [m.group(1), m.group(2)], True
         if not 2 <= len(parts) <= 3 or not all(parts) or any(re.search(r"\band\b|&", p, re.I) for p in parts):
             return None
         outer = []
@@ -623,7 +630,7 @@ class Parser:
             outer.append(ids)
         context = ", ".join(parts[1:])
         # Exact names first; fuzzy names only if no exact name is inside ("Sanfransisco, California").
-        for fuzzy in (True, "only"):
+        for fuzzy in ((False,) if exact_only else (True, "only")):
             for c in self.store.search(parts[0], context=context, limit=20, fuzzy=fuzzy, view=dec.view):
                 if all(ids & set(c.ancestors) for ids in outer):
                     dec.record_step("qualified_name", depth, {"text": text}, c.id, "rules",
@@ -653,6 +660,12 @@ class Parser:
         out = [c.model_copy(update={"score": round(c.score + boosts.get(c.id, 0.0), 4)}) for c in cands]
         out.sort(key=lambda c: (-c.score, c.id))
         return out
+
+
+def _set_words() -> list[str]:
+    """Words of a set or a part, not of a place name: admin levels, categories, predicates, directions, natural kinds."""
+    words = [k for ref in ("admin_levels", "categories", "predicates", "directions") for ks in option_keywords(ref).values() for k in ks]
+    return words + [w for ws in load_config()["policy"]["natural_hints"].values() for w in ws]
 
 
 def _direction_rest(text: str) -> str | None:

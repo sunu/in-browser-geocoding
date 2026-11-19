@@ -63,6 +63,14 @@ CATALOG: dict[str, OpSpec] = {s.name: s for s in [
     OpSpec("Features", (_a("category", "str", True, "categories"), _a("within", REGION)), SET),
     OpSpec("AttrFilter", (_a("set", SETLIKE), _a("attr", "str", True, "attrs"), _a("op", "str", True, "ops"),
                           _a("value", "num")), SET),
+    OpSpec("SharedBorder", (_a("a", REGION), _a("b", REGION)), GEOMETRY,
+           "The line where the boundaries of two places meet."),
+    OpSpec("Naturals", (_a("kind", "str", True, "natural_kinds"), _a("within", REGION, False)), SET,
+           "The natural features of one kind that intersect a region (all of them without 'within')."),
+    OpSpec("Top", (_a("set", SETLIKE), _a("by", "str", True, "rank_by"), _a("n", "num"),
+                   _a("order", "str", True, "rank_orders")), SET,
+           "The first n members of a set by area or population."),
+    OpSpec("Common", (_a("a", SETLIKE), _a("b", SETLIKE)), SET, "The members of both sets."),
     # Predicates
     OpSpec("Touches", (_a("target", LINE),), PREDICATE),
     OpSpec("Within", (_a("target", REGION),), PREDICATE),
@@ -77,10 +85,14 @@ PREDICATE_DAGS: dict[str, dict[str, Any]] = {
     "landlocked": {"op": "Not", "args": {"pred": {"op": "Touches", "args": {"target": {"op": "Layer", "args": {"name": "coastline"}}}}}},
     "border": {"op": "Touches", "args": {"target": {"op": "Layer", "args": {"name": "country_boundary"}}}},
     "not_border": {"op": "Not", "args": {"pred": {"op": "Touches", "args": {"target": {"op": "Layer", "args": {"name": "country_boundary"}}}}}},
+    "on_river": {"op": "Touches", "args": {"target": {"op": "Naturals", "args": {"kind": "river"}}}},
+    "in_mountains": {"op": "Intersects", "args": {"target": {"op": "Naturals", "args": {"kind": "range"}}}},
 }
 
 LAYERS = ["coastline", "country_boundary"]
 DIRECTION_MODES = ["part", "outside"]
+RANK_BY = ["area", "population"]
+RANK_ORDERS = ["largest", "smallest"]
 SOURCES = ["overture", "photon"]
 
 

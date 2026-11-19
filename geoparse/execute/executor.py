@@ -371,14 +371,15 @@ class _Run:
                 return f"coalesce({pre} <= {tol}, ST_DWithin({alias}.gs, {self.layer_geom(name)}, {tol}))"
             t = self.eval(target)
             tol = self.deg(float(self.policy["neighbor_tolerance_m"]), self.lat_of(t))
-            return (f"(ST_DWithin({alias}.gs, {self.union_geom(t, 'gs')}, {tol}) "
-                    f"AND coalesce({alias}.id NOT IN (SELECT id FROM {t} WHERE id IS NOT NULL), true))")
+            # Each member of the target (no union: the union of many features, for example all rivers, is slow).
+            return (f"(EXISTS (SELECT 1 FROM {t} x WHERE ST_DWithin({alias}.gs, crs84(x.gs), {tol})) "
+                    f"AND NOT coalesce({alias}.id IN (SELECT id::VARCHAR FROM {t} WHERE id IS NOT NULL), false))")
         if op == "Within":
             t = self.eval(target)
             return f"ST_Intersects(ST_PointOnSurface({alias}.gs), {self.union_geom(t, 'gs')})"
         if op == "Intersects":
             t = self.eval(target)
-            return f"ST_Intersects({alias}.gs, {self.union_geom(t, 'gs')})"
+            return f"EXISTS (SELECT 1 FROM {t} x WHERE ST_Intersects({alias}.gs, crs84(x.gs)))"
         if op == "WithinDistance":
             g = self.layer_geom(target["args"]["name"]) if target["op"] == "Layer" else self.union_geom(self.eval(target), "gs")
             d = float(args["distance_m"])
@@ -404,7 +405,41 @@ class _Run:
             raise ExecutionError(f"unknown attribute {attr}")
         return self.new_rel(f"SELECT s.* FROM {src} s WHERE {expr} {cmp} ?", [float(value)])
 
+    def op_Naturals(self, kind: str, within: Any = None) -> str:
+        where = f"d.subtype = 'natural' AND d.class = {_q(kind)}"
+        if within is None:
+            return self.divisions_rel(where)
+        g = self.union_geom(self.eval(within), "gs")
+        return self.divisions_rel(f"{where} AND a.id IS NOT NULL AND ST_Intersects(crs84(a.gs), {g})")
+
+    def op_Top(self, set: Any, by: str, n: float, order: str) -> str:
+        src = self.eval(set)
+        if by == "population":
+            expr = "(SELECT d.population FROM divisions d WHERE d.id = s.id)"
+        else:
+            expr = "(ST_Area(to_m(s.gs, utm(s.gs))) / 1e6)"
+        direction = "DESC" if order == "largest" else "ASC"
+        return self.new_rel(f"SELECT s.* FROM {src} s WHERE {expr} IS NOT NULL ORDER BY {expr} {direction}, s.id LIMIT {int(n)}")
+
+    def op_Common(self, a: Any, b: Any) -> str:
+        ra, rb = self.eval(a), self.eval(b)
+        return self.new_rel(f"SELECT * FROM {ra} WHERE id IS NOT NULL AND id IN (SELECT id FROM {rb} WHERE id IS NOT NULL)")
+
     # ------------------------------------------------------------ geometry
+
+    def op_SharedBorder(self, a: Any, b: Any) -> str:
+        ra, rb = self.eval(a), self.eval(b)
+        tol = self.deg(float(self.policy["neighbor_tolerance_m"]), self.lat_of(ra))
+        rel = self.new_rel(f"""
+            WITH u AS (SELECT ST_Intersection(ST_Boundary({self.union_geom(ra, 'gs')}),
+                                              ST_Buffer({self.union_geom(rb, 'gs')}, {tol})) AS g)
+            SELECT NULL AS id, 'shared border' AS name, 'geometry' AS subtype, 'computed' AS source,
+                   u.g AS geometry, u.g AS gs
+            FROM u WHERE NOT ST_IsEmpty(u.g)
+        """)
+        if not self.run(f"SELECT count(*) FROM {rel}").fetchone()[0]:
+            raise ExecutionError("the two places do not share a border")
+        return rel
 
     def op_Buffer(self, of: Any, distance_m: float) -> str:
         src = self.eval(of)
@@ -537,7 +572,9 @@ class _Run:
                     f"ST_XMax({wg}) + {pad}, ST_YMax({wg}) + {pad})))")
         else:
             rl = self.eval(line)
-            clip = f"ST_Boundary({self.union_geom(rl, 'gs')})"
+            # A line (a river, a shared border) is the line itself; an area is its boundary.
+            g = self.union_geom(rl, "gs")
+            clip = f"(SELECT CASE WHEN ST_Dimension(x) = 1 THEN x ELSE ST_Boundary(x) END FROM (SELECT {g} AS x))"
             wg = None
         sql = f"""
             WITH l AS (SELECT {clip} AS g),
