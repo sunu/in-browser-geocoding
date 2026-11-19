@@ -27,7 +27,7 @@ export async function load(base = "", onProgress: (msg: string) => void = () => 
   const bundle = await loadBundle(`${base}/bundle.json`);
   onProgress("data, models");
   const [db, t5, xenc] = await Promise.all([
-    openDb(data, (m) => onProgress(`data: ${m}`), bundle.config.data.country, opts.dataVersion),
+    openDb(data, onProgress, bundle.config.data.country, opts.dataVersion),
     T5Frames.load(true).then((m) => (onProgress("T5 model loaded"), m)),
     CrossEncoder.load(true).then((m) => (onProgress("decision model loaded"), m)),
   ]);

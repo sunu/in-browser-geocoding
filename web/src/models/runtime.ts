@@ -1,5 +1,6 @@
 // ONNX Runtime and tokenizers for Node.js (tests) and the browser (app). Same API in both.
 import { AutoTokenizer, env } from "@huggingface/transformers";
+import { readBody } from "../core/progress.ts";
 
 export const isNode = typeof window === "undefined";
 
@@ -50,7 +51,7 @@ async function createSession(...parts: string[]): Promise<any> {
   // Node.js: ORT_THREADS limits the threads of each session (parity checks in several processes).
   if (isNode && process.env.ORT_THREADS) opts.intraOpNumThreads = Number(process.env.ORT_THREADS);
   if (isNode) return o.InferenceSession.create(modelPath(...parts), opts);
-  const buf = await (await fetch(modelPath(...parts))).arrayBuffer();
+  const buf = await readBody(await fetch(modelPath(...parts)), parts.join("/"));
   return o.InferenceSession.create(buf, opts);
 }
 

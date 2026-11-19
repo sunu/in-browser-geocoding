@@ -1,5 +1,6 @@
 // DuckDB-WASM in Node.js (tests) and in the browser (app). Loads the files of scripts/export_web.py.
 import { isNode, nodeImport } from "../models/runtime.ts";
+import { readBody } from "../core/progress.ts";
 import { CountryStore } from "./store.ts";
 
 export interface Db { query(sql: string): Promise<any[]>; store?: CountryStore }
@@ -101,10 +102,17 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
   };
   // One more try after a network error (WebKit can lose the connection during a large download).
   const bytes = async (rel: string) => {
-    try { return new Uint8Array(await (await get(rel)).arrayBuffer()); } catch (e) {
+    try { return await readBody(await get(rel), rel, sizeOf(rel)); } catch (e) {
       if (!(e instanceof TypeError)) throw e;
-      return new Uint8Array(await (await get(rel)).arrayBuffer());
+      return await readBody(await get(rel), rel, sizeOf(rel));
     }
+  };
+  // Expected file sizes from the manifest, for the loading messages (if the response has no Content-Length).
+  const sizeOf = (rel: string): number => {
+    const [dir, f] = rel.split("/");
+    if (dir === "global") return manifest?.global?.[f] ?? 0;
+    const cc = /^country=(\w+)$/.exec(dir)?.[1];
+    return cc ? manifest?.countries?.[cc]?.bytes?.[f?.replace(".parquet", "")] ?? 0 : 0;
   };
   for (const s of SETUP) await c.query(s);
   const m = await fetch(`${abs}/manifest.json${version ? `?v=${version}` : ""}`);

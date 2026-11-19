@@ -1,4 +1,5 @@
 import maplibregl from "maplibre-gl";
+import { onDownload, type Download } from "../core/progress.ts";
 import { load, type Geoparse } from "../geoparse.ts";
 
 const $ = (id: string) => document.getElementById(id)!;
@@ -7,10 +8,18 @@ const EXAMPLES = ["districts near the sea in Gujarat", "hospitals within 2 km of
   "Kerala except Palakkad", "states that border Karnataka", "cities in Maharashtra with population over 1 million", "northern Karnataka"];
 
 // Basemap: OpenFreeMap (free, no API key; data © OpenStreetMap contributors).
-const map = new maplibregl.Map({
-  container: "map", style: "https://tiles.openfreemap.org/styles/positron", center: [78.9, 22.5], zoom: 4,
-});
-const mapReady = new Promise<void>((res) => (map.loaded() ? res() : map.once("load", () => res())));
+// Without WebGL there is no map; the queries and the result list still work.
+let map: maplibregl.Map | null = null;
+try {
+  map = new maplibregl.Map({
+    container: "map", style: "https://tiles.openfreemap.org/styles/positron", center: [78.9, 22.5], zoom: 4,
+  });
+} catch (e) {
+  $("map").innerHTML = `<p class="err" style="padding:16px">The map cannot show in this browser (WebGL is not available).
+    The results show in the list.</p>`;
+  console.error(e);
+}
+const mapReady = new Promise<void>((res) => (!map || map.loaded() ? res() : map.once("load", () => res())));
 // For scripts/world_smoke.ts: set the map view before a query.
 (window as any).geoparseMap = map;
 
@@ -19,6 +28,7 @@ const esc = (s: any) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;
 
 async function show(fc: any) {
   await mapReady;
+  if (!map) return;
   const src = map.getSource("result") as maplibregl.GeoJSONSource | undefined;
   if (src) src.setData(fc);
   else {
@@ -35,12 +45,15 @@ async function show(fc: any) {
 
 async function runQuery(text: string) {
   go.disabled = true;
-  status.textContent = "Parsing…";
+  files.clear();
+  queryStatus = "Working…";
+  status.textContent = queryStatus;
   const t0 = performance.now();
   // The map view biases the ranking of places with the same name.
-  const b = map.getBounds();
-  const { parse: p, result: r } = await gp.run(text, [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]);
+  const b = map?.getBounds();
+  const { parse: p, result: r } = await gp.run(text, b ? [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()] : null);
   const total = (performance.now() - t0) / 1000;
+  queryStatus = "";
   status.textContent = `${p.ok ? "OK" : "Unsupported"} · parse ${p.timings.parse_s.toFixed(2)} s · total ${total.toFixed(2)} s`;
   const fc = { type: "FeatureCollection", features: (r?.features ?? []).filter((f) => f.geometry).map((f) => ({ type: "Feature", geometry: f.geometry, properties: { name: f.name, id: f.id } })) };
   await show(fc);
@@ -67,16 +80,91 @@ $("examples").addEventListener("click", (ev) => {
 go.onclick = () => q.value && runQuery(q.value);
 q.onkeydown = (e) => { if (e.key === "Enter" && !go.disabled && q.value) runQuery(q.value); };
 
+// Loading screen: one row for each part, with the downloaded and the expected megabytes.
+const STEPS: [string, string][] = [["settings", "Settings and the database engine"], ["data", "Place data (names and borders)"],
+  ["t5", "Language model (reads your query)"], ["xenc", "Decision model (chooses between options)"]];
+const partOf = (file: string) => (file.startsWith("t5/") ? "t5" : file.startsWith("xenc/") ? "xenc" : "data");
+const files = new Map<string, Download>();
+const done = new Set<string>();
+const mb = (n: number) => (n / 1e6).toFixed(1);
+$("steps").innerHTML = STEPS.map(([k, label]) => `<div class="step" id="step-${k}"><span class="mark">○</span><span>${label}</span>
+  <span class="size"></span><div class="bar"><i></i></div></div>`).join("");
+let frame = 0;
+function drawSteps() {
+  frame = 0;
+  for (const [k] of STEPS) {
+    const fs = [...files.values()].filter((d) => partOf(d.file) === k);
+    const loaded = fs.reduce((a, d) => a + d.loaded, 0), total = fs.reduce((a, d) => a + d.total, 0);
+    const el = $(`step-${k}`);
+    el.classList.toggle("done", done.has(k));
+    el.querySelector(".mark")!.textContent = done.has(k) ? "✓" : "○";
+    el.querySelector(".size")!.textContent = total ? `${mb(loaded)} / ${mb(total)} MB` : "";
+    (el.querySelector(".bar i") as HTMLElement).style.width = done.has(k) ? "100%" : total ? `${(100 * loaded) / total}%` : "0";
+  }
+}
+const redraw = () => { frame ||= requestAnimationFrame(drawSteps); };
+
+// After the start: the files that a query loads (for example the countries of the places in the query).
+const countryName = (() => {
+  try { const d = new Intl.DisplayNames(["en"], { type: "region" }); return (c: string) => d.of(c) ?? c; } catch { return (c: string) => c; }
+})();
+function fileLabel(file: string): string {
+  const cc = /^country=(\w+)\//.exec(file)?.[1];
+  if (cc === "QN") return "natural features";
+  if (cc) return countryName(cc);
+  if (file.startsWith("names/")) return "place names";
+  if (file.includes("layers")) return "coastlines and borders";
+  if (file.includes("country_shapes")) return "country shapes";
+  return file;
+}
+let queryStatus = "";
+function drawQueryLoads() {
+  frame = 0;
+  if (!queryStatus) return;
+  // All files of this query in the sum, so that the total does not go down when a file is done.
+  const all = [...files.values()], active = all.filter((d) => !d.done);
+  if (!active.length) { status.textContent = queryStatus; return; }
+  const loaded = all.reduce((a, d) => a + d.loaded, 0), total = all.reduce((a, d) => a + d.total, 0);
+  const names = [...new Set(active.map((d) => fileLabel(d.file)))].join(", ");
+  status.textContent = `${queryStatus} Loading data for ${names} (${mb(loaded)}${total ? ` / ${mb(total)}` : ""} MB)…`;
+}
+let ready = false;
+onDownload((d) => {
+  files.set(d.file, d);
+  if (ready) frame ||= requestAnimationFrame(drawQueryLoads);
+  else {
+    $("now").textContent = d.done ? "" : `Downloading ${d.file}`;
+    redraw();
+  }
+});
+
+function progress(m: string) {
+  status.textContent = `Loading ${m}…`;
+  if (m === "data, models") done.add("settings");
+  if (m === "T5 model loaded") done.add("t5");
+  if (m === "decision model loaded") done.add("xenc");
+  if (m.startsWith("data: country")) done.add("data");
+  redraw();
+}
+
 const t0 = performance.now();
 // ?data=<url>: other data files, for example the country layout (public/countries/<release>).
 // A deployed build gets the data and model URLs from the deploy script (VITE_DATA_URL, VITE_MODEL_URL, VITE_DATA_VERSION).
 const env = import.meta.env;
 const param = new URLSearchParams(location.search).get("data");
 const data = param ?? (env.VITE_DATA_URL || undefined);
-load("", (m) => (status.textContent = `Loading ${m}…`), data,
+load("", progress, data,
   { models: env.VITE_MODEL_URL || undefined, dataVersion: param ? "" : env.VITE_DATA_VERSION || "" }).then((g) => {
   gp = g;
   go.disabled = false;
-  status.textContent = `Ready in ${((performance.now() - t0) / 1000).toFixed(1)} s. Everything runs in this browser tab.`;
+  const total = [...files.values()].reduce((a, d) => a + d.loaded, 0);
+  status.textContent = `Ready in ${((performance.now() - t0) / 1000).toFixed(1)} s (${mb(total)} MB). Everything runs in this browser tab.`;
+  ready = true;
+  files.clear();
+  $("loading").hidden = true;
   (window as any).geoparse = g;
-}).catch((e) => { status.innerHTML = `<span class="err">Load failed: ${esc(e.message)}</span>`; console.error(e); });
+}).catch((e) => {
+  status.innerHTML = `<span class="err">Load failed: ${esc(e.message)}</span>`;
+  $("now").innerHTML = `<span class="err">Loading failed: ${esc(e.message)}</span><br><button onclick="location.reload()">Try again</button>`;
+  console.error(e);
+});
