@@ -125,7 +125,9 @@ export class Parser {
     for (const t of [...tids].sort((a, b) => tscore[b] - tscore[a])) if (this.templates[t].family === fd.value) topts[t] = this.templateOption(t);
     const td = await dec.pickTemplate(text, fd.value, topts, depth);
     if (dec.below("pick_template", td)) stop(`low confidence for pick_template (${fmt(td.confidence)})`, depth, text, "pick_template");
-    const tpl = this.templates[td.value];
+    let tpl = this.templates[td.value];
+    const alt = await this.frameOverride(dec, text, tpl.id, cands, tscore, depth);
+    if (alt) tpl = this.templates[alt];
     if (tpl.id === "natural_in") {
       // Port: "Ganga river", "Sahara desert" is one natural feature, not the features of a kind in a place.
       const top = await this.gaz.search(text, { fuzzy: false, limit: 1, view: dec.view });
@@ -272,8 +274,45 @@ export class Parser {
     return { op: "Resolve", args: { name: rows[0].name, source: "overture", id: rows[0].id } };
   }
 
+  /** Port of _frame_override: union for "A and B" that is not one exact name; a frame that covers the level words. */
+  private async frameOverride(dec: Decider, text: string, tid: string, cands: Record<string, Match[]>, tscore: Record<string, number>, depth: number): Promise<string | null> {
+    const exactName = async (x: string) => (await this.gaz.search(x, { fuzzy: false, limit: 1, view: dec.view })).length > 0;
+    const m = text.trim().match(/^(.+?)\s+(?:and|&)\s+(.+)$/i);
+    if (tid === "lookup_place" && m && "union" in cands && !(await exactName(text)) && (await exactName(m[1])) && (await exactName(m[2]))) {
+      dec.recordStep("frame_override", depth, { text }, "union", "rules", { from: tid });
+      return "union";
+    }
+    const levelWords = Object.values<any>(this.bundle.options.admin_levels).flatMap((v) => v.keywords ?? [])
+      .filter((w: string) => new RegExp(`\\b${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i").test(text));
+    const covers = (t: string) => {
+      const ms = cands[t] ?? [];
+      if (!ms.length) return false;
+      const best = ms.reduce((a, b) => (b.score > a.score ? b : a));
+      const segs = Object.values(best.segments).map(String).join(" ").toLowerCase();
+      return levelWords.every((w: string) => segs.includes(w.toLowerCase()));
+    };
+    // Not for a lookup: a level word after a place name is usually noise ("Konark Sun Temple state").
+    if (tid !== "lookup_place" && levelWords.length && cands[tid]?.length && !covers(tid)) {
+      const alts = Object.keys(cands).filter((t) => t !== tid && covers(t)).sort((a, b) => (tscore[b] ?? -1e9) - (tscore[a] ?? -1e9));
+      if (alts.length) {
+        dec.recordStep("frame_override", depth, { text }, alts[0], "rules", { from: tid, level_words: levelWords });
+        return alts[0];
+      }
+    }
+    return null;
+  }
+
   private async region(dec: Decider, tpl: Template, text: string, query: string, depth: number, typeHint: string | null): Promise<[any, any]> {
+    const article = /^the\s/i.test(text.trim());
     text = text.trim().replace(/^(the|a|an|whole|entire|all of|all of the|whole of)\s+/i, "");
+    if (article) {
+      // Port: "the Godavari": an exact natural feature is the place (rivers, ranges and seas take "the").
+      const nat = (await this.gaz.search(text, { fuzzy: false, limit: 5, view: dec.view })).filter((c) => c.subtype === "natural");
+      if (nat.length) {
+        dec.recordStep("natural_name", depth, { text }, nat[0].id, "rules", { article: true });
+        return [{ op: "Resolve", args: { name: text, source: "overture", id: nat[0].id } }, text];
+      }
+    }
     const lex = lexiconMatch(text, this.bundle);
     if (lex) return [{ op: "LexiconSet", args: { key: lex } }, { lex, text }];
     const qual = await this.qualified(dec, text, depth);
@@ -296,8 +335,8 @@ export class Parser {
       const [sub, info] = await this.parseLevel(dec, text, depth + 1);
       return [sub, { q: text, t: info.template, s: info.slots }];
     }
-    if (isRegion && exact.length && !keywordHits(text, levelWords, false) && !this.directionRest(text)) {
-      // Port: the whole text is an exact place name ("Western Ghats"): a place, not a sub-query.
+    if (isRegion && exact.length && !keywordHits(text, levelWords, false)) {
+      // Port: the whole text is an exact place name ("Western Ghats", "Northern Ireland"): a place, also with a direction word.
       dec.recordStep("is_subquery", depth, { text }, false, "rules", { exact_name: true });
       return [await this.anchor(dec, tpl, text, query, depth, typeHint, exact), text];
     }

@@ -44,18 +44,17 @@ Records: 70. Depth 0: 70. Depth 1 (two levels): 0.
 | lookup | 100% (16/16) | 100% (16/16) | 100% (16/16) | 0 | 100% (16/16) |
 | modifier | 100% (7/7) | 100% (7/7) | 100% (7/7) | 0 | 100% (7/7) |
 | predicate_filter | 100% (8/8) | 100% (8/8) | 100% (8/8) | 0 | 100% (8/8) |
-| set_algebra | 80% (4/5) | 60% (3/5) | 60% (3/5) | 0 | 80% (4/5) |
-| ALL | 99% (69/70) | 97% (68/70) | 97% (68/70) | 0 | 99% (69/70) |
+| set_algebra | 100% (5/5) | 80% (4/5) | 80% (4/5) | 0 | 100% (5/5) |
+| ALL | 100% (70/70) | 99% (69/70) | 99% (69/70) | 0 | 100% (70/70) |
 
 ### By depth
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 97% (68/70) | 1.60 s | 4.9 | 1.6 |
+| 0 | 99% (69/70) | 1.68 s | 4.9 | 1.6 |
 
 ### Pipeline errors
 
 | Gold id | Query | Got template | Problem |
 |---|---|---|---|
-| w013 | England and Wales | lookup_place | template |
 | w062 | Oaxaca except Oaxaca de Juarez | difference | b: expected 'Oaxaca de Juarez', got 'Juarez' |

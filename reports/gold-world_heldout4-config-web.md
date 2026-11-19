@@ -46,21 +46,20 @@ Records: 21. Depth 0: 21. Depth 1 (two levels): 0.
 
 | Family | Template | Slots | DAG | Unsupported | Executed result |
 |---|---|---|---|---|---|
-| hierarchy | 100% (2/2) | 50% (1/2) | 50% (1/2) | 0 | 50% (1/2) |
+| hierarchy | 100% (2/2) | 100% (2/2) | 100% (2/2) | 0 | 100% (2/2) |
 | lookup | 100% (13/13) | 100% (13/13) | 100% (13/13) | 0 | 100% (13/13) |
 | modifier | 100% (3/3) | 100% (3/3) | 100% (3/3) | 0 | 100% (3/3) |
 | predicate_filter | 67% (2/3) | 67% (2/3) | 67% (2/3) | 0 | 100% (3/3) |
-| ALL | 95% (20/21) | 90% (19/21) | 90% (19/21) | 0 | 95% (20/21) |
+| ALL | 95% (20/21) | 95% (20/21) | 95% (20/21) | 0 | 100% (21/21) |
 
 ### By depth
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 90% (19/21) | 1.46 s | 4.3 | 1.8 |
+| 0 | 95% (20/21) | 1.49 s | 3.9 | 1.7 |
 
 ### Pipeline errors
 
 | Gold id | Query | Got template | Problem |
 |---|---|---|---|
 | n008 | districts along the Yamuna | neighbors | template |
-| n014 | districts in the Western Ghats | children | parent: expected 'Western Ghats', got {'q': 'Western Ghats', 't': 'direction_part', 's': {'dir': 'west', 'target': 'G... |

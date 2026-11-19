@@ -67,7 +67,7 @@ Records: 19. Depth 0: 15. Depth 1 (two levels): 4.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 87% (13/15) | 0.40 s | 2.0 | 1.2 |
+| 0 | 87% (13/15) | 0.58 s | 2.0 | 1.2 |
 | 1 | 100% (4/4) | 3.16 s | 8.2 | 2.8 |
 
 ### Pipeline errors

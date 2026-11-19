@@ -338,6 +338,9 @@ class Parser:
         if dec.below("pick_template", td):
             raise _Stop(Unsupported(reason=f"low confidence for pick_template ({td.confidence:.2f})", decision="pick_template", depth=depth, text=text))
         tpl = self.templates[td.value]
+        alt = self._frame_override(dec, text, tpl.id, cands, tscores, depth)
+        if alt:
+            tpl = self.templates[alt]
         if tpl.id == "natural_in":
             # "Ganga river", "Sahara desert": one natural feature, not the features of a kind in a place.
             top = self.store.search(text, fuzzy=False, limit=1, view=dec.view)
@@ -538,9 +541,41 @@ class Parser:
             raise _Stop(Unsupported(reason=f"country {code} is not in the extract"))
         return {"op": "Resolve", "args": {"name": row[1], "source": "overture", "id": row[0]}}
 
+    def _frame_override(self, dec: Decider, text: str, tid: str, cands: dict[str, list], tscores: dict[str, float],
+                        depth: int) -> str | None:
+        """Another candidate template of the T5 frames, if the chosen one does not fit the text:
+        1. "A and B" is one place only if it is an exact name ("Trinidad and Tobago"): else the union, if A and B are.
+        2. Each admin level word of the text is in a slot of the frame ("coastal regions of Chile" is not along_coast).
+           Not for a lookup: a level word after a place name is usually noise ("Konark Sun Temple state")."""
+        def covers(t):
+            best = max(cands.get(t, []), key=lambda m: m["score"], default=None)
+            segs = " ".join(str(v) for v in (best["segments"].values() if best else [])).lower()
+            return all(w in segs for w in level_words)
+
+        m = re.fullmatch(r"(.+?)\s+(?:and|&)\s+(.+)", text.strip(), re.I)
+        if (tid == "lookup_place" and m and "union" in cands and not self.store.search(text, fuzzy=False, limit=1, view=dec.view)
+                and all(self.store.search(x, fuzzy=False, limit=1, view=dec.view) for x in m.groups())):
+            dec.record_step("frame_override", depth, {"text": text}, "union", "rules", {"from": tid})
+            return "union"
+        level_words = [w for w in _level_words() if re.search(rf"\b{re.escape(w)}\b", text, re.I)]
+        if tid != "lookup_place" and level_words and cands.get(tid) and not covers(tid):
+            alts = sorted((t for t in cands if t != tid and covers(t)), key=lambda t: -tscores.get(t, -1e9))
+            if alts:
+                dec.record_step("frame_override", depth, {"text": text}, alts[0], "rules", {"from": tid, "level_words": level_words})
+                return alts[0]
+        return None
+
     def _region(self, dec: Decider, tpl: Template, text: str, spans: list[Span], query: str, depth: int,
                 type_hint: str | None) -> tuple[dict[str, Any], Any]:
+        article = bool(re.match(r"^the\s", text.strip(), re.I))
         text = re.sub(r"^(the|a|an|whole|entire|all of|all of the|whole of)\s+", "", text.strip(), flags=re.I)
+        if article:
+            # "the Godavari": rivers, ranges and seas take "the", districts and cities do not. An exact natural
+            # feature is the place.
+            nat = [c for c in self.store.search(text, fuzzy=False, limit=5, view=dec.view) if c.subtype == "natural"]
+            if nat:
+                dec.record_step("natural_name", depth, {"text": text}, nat[0].id, "rules", {"article": True})
+                return {"op": "Resolve", "args": {"name": text, "source": "overture", "id": nat[0].id}}, text
         lex = lexicon_match(text)
         if lex:
             return {"op": "LexiconSet", "args": {"key": lex}}, {"lex": lex, "text": text}
@@ -566,8 +601,9 @@ class Parser:
                 raise _Stop(Unsupported(reason="depth limit", depth=depth, text=text))
             sub_dag, info = self._parse_level(dec, text, depth + 1)
             return sub_dag, {"q": text, "t": info["template"], "s": info["slots"]}
-        if is_region and exact and not keyword_hits(text, _level_words(), typo=False) and not _direction_rest(text):
-            # The whole text is an exact place name ("Western Ghats", "Central Delhi"): a place, not a sub-query.
+        if is_region and exact and not keyword_hits(text, _level_words(), typo=False):
+            # The whole text is an exact place name ("Western Ghats", "Northern Ireland", "Central Delhi"): a place, not
+            # a sub-query, also with a direction word.
             dec.record_step("is_subquery", depth, {"text": text}, False, "rules", {"exact_name": True})
             return self._anchor(dec, tpl, text, spans, query, depth, type_hint, exact), text
         if is_region:

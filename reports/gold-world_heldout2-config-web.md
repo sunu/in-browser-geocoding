@@ -32,19 +32,18 @@ Records: 34. Depth 0: 34. Depth 1 (two levels): 0.
 | hierarchy | 100% (19/19) | 95% (18/19) | 95% (18/19) | 0 | 100% (19/19) |
 | lookup | 100% (8/8) | 100% (8/8) | 100% (8/8) | 0 | 100% (8/8) |
 | modifier | 100% (1/1) | 100% (1/1) | 100% (1/1) | 0 | 100% (1/1) |
-| predicate_filter | 50% (1/2) | 50% (1/2) | 50% (1/2) | 0 | 50% (1/2) |
+| predicate_filter | 100% (2/2) | 100% (2/2) | 100% (2/2) | 0 | 100% (2/2) |
 | set_algebra | 100% (1/1) | 100% (1/1) | 100% (1/1) | 0 | 100% (1/1) |
-| ALL | 97% (33/34) | 94% (32/34) | 94% (32/34) | 0 | 97% (33/34) |
+| ALL | 100% (34/34) | 97% (33/34) | 97% (33/34) | 0 | 100% (34/34) |
 
 ### By depth
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 94% (32/34) | 1.53 s | 4.5 | 1.6 |
+| 0 | 97% (33/34) | 1.64 s | 4.6 | 1.6 |
 
 ### Pipeline errors
 
 | Gold id | Query | Got template | Problem |
 |---|---|---|---|
-| y015 | coastal regions of Chile | along_coast | template |
 | y028 | regions bordering Dodoma | neighbors | level: expected 'state', got 'none' |
