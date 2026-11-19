@@ -278,7 +278,8 @@ class _Run:
         if level is None or level == "none":
             level = self.child_level(parent, country)
         lf = self.level_filter(level, country)
-        if self.ids_of(parent):
+        # A direction part has the id of its source but only a part of its geometry: use the geometry.
+        if self.ids_of(parent) and not (isinstance(of, dict) and of.get("op") == "Direction"):
             return self.divisions_rel(
                 f"{lf} AND EXISTS (SELECT 1 FROM {parent} p "
                 f"WHERE p.id IS NOT NULL AND p.id <> d.id AND list_contains(d.ancestors, p.id))")

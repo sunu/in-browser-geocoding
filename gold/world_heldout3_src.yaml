@@ -1,0 +1,37 @@
+# Held-out set for qualified names and directions in region slots (plan-025, phase 10). Written on 2026-11-19, after
+# the phase 10 rules and before any run on it. Do not tune on these records. Same format as world_src.yaml.
+# The `ids` pins are the city that the text names (checked with the ancestors of each candidate).
+views:
+  US: [-125, 24, -66, 50]
+  CA: [-141, 41.7, -52.6, 83.1]
+  GB: [-8.7, 49.8, 1.8, 60.9]
+  IN: [68, 8, 97, 37]
+  ES: [-9.3, 36, 3.3, 43.8]
+  DE: [5.8, 47.2, 15.1, 55.1]
+  KE: [33.9, -4.7, 41.9, 5]
+
+records:
+  # Qualified names
+  - {cc: US, q: "Portland, Maine", t: lookup_place, s: {anchor: "Portland"}, src: {anchor: overture}, ids: {anchor: e8b41653-59f0-41e5-904e-b2c8202ccff2}}
+  - {cc: US, q: "Portland, Oregon", t: lookup_place, s: {anchor: "Portland"}, src: {anchor: overture}, ids: {anchor: 20669090-f207-47bc-94de-ae92daac592f}}
+  - {cc: US, q: "Cambridge, Massachusetts", t: lookup_place, s: {anchor: "Cambridge"}, src: {anchor: overture}, ids: {anchor: e66a9243-9cc5-40a8-a44e-363f9721113f}}
+  - {cc: CA, q: "London, Ontario", t: lookup_place, s: {anchor: "London"}, src: {anchor: overture}, ids: {anchor: fbd58ec5-d280-4a67-a638-688492b51ef4}}
+  - {cc: GB, q: "Perth, Scotland", t: lookup_place, s: {anchor: "Perth"}, src: {anchor: overture}, ids: {anchor: 1fdf8eec-6d86-407a-b456-5eb2aa6942b9}}
+  - {cc: IN, q: "Hyderabad, Pakistan", t: lookup_place, s: {anchor: "Hyderabad"}, src: {anchor: overture}, ids: {anchor: 13a97485-9405-44d9-b7f7-eee08bbd1d71}}
+  - {cc: IN, q: "Aurangabad, Bihar", t: lookup_place, s: {anchor: "Aurangabad"}, src: {anchor: overture}, ids: {anchor: 1accf4b1-4193-474a-95eb-d2b89de81d10}}
+  - {cc: CA, q: "Victoria, British Columbia", t: lookup_place, s: {anchor: "Victoria"}, src: {anchor: overture}, ids: {anchor: ee4362a1-4331-4380-80d7-7e3ac79ac97e}}
+  - {cc: ES, q: "Córdoba, Spain", t: lookup_place, s: {anchor: "Córdoba"}, src: {anchor: overture}, ids: {anchor: d16cc280-cb28-492b-ae21-92cb365757b8}}
+  - {cc: US, q: "Alexandria, Virginia", t: lookup_place, s: {anchor: "Alexandria"}, src: {anchor: overture}, ids: {anchor: a6220937-7c12-453e-bd2a-86ab770d025b}}
+  - {cc: GB, q: "schools in Cambridge, England", t: features_in, s: {category: "school", region: "Cambridge"}, ids: {region: 9f828155-887a-44c3-afb5-284d82262795}}
+  - {cc: US, q: "Pittsburg, Pennsylvania", t: lookup_place, s: {anchor: "Pittsburg"}, src: {anchor: overture}, ids: {anchor: ab7184d7-0c65-44bc-8166-a67367e92bfc}, n: "Typo. Pittsburg is an exact name in Kansas."}
+
+  # Directions in region slots
+  - {cc: DE, q: "districts in eastern Germany", t: children, s: {level: district, parent: {q: "eastern Germany", t: direction_part, s: {dir: east, target: "Germany"}}}}
+  - {cc: ES, q: "hospitals in southern Spain", t: features_in, s: {category: "hospital", region: {q: "southern Spain", t: direction_part, s: {dir: south, target: "Spain"}}}}
+  - {cc: IN, q: "states of northern India", t: children, s: {level: state, parent: {q: "northern India", t: direction_part, s: {dir: north, target: "India"}}}}
+  - {cc: KE, q: "schools in western Kenya", t: features_in, s: {category: "school", region: {q: "western Kenya", t: direction_part, s: {dir: west, target: "Kenya"}}}}
+
+  # Must not change
+  - {cc: IN, q: "Kerala, Tamil Nadu", t: union, s: {a: "Kerala", b: "Tamil Nadu"}}
+  - {cc: IN, q: "North Goa", t: lookup_place, s: {anchor: "North Goa"}, src: {anchor: overture}}
+  - {cc: US, q: "Springfield", t: lookup_place, s: {anchor: "Springfield"}, src: {anchor: overture}}

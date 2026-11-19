@@ -21,7 +21,9 @@ const POI: [string, string][] = [
 ];
 const QUERIES = process.env.SET === "poi" ? POI : BASE;
 const name = process.argv[2] ?? "chromium";
-const browser = await ({ chromium, firefox, webkit } as any)[name].launch();
+// Headless Firefox on Linux without a GPU driver has no WebGL (the map needs it): use the software renderer.
+const browser = await ({ chromium, firefox, webkit } as any)[name].launch(
+  name === "firefox" ? { firefoxUserPrefs: { "webgl.force-enabled": true, "webgl.disabled": false } } : {});
 const page = await browser.newPage();
 const errors: string[] = [];
 page.on("console", (m) => { if (m.type() === "error") errors.push(m.text().slice(0, 300)); });

@@ -97,6 +97,8 @@ export class Parser {
   private async parseLevel(dec: Decider, text: string, depth: number): Promise<[any, any]> {
     const lex = lexiconMatch(text, this.bundle);
     if (lex) return [{ op: "LexiconSet", args: { key: lex } }, { family: "lookup", template: "lookup_place", slots: { anchor: { lex, text } } }];
+    const qual = await this.qualified(dec, text, depth);
+    if (qual) return [qual, { family: "lookup", template: "lookup_place", slots: { anchor: qual.args.name } }];
     const { cands, unsupported } = await this.candidates(dec, text, depth);
     if (unsupported) stop("the T5 model classifies the text as unsupported", depth, text, "generate_frames");
     const tids = Object.keys(cands);
@@ -239,8 +241,18 @@ export class Parser {
     text = text.trim().replace(/^(the|a|an|whole|entire|all of|all of the|whole of)\s+/i, "");
     const lex = lexiconMatch(text, this.bundle);
     if (lex) return [{ op: "LexiconSet", args: { key: lex } }, { lex, text }];
+    const qual = await this.qualified(dec, text, depth);
+    if (qual) return [qual, text];
     const isRegion = Object.values(tpl.slots).some((s) => s.type === "region") && tpl.family !== "lookup";
     const exact = await this.gaz.search(text, { typeHint, fuzzy: false, limit: 3, view: dec.view });
+    const rest = isRegion && !exact.length ? this.directionRest(text) : null;
+    if (rest && (await this.gaz.search(rest, { fuzzy: false, limit: 1, view: dec.view })).length) {
+      // "northern France": a direction word and a place name. A subquery, without the model.
+      dec.recordStep("is_subquery", depth, { text }, true, "rules", { direction_rest: rest });
+      if (depth + 1 > this.maxDepth) stop("depth limit", depth, text);
+      const [sub, info] = await this.parseLevel(dec, text, depth + 1);
+      return [sub, { q: text, t: info.template, s: info.slots }];
+    }
     if (isRegion) {
       const d = await dec.isSubquery(text, depth);
       if (dec.below("is_subquery", d)) stop(`low confidence for is_subquery (${fmt(d.confidence)})`, depth, text, "is_subquery");
@@ -251,6 +263,39 @@ export class Parser {
       }
     }
     return [await this.anchor(dec, tpl, text, query, depth, typeHint, exact), text];
+  }
+
+  /** Port of _qualified: "Paris, Texas" is the Paris inside an exact match of each later name, or null. */
+  private async qualified(dec: Decider, text: string, depth: number): Promise<any | null> {
+    const parts = text.split(",").map((p) => p.trim());
+    if (parts.length < 2 || parts.length > 3 || parts.some((p) => !p || /\band\b|&/i.test(p))) return null;
+    const outer: Set<string>[] = [];
+    for (const p of parts.slice(1)) {
+      const ids = new Set((await this.gaz.search(p, { fuzzy: false, limit: 5, view: dec.view })).map((c) => c.id));
+      if (!ids.size) return null;
+      outer.push(ids);
+    }
+    const context = parts.slice(1).join(", ");
+    for (const fuzzy of [true, "only"] as const) {
+      for (const c of await this.gaz.search(parts[0], { context, limit: 20, fuzzy, view: dec.view })) {
+        if (outer.every((ids) => c.ancestors.some((a) => ids.has(a)))) {
+          dec.recordStep("qualified_name", depth, { text }, c.id, "rules", { name: parts[0], context, fuzzy });
+          return { op: "Resolve", args: { name: parts[0], source: "overture", id: c.id, context } };
+        }
+      }
+    }
+    return null;
+  }
+
+  /** Port of _direction_rest: the text after a leading direction word of 4 or more letters. */
+  private directionRest(text: string): string | null {
+    const kws = Object.values<any>(this.bundle.options.directions).flatMap((d) => d.keywords as string[])
+      .filter((k) => k.length >= 4).sort((a, b) => b.length - a.length);
+    for (const k of kws) {
+      const m = text.trim().match(new RegExp(`^${k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s+(.+)$`, "i"));
+      if (m) return m[1];
+    }
+    return null;
   }
 
   private async anchor(dec: Decider, tpl: Template, text: string, query: string, depth: number, typeHint: string | null, exact: Candidate[]) {

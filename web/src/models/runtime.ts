@@ -46,7 +46,9 @@ export async function session(...parts: string[]): Promise<any> {
 
 async function createSession(...parts: string[]): Promise<any> {
   const o = await ort();
-  const opts = { executionProviders: isNode ? ["cpu"] : ["wasm"], graphOptimizationLevel: "all" };
+  const opts: any = { executionProviders: isNode ? ["cpu"] : ["wasm"], graphOptimizationLevel: "all" };
+  // Node.js: ORT_THREADS limits the threads of each session (parity checks in several processes).
+  if (isNode && process.env.ORT_THREADS) opts.intraOpNumThreads = Number(process.env.ORT_THREADS);
   if (isNode) return o.InferenceSession.create(modelPath(...parts), opts);
   const buf = await (await fetch(modelPath(...parts))).arrayBuffer();
   return o.InferenceSession.create(buf, opts);

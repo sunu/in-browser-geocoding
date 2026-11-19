@@ -102,3 +102,25 @@ def test_t5_unsupported_gate():
     p = _parser("rules", use_t5=True)
     r = p.parse("what is the weather in Pune")
     assert not r.ok and "T5" in r.unsupported.reason
+
+
+def test_direction_rest():
+    from geoparse.parse.pipeline import _direction_rest
+
+    assert _direction_rest("northern France") == "France"
+    assert _direction_rest("north-east India") == "India"
+    assert _direction_rest("Northampton") is None
+    # One- and two-letter direction words ("n", "se") are not used.
+    assert _direction_rest("n Karnataka") is None
+
+
+def test_qualified_name(rules_parser):
+    # "A, B": the A inside B. Not a qualified name if no candidate of A is inside B (a union).
+    dec = rules_parser.base_decider.fork()
+    q = rules_parser._qualified(dec, "Jayanagar, Bengaluru", 0)
+    assert q and q["args"]["name"] == "Jayanagar" and q["args"]["context"] == "Bengaluru"
+    blr = {c.id for c in rules_parser.store.search("Bengaluru", fuzzy=False, limit=5)}
+    jay = rules_parser.store.describe([q["args"]["id"]])[q["args"]["id"]]
+    assert blr & set(jay["ancestor_ids"])
+    assert rules_parser._qualified(dec, "Kerala, Tamil Nadu", 0) is None
+    assert rules_parser._qualified(dec, "Kerala, Goa and Karnataka", 0) is None

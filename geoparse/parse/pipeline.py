@@ -299,6 +299,9 @@ class Parser:
         if lex:
             return ({"op": "LexiconSet", "args": {"key": lex}},
                     {"family": "lookup", "template": "lookup_place", "slots": {"anchor": {"lex": lex, "text": text}}})
+        qual = self._qualified(dec, text, depth)
+        if qual:
+            return qual, {"family": "lookup", "template": "lookup_place", "slots": {"anchor": qual["args"]["name"]}}
         spans = dec.extract_spans(text, depth=depth).value
         cands = self.candidates(text, spans, dec, depth)
         if "_t5_unsupported" in cands:
@@ -507,9 +510,20 @@ class Parser:
         lex = lexicon_match(text)
         if lex:
             return {"op": "LexiconSet", "args": {"key": lex}}, {"lex": lex, "text": text}
+        qual = self._qualified(dec, text, depth)
+        if qual:
+            return qual, text
         sd = tpl.slots
         is_region = any(s.type == "region" for s in sd.values()) and tpl.family != "lookup"
         exact = self.store.search(text, type_hint=type_hint, fuzzy=False, limit=3, view=dec.view)
+        rest = _direction_rest(text) if is_region and not exact else None
+        if rest and self.store.search(rest, fuzzy=False, limit=1, view=dec.view):
+            # "northern France": a direction word and a place name. A subquery, without the model.
+            dec.record_step("is_subquery", depth, {"text": text}, True, "rules", {"direction_rest": rest})
+            if depth + 1 > self.max_depth:
+                raise _Stop(Unsupported(reason="depth limit", depth=depth, text=text))
+            sub_dag, info = self._parse_level(dec, text, depth + 1)
+            return sub_dag, {"q": text, "t": info["template"], "s": info["slots"]}
         if is_region:
             d = dec.is_subquery(text, depth=depth, context={"gazetteer_exact": bool(exact),
                                                              "has_distance": parse_distance(text) is not None
@@ -568,6 +582,29 @@ class Parser:
             args["context"] = ctx_text
         return {"op": "Resolve", "args": args}
 
+    def _qualified(self, dec: Decider, text: str, depth: int) -> dict[str, Any] | None:
+        """A place name with the names of places that contain it, after commas ("Paris, Texas", "San Francisco,
+        California, USA"). The Resolve of the best candidate of the first name that is inside one exact match of
+        each later name; None if there is no such candidate ("Kerala, Tamil Nadu" is a union)."""
+        parts = [p.strip() for p in text.split(",")]
+        if not 2 <= len(parts) <= 3 or not all(parts) or any(re.search(r"\band\b|&", p, re.I) for p in parts):
+            return None
+        outer = []
+        for p in parts[1:]:
+            ids = {c.id for c in self.store.search(p, fuzzy=False, limit=5, view=dec.view)}
+            if not ids:
+                return None
+            outer.append(ids)
+        context = ", ".join(parts[1:])
+        # Exact names first; fuzzy names only if no exact name is inside ("Sanfransisco, California").
+        for fuzzy in (True, "only"):
+            for c in self.store.search(parts[0], context=context, limit=20, fuzzy=fuzzy, view=dec.view):
+                if all(ids & set(c.ancestors) for ids in outer):
+                    dec.record_step("qualified_name", depth, {"text": text}, c.id, "rules",
+                                    {"name": parts[0], "context": context, "fuzzy": fuzzy})
+                    return {"op": "Resolve", "args": {"name": parts[0], "source": "overture", "id": c.id, "context": context}}
+        return None
+
     def _photon_boost(self, dec: Decider, name: str, cands: list, depth: int) -> list:
         """If the two best candidates are close, add a score to the candidates that match Photon results."""
         rk = self.cfg["policy"]["ranking"]
@@ -590,6 +627,16 @@ class Parser:
         out = [c.model_copy(update={"score": round(c.score + boosts.get(c.id, 0.0), 4)}) for c in cands]
         out.sort(key=lambda c: (-c.score, c.id))
         return out
+
+
+def _direction_rest(text: str) -> str | None:
+    """The text after a leading direction word of 4 or more letters ("northern France" -> "France")."""
+    kws = sorted((k for ks in option_keywords("directions").values() for k in ks if len(k) >= 4), key=len, reverse=True)
+    for k in kws:
+        m = re.match(rf"{re.escape(k)}\s+(.+)$", text.strip(), re.I)
+        if m:
+            return m.group(1)
+    return None
 
 
 def _level_free(tpl: Template, name: str) -> bool:

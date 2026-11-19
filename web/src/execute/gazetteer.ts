@@ -88,7 +88,8 @@ export class Gazetteer {
     return Object.fromEntries(rs.map((r) => [r.id, Number(r.rk)]));
   }
 
-  async search(name: string, opts: { typeHint?: string | null; context?: string | null; limit?: number; fuzzy?: boolean; view?: number[] | null } = {}): Promise<Candidate[]> {
+  /** Port of Store.search. fuzzy "only": the fuzzy matches also if there is an exact match. */
+  async search(name: string, opts: { typeHint?: string | null; context?: string | null; limit?: number; fuzzy?: boolean | "only"; view?: number[] | null } = {}): Promise<Candidate[]> {
     const { typeHint = null, context = null, limit = 8, fuzzy = true, view = null } = opts;
     const n = normName(name.trim().replace(/^the\s+/i, ""));
     if (!n) return [];
@@ -166,11 +167,14 @@ export class Gazetteer {
         WHERE ${where} GROUP BY id`);
       return Object.fromEntries(rs.map((r) => [r.id, Number(r.s) * f])) as Record<string, number>;
     };
-    let scores = await exact(qList, 1);
-    // Overture names of some regions end with a level word and have no short form ("Kyoto Prefecture").
-    for (const [id, s] of Object.entries(await exact(qList.flatMap((x) => REGION_SUFFIXES.map((w) => `${x} ${w}`)), 0.98)))
-      scores[id] = Math.max(scores[id] ?? 0, s);
-    if (!Object.keys(scores).length) scores = await exact(qList.flatMap((x) => [`${x} district`, `${x} city`]), 0.98);
+    let scores: Record<string, number> = {};
+    if (fuzzy !== "only") {
+      scores = await exact(qList, 1);
+      // Overture names of some regions end with a level word and have no short form ("Kyoto Prefecture").
+      for (const [id, s] of Object.entries(await exact(qList.flatMap((x) => REGION_SUFFIXES.map((w) => `${x} ${w}`)), 0.98)))
+        scores[id] = Math.max(scores[id] ?? 0, s);
+      if (!Object.keys(scores).length) scores = await exact(qList.flatMap((x) => [`${x} district`, `${x} city`]), 0.98);
+    }
     if (fuzzy && !Object.keys(scores).length && n.length >= 4) {
       const k = n.replaceAll(" ", ""), nk = q(k);
       const where = `subtype IN ('country', 'region', 'county', 'locality', 'macrohood', 'neighborhood')

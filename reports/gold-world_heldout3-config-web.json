@@ -1,0 +1,1854 @@
+{
+ "isolated": [
+  {
+   "id": "z001",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.978318,
+   "n_options": 2
+  },
+  {
+   "id": "z001",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z001",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 0.4049499999999999,
+   "n_options": 2
+  },
+  {
+   "id": "z001",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "gold": {
+    "anchor": "Portland"
+   }
+  },
+  {
+   "id": "z001",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Portland",
+   "conf": 0.8
+  },
+  {
+   "id": "z002",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.9805919999999999,
+   "n_options": 2
+  },
+  {
+   "id": "z002",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z002",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 0.48976,
+   "n_options": 2
+  },
+  {
+   "id": "z002",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "gold": {
+    "anchor": "Portland"
+   }
+  },
+  {
+   "id": "z002",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Portland",
+   "conf": 0.8
+  },
+  {
+   "id": "z003",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.982402,
+   "n_options": 2
+  },
+  {
+   "id": "z003",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z003",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 0.505274,
+   "n_options": 2
+  },
+  {
+   "id": "z003",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "gold": {
+    "anchor": "Cambridge"
+   }
+  },
+  {
+   "id": "z003",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Cambridge",
+   "conf": 0.8
+  },
+  {
+   "id": "z004",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.978156,
+   "n_options": 2
+  },
+  {
+   "id": "z004",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z004",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 0.523498,
+   "n_options": 2
+  },
+  {
+   "id": "z004",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "gold": {
+    "anchor": "London"
+   }
+  },
+  {
+   "id": "z004",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "London",
+   "conf": 0.8
+  },
+  {
+   "id": "z005",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup"
+  },
+  {
+   "id": "z005",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
+  },
+  {
+   "id": "z005",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
+  },
+  {
+   "id": "z005",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "gold": {
+    "anchor": "Perth"
+   }
+  },
+  {
+   "id": "z005",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Perth",
+   "conf": 0.8
+  },
+  {
+   "id": "z006",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup"
+  },
+  {
+   "id": "z006",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
+  },
+  {
+   "id": "z006",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
+  },
+  {
+   "id": "z006",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "gold": {
+    "anchor": "Hyderabad"
+   }
+  },
+  {
+   "id": "z006",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Hyderabad",
+   "conf": 0.8
+  },
+  {
+   "id": "z007",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup"
+  },
+  {
+   "id": "z007",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
+  },
+  {
+   "id": "z007",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
+  },
+  {
+   "id": "z007",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "gold": {
+    "anchor": "Aurangabad"
+   }
+  },
+  {
+   "id": "z007",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Aurangabad",
+   "conf": 0.8
+  },
+  {
+   "id": "z008",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup"
+  },
+  {
+   "id": "z008",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
+  },
+  {
+   "id": "z008",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
+  },
+  {
+   "id": "z008",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "gold": {
+    "anchor": "Victoria"
+   }
+  },
+  {
+   "id": "z008",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Victoria",
+   "conf": 0.8
+  },
+  {
+   "id": "z009",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup"
+  },
+  {
+   "id": "z009",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
+  },
+  {
+   "id": "z009",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
+  },
+  {
+   "id": "z009",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "gold": {
+    "anchor": "C\u00f3rdoba"
+   }
+  },
+  {
+   "id": "z009",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "C\u00f3rdoba",
+   "conf": 0.8
+  },
+  {
+   "id": "z010",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup"
+  },
+  {
+   "id": "z010",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
+  },
+  {
+   "id": "z010",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
+  },
+  {
+   "id": "z010",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "gold": {
+    "anchor": "Alexandria"
+   }
+  },
+  {
+   "id": "z010",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Alexandria",
+   "conf": 0.8
+  },
+  {
+   "id": "z011",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features",
+   "gold": "features",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z011",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z011",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z011",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "features",
+   "correct": false,
+   "got": {
+    "category": "schools",
+    "region": "Cambridge, England"
+   },
+   "gold": {
+    "category": "schools",
+    "region": "Cambridge"
+   },
+   "conf": 0.90895,
+   "n_options": 3
+  },
+  {
+   "id": "z011",
+   "decision": "fill_closed_slot.category",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "school",
+   "gold": "school",
+   "text": "schools",
+   "conf": 0.9975700000000001
+  },
+  {
+   "id": "z011",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Cambridge",
+   "conf": 0.981512
+  },
+  {
+   "id": "z012",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.9805200000000001,
+   "n_options": 2
+  },
+  {
+   "id": "z012",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z012",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 0.4825060000000001,
+   "n_options": 2
+  },
+  {
+   "id": "z012",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "coverage_miss": true,
+   "gold": {
+    "anchor": "Pittsburg"
+   }
+  },
+  {
+   "id": "z012",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Pittsburg",
+   "conf": 0.8
+  },
+  {
+   "id": "z013",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z013",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z013",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z013",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "districts",
+    "parent": "eastern Germany"
+   },
+   "gold": {
+    "level": "districts",
+    "parent": "eastern Germany"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z013",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "districts",
+   "conf": 1.0
+  },
+  {
+   "id": "z013",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": false,
+   "got": false,
+   "gold": true,
+   "text": "eastern Germany",
+   "conf": 0.948288
+  },
+  {
+   "id": "z013",
+   "decision": "pick_family",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": "modifier",
+   "gold": "modifier",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z013",
+   "decision": "pick_template",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z013",
+   "decision": "pick_template_flat",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z013",
+   "decision": "pick_split",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": {
+    "dir": "eastern",
+    "target": "Germany"
+   },
+   "gold": {
+    "dir": "eastern",
+    "target": "Germany"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z013",
+   "decision": "fill_closed_slot.direction",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": "east",
+   "gold": "east",
+   "text": "eastern",
+   "conf": 0.9992113750000001
+  },
+  {
+   "id": "z013",
+   "decision": "is_subquery",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Germany",
+   "conf": 0.980206
+  },
+  {
+   "id": "z014",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features",
+   "gold": "features",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z014",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z014",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z014",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": {
+    "category": "hospitals",
+    "region": "southern Spain"
+   },
+   "gold": {
+    "category": "hospitals",
+    "region": "southern Spain"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z014",
+   "decision": "fill_closed_slot.category",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "hospital",
+   "gold": "hospital",
+   "text": "hospitals",
+   "conf": 0.998702875
+  },
+  {
+   "id": "z014",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "features",
+   "correct": false,
+   "got": false,
+   "gold": true,
+   "text": "southern Spain",
+   "conf": 0.7902899999999999
+  },
+  {
+   "id": "z014",
+   "decision": "pick_family",
+   "depth": 1,
+   "family": "modifier",
+   "correct": false,
+   "got": "lookup",
+   "gold": "modifier",
+   "conf": 0.945284,
+   "n_options": 2
+  },
+  {
+   "id": "z014",
+   "decision": "pick_template",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z014",
+   "decision": "pick_template_flat",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 0.36532600000000004,
+   "n_options": 2
+  },
+  {
+   "id": "z014",
+   "decision": "pick_split",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": {
+    "dir": "southern",
+    "target": "Spain"
+   },
+   "gold": {
+    "dir": "southern",
+    "target": "Spain"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z014",
+   "decision": "fill_closed_slot.direction",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": "south",
+   "gold": "south",
+   "text": "southern",
+   "conf": 0.9981066250000001
+  },
+  {
+   "id": "z014",
+   "decision": "is_subquery",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Spain",
+   "conf": 0.979468
+  },
+  {
+   "id": "z015",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z015",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z015",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z015",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "parent": "northern India"
+   },
+   "gold": {
+    "level": "states",
+    "parent": "northern India"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z015",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 1.0
+  },
+  {
+   "id": "z015",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": false,
+   "got": false,
+   "gold": true,
+   "text": "northern India",
+   "conf": 0.960778
+  },
+  {
+   "id": "z015",
+   "decision": "pick_family",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": "modifier",
+   "gold": "modifier",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z015",
+   "decision": "pick_template",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z015",
+   "decision": "pick_template_flat",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z015",
+   "decision": "pick_split",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": {
+    "dir": "northern",
+    "target": "India"
+   },
+   "gold": {
+    "dir": "northern",
+    "target": "India"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z015",
+   "decision": "fill_closed_slot.direction",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": "north",
+   "gold": "north",
+   "text": "northern",
+   "conf": 0.99934975
+  },
+  {
+   "id": "z015",
+   "decision": "is_subquery",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "India",
+   "conf": 0.985348
+  },
+  {
+   "id": "z016",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features",
+   "gold": "features",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z016",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 0.989986,
+   "n_options": 2
+  },
+  {
+   "id": "z016",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 0.7450159999999999,
+   "n_options": 2
+  },
+  {
+   "id": "z016",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": {
+    "category": "schools",
+    "region": "western Kenya"
+   },
+   "gold": {
+    "category": "schools",
+    "region": "western Kenya"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z016",
+   "decision": "fill_closed_slot.category",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "school",
+   "gold": "school",
+   "text": "schools",
+   "conf": 0.9975700000000001
+  },
+  {
+   "id": "z016",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": true,
+   "gold": true,
+   "text": "western Kenya",
+   "conf": 0.470912
+  },
+  {
+   "id": "z016",
+   "decision": "pick_family",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": "modifier",
+   "gold": "modifier",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z016",
+   "decision": "pick_template",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z016",
+   "decision": "pick_template_flat",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": "direction_part",
+   "gold": "direction_part",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z016",
+   "decision": "pick_split",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": {
+    "dir": "western",
+    "target": "Kenya"
+   },
+   "gold": {
+    "dir": "western",
+    "target": "Kenya"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z016",
+   "decision": "fill_closed_slot.direction",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": "west",
+   "gold": "west",
+   "text": "western",
+   "conf": 0.9977545000000001
+  },
+  {
+   "id": "z016",
+   "decision": "is_subquery",
+   "depth": 1,
+   "family": "modifier",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Kenya",
+   "conf": 0.984326
+  },
+  {
+   "id": "z017",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "set_algebra",
+   "gold": "set_algebra",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z017",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "union",
+   "gold": "union",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z017",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "union",
+   "gold": "union",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z017",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": {
+    "a": "Kerala",
+    "b": "Tamil Nadu"
+   },
+   "gold": {
+    "a": "Kerala",
+    "b": "Tamil Nadu"
+   },
+   "conf": 0.95625,
+   "n_options": 2
+  },
+  {
+   "id": "z017",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Kerala",
+   "conf": 0.987626
+  },
+  {
+   "id": "z017",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Tamil Nadu",
+   "conf": 0.986818
+  },
+  {
+   "id": "z018",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.8635360000000001,
+   "n_options": 2
+  },
+  {
+   "id": "z018",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z018",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": false,
+   "got": "direction_part",
+   "gold": "lookup_place",
+   "conf": 0.718872,
+   "n_options": 2
+  },
+  {
+   "id": "z018",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "North Goa"
+   },
+   "gold": {
+    "anchor": "North Goa"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z018",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "North Goa",
+   "conf": 0.8
+  },
+  {
+   "id": "z019",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z019",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z019",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z019",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Springfield"
+   },
+   "gold": {
+    "anchor": "Springfield"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "z019",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Springfield",
+   "conf": 0.8
+  }
+ ],
+ "pipeline": [
+  {
+   "id": "z001",
+   "query": "Portland, Maine",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.3785526752471924,
+   "model_calls": 1,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "z002",
+   "query": "Portland, Oregon",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.36463308334350586,
+   "model_calls": 1,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "z003",
+   "query": "Cambridge, Massachusetts",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.388563871383667,
+   "model_calls": 1,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "z004",
+   "query": "London, Ontario",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.3994412422180176,
+   "model_calls": 1,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "z005",
+   "query": "Perth, Scotland",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.38636231422424316,
+   "model_calls": 1,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "z006",
+   "query": "Hyderabad, Pakistan",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.373668909072876,
+   "model_calls": 1,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "z007",
+   "query": "Aurangabad, Bihar",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.38020777702331543,
+   "model_calls": 1,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "z008",
+   "query": "Victoria, British Columbia",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.43338561058044434,
+   "model_calls": 1,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "z009",
+   "query": "C\u00f3rdoba, Spain",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.32467103004455566,
+   "model_calls": 1,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "z010",
+   "query": "Alexandria, Virginia",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.33656811714172363,
+   "model_calls": 1,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "z011",
+   "query": "schools in Cambridge, England",
+   "family": "features",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.5443320274353027,
+   "model_calls": 5,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "features_in",
+   "path": "complex",
+   "slots_ok": false,
+   "diffs": [
+    "region: expected 'Cambridge', got 'Cambridge, England'"
+   ],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "66 ids vs 66"
+  },
+  {
+   "id": "z012",
+   "query": "Pittsburg, Pennsylvania",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.5335245132446289,
+   "model_calls": 1,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "z013",
+   "query": "districts in eastern Germany",
+   "family": "hierarchy",
+   "depth": 1,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.477116584777832,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "160 ids vs 160"
+  },
+  {
+   "id": "z014",
+   "query": "hospitals in southern Spain",
+   "family": "features",
+   "depth": 1,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 3.209656238555908,
+   "model_calls": 9,
+   "requests_in_sequence": 3,
+   "unsupported": null,
+   "got_template": "features_in",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "482 ids vs 482"
+  },
+  {
+   "id": "z015",
+   "query": "states of northern India",
+   "family": "hierarchy",
+   "depth": 1,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 3.785158157348633,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "24 ids vs 24"
+  },
+  {
+   "id": "z016",
+   "query": "schools in western Kenya",
+   "family": "features",
+   "depth": 1,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 3.4603092670440674,
+   "model_calls": 9,
+   "requests_in_sequence": 3,
+   "unsupported": null,
+   "got_template": "features_in",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "3348 ids vs 3348"
+  },
+  {
+   "id": "z017",
+   "query": "Kerala, Tamil Nadu",
+   "family": "set_algebra",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.6950302124023438,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "union",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "2 ids vs 2"
+  },
+  {
+   "id": "z018",
+   "query": "North Goa",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.4304876327514648,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "z019",
+   "query": "Springfield",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.7033863067626953,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  }
+ ],
+ "summary": {
+  "pick_family": {
+   "n": 23,
+   "correct": 16
+  },
+  "pick_template": {
+   "n": 23,
+   "correct": 17
+  },
+  "pick_template_flat": {
+   "n": 23,
+   "correct": 16
+  },
+  "pick_split": {
+   "n": 23,
+   "correct": 11
+  },
+  "is_subquery": {
+   "n": 11,
+   "correct": 8
+  },
+  "select_source": {
+   "n": 13,
+   "correct": 13
+  },
+  "fill_closed_slot.admin_level": {
+   "n": 2,
+   "correct": 2
+  },
+  "fill_closed_slot.category": {
+   "n": 3,
+   "correct": 3
+  },
+  "fill_closed_slot.direction": {
+   "n": 4,
+   "correct": 4
+  },
+  "pipeline": {
+   "features": {
+    "n": 3,
+    "dag_ok": 3
+   },
+   "hierarchy": {
+    "n": 2,
+    "dag_ok": 2
+   },
+   "lookup": {
+    "n": 13,
+    "dag_ok": 11
+   },
+   "set_algebra": {
+    "n": 1,
+    "dag_ok": 1
+   },
+   "ALL": {
+    "n": 19,
+    "dag_ok": 17
+   }
+  }
+ }
+}

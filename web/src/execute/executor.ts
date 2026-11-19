@@ -178,7 +178,8 @@ class Run {
     const level = !a.level || a.level === "none" ? await this.childLevel(parent, country) : a.level;
     await this.levelData(level);
     const lf = this.levelFilter(level, country);
-    if ((await this.idsOf(parent)).length)
+    // A direction part has the id of its source but only a part of its geometry: use the geometry.
+    if ((await this.idsOf(parent)).length && a.of?.op !== "Direction")
       return this.divisionsRel(`${lf} AND EXISTS (SELECT 1 FROM ${parent} p
         WHERE p.id IS NOT NULL AND p.id <> d.id AND list_contains(d.ancestors, p.id))`);
     return this.divisionsRel(`${lf} AND ST_Intersects(d.geometry, ${this.unionGeom(parent, "gs")})`);

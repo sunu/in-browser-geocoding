@@ -183,8 +183,10 @@ class Store:
         return {r[0]: int(r[1]) for r in rows}
 
     def search(self, name: str, *, type_hint: str | None = None, context: str | None = None,
-               limit: int = 8, fuzzy: bool = True, view: Sequence[float] | None = None) -> list[Candidate]:
-        """Find Overture divisions by name. Exact (primary, English, alternate, no-space) first, then fuzzy."""
+               limit: int = 8, fuzzy: bool | str = True, view: Sequence[float] | None = None) -> list[Candidate]:
+        """Find Overture divisions by name. Exact (primary, English, alternate, no-space) first, then fuzzy.
+        fuzzy="only": the fuzzy matches also if there is an exact match ("Sanfransisco": "San Fransisco" is an
+        exact name)."""
         n = norm_name(re.sub(r"^(the)\s+", "", name.strip(), flags=re.I))
         if not n:
             return []
@@ -209,19 +211,19 @@ class Store:
                 q_list.append(aliases[x])
         # The key is the name without spaces (the key of the web name shards). It gives the matches of
         # "name_norm OR name_nospace".
-        rows = cur.execute(f"""
+        rows = [] if fuzzy == "only" else cur.execute(f"""
             SELECT id, max({KIND_SCORE}) AS s FROM names WHERE name_nospace IN (SELECT replace(unnest(?), ' ', ''))
             GROUP BY id
         """, [q_list]).fetchall()
         scores = {r[0]: float(r[1]) for r in rows}
         # Overture names of some regions end with a level word and have no short form ("Kyoto Prefecture").
-        rows = cur.execute(f"""
+        rows = [] if fuzzy == "only" else cur.execute(f"""
             SELECT id, max({KIND_SCORE}) AS s FROM names WHERE name_nospace IN (SELECT replace(unnest(?), ' ', ''))
             GROUP BY id
         """, [[f"{x} {suffix}" for x in q_list for suffix in REGION_SUFFIXES]]).fetchall()
         for id_, s in rows:
             scores[id_] = max(scores.get(id_, 0.0), float(s) * 0.98)
-        if not scores:
+        if not scores and fuzzy != "only":
             # Fallback: Overture names can end with a level word ("Mumbai Suburban District").
             q2 = [f"{x} {suffix}" for x in q_list for suffix in ("district", "city")]
             rows = cur.execute(f"""

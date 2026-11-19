@@ -189,3 +189,49 @@ Limits:
 - The view country selects the level words. "counties of Kenya" with a US view gives `district`.
 - An unknown word below a country always gives the first level below it. A word for a lower level gives the
   wrong level ("parishes of Ecuador" gives the provinces).
+
+## 8. Phase 10: qualified names and directions in region slots
+
+Changes (Python and the browser version):
+
+1. **Qualified names.** "A, B" or "A, B, C" (no "and"): the best gazetteer candidate of A that is inside an exact
+   match of each later name. The DAG is `Resolve(A, id, context="B")`. Exact names first; if no exact name of A is
+   inside B, the fuzzy names ("Sanfransisco, California": "San Fransisco" is an exact name of a neighborhood in
+   another country). If no candidate is inside, the parse continues as before ("Kerala, Tamil Nadu" is a union,
+   "MG Road, Bangalore" goes to Photon). This applies to the whole query and to region slots ("hospitals in
+   Paris, Texas").
+2. **Directions in region slots.** A slot text that is a direction word of 4 or more letters and an exact place
+   name ("northern France") is a subquery, without the model. A text that is itself an exact name stays a name
+   ("Central Delhi", "East Godavari").
+3. **Executor:** `Children` of a direction part used the id of the source and returned all children of the whole
+   place. Now it uses the geometry of the part ("districts in eastern Germany": 160 of 399).
+
+Results:
+
+| Set | Template | DAG | Executed result |
+|---|---|---|---|
+| Held-out 3 (19, new: 12 qualified names, 4 directions in slots, 3 that must not change) | 19/19 | 17/19 | 17/19 |
+| World, held-out 1, held-out 2 | no change | no change | no change |
+| India gold, India held-out | no change | no change | no change |
+
+The India reference parse did not change (696 queries). JS parity: 696/696 (flat and country layout), int8
+681/696, executor 88/88.
+
+The two errors of held-out 3 are the choice between a city and a county with the same name: "London, Ontario"
+gives London county, "Alexandria, Virginia" gives the county record of the independent city. The rule finds the
+correct place; the ranking prefers the county, as it does for "London" alone. A policy "prefer the city when a city
+and a county have the same name and one contains the other" can fix this, but it also changes India (for example
+Pune city and Pune district). Measure it separately before a change.
+
+Not in this phase: names without a comma ("Paris Texas") and qualified names that are not in the gazetteer
+("MG Road, Bangalore" stays Photon).
+
+## 9. Test runs
+
+The checks run on the GPU desktop (24 cores) in parallel (`checks.sh`): the gold sets, the India reference and the
+unit tests together, then the parity checks (each in 4 processes, `parity.ts --shards 4`, `ORT_THREADS=2`). Total:
+11 minutes (before: 24 minutes in sequence).
+
+The live smoke tests run on the desktop in Chromium. Headless Firefox and WebKit on the desktop (Pop!_OS 22.04)
+have no WebGL, and the map needs WebGL. Run them on the Mac when a change touches the loading, the data or the
+drawing code. Open item: the page shows no message if WebGL is not available.
