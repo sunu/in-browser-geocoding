@@ -331,9 +331,12 @@ export class Parser {
       if (!ids.size) return null;
       outer.push(ids);
     }
+    // Port: search only in the countries of the outer places (the browser then loads only these countries).
+    const outerIds = [...new Set(outer.flatMap((s) => [...s]))].sort();
+    const countries = [...new Set(Object.values(await this.gaz.describe(outerIds)).map((d: any) => d.country).filter(Boolean))].sort() as string[];
     const context = parts.slice(1).join(", ");
     for (const fuzzy of exactOnly ? [false] as const : [true, "only"] as const) {
-      for (const c of await this.gaz.search(parts[0], { context, limit: 20, fuzzy, view: dec.view })) {
+      for (const c of await this.gaz.search(parts[0], { context, limit: 20, fuzzy, view: dec.view, countries })) {
         if (outer.every((ids) => c.ancestors.some((a) => ids.has(a)))) {
           dec.recordStep("qualified_name", depth, { text }, c.id, "rules", { name: parts[0], context, fuzzy });
           return { op: "Resolve", args: { name: parts[0], source: "overture", id: c.id, context } };
@@ -378,7 +381,7 @@ export class Parser {
     cands = await this.photonBoost(dec, text, mergeNested(cands), depth);
     let chosen = cands[0];
     if (cands.length > 1 && cands[0].score - cands[1].score < this.bundle.config.policy.ranking.close_margin) {
-      const close = cands.filter((c) => cands[0].score - c.score < 0.3);
+      const close = cands.filter((c) => cands[0].score - c.score < Number(this.bundle.config.policy.ranking.candidate_window));
       const d = await dec.disambiguate(text, close, query, depth);
       if (dec.below("disambiguate", d)) stop(`low confidence for disambiguate (${fmt(d.confidence)})`, depth, text, "disambiguate");
       chosen = d.candidate;

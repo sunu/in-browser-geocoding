@@ -616,7 +616,7 @@ class Parser:
         cands = self._photon_boost(dec, name, merge_nested(cands), depth)
         chosen = cands[0]
         if len(cands) > 1 and cands[0].score - cands[1].score < self.cfg["policy"]["ranking"]["close_margin"]:
-            close = [c for c in cands if cands[0].score - c.score < 0.3]
+            close = [c for c in cands if cands[0].score - c.score < float(self.cfg["policy"]["ranking"]["candidate_window"])]
             d = dec.disambiguate(name, close, query=query, depth=depth)
             if dec.below("disambiguate", d):
                 raise _Stop(Unsupported(reason=f"low confidence for disambiguate ({d.confidence:.2f})",
@@ -649,10 +649,13 @@ class Parser:
             if not ids:
                 return None
             outer.append(ids)
+        # A candidate inside the outer places is in their countries: search only there (the browser then loads only
+        # these countries, not the countries of all places named "Paris").
+        countries = sorted({d["country"] for d in self.store.describe(sorted(set().union(*outer))).values() if d["country"]})
         context = ", ".join(parts[1:])
         # Exact names first; fuzzy names only if no exact name is inside ("Sanfransisco, California").
         for fuzzy in ((False,) if exact_only else (True, "only")):
-            for c in self.store.search(parts[0], context=context, limit=20, fuzzy=fuzzy, view=dec.view):
+            for c in self.store.search(parts[0], context=context, limit=20, fuzzy=fuzzy, view=dec.view, countries=countries):
                 if all(ids & set(c.ancestors) for ids in outer):
                     dec.record_step("qualified_name", depth, {"text": text}, c.id, "rules",
                                     {"name": parts[0], "context": context, "fuzzy": fuzzy})

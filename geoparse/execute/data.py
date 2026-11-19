@@ -201,10 +201,11 @@ class Store:
         return {r[0]: int(r[1]) for r in rows}
 
     def search(self, name: str, *, type_hint: str | None = None, context: str | None = None,
-               limit: int = 8, fuzzy: bool | str = True, view: Sequence[float] | None = None) -> list[Candidate]:
+               limit: int = 8, fuzzy: bool | str = True, view: Sequence[float] | None = None,
+               countries: Sequence[str] | None = None) -> list[Candidate]:
         """Find Overture divisions by name. Exact (primary, English, alternate, no-space) first, then fuzzy.
         fuzzy="only": the fuzzy matches also if there is an exact match ("Sanfransisco": "San Fransisco" is an
-        exact name)."""
+        exact name). countries: only candidates in these countries (the browser loads only their data)."""
         n = norm_name(re.sub(r"^(the)\s+", "", name.strip(), flags=re.I))
         if not n:
             return []
@@ -284,7 +285,7 @@ class Store:
         cands = []
         for id_, s in scores.items():
             d = info.get(id_)
-            if not d:
+            if not d or (countries and d["country"] not in countries):
                 continue
             policy = country_policy(cfg["policy"], d["country"])
             if d["subtype"] == "region" and policy["require_region_code"] and not d["region"]:

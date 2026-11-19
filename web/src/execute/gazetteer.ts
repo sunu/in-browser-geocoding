@@ -100,9 +100,12 @@ export class Gazetteer {
     return Object.fromEntries(rs.map((r) => [r.id, Number(r.rk)]));
   }
 
-  /** Port of Store.search. fuzzy "only": the fuzzy matches also if there is an exact match. */
-  async search(name: string, opts: { typeHint?: string | null; context?: string | null; limit?: number; fuzzy?: boolean | "only"; view?: number[] | null } = {}): Promise<Candidate[]> {
-    const { typeHint = null, context = null, limit = 8, fuzzy = true, view = null } = opts;
+  /** Port of Store.search. fuzzy "only": the fuzzy matches also if there is an exact match. countries: only candidates in
+   * these countries (only their data is loaded). */
+  async search(name: string, opts: { typeHint?: string | null; context?: string | null; limit?: number; fuzzy?: boolean | "only"; view?: number[] | null; countries?: string[] | null } = {}): Promise<Candidate[]> {
+    const { typeHint = null, context = null, limit = 8, fuzzy = true, view = null, countries = null } = opts;
+    // The name rows have the country: the country files to load come only from these countries.
+    const inCountries = countries?.length ? ` AND country IN (SELECT unnest(${list(countries)}))` : "";
     const n = normName(name.trim().replace(/^the\s+/i, ""));
     if (!n) return [];
     const levelWords = new Set(["district", "state", "city", "town", "taluk", "village"]);
@@ -175,14 +178,17 @@ export class Gazetteer {
         return [{ country: r.country, lo: p - (inside ? 0 : ranking.view_outside), hi: p + (ctx ? 0.3 : 0) - (outside ? ranking.view_outside : 0) }];
       });
       const los = bounds.map((b) => b.lo).sort((a, b) => b - a);
-      const L = los.length >= limit ? los[limit - 1] : -Infinity;
+      // Only candidates that can be in the best `limit`, and that can come within candidate_window of the best after the
+      // Photon boost (the others are not used): their countries are loaded.
+      const win = Number(ranking.candidate_window) + Math.max(0, ...(ranking.photon_boost ?? [0]).map(Number));
+      const L = Math.max(los.length >= limit ? los[limit - 1] : -Infinity, los.length ? los[0] - win : -Infinity);
       await store.ensureCountries(bounds.filter((b) => b.hi >= L - 1e-9).map((b) => b.country));
       return keep;
     };
     const exact = async (xs: string[], f: number) => {
       const keys = xs.map((x) => x.replaceAll(" ", ""));
       const where = `key IN (SELECT unnest(${list(keys)}))`;
-      if (store) { await store.loadKeys(keys); await prepare(where, "1", f, null); }
+      if (store) { await store.loadKeys(keys); await prepare(where + inCountries, "1", f, null); }
       const rs = await this.db.query(`SELECT id, max(${KIND_SCORE})::DOUBLE AS s FROM (${names})
         WHERE ${where} GROUP BY id`);
       return Object.fromEntries(rs.map((r) => [r.id, Number(r.s) * f])) as Record<string, number>;
@@ -205,7 +211,7 @@ export class Gazetteer {
       let keep: number[] | null = null;
       if (store) {
         await store.loadPrefix([...k].slice(0, FUZZY_PREFIX).join(""));
-        keep = await prepare(where, `jaro_winkler_similarity(key, ${nk})`, 0.9, 50);
+        keep = await prepare(where + inCountries, `jaro_winkler_similarity(key, ${nk})`, 0.9, 50);
       }
       const only = keep ? ` AND n IN (SELECT unnest([${keep.join(", ")}]::INTEGER[]))` : "";
       const rs = await this.db.query(`SELECT id, max(jaro_winkler_similarity(key, ${nk}) * ${KIND_SCORE})::DOUBLE AS s
@@ -217,7 +223,7 @@ export class Gazetteer {
     const cands: Candidate[] = [];
     for (const [id, s] of Object.entries(scores)) {
       const d = info[id];
-      if (!d) continue;
+      if (!d || (countries?.length && !countries.includes(d.country))) continue;
       // Same terms as partial(), in the order of the Python version (same rounding).
       const policy = countryPolicy(base, d.country);
       if (d.subtype === "region" && policy.require_region_code && !d.region) continue;
