@@ -71,7 +71,7 @@ export class CountryStore {
          xmax DOUBLE, ymax DOUBLE, country VARCHAR)`,
       "CREATE TABLE layer_dist (id VARCHAR, coastline DOUBLE, country_boundary DOUBLE)",
       `CREATE TABLE name_rows (key VARCHAR, kind VARCHAR, n INTEGER, country VARCHAR, subtype VARCHAR, class VARCHAR,
-         population INTEGER, name VARCHAR, name_en VARCHAR, region_n INTEGER, county_n INTEGER, locality_name VARCHAR,
+         population INTEGER, lon100 SMALLINT, lat100 SMALLINT, name VARCHAR, name_en VARCHAR, region_n INTEGER, county_n INTEGER, locality_name VARCHAR,
          has_area BOOLEAN)`,
       "CREATE TABLE layers (name VARCHAR, geometry GEOMETRY)",
       "CREATE TABLE country_shapes (country VARCHAR, geometry GEOMETRY)",

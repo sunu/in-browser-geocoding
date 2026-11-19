@@ -14,6 +14,7 @@ The Python package stays the single source of truth for templates, options, and 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
 import time
@@ -116,6 +117,7 @@ def export_country(out: Path) -> None:
         (root / "manifest.json").write_text(json.dumps(m, indent=1))
     add_poi(root)
     add_level_words(root)
+    add_hashes(root)
     errors = verify_country_layout(con, root)
     for e in errors:
         print("ERROR", e)
@@ -153,6 +155,15 @@ def add_level_words(root: Path) -> None:
     print(f"level_words: {len(m['level_words'])} countries")
 
 
+def add_hashes(root: Path) -> None:
+    """Content hash (MD5, 12 hex digits) of each data file in the manifest. The page adds it to the URL (?h=), so that a
+    changed file has a new URL: no cache keeps the old file, and a deploy needs no cache purge."""
+    m = json.loads((root / "manifest.json").read_text())
+    m["hashes"] = {str(p.relative_to(root)): hashlib.md5(p.read_bytes()).hexdigest()[:12] for p in sorted(root.rglob("*.parquet"))}
+    (root / "manifest.json").write_text(json.dumps(m, indent=1))
+    print(f"hashes: {len(m['hashes'])} files")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("what", choices=["bundle", "data", "poi", "level-words", "all"])
@@ -170,8 +181,10 @@ def main() -> None:
             export_data(args.simplify, args.out)
     if args.what == "poi":
         add_poi(args.out / load_config()["data"]["overture_release"])
+        add_hashes(args.out / load_config()["data"]["overture_release"])
     if args.what == "level-words":
         add_level_words(args.out / load_config()["data"]["overture_release"])
+        add_hashes(args.out / load_config()["data"]["overture_release"])
 
 
 if __name__ == "__main__":

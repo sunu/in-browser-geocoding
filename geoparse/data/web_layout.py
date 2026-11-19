@@ -124,7 +124,8 @@ def export_country_layout(con: duckdb.DuckDBPyConnection, out: Path, release: st
     con.execute(f"""
         CREATE OR REPLACE TEMP TABLE keys AS
         WITH best AS (SELECT name_nospace AS key, id, arg_min(kind, {KIND_RANK}) AS kind FROM names GROUP BY 1, 2)
-        SELECT b.key, b.kind, d.n, d.country, d.subtype, d.class, d.population, d.name,
+        SELECT b.key, b.kind, d.n, d.country, d.subtype, d.class, d.population,
+               round(d.lon * 100)::SMALLINT AS lon100, round(d.lat * 100)::SMALLINT AS lat100, d.name,
                nullif(d.name_en, d.name) AS name_en, a.region_n, a.county_n, a.locality_name,
                EXISTS (SELECT 1 FROM areas x WHERE x.id = b.id) AS has_area,
                row_number() OVER (ORDER BY b.key, d.population DESC NULLS LAST, d.n) - 1 AS rn

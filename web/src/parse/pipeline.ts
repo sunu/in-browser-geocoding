@@ -327,7 +327,7 @@ export class Parser {
     if (parts.length < 2 || parts.length > 3 || parts.some((p) => !p || /\band\b|&/i.test(p))) return null;
     const outer: Set<string>[] = [];
     for (const p of parts.slice(1)) {
-      const ids = new Set((await this.gaz.search(p, { fuzzy: false, limit: 5, view: dec.view })).map((c) => c.id));
+      const ids = new Set((await this.gaz.search(p, { fuzzy: false, limit: 5, view: dec.view, full: true })).map((c) => c.id));
       if (!ids.size) return null;
       outer.push(ids);
     }
@@ -336,7 +336,7 @@ export class Parser {
     const countries = [...new Set(Object.values(await this.gaz.describe(outerIds)).map((d: any) => d.country).filter(Boolean))].sort() as string[];
     const context = parts.slice(1).join(", ");
     for (const fuzzy of exactOnly ? [false] as const : [true, "only"] as const) {
-      for (const c of await this.gaz.search(parts[0], { context, limit: 20, fuzzy, view: dec.view, countries })) {
+      for (const c of await this.gaz.search(parts[0], { context, limit: 20, fuzzy, view: dec.view, countries, full: true })) {
         if (outer.every((ids) => c.ancestors.some((a) => ids.has(a)))) {
           dec.recordStep("qualified_name", depth, { text }, c.id, "rules", { name: parts[0], context, fuzzy });
           return { op: "Resolve", args: { name: parts[0], source: "overture", id: c.id, context } };

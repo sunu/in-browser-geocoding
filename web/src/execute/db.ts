@@ -91,8 +91,11 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
   // Files go through fetch() (normal browser cache) and are given to DuckDB as buffers.
   // DuckDB-WASM's HTTP reader fails on a 304 (Not Modified) answer, which Firefox can cause when the file
   // is in its cache.
+  // Content hash of each data file (manifest hashes): a changed file has a new URL, so no cache keeps the old one.
+  let hashes: Record<string, string> = {};
+  const query_ = (rel: string) => (rel.endsWith(".json") ? (version ? `?v=${version}` : "") : hashes[rel] ? `?h=${hashes[rel]}` : "");
   const get = async (rel: string) => {
-    const r = await fetch(`${abs}/${rel}${version && rel.endsWith(".json") ? `?v=${version}` : ""}`);
+    const r = await fetch(`${abs}/${rel}${query_(rel)}`);
     if (!r.ok) throw new Error(`cannot load ${rel}: HTTP ${r.status}`);
     return r;
   };
@@ -108,6 +111,7 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
   // A dev server can answer index.html for a missing file, and R2 can send no content type, so check the content.
   const manifest = m.ok ? await m.text().then((t) => { try { return JSON.parse(t); } catch { return null; } }) : null;
   if (manifest?.countries) {
+    hashes = manifest.hashes ?? {};
     const store = new CountryStore({
       query,
       file: async (rel) => {
@@ -116,7 +120,8 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
         // (see below). A registered name, not the URL: for a URL, DuckDB first sends a HEAD without Range, and
         // Firefox then answers the HEAD with Range from its cache (200, not 206). DuckDB then cannot open the file.
         if (ranged(rel)) {
-          await db.registerFileURL(name, `${abs}/${rel}?session=${Date.now().toString(36)}`, duckdb.DuckDBDataProtocol.HTTP, false);
+          const h = hashes[rel] ? `&h=${hashes[rel]}` : "";
+          await db.registerFileURL(name, `${abs}/${rel}?session=${Date.now().toString(36)}${h}`, duckdb.DuckDBDataProtocol.HTTP, false);
           return name;
         }
         await db.registerFileBuffer(name, await bytes(rel));

@@ -102,8 +102,8 @@ export class Gazetteer {
 
   /** Port of Store.search. fuzzy "only": the fuzzy matches also if there is an exact match. countries: only candidates in
    * these countries (only their data is loaded). */
-  async search(name: string, opts: { typeHint?: string | null; context?: string | null; limit?: number; fuzzy?: boolean | "only"; view?: number[] | null; countries?: string[] | null } = {}): Promise<Candidate[]> {
-    const { typeHint = null, context = null, limit = 8, fuzzy = true, view = null, countries = null } = opts;
+  async search(name: string, opts: { typeHint?: string | null; context?: string | null; limit?: number; fuzzy?: boolean | "only"; view?: number[] | null; countries?: string[] | null; full?: boolean } = {}): Promise<Candidate[]> {
+    const { typeHint = null, context = null, limit = 8, fuzzy = true, view = null, countries = null, full = false } = opts;
     // The name rows have the country: the country files to load come only from these countries.
     const inCountries = countries?.length ? ` AND country IN (SELECT unnest(${list(countries)}))` : "";
     const n = normName(name.trim().replace(/^the\s+/i, ""));
@@ -157,7 +157,7 @@ export class Gazetteer {
       if (!store) return null;
       const rows = (await this.db.query(`SELECT r.n, r.country, max(${sim} * ${KIND_SCORE})::DOUBLE AS s,
           any_value(r.subtype) AS subtype, any_value(r.class) AS class, any_value(r.population) AS population,
-          bool_or(r.has_area) AS has_area, any_value(a.region) AS region
+          bool_or(r.has_area) AS has_area, any_value(a.region) AS region, any_value(r.lon100) AS lon100, any_value(r.lat100) AS lat100
         FROM (SELECT * FROM name_rows WHERE ${where}) r LEFT JOIN (SELECT n, region FROM divisions) a ON a.n = r.n
         GROUP BY r.n, r.country`)).map((r) => ({ ...r, s: Number(r.s) * f }));
       let cand = rows, keep: number[] | null = null;
@@ -172,11 +172,30 @@ export class Gazetteer {
       const bounds = cand.flatMap((r) => {
         const p = partial(r, r.s);
         if (p === null) return [];
-        const b = store.bbox(r.country);
-        const inside = b && b[0] >= x0 && b[2] <= x1 && b[1] >= y0 && b[3] <= y1;
-        const outside = b && (b[2] < x0 || b[0] > x1 || b[3] < y0 || b[1] > y1);
+        // The point of the name row (0.01 degrees): the map-view penalty is known, except for a point within 0.006 degrees of
+        // the view edge. Without the point (older data), the extent of the country bounds the penalty.
+        let inside: boolean, outside: boolean;
+        if (r.lon100 != null) {
+          const lon = Number(r.lon100) / 100, lat = Number(r.lat100) / 100, m = 0.006;
+          inside = lon >= x0 + m && lon <= x1 - m && lat >= y0 + m && lat <= y1 - m;
+          outside = lon < x0 - m || lon > x1 + m || lat < y0 - m || lat > y1 + m;
+        } else {
+          const b = store.bbox(r.country);
+          inside = !!b && b[0] >= x0 && b[2] <= x1 && b[1] >= y0 && b[3] <= y1;
+          outside = !!b && (b[2] < x0 || b[0] > x1 || b[3] < y0 || b[1] > y1);
+        }
         return [{ country: r.country, lo: p - (inside ? 0 : ranking.view_outside), hi: p + (ctx ? 0.3 : 0) - (outside ? ranking.view_outside : 0) }];
       });
+      // The best candidate is sure to lead all others by close_margin: the parser uses only it (no Photon boost, no
+      // disambiguate). Load only its country.
+      if (!full && bounds.length > 1) {
+        const top = bounds.reduce((a, b) => (b.lo > a.lo ? b : a));
+        const rest = Math.max(...bounds.filter((b) => b !== top).map((b) => b.hi));
+        if (top.lo - rest >= Number(ranking.close_margin)) {
+          await store.ensureCountries([top.country]);
+          return keep;
+        }
+      }
       const los = bounds.map((b) => b.lo).sort((a, b) => b - a);
       // Only candidates that can be in the best `limit`, and that can come within candidate_window of the best after the
       // Photon boost (the others are not used): their countries are loaded.
