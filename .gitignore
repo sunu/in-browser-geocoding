@@ -5,7 +5,7 @@ __pycache__/
 .env
 data_build/
 *.parquet
-models/
+/models/
 plans/
 data/build/
 data/build-world/
