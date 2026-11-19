@@ -20,6 +20,8 @@ from pathlib import Path
 
 import duckdb
 
+from geoparse.execute.data import NATURAL_COUNTRY
+
 NO_COUNTRY = "XX"
 ROW_GROUP = 10000
 WORLD = "ST_Extent(ST_MakeEnvelope(-180, -90, 180, 90))"
@@ -67,10 +69,12 @@ def export_country_layout(con: duckdb.DuckDBPyConnection, out: Path, release: st
     shutil.rmtree(root, ignore_errors=True)
     root.mkdir(parents=True)
     t0 = time.time()
-    # n: integer id of a division in the web data (UUIDs do not compress). The country files map n to id.
+    # n: integer id of a division in the web data (UUIDs do not compress). The country files map n to id. The natural
+    # features (NATURAL_COUNTRY) come last, so that the n of the other countries do not change (cached country files
+    # stay valid).
     con.execute(f"""
         CREATE OR REPLACE TEMP TABLE dv AS
-        SELECT row_number() OVER (ORDER BY coalesce(country, '{NO_COUNTRY}'), subtype,
+        SELECT row_number() OVER (ORDER BY coalesce(country, '') = '{NATURAL_COUNTRY}', coalesce(country, '{NO_COUNTRY}'), subtype,
                                   ST_Hilbert(geometry, {WORLD}), id)::INTEGER - 1 AS n,
                id, subtype, class, name, name_en, coalesce(country, '{NO_COUNTRY}') AS country, region, ancestors,
                population, wikidata, ST_X(geometry) AS lon, ST_Y(geometry) AS lat

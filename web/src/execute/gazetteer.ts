@@ -9,7 +9,7 @@ const PRIOR: Record<string, number> = {
   macrohood: 0.16, neighborhood: 0.10, microhood: 0.06, "locality|village": 0.02, "locality|hamlet": 0.0, natural: 0.3,
 };
 // geoparse.execute.data.NATURAL_COUNTRY: natural features are in no country.
-const NATURAL_COUNTRY = "XN";
+export const NATURAL_COUNTRY = "QN";
 
 // geoparse.execute.data.KIND_SCORE and FUZZY_PREFIX
 // Level words at the end of region names that have no short form. The search also tries "<name> <suffix>".

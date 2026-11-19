@@ -1,6 +1,7 @@
 // Port of geoparse/execute/executor.py for DuckDB-WASM (engine 1.5). In the browser data, `geometry` is the
 // simplified polygon (areas.parquet has only the simplified form), so geometry and gs are the same column.
 import { countryPolicy, type Bundle } from "../core/bundle.ts";
+import { NATURAL_COUNTRY } from "./gazetteer.ts";
 import { validate } from "../core/dsl.ts";
 import { list, q, type Db } from "./db.ts";
 import type { Photon } from "./photon.ts";
@@ -176,7 +177,7 @@ class Run {
    * whose simplified shape is near it (country_shapes). Loads their data. */
   async levelCountries(rel: string): Promise<string[]> {
     let codes = (await this.run(`SELECT DISTINCT d.country FROM ${rel} r JOIN divisions d ON d.id = r.id
-      WHERE d.country IS NOT NULL AND d.country <> 'XN' ORDER BY 1`)).map((r) => r.country as string);
+      WHERE d.country IS NOT NULL AND d.country <> '${NATURAL_COUNTRY}' ORDER BY 1`)).map((r) => r.country as string);
     if (!codes.length) {
       if (!(await this.run(`SELECT count(*) AS n FROM ${rel} WHERE subtype = 'natural'`))[0].n) return [await this.countryOf(rel)];
       await this.ex.db.store?.ensureCountryShapes();
@@ -303,7 +304,7 @@ class Run {
   // ------------------------------------------------------------ geometry
 
   async op_Naturals(a: any) {
-    await this.ex.db.store?.ensureCountries(["XN"]);
+    await this.ex.db.store?.ensureCountries([NATURAL_COUNTRY]);
     const where = `d.subtype = 'natural' AND d.class = ${q(a.kind)}`;
     if (!a.within) return this.divisionsRel(where);
     return this.divisionsRel(`${where} AND a.id IS NOT NULL AND ST_Intersects(a.gs, ${this.unionGeom(await this.eval(a.within), "gs")})`);

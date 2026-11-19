@@ -31,8 +31,9 @@ SUBTYPE_PRIOR = {
     ("locality", "village"): 0.02, ("locality", "hamlet"): 0.0, "natural": 0.3,
 }
 # The pseudo country of the natural features (plan-026). They are in no country, so the map-view country does not
-# change their score.
-NATURAL_COUNTRY = "XN"
+# change their score. QN: an ISO 3166 code for user assignment that Overture does not use (Overture uses the X codes
+# for disputed areas).
+NATURAL_COUNTRY = "QN"
 
 
 @lru_cache(maxsize=1)

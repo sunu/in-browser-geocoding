@@ -106,7 +106,7 @@ export class CountryStore {
 
   private async loadCountry(c: string) {
     const e = this.engine;
-    // The files of the country in the manifest: the natural features (XN) have no layer_dist file.
+    // The files of the country in the manifest: the natural features (NATURAL_COUNTRY) have no layer_dist file.
     const has = this.manifest.countries[c].bytes ?? {};
     const [dv, ar] = await Promise.all(["divisions", "areas"].map((f) => e.file(`country=${c}/${f}.parquet`)));
     const ld = "layer_dist" in has ? await e.file(`country=${c}/layer_dist.parquet`) : null;

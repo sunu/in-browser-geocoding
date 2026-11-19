@@ -28,7 +28,7 @@ import yaml
 
 from geoparse.config import PACKAGE_DIR, build_dir, load_config, scope
 from geoparse.data.translit import translit_keys
-from geoparse.execute.data import norm_name
+from geoparse.execute.data import NATURAL_COUNTRY, norm_name
 from geoparse.options import category_leaves
 
 
@@ -311,14 +311,14 @@ def build_natural(con, cfg, out: Path) -> None:
 
 
 def add_natural(con, out: Path, simplify_deg: float = 0.001) -> None:
-    """Put natural.parquet into the divisions (subtype natural, country XN), areas and names tables. Replaces the
+    """Put natural.parquet into the divisions (subtype natural, country NATURAL_COUNTRY), areas and names tables. Replaces the
     natural rows that are there."""
     con.execute("CREATE OR REPLACE TEMP TABLE nat AS SELECT * FROM read_parquet(?)", [str(out / "natural.parquet")])
     for t in ("names", "areas", "divisions"):
         con.execute(f"DELETE FROM {t} WHERE id IN (SELECT id FROM nat) OR id LIKE 'ne-%'")
-    con.execute("""
+    con.execute(f"""
         INSERT INTO divisions BY NAME
-        SELECT id, 'natural' AS subtype, kind AS class, name, alt_names, []::VARCHAR[] AS common_names, 'XN' AS country,
+        SELECT id, 'natural' AS subtype, kind AS class, name, alt_names, []::VARCHAR[] AS common_names, '{NATURAL_COUNTRY}' AS country,
                []::VARCHAR[] AS ancestors, wikidata, kind AS local_type, ST_PointOnSurface(geometry) AS geometry
         FROM nat""")
     con.execute(f"""
