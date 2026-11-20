@@ -38,6 +38,7 @@ const EXAMPLES: [string, string][] = [
   ["US", "counties along the Mississippi"], ["IN", "districts along the Ganga"],
   ["MX", "coastal states of Mexico"], ["VN", "coastal provinces of Vietnam"], ["BR", "the 5 largest states of Brazil"],
   ["US", "Paris, Texas"],
+  ["IN", "Boudh"], ["GB", "the British Isles"], ["FR", "Porto"], ["US", "Washington DC"], ["AF", "Sahara desert"],
 ];
 const QUERIES = (process.env.SET === "poi" ? POI : process.env.SET === "new" ? NEW : process.env.SET === "examples" ? EXAMPLES : BASE)
   .slice(Number(process.env.FROM ?? 0));
