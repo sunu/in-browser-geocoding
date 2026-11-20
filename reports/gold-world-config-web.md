@@ -25,13 +25,13 @@ Records: 70. Depth 0: 70. Depth 1 (two levels): 0.
 |---|---|---|---|---|---|
 | w012 | pick_family | 0 | modifier | lookup | 0.9750920000000001 |
 | w013 | pick_family | 0 | set_algebra | lookup | 0.9996499999999999 |
-| w013 | pick_template_flat | 0 | union | lookup_place | 0.439438 |
-| w016 | pick_family | 0 | hierarchy | features | 0.952534 |
-| w038 | pick_family | 0 | hierarchy | features | 0.684913 |
+| w013 | pick_template_flat | 0 | union | lookup_place | 0.43944000000000005 |
+| w016 | pick_family | 0 | hierarchy | features | 0.952536 |
+| w038 | pick_family | 0 | hierarchy | features | 0.6849144999999999 |
 | w051 | pick_template_flat | 0 | neighbors | children_touching | 0.016788000000000025 |
-| w058 | pick_template_flat | 0 | neighbors | children_touching | 0.22042000000000006 |
+| w058 | pick_template_flat | 0 | neighbors | children_touching | 0.220418 |
 | w062 | pick_split | 0 | {"a": "Oaxaca", "b": "Oaxaca de Juarez"} | {"a": "Oaxaca", "b": "Juarez"} | 0.9238554999999998 |
-| w064 | pick_template_flat | 0 | lookup_place | direction_part | 0.2952699999999999 |
+| w064 | pick_template_flat | 0 | lookup_place | direction_part | 0.295272 |
 | w066 | pick_template_flat | 0 | neighbors | children_touching | 0.017702000000000107 |
 
 ## Full pipeline
@@ -51,7 +51,7 @@ Records: 70. Depth 0: 70. Depth 1 (two levels): 0.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 99% (69/70) | 1.68 s | 4.9 | 1.6 |
+| 0 | 99% (69/70) | 0.91 s | 4.9 | 1.6 |
 
 ### Pipeline errors
 

@@ -26,13 +26,13 @@ Records: 98. Depth 0: 85. Depth 1 (two levels): 13.
 | g006 | pick_template_flat | 0 | lookup_place | union | 0.40619049999999995 |
 | g010 | pick_template_flat | 0 | lookup_place | direction_part | 0.533676 |
 | g020 | pick_family | 0 | modifier | lookup | 0.997722 |
-| g053 | is_subquery | 0 | true | false | 0.118286 |
+| g053 | is_subquery | 0 | true | false | 0.11828399999999994 |
 | g054 | is_subquery | 0 | true | false | 0.649678 |
-| g066 | pick_template_flat | 0 | features_in | features_near | 0.7263820000000001 |
+| g066 | pick_template_flat | 0 | features_in | features_near | 0.7263839999999999 |
 | g085 | pick_template_flat | 0 | features_near | features_in | 0.19387599999999994 |
 | g088 | pick_family | 0 | set_algebra | predicate_filter | 0.9935020000000001 |
 | g088 | pick_template_flat | 0 | union | children_with_predicate | 0.10705199999999992 |
-| g089 | is_subquery | 0 | true | false | 0.07269999999999999 |
+| g089 | is_subquery | 0 | true | false | 0.07269800000000004 |
 | g090 | pick_template_flat | 0 | children | children_touching | 0.917904 |
 | g090 | pick_template_flat | 1 | neighbors | children_touching | 0.7674939999999999 |
 | g091 | pick_template_flat | 0 | children_with_predicate | neighbors_with_predicate | 0.311134 |
@@ -58,8 +58,8 @@ Records: 98. Depth 0: 85. Depth 1 (two levels): 13.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 100% (85/85) | 6.22 s | 4.8 | 1.4 |
-| 1 | 100% (13/13) | 7.67 s | 9.3 | 3.5 |
+| 0 | 100% (85/85) | 1.54 s | 4.8 | 1.4 |
+| 1 | 100% (13/13) | 4.26 s | 9.3 | 3.5 |
 
 ### Nested template pairs in the gold suite
 

@@ -20,7 +20,7 @@ Records: 21. Depth 0: 21. Depth 1 (two levels): 0.
 | Gold id | Decision | Depth | Gold | Got | Confidence |
 |---|---|---|---|---|---|
 | n001 | pick_family | 0 | lookup | features | 0.9134574999999999 |
-| n001 | pick_template_flat | 0 | lookup_place | natural_in | 0.2738665 |
+| n001 | pick_template_flat | 0 | lookup_place | natural_in | 0.27386499999999997 |
 | n002 | pick_family | 0 | lookup | hierarchy | 0.9765699999999999 |
 | n002 | pick_template_flat | 0 | lookup_place | children | 0.25119800000000003 |
 | n003 | pick_family | 0 | lookup | features | 0.9167000000000001 |
@@ -31,14 +31,14 @@ Records: 21. Depth 0: 21. Depth 1 (two levels): 0.
 | n008 | pick_family | 0 | predicate_filter | hierarchy | 0.9754320000000001 |
 | n008 | pick_split | 0 | {"level": "district", "parent": "India", "other": "Yamuna"} | null | coverage miss |
 | n011 | pick_family | 0 | lookup | features | 0.913254 |
-| n011 | pick_template_flat | 0 | lookup_place | natural_in | 0.3914679999999999 |
+| n011 | pick_template_flat | 0 | lookup_place | natural_in | 0.39147 |
 | n012 | pick_family | 0 | lookup | features | 0.8915420000000001 |
-| n012 | pick_template_flat | 0 | lookup_place | natural_in | 0.0826579999999999 |
+| n012 | pick_template_flat | 0 | lookup_place | natural_in | 0.082654 |
 | n013 | pick_family | 0 | lookup | features | 0.948366 |
 | n013 | pick_template_flat | 0 | lookup_place | natural_in | 0.5719700000000001 |
 | n014 | is_subquery | 0 | false | true | 0.8810739999999999 |
-| n016 | pick_family | 0 | lookup | features | 0.8904080000000001 |
-| n016 | pick_template_flat | 0 | lookup_place | natural_in | 0.5591459999999999 |
+| n016 | pick_family | 0 | lookup | features | 0.890406 |
+| n016 | pick_template_flat | 0 | lookup_place | natural_in | 0.559148 |
 | n018 | pick_family | 0 | lookup | features | 0.9501114999999998 |
 | n018 | pick_template_flat | 0 | lookup_place | natural_in | 0.5676399999999999 |
 
@@ -56,7 +56,7 @@ Records: 21. Depth 0: 21. Depth 1 (two levels): 0.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 95% (20/21) | 1.49 s | 3.9 | 1.7 |
+| 0 | 95% (20/21) | 0.71 s | 3.6 | 1.7 |
 
 ### Pipeline errors
 
