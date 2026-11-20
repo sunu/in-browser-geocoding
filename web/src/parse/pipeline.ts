@@ -250,6 +250,7 @@ export class Parser {
       slots[name] = r.value;
       values[name] = sd.type === "predicate" ? this.bundle.predicate_dags[r.value] : r.value;
     });
+    await this.siblingView(dec, tpl, values, depth);
     if (around) { values[around] = await this.around(dec, tpl.slots[around], values[AROUND_DEFAULT[tpl.id][1]]); slots[around] = null; }
     if (this.bundle.structure_level.includes(tpl.id) && values.level == null && "level" in m.segments) {
       // Port: the level from the data only below a country that the text names.
@@ -418,6 +419,43 @@ export class Parser {
   }
 
   /** Port of _direction_rest: the text after a leading direction word of 4 or more letters. */
+  /** Port of _sibling_view: the close candidates of the places of one template are chosen together, as the combination
+   * with the smallest sum of distances between the places. */
+  private async siblingView(dec: Decider, tpl: Template, values: Record<string, any>, depth: number) {
+    const res = Object.entries(values).filter(([n, v]) => OPEN.has(tpl.slots[n]?.type) && v?.op === "Resolve" && v.args?.source === "overture" && v.args?.id);
+    if (res.length < 2 || !res.some(([, v]) => dec.closeAnchors.has(v.args.id))) return;
+    const options = res.map(([, v]) => dec.closeAnchors.get(v.args.id)?.cands ?? [v.args.id]);
+    const info = await this.gaz.describe([...new Set(options.flat())].sort());
+    const pt = (i: string) => (info[i]?.lon != null ? [Number(info[i].lon), Number(info[i].lat)] : null);
+    const dist = (a: number[], b: number[]) => Math.hypot((a[0] - b[0]) * Math.cos(((a[1] + b[1]) / 2) * Math.PI / 180), a[1] - b[1]);
+    // Only places that are far apart are a wrong choice; places near each other stay (Punjab is not the Thar Desert).
+    const chosen = res.map(([, v]) => pt(v.args.id));
+    if (chosen.some((p) => !p)) return;
+    let far = 0;
+    for (let i = 0; i < chosen.length; i++) for (let j = i + 1; j < chosen.length; j++) far = Math.max(far, dist(chosen[i]!, chosen[j]!));
+    if (far <= Number(this.bundle.config.policy.ranking.sibling_far_deg)) return;
+    let best: string[] | null = null, bestCost = Infinity;
+    const walk = (k: number, combo: string[]) => {
+      if (k === options.length) {
+        const ps = combo.map(pt);
+        if (ps.some((p) => !p)) return;
+        let cost = 0;
+        for (let i = 0; i < ps.length; i++) for (let j = i + 1; j < ps.length; j++) cost += dist(ps[i]!, ps[j]!);
+        if (cost < bestCost - 1e-9) { best = [...combo]; bestCost = cost; }
+        return;
+      }
+      for (const id of options[k]) walk(k + 1, [...combo, id]);
+    };
+    walk(0, []);
+    (best as string[] | null)?.forEach((id, k) => {
+      const v = res[k][1];
+      if (id !== v.args.id) {
+        dec.recordStep("sibling_view", depth, { text: v.args.name }, id, "rules", { from: v.args.id });
+        v.args.id = id;
+      }
+    });
+  }
+
   private directionRest(text: string): string | null {
     const kws = Object.values<any>(this.bundle.options.directions).flatMap((d) => d.keywords as string[])
       .filter((k) => k.length >= 4).sort((a, b) => b.length - a.length);
@@ -448,6 +486,7 @@ export class Parser {
       const d = await dec.disambiguate(text, close, query, depth);
       if (dec.below("disambiguate", d)) stop(`low confidence for disambiguate (${fmt(d.confidence)})`, depth, text, "disambiguate");
       chosen = d.candidate;
+      dec.closeAnchors.set(chosen.id, { name: text, cands: close.map((c) => c.id) });
     }
     const args: any = { name: text, source: "overture", id: chosen.id };
     if (typeHint) args.type_hint = typeHint;

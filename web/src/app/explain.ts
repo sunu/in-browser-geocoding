@@ -28,6 +28,7 @@ export const QUESTIONS: Record<string, (t: TraceRecord) => string> = {
   natural_name: (t) => `Is “${t.inputs?.text}” a natural feature?`,
   frame_override: (t) => `Does a rule change the form of “${t.inputs?.text}”?`,
   photon_boost: (t) => `Does the street search know “${t.inputs?.name}”?`,
+  sibling_view: (t) => `Which “${t.inputs?.text}” is near the other places of the query?`,
 };
 
 const ANSWER_RULES: Record<string, (t: TraceRecord) => string> = {
@@ -35,6 +36,7 @@ const ANSWER_RULES: Record<string, (t: TraceRecord) => string> = {
   natural_name: () => "Yes. The text is the exact name of a natural feature.",
   frame_override: (t) => `Yes: “${t.value}” in place of “${t.trace.from}”.`,
   photon_boost: (t) => (t.trace.error ? "The street search did not answer." : "Its answers change the order of the candidate places."),
+  sibling_view: () => "A different candidate: the places of the query are nearer each other with it.",
 };
 
 function who(impl: string): string {

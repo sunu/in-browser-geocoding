@@ -10,6 +10,8 @@ Procedure for one level (plan-001 section 4.3):
 """
 from __future__ import annotations
 
+import itertools
+import math
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -514,6 +516,7 @@ class Parser:
                 values[name] = None
             else:
                 values[name] = r.value
+        self._sibling_view(dec, tpl, values, depth)
         if around:
             values[around], slots[around] = self._around(dec, tpl.slots[around], values.get(AROUND_DEFAULT[tpl.id][1])), None
         if tpl.id in STRUCTURE_LEVEL and values.get("level") is None and "level" in seg_of:
@@ -683,12 +686,45 @@ class Parser:
                 raise _Stop(Unsupported(reason=f"low confidence for disambiguate ({d.confidence:.2f})",
                                         decision="disambiguate", depth=depth, text=text))
             chosen = d.value
+            dec.close_anchors[chosen.id] = {"name": name, "cands": [c.id for c in close]}
         args = {"name": name, "source": "overture", "id": chosen.id}
         if type_hint:
             args["type_hint"] = type_hint
         if ctx_text:
             args["context"] = ctx_text
         return {"op": "Resolve", "args": args}
+
+    def _sibling_view(self, dec: Decider, tpl: Template, values: dict[str, Any], depth: int) -> None:
+        """Places of one template help each other ("border between Loja and Piura", "London and Manchester"): for the
+        names whose candidates were close, the candidates of all places are chosen together, as the combination with
+        the smallest sum of distances between the places. A place that was not close has one candidate."""
+        res = {n: v for n, v in values.items() if tpl.slots[n].type in OPEN_TYPES and isinstance(v, dict)
+               and v.get("op") == "Resolve" and v["args"].get("source") == "overture" and v["args"].get("id")}
+        if len(res) < 2 or not any(v["args"]["id"] in dec.close_anchors for v in res.values()):
+            return
+        options = {n: (dec.close_anchors[v["args"]["id"]]["cands"] if v["args"]["id"] in dec.close_anchors else [v["args"]["id"]])
+                   for n, v in res.items()}
+        pts = {i: (d["lon"], d["lat"]) for i, d in self.store.describe(sorted({i for o in options.values() for i in o})).items()
+               if d.get("lon") is not None}
+        names = list(options)
+        # Only places that are far apart are a wrong choice (Loja in Spain and Piura in Peru). Places that are already
+        # near each other stay (else a close candidate inside the other place wins: Punjab became the Thar Desert).
+        chosen = [res[n]["args"]["id"] for n in names]
+        far = float(self.cfg["policy"]["ranking"]["sibling_far_deg"])
+        if not all(i in pts for i in chosen) or max(_dist_deg(pts[a], pts[b]) for a, b in itertools.combinations(chosen, 2)) <= far:
+            return
+        best, best_cost = None, float("inf")
+        for combo in itertools.product(*(options[n] for n in names)):
+            if not all(i in pts for i in combo):
+                continue
+            cost = sum(_dist_deg(pts[a], pts[b]) for a, b in itertools.combinations(combo, 2))
+            if cost < best_cost - 1e-9:  # ties keep the earlier combination (the chosen candidates come first)
+                best, best_cost = combo, cost
+        for n, new in zip(names, best or ()):
+            old = res[n]["args"]["id"]
+            if new != old:
+                dec.record_step("sibling_view", depth, {"text": res[n]["args"]["name"]}, new, "rules", {"from": old})
+                res[n]["args"]["id"] = new
 
     def _qualified(self, dec: Decider, text: str, depth: int) -> dict[str, Any] | None:
         """A place name with the names of places that contain it, after commas ("Paris, Texas", "San Francisco,
@@ -756,6 +792,12 @@ def _set_words() -> list[str]:
     """Words of a set or a part, not of a place name: admin levels, categories, predicates, directions, natural kinds."""
     refs = ("admin_levels", "categories", "predicates", "directions", "natural_kinds")
     return [k for ref in refs for ks in option_keywords(ref).values() for k in ks]
+
+
+def _dist_deg(a: tuple[float, float], b: tuple[float, float]) -> float:
+    """Distance in degrees (equirectangular; enough to compare candidates)."""
+    k = math.cos(math.radians((a[1] + b[1]) / 2))
+    return math.hypot((a[0] - b[0]) * k, a[1] - b[1])
 
 
 def _direction_rest(text: str) -> str | None:

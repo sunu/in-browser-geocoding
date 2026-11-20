@@ -124,6 +124,9 @@ policy:
     # The disambiguate decision sees the candidates within this score of the best (after the Photon boost). The browser
     # loads only the countries that can give such a candidate.
     candidate_window: 0.3
+    # Places of one query help each other (plan-033): if the chosen places are more than this many degrees apart and
+    # one of them was a close call, the close candidates are chosen together, nearest each other.
+    sibling_far_deg: 5.0
     # Score added to the candidates that match Photon results 1, 2, 3.
     photon_boost: [0.2, 0.1, 0.05]
     # Photon results to request for the boost.

@@ -33,6 +33,8 @@ export class Decider {
   view: number[] | null = null;
   viewCountry: string | null = null;
   article = false;
+  /** Names whose candidates were close (the chosen id: name, the close candidate ids); see Parser.siblingView. */
+  closeAnchors = new Map<string, { name: string; cands: string[] }>();
   dataLevelWords: Record<string, string[]> = {};
   constructor(public bundle: Bundle, public xenc: CrossEncoder) {}
 

@@ -82,6 +82,8 @@ class Decider:
         self.view: list[float] | None = None
         self.view_country: str | None = None
         self.article = False
+        # Names whose candidates were close (the chosen id: name, type hint, context); see Parser._sibling_view.
+        self.close_anchors: dict[str, dict[str, Any]] = {}
         self.data_level_words: dict[str, list[str]] = {}
 
     def fork(self) -> "Decider":
@@ -91,6 +93,7 @@ class Decider:
         d = copy.copy(self)
         d.run_id = uuid.uuid4().hex[:12]
         d.trace = []
+        d.close_anchors = {}
         d._lock = threading.Lock()
         d.view = None
         d.view_country = None
