@@ -32,6 +32,7 @@ export class Decider {
    * that country in the data (manifest level_words). */
   view: number[] | null = null;
   viewCountry: string | null = null;
+  article = false;
   dataLevelWords: Record<string, string[]> = {};
   constructor(public bundle: Bundle, public xenc: CrossEncoder) {}
 

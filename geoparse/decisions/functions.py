@@ -81,6 +81,7 @@ class Decider:
         # level words of that country in the data (Store.level_words).
         self.view: list[float] | None = None
         self.view_country: str | None = None
+        self.article = False
         self.data_level_words: dict[str, list[str]] = {}
 
     def fork(self) -> "Decider":

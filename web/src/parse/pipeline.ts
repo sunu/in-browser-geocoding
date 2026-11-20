@@ -55,6 +55,8 @@ export class Parser {
     dec.view = view;
     dec.viewCountry = (await this.gaz.view(view))[1];
     dec.dataLevelWords = this.gaz.levelWords(dec.viewCountry);
+    // The query normalization removes a leading "the"; the lookup rule for natural features uses it.
+    dec.article = /^\s*the\s/i.test(query);
     const t0 = performance.now();
     const res: ParseResult = { query, ok: false, dag: null, unsupported: null, family: null, template: null, slots: {}, path: null, trace: [], timings: {} };
     try {
@@ -128,13 +130,22 @@ export class Parser {
     let tpl = this.templates[td.value];
     const alt = await this.frameOverride(dec, text, tpl.id, cands, tscore, depth);
     if (alt) tpl = this.templates[alt];
-    if (tpl.id === "natural_in") {
-      // Port: "Ganga river", "Sahara desert" is one natural feature, not the features of a kind in a place.
+    if (tpl.family !== "lookup" && text.trim().split(/\s+/).length <= 4) {
+      // Port: "Ganga river", "Sahara desert", "Malabar Coast" is the exact name of one natural feature.
       const top = await this.gaz.search(text, { fuzzy: false, limit: 1, view: dec.view });
       if (top.length && top[0].subtype === "natural") {
-        dec.recordStep("natural_name", depth, { text }, top[0].id, "rules", {});
+        dec.recordStep("natural_name", depth, { text }, top[0].id, "rules", { from: tpl.id });
         return [{ op: "Resolve", args: { name: text, source: "overture", id: top[0].id } },
           { family: "lookup", template: "lookup_place", slots: { anchor: text } }];
+      }
+    }
+    if (tpl.family === "lookup" && depth === 0 && dec.article && !lexiconMatch(text, this.bundle)) {
+      // Port: "the equator": with "the", an exact natural feature is the place.
+      const name = text.trim();
+      const nat = (await this.gaz.search(name, { fuzzy: false, limit: 5, view: dec.view })).filter((c) => c.subtype === "natural");
+      if (nat.length) {
+        dec.recordStep("natural_name", depth, { text }, nat[0].id, "rules", { article: true });
+        return [{ op: "Resolve", args: { name, source: "overture", id: nat[0].id } }, { family: "lookup", template: "lookup_place", slots: { anchor: name } }];
       }
     }
     if (tpl.family === "lookup" && alt !== "lookup_place") {
@@ -317,6 +328,9 @@ export class Parser {
   private async region(dec: Decider, tpl: Template, text: string, query: string, depth: number, typeHint: string | null): Promise<[any, any]> {
     const article = /^the\s/i.test(text.trim());
     text = text.trim().replace(/^(the|a|an|whole|entire|all of|all of the|whole of)\s+/i, "");
+    // A named set first ("the Balkans" is the countries, not Natural Earth's Balkan Peninsula).
+    const lex = lexiconMatch(text, this.bundle);
+    if (lex) return [{ op: "LexiconSet", args: { key: lex } }, { lex, text }];
     if (article) {
       // Port: "the Godavari": an exact natural feature is the place (rivers, ranges and seas take "the").
       const nat = (await this.gaz.search(text, { fuzzy: false, limit: 5, view: dec.view })).filter((c) => c.subtype === "natural");
@@ -325,8 +339,6 @@ export class Parser {
         return [{ op: "Resolve", args: { name: text, source: "overture", id: nat[0].id } }, text];
       }
     }
-    const lex = lexiconMatch(text, this.bundle);
-    if (lex) return [{ op: "LexiconSet", args: { key: lex } }, { lex, text }];
     const qual = await this.qualified(dec, text, depth);
     if (qual) return [qual, text];
     const isRegion = Object.values(tpl.slots).some((s) => s.type === "region") && tpl.family !== "lookup";

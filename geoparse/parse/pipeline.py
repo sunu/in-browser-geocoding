@@ -157,6 +157,8 @@ class Parser:
         dec.view = list(view) if view else None
         dec.view_country = self.store.view(dec.view, self.cfg)[1]
         dec.data_level_words = self.store.level_words(dec.view_country)
+        # The query normalization removes a leading "the"; the lookup rule for natural features uses it.
+        dec.article = bool(re.match(r"\s*the\s", query, re.I))
         t0 = time.time()
         res = ParseResult(query=query, ok=False)
         try:
@@ -341,13 +343,22 @@ class Parser:
         alt = self._frame_override(dec, text, tpl.id, cands, tscores, depth)
         if alt:
             tpl = self.templates[alt]
-        if tpl.id == "natural_in":
-            # "Ganga river", "Sahara desert": one natural feature, not the features of a kind in a place.
+        if tpl.family != "lookup" and len(text.split()) <= 4:
+            # "Ganga river", "Sahara desert", "Malabar Coast": the exact name of one natural feature, not the features
+            # of a kind in a place or the coast of a place. Short texts only (the browser loads a name shard).
             top = self.store.search(text, fuzzy=False, limit=1, view=dec.view)
             if top and top[0].subtype == "natural":
-                dec.record_step("natural_name", depth, {"text": text}, top[0].id, "rules", {})
+                dec.record_step("natural_name", depth, {"text": text}, top[0].id, "rules", {"from": tpl.id})
                 return ({"op": "Resolve", "args": {"name": text, "source": "overture", "id": top[0].id}},
                         {"family": "lookup", "template": "lookup_place", "slots": {"anchor": text}})
+        if tpl.family == "lookup" and depth == 0 and getattr(dec, "article", False) and not lexicon_match(text):
+            # "the equator" (a country has the common name "Equator"): with "the", an exact natural feature is the place.
+            name = text.strip()
+            nat = [c for c in self.store.search(name, fuzzy=False, limit=5, view=dec.view) if c.subtype == "natural"]
+            if nat:
+                dec.record_step("natural_name", depth, {"text": text}, nat[0].id, "rules", {"article": True})
+                return ({"op": "Resolve", "args": {"name": name, "source": "overture", "id": nat[0].id}},
+                        {"family": "lookup", "template": "lookup_place", "slots": {"anchor": name}})
         if tpl.family == "lookup" and alt != "lookup_place":
             # Guard (not after the exact-name rule of _frame_override): the lookup template takes the whole text as one name. If the text describes a set
             # of places (and no other template matched), it is not supported. Do not geocode it.
@@ -582,6 +593,10 @@ class Parser:
                 type_hint: str | None) -> tuple[dict[str, Any], Any]:
         article = bool(re.match(r"^the\s", text.strip(), re.I))
         text = re.sub(r"^(the|a|an|whole|entire|all of|all of the|whole of)\s+", "", text.strip(), flags=re.I)
+        # A named set first ("the Balkans" is the countries, not Natural Earth's Balkan Peninsula).
+        lex = lexicon_match(text)
+        if lex:
+            return {"op": "LexiconSet", "args": {"key": lex}}, {"lex": lex, "text": text}
         if article:
             # "the Godavari": rivers, ranges and seas take "the", districts and cities do not. An exact natural
             # feature is the place.
@@ -589,9 +604,6 @@ class Parser:
             if nat:
                 dec.record_step("natural_name", depth, {"text": text}, nat[0].id, "rules", {"article": True})
                 return {"op": "Resolve", "args": {"name": text, "source": "overture", "id": nat[0].id}}, text
-        lex = lexicon_match(text)
-        if lex:
-            return {"op": "LexiconSet", "args": {"key": lex}}, {"lex": lex, "text": text}
         qual = self._qualified(dec, text, depth)
         if qual:
             return qual, text
