@@ -25,6 +25,7 @@ import os
 import shutil
 import subprocess
 import tempfile
+import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -85,7 +86,15 @@ def upload(bucket: str, files: dict[str, Path], state_name: str, dry_run: bool, 
     def put(k: str) -> str:
         ct = CONTENT_TYPES.get(Path(k).suffix, "application/octet-stream")
         enc = ["--content-encoding", "br"] if k in encoded else []
-        wrangler(["r2", "object", "put", f"{bucket}/{k}", "--file", str(files[k]), "--content-type", ct, *enc, "--remote"], cwd)
+        # R2 sometimes answers 500 ("internal error, please try again"): try again before the deploy stops.
+        for attempt in range(3):
+            try:
+                wrangler(["r2", "object", "put", f"{bucket}/{k}", "--file", str(files[k]), "--content-type", ct, *enc, "--remote"], cwd)
+                return k
+            except SystemExit:
+                if attempt == 2:
+                    raise
+                time.sleep(5 * (attempt + 1))
         return k
 
     STATE_DIR.mkdir(parents=True, exist_ok=True)
