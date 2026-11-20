@@ -40,22 +40,18 @@ Records: 24. Depth 0: 24. Depth 1 (two levels): 0.
 | features | 100% (3/3) | 100% (3/3) | 100% (3/3) | 0 | 100% (3/3) |
 | hierarchy | 100% (4/4) | 100% (4/4) | 100% (4/4) | 0 | 100% (4/4) |
 | lookup | 100% (3/3) | 100% (3/3) | 100% (3/3) | 0 | 100% (3/3) |
-| predicate_filter | 89% (8/9) | 78% (7/9) | 89% (8/9) | 0 | 89% (8/9) |
+| predicate_filter | 89% (8/9) | 78% (7/9) | 89% (8/9) | 0 | 100% (9/9) |
 | relational | 100% (2/2) | 50% (1/2) | 100% (2/2) | 0 | 100% (2/2) |
-| ALL | 96% (23/24) | 88% (21/24) | 96% (23/24) | 0 | 96% (23/24) |
+| ALL | 96% (23/24) | 88% (21/24) | 96% (23/24) | 0 | 100% (24/24) |
 
 ### By depth
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 96% (23/24) | 0.67 s | 5.0 | 1.5 |
+| 0 | 96% (23/24) | 1.23 s | 5.0 | 1.5 |
 
 ### Pipeline errors
 
 | Gold id | Query | Got template | Problem |
 |---|---|---|---|
 | v017 | districts along the Godavari | neighbors | template |
-
-### Execution differences with a correct DAG
-
-- v011 landlocked countries that border China: 7 ids vs 11
