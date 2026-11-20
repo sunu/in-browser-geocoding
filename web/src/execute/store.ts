@@ -214,6 +214,12 @@ export class CountryStore {
   /** Load the country of a division id from its name (for DAGs that were not made by this page's parser). */
   async ensureId(id: string, name: string | undefined) {
     if ((await this.engine.query(`SELECT 1 FROM divisions WHERE id = ${q(id)} AND ancestors IS NOT NULL`)).length) return;
+    // A country or dependency: its admin row is loaded at start-up and its polygon is in the global admin areas.
+    // The operations that go inside it (Children, Neighbors below the country level) load its country files.
+    if ((await this.engine.query(`SELECT 1 FROM divisions WHERE id = ${q(id)} AND subtype IN ('country', 'dependency')`)).length) {
+      await this.ensureAdminAreas();
+      return;
+    }
     const key = normName(name ?? "").replaceAll(" ", "");
     if (key) await this.ensureKeys([key]);
   }

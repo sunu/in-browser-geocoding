@@ -17,6 +17,8 @@ const REGION_SUFFIXES = ["prefecture", "province"];
 const KIND_SCORE = "CASE WHEN kind = 'primary' THEN 1.0 WHEN kind = 'en' THEN 0.98 WHEN kind = 'translit' THEN 0.9 ELSE 0.95 END";
 const FUZZY_PREFIX = 3;
 
+const COUNTRY_SUBTYPES = ["country", "dependency"];
+
 export class Gazetteer {
   aliases: Record<string, string>;
   constructor(public db: Db, public bundle: Bundle) {
@@ -33,7 +35,8 @@ export class Gazetteer {
                               ORDER BY list_position(d.ancestors, x.id) DESC)
                  FROM divisions x WHERE list_contains(d.ancestors, x.id) AND x.id <> d.id),
                 lambda h: h.subtype IN ('region', 'county', 'locality', 'macrohood'))] AS anc,
-             EXISTS (SELECT 1 FROM areas a WHERE a.id = d.id) AS has_area, d.ancestors AS anc_ids, d.lon, d.lat
+             (EXISTS (SELECT 1 FROM areas a WHERE a.id = d.id)${this.db.store ? " OR EXISTS (SELECT 1 FROM name_rows r WHERE r.n = d.n AND r.has_area)" : ""}) AS has_area,
+             d.ancestors AS anc_ids, d.lon, d.lat
       FROM divisions d WHERE d.id IN (SELECT unnest(${list(ids)}))`);
     const out: Record<string, any> = {};
     for (const r of rs) out[r.id] = { ...r, ancestors: r.anc ?? [], ancestor_ids: (r.anc_ids ?? []).filter((a: string) => a !== r.id) };
@@ -189,15 +192,19 @@ export class Gazetteer {
           inside = !!b && b[0] >= x0 && b[2] <= x1 && b[1] >= y0 && b[3] <= y1;
           outside = !!b && (b[2] < x0 || b[0] > x1 || b[3] < y0 || b[1] > y1);
         }
-        return [{ country: r.country, lo: p - (inside ? 0 : ranking.view_outside), hi: p + (ctx ? 0.3 : 0) - (outside ? ranking.view_outside : 0) }];
+        return [{ country: r.country, lo: p - (inside ? 0 : ranking.view_outside), hi: p + (ctx ? 0.3 : 0) - (outside ? ranking.view_outside : 0),
+          own: COUNTRY_SUBTYPES.includes(r.subtype) }];
       });
+      // A country or dependency candidate is described by its admin row (loaded at start-up): its country files
+      // are not needed for the ranking ("China" does not load China).
+      const load = (bs: typeof bounds) => store.ensureCountries(bs.filter((b) => !b.own).map((b) => b.country));
       // The best candidate is sure to lead all others by close_margin: the parser uses only it (no Photon boost, no
       // disambiguate). Load only its country.
       if (!full && bounds.length > 1) {
         const top = bounds.reduce((a, b) => (b.lo > a.lo ? b : a));
         const rest = Math.max(...bounds.filter((b) => b !== top).map((b) => b.hi));
         if (top.lo - rest >= Number(ranking.close_margin)) {
-          await store.ensureCountries([top.country]);
+          await load([top]);
           return keep;
         }
       }
@@ -206,7 +213,7 @@ export class Gazetteer {
       // Photon boost (the others are not used): their countries are loaded.
       const win = Number(ranking.candidate_window) + Math.max(0, ...(ranking.photon_boost ?? [0]).map(Number));
       const L = Math.max(los.length >= limit ? los[limit - 1] : -Infinity, los.length ? los[0] - win : -Infinity);
-      await store.ensureCountries(bounds.filter((b) => b.hi >= L - 1e-9).map((b) => b.country));
+      await load(bounds.filter((b) => b.hi >= L - 1e-9));
       return keep;
     };
     const exact = async (xs: string[], f: number) => {
