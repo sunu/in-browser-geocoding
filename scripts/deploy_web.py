@@ -130,7 +130,7 @@ def main() -> None:
     ap.add_argument("--bucket", default="geoparse-world-test")
     ap.add_argument("--files-url", default="https://files.geoparse.labs.sunu.in")
     ap.add_argument("--worker", default="geoparse", help="Cloudflare Worker that serves the page.")
-    ap.add_argument("--domain", default="geoparse.labs.sunu.in")
+    ap.add_argument("--domain", default="gazetini.labs.sunu.in")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--assume-uploaded", action="store_true", help="Record the files as uploaded. Do not upload.")
     args = ap.parse_args()

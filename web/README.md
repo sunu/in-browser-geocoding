@@ -55,7 +55,7 @@ The page is a Cloudflare Worker with static assets. The data and the models are 
 
 | Part | Location |
 |---|---|
-| Page (JS, WASM of ONNX Runtime, `bundle.json`) | Worker `geoparse`, domain `geoparse.labs.sunu.in` |
+| Page (JS, WASM of ONNX Runtime, `bundle.json`) | Worker `geoparse`, domain `gazetini.labs.sunu.in` |
 | Data (country layout of one Overture release) | R2 bucket `geoparse-world-test`, `https://files.geoparse.labs.sunu.in/<release>/` |
 | Models (int8 ONNX, tokenizers) | Same bucket, `https://files.geoparse.labs.sunu.in/models/<hash>/` |
 
@@ -73,7 +73,7 @@ Settings in the Cloudflare dashboard (zone `sunu.in`):
 
 1. R2 bucket: custom domain `files.geoparse.labs.sunu.in`. CORS: origins `*`, methods `GET` and `HEAD`, headers `*`, exposed headers `Content-Length`, `Content-Range`, `Accept-Ranges`, `ETag`.
 2. Cache Rule for host `files.geoparse.labs.sunu.in`: eligible for cache, edge TTL 1 month, browser TTL 1 day, status codes 400–599 not cached. The files of a release do not change.
-3. Worker `geoparse`: the deploy script sets the custom domain `geoparse.labs.sunu.in` (and its DNS record). The `_headers` file of the build sets COOP and COEP (ONNX Runtime threads need `SharedArrayBuffer`).
+3. Worker `geoparse`: the deploy script sets the custom domain `gazetini.labs.sunu.in` (and its DNS record). The `_headers` file of the build sets COOP and COEP (ONNX Runtime threads need `SharedArrayBuffer`).
 
 Notes:
 
