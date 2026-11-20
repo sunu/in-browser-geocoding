@@ -348,8 +348,8 @@ class Parser:
                 dec.record_step("natural_name", depth, {"text": text}, top[0].id, "rules", {})
                 return ({"op": "Resolve", "args": {"name": text, "source": "overture", "id": top[0].id}},
                         {"family": "lookup", "template": "lookup_place", "slots": {"anchor": text}})
-        if tpl.family == "lookup":
-            # Guard: the lookup template takes the whole text as one name. If the text describes a set
+        if tpl.family == "lookup" and alt != "lookup_place":
+            # Guard (not after the exact-name rule of _frame_override): the lookup template takes the whole text as one name. If the text describes a set
             # of places (and no other template matched), it is not supported. Do not geocode it.
             g = dec.is_subquery(text, depth=depth, context={"gazetteer_exact": bool(self.store.search(text, fuzzy=False, limit=1, view=dec.view)),
                                                              "has_distance": bool(re.search(r"\d", text))})
@@ -546,7 +546,10 @@ class Parser:
         """Another candidate template of the T5 frames, if the chosen one does not fit the text:
         1. "A and B" is one place only if it is an exact name ("Trinidad and Tobago"): else the union, if A and B are.
         2. Each admin level word of the text is in a slot of the frame ("coastal regions of Chile" is not along_coast).
-           Not for a lookup: a level word after a place name is usually noise ("Konark Sun Temple state")."""
+           Not for a lookup: a level word after a place name is usually noise ("Konark Sun Temple state").
+        3. A direction word and an exact name is one side of the place, if the whole text is not an exact name
+           ("Northern India"; T5 reads a capital letter as part of a name). "North Carolina" stays a lookup.
+        4. The other way: one side of a place is a lookup if the whole text is an exact name ("Western Ghats")."""
         def covers(t):
             best = max(cands.get(t, []), key=lambda m: m["score"], default=None)
             segs = " ".join(str(v) for v in (best["segments"].values() if best else [])).lower()
@@ -557,6 +560,16 @@ class Parser:
                 and all(self.store.search(x, fuzzy=False, limit=1, view=dec.view) for x in m.groups())):
             dec.record_step("frame_override", depth, {"text": text}, "union", "rules", {"from": tid})
             return "union"
+        rest = _direction_rest(text) if tid == "lookup_place" and "direction_part" in cands else None
+        if (rest and not self.store.search(text, fuzzy=False, limit=1, view=dec.view)
+                and self.store.search(rest, fuzzy=False, limit=1, view=dec.view)):
+            dec.record_step("frame_override", depth, {"text": text}, "direction_part", "rules", {"from": tid, "direction_rest": rest})
+            return "direction_part"
+        name = re.sub(r"^the\s+", "", text.strip(), flags=re.I)
+        if (tid == "direction_part" and "lookup_place" in cands and _direction_rest(name)
+                and self.store.search(name, fuzzy=False, limit=1, view=dec.view)):
+            dec.record_step("frame_override", depth, {"text": text}, "lookup_place", "rules", {"from": tid, "exact_name": name})
+            return "lookup_place"
         level_words = [w for w in _level_words() if re.search(rf"\b{re.escape(w)}\b", text, re.I)]
         if tid != "lookup_place" and level_words and cands.get(tid) and not covers(tid):
             alts = sorted((t for t in cands if t != tid and covers(t)), key=lambda t: -tscores.get(t, -1e9))

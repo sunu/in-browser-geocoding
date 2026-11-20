@@ -137,7 +137,7 @@ export class Parser {
           { family: "lookup", template: "lookup_place", slots: { anchor: text } }];
       }
     }
-    if (tpl.family === "lookup") {
+    if (tpl.family === "lookup" && alt !== "lookup_place") {
       const g = await dec.isSubquery(text, depth);
       if (g.value || dec.below("is_subquery", g)) stop("the text is not one place name, and no other template matches", depth, text, "is_subquery");
     }
@@ -281,6 +281,18 @@ export class Parser {
     if (tid === "lookup_place" && m && "union" in cands && !(await exactName(text)) && (await exactName(m[1])) && (await exactName(m[2]))) {
       dec.recordStep("frame_override", depth, { text }, "union", "rules", { from: tid });
       return "union";
+    }
+    // A direction word and an exact name ("Northern India"), if the whole text is not an exact name ("North Carolina").
+    const rest = tid === "lookup_place" && "direction_part" in cands ? this.directionRest(text) : null;
+    if (rest && !(await exactName(text)) && (await exactName(rest))) {
+      dec.recordStep("frame_override", depth, { text }, "direction_part", "rules", { from: tid, direction_rest: rest });
+      return "direction_part";
+    }
+    // The other way: one side of a place is a lookup if the whole text is an exact name ("Western Ghats").
+    const name = text.trim().replace(/^the\s+/i, "");
+    if (tid === "direction_part" && "lookup_place" in cands && this.directionRest(name) && (await exactName(name))) {
+      dec.recordStep("frame_override", depth, { text }, "lookup_place", "rules", { from: tid, exact_name: name });
+      return "lookup_place";
     }
     const levelWords = Object.values<any>(this.bundle.options.admin_levels).flatMap((v) => v.keywords ?? [])
       .filter((w: string) => new RegExp(`\\b${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i").test(text));
