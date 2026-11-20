@@ -76,12 +76,15 @@ def export_country_layout(con: duckdb.DuckDBPyConnection, out: Path, release: st
     # n: integer id of a division in the web data (UUIDs do not compress). The country files map n to id. The natural
     # features (NATURAL_COUNTRY) come last, so that the n of the other countries do not change (cached country files
     # stay valid).
+    # Wikidata populations (build_extract.add_population); databases built before it have no column.
+    wd = "wd_population" if con.execute("""SELECT count(*) FROM information_schema.columns
+        WHERE table_name = 'divisions' AND column_name = 'wd_population'""").fetchone()[0] else "NULL::INTEGER"
     con.execute(f"""
         CREATE OR REPLACE TEMP TABLE dv AS
         SELECT row_number() OVER (ORDER BY coalesce(country, '') = '{NATURAL_COUNTRY}', coalesce(country, '{NO_COUNTRY}'), subtype,
                                   ST_Hilbert(geometry, {WORLD}), id)::INTEGER - 1 AS n,
                id, subtype, class, name, name_en, coalesce(country, '{NO_COUNTRY}') AS country, region, ancestors,
-               population, wikidata, ST_X(geometry) AS lon, ST_Y(geometry) AS lat
+               population, {wd} AS wd_population, wikidata, ST_X(geometry) AS lon, ST_Y(geometry) AS lat
         FROM divisions
     """)
 
@@ -103,7 +106,7 @@ def export_country_layout(con: duckdb.DuckDBPyConnection, out: Path, release: st
     # Global files. admin: attributes of the admin divisions (loaded at start-up, also the ancestor names of the
     # name shards). admin_areas: polygons of countries and dependencies (queries across borders; the regions are in
     # the regions file of each country).
-    _copy(con, f"""SELECT n, id, subtype, class, name, name_en, country, region, population, lon, lat FROM dv
+    _copy(con, f"""SELECT n, id, subtype, class, name, name_en, country, region, population, wd_population, lon, lat FROM dv
                    WHERE subtype IN ({ADMIN_SUBTYPES}) ORDER BY n""", root / "global" / "admin.parquet")
     _copy(con, """SELECT d.n, d.id, d.subtype, d.country, ST_AsWKB(a.gs) AS gs_wkb, ST_XMin(a.gs) AS xmin,
                          ST_YMin(a.gs) AS ymin, ST_XMax(a.gs) AS xmax, ST_YMax(a.gs) AS ymax

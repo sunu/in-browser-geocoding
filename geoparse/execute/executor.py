@@ -403,11 +403,18 @@ class _Run:
         cond = self.pred_sql(pred, "s")
         return self.new_rel(f"SELECT s.* FROM {src} s WHERE {cond}")
 
+    def population(self) -> str:
+        """The population of the population filters and ranks: Overture's, else Wikidata's (column wd_population of
+        build_extract.add_population; databases built before it do not have the column)."""
+        has = self.run("""SELECT count(*) FROM information_schema.columns
+                          WHERE table_name = 'divisions' AND column_name = 'wd_population'""").fetchone()[0]
+        return "coalesce(d.population, d.wd_population)" if has else "d.population"
+
     def op_AttrFilter(self, set: Any, attr: str, op: str, value: float) -> str:
         src = self.eval(set)
         cmp = {"gt": ">", "lt": "<"}[op]
         if attr == "population":
-            expr = "(SELECT d.population FROM divisions d WHERE d.id = s.id)"
+            expr = f"(SELECT {self.population()} FROM divisions d WHERE d.id = s.id)"
             n_null = self.run(f"SELECT count(*) FROM {src} s WHERE {expr} IS NULL").fetchone()[0]
             if n_null:
                 self.notes.append(f"population: {n_null} entities have no population in the extract and are excluded")
@@ -427,7 +434,7 @@ class _Run:
     def op_Top(self, set: Any, by: str, n: float, order: str) -> str:
         src = self.eval(set)
         if by == "population":
-            expr = "(SELECT d.population FROM divisions d WHERE d.id = s.id)"
+            expr = f"(SELECT {self.population()} FROM divisions d WHERE d.id = s.id)"
         else:
             expr = "(ST_Area(to_m(s.gs, utm(s.gs))) / 1e6)"
         direction = "DESC" if order == "largest" else "ASC"

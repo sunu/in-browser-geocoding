@@ -296,14 +296,17 @@ def _wikidata_population(qids: list[str], url: str, cache: Path) -> dict[str, in
 
 
 def add_population(con, cfg, out: Path) -> None:
-    """Fill the population of countries, dependencies, regions and counties that have a Wikidata id and no Overture
-    population (most counties and regions of India, plan-029)."""
+    """Column wd_population: the Wikidata population of countries, dependencies, regions and counties that have a
+    Wikidata id and no Overture population (most counties and regions of India, plan-029). The population filters
+    and ranks use it; the name ranking does not (with it, "Osaka" became the prefecture)."""
     rows = con.execute("""SELECT DISTINCT wikidata FROM divisions WHERE population IS NULL AND wikidata IS NOT NULL
                           AND subtype IN ('country', 'dependency', 'region', 'county')""").fetchall()
     pops = _wikidata_population([r[0] for r in rows], cfg["data"]["wikidata_sparql"], out / "raw" / "wikidata_population.json")
     con.execute("CREATE OR REPLACE TEMP TABLE wd_pop (wikidata VARCHAR, population BIGINT)")
     con.executemany("INSERT INTO wd_pop VALUES (?, ?)", [[q, p] for q, p in pops.items() if p < 2**31])
-    con.execute("""UPDATE divisions d SET population = w.population FROM wd_pop w
+    con.execute("ALTER TABLE divisions ADD COLUMN IF NOT EXISTS wd_population INTEGER")
+    con.execute("UPDATE divisions SET wd_population = NULL")
+    con.execute("""UPDATE divisions d SET wd_population = w.population FROM wd_pop w
                    WHERE d.wikidata = w.wikidata AND d.population IS NULL
                      AND d.subtype IN ('country', 'dependency', 'region', 'county')""")
     n = con.execute("SELECT count(*) FROM divisions d JOIN wd_pop w USING (wikidata) WHERE d.subtype IN ('country', 'dependency', 'region', 'county')").fetchone()[0]

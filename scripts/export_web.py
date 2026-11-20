@@ -81,9 +81,11 @@ def export_data(simplify_out: float, out: Path) -> None:
     out.mkdir(parents=True, exist_ok=True)
     con = duckdb.connect(str(build_dir() / "geoparse.duckdb"), read_only=True)
     con.execute("LOAD spatial; SET geometry_always_xy = true;")
+    wd = "wd_population" if con.execute("""SELECT count(*) FROM information_schema.columns
+        WHERE table_name = 'divisions' AND column_name = 'wd_population'""").fetchone()[0] else "NULL::INTEGER AS wd_population"
     jobs = {
         # Loaded into memory at start-up (small).
-        "divisions.parquet": """SELECT id, subtype, class, name, name_en, country, region, ancestors, population,
+        "divisions.parquet": f"""SELECT id, subtype, class, name, name_en, country, region, ancestors, population, {wd},
                                        ST_X(geometry) AS lon, ST_Y(geometry) AS lat FROM divisions ORDER BY id""",
         "names.parquet": "SELECT id, name_norm, name_nospace, kind FROM names ORDER BY name_norm",
         "layers.parquet": "SELECT name, ST_AsWKB(geometry) AS wkb FROM layers",

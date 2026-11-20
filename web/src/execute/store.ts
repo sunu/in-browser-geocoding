@@ -66,7 +66,7 @@ export class CountryStore {
     const admin = await e.file("global/admin.parquet");
     for (const s of [
       `CREATE TABLE divisions (n INTEGER, id VARCHAR, subtype VARCHAR, class VARCHAR, name VARCHAR, name_en VARCHAR,
-         country VARCHAR, region VARCHAR, ancestors VARCHAR[], population INTEGER, wikidata VARCHAR, lon DOUBLE, lat DOUBLE,
+         country VARCHAR, region VARCHAR, ancestors VARCHAR[], population INTEGER, wd_population INTEGER, wikidata VARCHAR, lon DOUBLE, lat DOUBLE,
          geometry GEOMETRY)`,
       `CREATE TABLE areas (id VARCHAR, subtype VARCHAR, gs GEOMETRY, geometry GEOMETRY, xmin DOUBLE, ymin DOUBLE,
          xmax DOUBLE, ymax DOUBLE, country VARCHAR)`,

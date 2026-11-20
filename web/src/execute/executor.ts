@@ -157,6 +157,13 @@ class Run {
     return this.divisionsRel(`d.id = ${q(a.id)}`);
   }
 
+  /** Port of population: Overture's population, else Wikidata's (data exported before plan-031 has no wd_population). */
+  async population(): Promise<string> {
+    const has = (await this.run(`SELECT count(*) AS n FROM information_schema.columns
+      WHERE table_name = 'divisions' AND column_name = 'wd_population'`))[0].n > 0;
+    return has ? "coalesce(d.population, d.wd_population)" : "d.population";
+  }
+
   async op_LexiconSet(a: any) {
     const entry = this.ex.bundle.lexicon[a.key];
     const ids = entry.members.filter((m) => m.id).map((m) => m.id!) as string[];
@@ -307,7 +314,7 @@ class Run {
     const cmp = a.op === "gt" ? ">" : "<";
     let expr: string;
     if (a.attr === "population") {
-      expr = "(SELECT d.population FROM divisions d WHERE d.id = s.id)";
+      expr = `(SELECT ${await this.population()} FROM divisions d WHERE d.id = s.id)`;
       const n = (await this.run(`SELECT count(*) AS n FROM ${src} s WHERE ${expr} IS NULL`))[0].n;
       if (n) this.notes.push(`population: ${n} entities have no population in the extract and are excluded`);
     } else if (a.attr === "area") expr = "(ST_Area(to_m(s.gs, utm(s.gs))) / 1e6)";
@@ -326,7 +333,7 @@ class Run {
 
   async op_Top(a: any) {
     const src = await this.eval(a.set);
-    const expr = a.by === "population" ? "(SELECT d.population FROM divisions d WHERE d.id = s.id)" : "(ST_Area(to_m(s.gs, utm(s.gs))) / 1e6)";
+    const expr = a.by === "population" ? `(SELECT ${await this.population()} FROM divisions d WHERE d.id = s.id)` : "(ST_Area(to_m(s.gs, utm(s.gs))) / 1e6)";
     return this.newRel(`SELECT s.* FROM ${src} s WHERE ${expr} IS NOT NULL ORDER BY ${expr} ${a.order === "largest" ? "DESC" : "ASC"}, s.id LIMIT ${Math.trunc(Number(a.n))}`);
   }
 
