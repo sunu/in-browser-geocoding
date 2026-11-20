@@ -21,7 +21,11 @@ t5 = ["torch>=2.5", "transformers>=4.46", "sentencepiece>=0.2"]
 export = ["onnx>=1.16"]
 
 [dependency-groups]
-dev = ["pytest>=8", "geoparse[ner,ui,t5,export]"]
+dev = [
+    "pytest>=8",
+    "geoparse[ner,ui,t5,export]",
+    "brotli>=1.2.1",
+]
 
 [build-system]
 requires = ["hatchling"]

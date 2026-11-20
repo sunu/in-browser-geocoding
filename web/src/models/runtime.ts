@@ -41,6 +41,14 @@ function serialize(sess: any): any {
   return sess;
 }
 
+/** Decoded sizes of the model files (sizes.json of a deployed model folder; the files are sent with brotli, so the
+ * response length is not the size). Empty for local files. */
+let sizes: Promise<Record<string, number>> | null = null;
+function modelSizes(): Promise<Record<string, number>> {
+  sizes ??= fetch(modelPath("sizes.json")).then((r) => (r.ok ? r.json() : {})).catch(() => ({}));
+  return sizes;
+}
+
 export async function session(...parts: string[]): Promise<any> {
   return serialize(await createSession(...parts));
 }
@@ -51,7 +59,7 @@ async function createSession(...parts: string[]): Promise<any> {
   // Node.js: ORT_THREADS limits the threads of each session (parity checks in several processes).
   if (isNode && process.env.ORT_THREADS) opts.intraOpNumThreads = Number(process.env.ORT_THREADS);
   if (isNode) return o.InferenceSession.create(modelPath(...parts), opts);
-  const buf = await readBody(await fetch(modelPath(...parts)), parts.join("/"));
+  const buf = await readBody(await fetch(modelPath(...parts)), parts.join("/"), (await modelSizes())[parts.join("/")] ?? 0);
   return o.InferenceSession.create(buf, opts);
 }
 

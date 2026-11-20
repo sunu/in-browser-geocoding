@@ -236,7 +236,7 @@ const env = import.meta.env;
 const param = new URLSearchParams(location.search).get("data");
 const data = param ?? (env.VITE_DATA_URL || undefined);
 load("", progress, data,
-  { models: env.VITE_MODEL_URL || undefined, dataVersion: param ? "" : env.VITE_DATA_VERSION || "" }).then((g) => {
+  { models: env.VITE_MODEL_URL || undefined, dataVersion: param ? "" : env.VITE_DATA_VERSION || "", preload: false }).then((g) => {
   gp = g;
   go.disabled = false;
   const total = [...files.values()].reduce((a, d) => a + d.loaded, 0);

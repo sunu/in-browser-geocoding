@@ -19,15 +19,16 @@ export interface Geoparse {
 }
 
 /** data: URL of the data files (flat layout or country layout); default `${base}/data`.
- * opts.models: URL of the model files; default `${base}/models`. opts.dataVersion: see openDb. */
+ * opts.models: URL of the model files; default `${base}/models`. opts.dataVersion: see openDb. opts.preload: load the
+ * default country (config data.country) at start-up; the page does not (it loads countries on demand). */
 export async function load(base = "", onProgress: (msg: string) => void = () => {}, data = `${base}/data`,
-                           opts: { models?: string; dataVersion?: string } = {}): Promise<Geoparse> {
+                           opts: { models?: string; dataVersion?: string; preload?: boolean } = {}): Promise<Geoparse> {
   setModelBase(opts.models ?? `${base}/models`);
   onProgress("bundle");
   const bundle = await loadBundle(`${base}/bundle.json`);
   onProgress("data, models");
   const [db, t5, xenc] = await Promise.all([
-    openDb(data, onProgress, bundle.config.data.country, opts.dataVersion),
+    openDb(data, onProgress, opts.preload === false ? "" : bundle.config.data.country, opts.dataVersion),
     T5Frames.load(true).then((m) => (onProgress("T5 model loaded"), m)),
     CrossEncoder.load(true).then((m) => (onProgress("decision model loaded"), m)),
   ]);
