@@ -3,77 +3,174 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>geoparse (browser)</title>
+  <title>gazetini</title>
   <link rel="icon" href="data:," />
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" />
   <style>
-    :root { --bg: #fafafa; --fg: #1d1d1f; --muted: #6b6b6f; --line: #e3e3e6; --accent: #2563eb; --err: #b42318; --ok: #067647; }
-    @media (prefers-color-scheme: dark) { :root { --bg: #161618; --fg: #ececf0; --muted: #9a9aa2; --line: #2c2c31; --accent: #6ea8fe; --err: #f97066; --ok: #47cd89; } }
+    :root {
+      --bg: #FFFFFF; --fg: #2B2523; --text2: #4D433E; --muted: #6E625C; --line: #ECE4DF; --line2: #E2D6CF;
+      --soft: #FBF7F4; --soft2: #F3ECE7; --accent: #D04200; --accent-text: #B53A00; --pill: #FFF4EE; --pill-line: #F6D9C9;
+      --err: #B42318; --map: #F1EDEA;
+      --display: "Barlow Condensed", "Barlow", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, monospace;
+    }
     * { box-sizing: border-box; }
-    body { margin: 0; font: 14px/1.45 system-ui, sans-serif; background: var(--bg); color: var(--fg); }
-    header { padding: 12px 16px; border-bottom: 1px solid var(--line); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    header h1 { font-size: 16px; margin: 0 12px 0 0; }
-    #q { flex: 1 1 320px; padding: 8px 10px; font-size: 15px; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: var(--fg); }
-    button { padding: 8px 14px; border: 0; border-radius: 6px; background: var(--accent); color: white; font-size: 14px; cursor: pointer; }
+    body { margin: 0; font: 15px/1.45 "Barlow", system-ui, sans-serif; background: var(--bg); color: var(--fg); display: flex; flex-direction: column; min-height: 100vh; }
+    body:not(.landing) { height: 100vh; }
+    button { font-family: inherit; cursor: pointer; }
     button:disabled { opacity: .5; cursor: default; }
-    #status { color: var(--muted); font-size: 13px; width: 100%; }
-    body { display: flex; flex-direction: column; height: 100vh; }
-    main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); flex: 1; min-height: 0; }
-    @media (max-width: 800px) { body { height: auto; } main { grid-template-columns: 1fr; } #map { height: 60vh; } }
-    #map { min-height: 300px; }
-    #side { overflow: auto; padding: 12px 16px; border-left: 1px solid var(--line); }
-    .err { color: var(--err); } .ok { color: var(--ok); }
-    table { border-collapse: collapse; width: 100%; font-size: 12px; }
-    td, th { border-bottom: 1px solid var(--line); padding: 3px 6px; text-align: left; vertical-align: top; }
-    pre { white-space: pre-wrap; word-break: break-word; font-size: 12px; background: rgba(127,127,127,.08); padding: 8px; border-radius: 6px; }
-    #loading { position: fixed; inset: 0; z-index: 10; display: flex; align-items: center; justify-content: center; padding: 16px; background: color-mix(in srgb, var(--bg) 85%, transparent); }
-    #loading[hidden] { display: none; }
-    #loading .card { width: min(460px, 100%); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 20px; box-shadow: 0 8px 30px rgba(0,0,0,.12); }
-    #loading h2 { margin: 0 0 6px; font-size: 17px; }
-    #loading p { margin: 0 0 14px; color: var(--muted); font-size: 13px; }
-    .step { display: grid; grid-template-columns: 18px 1fr auto; gap: 4px 8px; align-items: center; margin: 10px 0; font-size: 13px; }
-    .step .mark { color: var(--muted); } .step.done .mark { color: var(--ok); }
-    .step .size { color: var(--muted); font-variant-numeric: tabular-nums; }
-    .step .bar { grid-column: 2 / 4; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
-    .step .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
-    .step.done .bar i { background: var(--ok); }
-    #loading .now { min-height: 1.4em; margin: 12px 0 0; font-size: 12px; color: var(--muted); word-break: break-all; }
-    #loading .err { margin-top: 12px; }
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .err { color: var(--err); }
     .muted { color: var(--muted); }
-    #side h4 { margin: 18px 0 6px; }
-    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-    .chip { border: 1px solid var(--line); border-radius: 12px; padding: 2px 10px; font-size: 13px; }
-    .chip b { color: var(--muted); font-weight: 500; margin-right: 4px; }
-    .dec { border-left: 3px solid var(--line); padding: 4px 0 4px 10px; margin: 8px 0; }
-    .dec .q { font-weight: 600; }
-    .dec .a { margin: 2px 0; }
-    .dec .meta { display: flex; gap: 8px; align-items: center; font-size: 12px; }
-    .dec details { font-size: 12px; } .dec ul { margin: 4px 0; padding-left: 18px; }
-    .tag { background: rgba(127,127,127,.12); border-radius: 4px; padding: 0 6px; }
-    .conf { display: inline-block; width: 60px; height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; }
-    .conf i { display: block; height: 100%; background: var(--ok); } .conf.err i { background: var(--err); }
-    details.how { margin: 10px 0; font-size: 13px; } details.how p { margin: 6px 0; }
-    code { font-size: 12px; }
-    .examples { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 12px; }
-    .examples .group { display: inline-flex; flex-wrap: wrap; align-items: baseline; }
-    .examples button { background: transparent; color: var(--accent); padding: 2px 6px; font-size: 12px; }
+    code, pre { font-family: var(--mono); }
+
+    /* Header: a centered hero before the first query, a compact bar after it. */
+    header { position: relative; z-index: 1; border-bottom: 1px solid var(--line); padding: 18px 32px 16px; transition: padding .6s cubic-bezier(.2,.8,.2,1); }
+    header .inner { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 10px 20px; margin: 0 auto; max-width: 1376px; }
+    .brand { display: flex; flex-direction: column; }
+    .logo { background: none; border: 0; padding: 0; font: 700 34px/1 var(--display); letter-spacing: -.5px; color: var(--fg); display: flex; align-items: baseline; transition: font-size .6s cubic-bezier(.2,.8,.2,1); }
+    .logo span { color: var(--accent); }
+    .logo i { display: inline-block; width: .18em; height: .18em; border-radius: 50%; background: var(--accent); margin-left: .08em; }
+    .sub { font-size: 12px; font-weight: 500; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+    .tagline { display: none; margin: 0; font-size: 22px; line-height: 1.4; color: var(--text2); text-align: center; }
+    .search { display: flex; gap: 8px; align-items: center; min-width: 0; background: #fff; border: 1px solid var(--line2); border-radius: 8px; padding: 4px;
+      transition: box-shadow .6s ease, padding .6s ease, border-color .3s ease; }
+    .search svg { flex: 0 0 auto; margin-left: 10px; }
+    #q { flex: 1 1 auto; min-width: 0; height: 44px; border: 0; outline: none; background: transparent; padding: 0 8px; font: 18px "Barlow", system-ui, sans-serif; color: var(--fg); }
+    #go { flex: 0 0 auto; height: 44px; padding: 0 22px; border: 0; border-radius: 6px; background: var(--accent); color: #fff; font: 700 16px var(--display); letter-spacing: .6px; text-transform: uppercase; }
+    .statusrow { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: 14px; color: var(--muted); min-height: 20px; }
+    .link { background: none; border: 0; padding: 0; font-size: 14px; color: var(--accent-text); text-decoration: underline; }
+    .examples { grid-column: 1 / -1; display: none; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; align-items: baseline; }
+    body.show-examples .examples { display: grid; }
+    .examples .label { font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+    .examples .items { display: flex; flex-wrap: wrap; gap: 6px 8px; }
+    .examples button { font-size: 15px; text-align: left; color: var(--accent-text); background: var(--pill); border: 1px solid var(--pill-line); border-radius: 999px; padding: 3px 12px; }
+    .examples button:hover:not(:disabled) { border-color: var(--accent); }
+
+    body.landing header { border-bottom-color: transparent; padding: 120px 32px 80px; }
+    body.landing header .inner { grid-template-columns: minmax(0, 1fr); justify-items: stretch; max-width: 860px; gap: 26px; }
+    body.landing .brand { align-items: center; }
+    body.landing .logo { font-size: 76px; }
+    body.landing .sub, body.landing #more { display: none; }
+    body.landing .tagline { display: block; }
+    body.landing .search { border: 2px solid var(--accent); border-radius: 14px; padding: 8px; box-shadow: 0 18px 40px -18px rgba(208,66,0,.35); }
+    body.landing #q { height: 60px; font-size: 22px; }
+    body.landing #go { height: 60px; padding: 0 34px; font-size: 20px; border-radius: 10px; }
+    body.landing .statusrow { justify-content: center; }
+    body.landing .examples { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 28px; padding-top: 8px; }
+    body.landing .examples .group { display: flex; flex-direction: column; gap: 8px; }
+    .examples .group { display: contents; }
+    body.landing .examples .label { font-weight: 700; letter-spacing: 1.2px; }
+    @media (max-width: 800px) {
+      header { padding: 14px 16px; }
+      header .inner { grid-template-columns: minmax(0, 1fr); }
+      body.landing header { padding: 48px 16px 32px; }
+      body.landing .logo { font-size: 56px; }
+      body.landing .tagline { font-size: 18px; }
+      body.landing .examples { grid-template-columns: minmax(0, 1fr); }
+      .examples { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    /* Map and results. Before the first query they are hidden behind the hero (the map keeps a size: the view ranks places). */
+    main { display: flex; flex-wrap: wrap; flex: 1; min-height: 0; transition: opacity .5s ease .25s, transform .6s cubic-bezier(.2,.8,.2,1) .2s; }
+    body.landing main { position: fixed; inset: 0; z-index: -1; visibility: hidden; opacity: 0; transform: translateY(40px); pointer-events: none; }
+    #map { flex: 1 1 620px; min-width: 0; min-height: 300px; background: var(--map); }
+    #side { flex: 999 1 520px; max-width: 640px; min-width: 0; overflow: auto; padding: 32px 36px 48px; border-left: 1px solid var(--line); }
+    @media (max-width: 800px) { body:not(.landing) { height: auto; } #map { flex-basis: 100%; height: 60vh; } #side { max-width: none; padding: 24px 16px; border-left: 0; } }
+    #side > h3 { display: flex; align-items: center; gap: 10px; margin: 0; font: 700 32px/1.1 var(--display); letter-spacing: -.2px; }
+    #side > h3::before { content: ""; flex: 0 0 auto; width: 10px; height: 10px; border-radius: 2px; background: var(--accent); }
+    #side > h3 .ok { color: var(--fg); }
+    #side > p:first-of-type { margin: 6px 0 0; color: var(--muted); font-size: 16px; }
+    #side h4 { margin: 28px 0 10px; font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); }
+    #side p { line-height: 1.5; }
+    .form-line { font-size: 17px; margin: 0 0 12px; } .form-line strong { color: var(--accent-text); }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { display: inline-flex; gap: 8px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line2); font-size: 15px; }
+    .chip b { color: var(--muted); font-weight: 400; }
+    .chip span { font-weight: 600; }
+    table { border-collapse: collapse; width: 100%; font-size: 15px; }
+    th { text-align: left; padding: 8px 10px; border-bottom: 2px solid var(--accent); color: var(--muted); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .8px; }
+    td { padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    pre { white-space: pre-wrap; word-break: break-word; font-size: 13px; background: var(--soft); border: 1px solid var(--line); padding: 12px 14px; border-radius: 8px; }
+    details.how { margin: 22px 0 0; background: var(--soft); border: 1px solid #F0E6E0; border-radius: 8px; padding: 14px 18px; }
+    details.how summary { cursor: pointer; font-weight: 600; font-size: 16px; }
+    details.how ol { margin: 12px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 10px; font-size: 15px; line-height: 1.5; color: #3D3431; }
+    .dec { border-left: 3px solid var(--line2); padding: 4px 0 4px 16px; margin: 14px 0; display: flex; flex-direction: column; gap: 6px; }
+    .dec:first-of-type, .dec.model { border-left-color: var(--accent); }
+    .dec .q { font-weight: 600; font-size: 17px; }
+    .dec .meta { display: flex; gap: 10px; align-items: center; font-size: 13px; color: var(--muted); }
+    .tag { background: var(--soft2); border-radius: 4px; padding: 1px 8px; color: var(--fg); }
+    .conf { display: inline-block; width: 64px; height: 4px; border-radius: 2px; background: var(--soft2); overflow: hidden; }
+    .conf i { display: block; height: 100%; background: var(--accent); } .conf.err i { background: var(--err); }
+    .dec details { font-size: 14px; } .dec summary { cursor: pointer; color: var(--muted); }
+    .rows { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+    .row .t { display: flex; justify-content: space-between; gap: 12px; font-family: var(--mono); font-size: 13.5px; }
+    .row .t span:last-child { color: var(--muted); font-weight: 500; white-space: nowrap; }
+    .row:first-child .t span:last-child { color: var(--accent-text); }
+    .row .b { height: 4px; border-radius: 2px; background: var(--soft2); margin-top: 4px; }
+    .row .b i { display: block; height: 4px; border-radius: 2px; background: #D8C9C0; }
+    .row:first-child .b i { background: var(--accent); }
+    .rows.text .t { font-family: inherit; font-size: 14px; }
+    #side details > summary { cursor: pointer; }
+
+    /* Loading screen. */
+    #loading { position: fixed; inset: 0; z-index: 10; display: flex; align-items: center; justify-content: center; padding: 32px 16px; background: rgba(251,247,244,.6); backdrop-filter: blur(2px); }
+    #loading[hidden] { display: none; }
+    #loading .card { width: min(600px, 100%); background: #fff; border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 30px 60px -24px rgba(43,37,35,.28); overflow: hidden; }
+    #loading .total { height: 4px; background: var(--soft2); } #loading .total i { display: block; height: 4px; width: 0; background: var(--accent); transition: width .2s; }
+    #loading .body { padding: 32px 36px 28px; display: flex; flex-direction: column; gap: 22px; }
+    #loading .head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    #loading h2 { margin: 0; font: 700 32px var(--display); }
+    #loading .mb { font-family: var(--mono); font-size: 14px; color: var(--muted); white-space: nowrap; }
+    #loading p { margin: 10px 0 0; font-size: 16px; line-height: 1.55; color: var(--text2); }
+    #steps { display: flex; flex-direction: column; gap: 18px; }
+    .step { display: grid; grid-template-columns: 24px minmax(0, 1fr); column-gap: 14px; row-gap: 8px; align-items: center; }
+    .step .mark { display: flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; }
+    .step.done .mark { background: var(--fg); border-color: var(--fg); }
+    .step .line { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+    .step .label { font-size: 17px; font-weight: 600; } .step.done .label { font-weight: 400; }
+    .step .size { font-family: var(--mono); font-size: 13.5px; color: var(--muted); white-space: nowrap; }
+    .step .bar { grid-column: 2; height: 6px; border-radius: 3px; background: var(--soft2); overflow: hidden; }
+    .step .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+    .step.done .bar i { background: var(--fg); }
+    #loading .now { display: flex; align-items: center; gap: 10px; padding-top: 14px; border-top: 1px solid #F0E6E0; font-size: 14px; color: var(--muted); min-height: 36px; word-break: break-all; }
+    #loading .now::before { content: ""; flex: 0 0 auto; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+    #loading .now code { color: var(--fg); }
+    #loading .now button { margin-left: 8px; height: 36px; padding: 0 16px; border: 0; border-radius: 6px; background: var(--accent); color: #fff; }
+    @media (max-width: 800px) { #loading .body { padding: 24px 20px; } #loading h2 { font-size: 26px; } }
   </style>
 </head>
-<body>
+<body class="landing">
   <header>
-    <h1>geoparse</h1>
-    <input id="q" placeholder="for example: coastal states of Mexico" autocomplete="off" />
-    <button id="go" disabled>Run</button>
-    <div id="status">Loading…</div>
-    <div class="examples" id="examples"></div>
+    <div class="inner">
+      <div class="brand">
+        <button class="logo" id="home" type="button" aria-label="gazetini: show the examples">gazet<span>ini</span><i aria-hidden="true"></i></button>
+        <div class="sub">gazet with tiny models</div>
+      </div>
+      <p class="tagline">Describe a place in plain words. Tiny models read it, and the map draws it, all inside your browser.</p>
+      <form class="search" id="form">
+        <label class="sr" for="q">Describe a place</label>
+        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A7D76" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        <input id="q" placeholder="for example: coastal states of Mexico" autocomplete="off" />
+        <button id="go" type="submit" disabled>Find it</button>
+      </form>
+      <div class="statusrow"><span id="status">Loading…</span><button class="link" id="more" type="button">Show examples</button></div>
+      <div class="examples" id="examples"></div>
+    </div>
   </header>
   <div id="loading">
     <div class="card" role="status" aria-live="polite">
-      <h2>Loading the geocoder</h2>
-      <p>The geocoder runs fully in this browser tab. It downloads its two language models and the place data one time.
-        The browser keeps the files for your next visit.</p>
-      <div id="steps"></div>
-      <div class="now" id="now"></div>
+      <div class="total" aria-hidden="true"><i id="total-bar"></i></div>
+      <div class="body">
+        <div>
+          <div class="head"><h2>Loading the geocoder</h2><span class="mb" id="total"></span></div>
+          <p>The geocoder runs fully in this browser tab. It downloads its two language models and the place data one time.
+            The browser keeps the files for your next visit.</p>
+        </div>
+        <div id="steps"></div>
+        <div class="now" id="now">Starting</div>
+      </div>
     </div>
   </div>
   <main>

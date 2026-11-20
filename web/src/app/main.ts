@@ -34,6 +34,8 @@ const mapReady = new Promise<void>((res) => (!map || map.loaded() ? res() : map.
 
 let gp: Geoparse;
 
+const ACCENT = "#D04200";
+
 async function show(fc: any) {
   await mapReady;
   if (!map) return;
@@ -41,9 +43,9 @@ async function show(fc: any) {
   if (src) src.setData(fc);
   else {
     map.addSource("result", { type: "geojson", data: fc });
-    map.addLayer({ id: "fill", type: "fill", source: "result", filter: ["==", ["geometry-type"], "Polygon"], paint: { "fill-color": "#2563eb", "fill-opacity": 0.25 } });
-    map.addLayer({ id: "line", type: "line", source: "result", paint: { "line-color": "#1e40af", "line-width": 1.2 } });
-    map.addLayer({ id: "pts", type: "circle", source: "result", filter: ["==", ["geometry-type"], "Point"], paint: { "circle-radius": 4, "circle-color": "#dc2626" } });
+    map.addLayer({ id: "fill", type: "fill", source: "result", filter: ["==", ["geometry-type"], "Polygon"], paint: { "fill-color": ACCENT, "fill-opacity": 0.16 } });
+    map.addLayer({ id: "line", type: "line", source: "result", paint: { "line-color": ACCENT, "line-width": 2 } });
+    map.addLayer({ id: "pts", type: "circle", source: "result", filter: ["==", ["geometry-type"], "Point"], paint: { "circle-radius": 4.5, "circle-color": ACCENT, "circle-stroke-color": "#FFFFFF", "circle-stroke-width": 1.5 } });
   }
   const b = new maplibregl.LngLatBounds();
   const walk = (c: any) => (typeof c[0] === "number" ? b.extend(c as [number, number]) : c.forEach(walk));
@@ -51,7 +53,19 @@ async function show(fc: any) {
   if (!b.isEmpty()) map.fitBounds(b, { padding: 40, maxZoom: 14, duration: 500 });
 }
 
+// Before the first query the page is a landing page; after it, a compact header over the map and the results.
+function setLanding(on: boolean) {
+  document.body.classList.toggle("landing", on);
+  document.body.classList.remove("show-examples");
+  $("more").textContent = "Show examples";
+  // The map container changes size with the layout.
+  map?.resize();
+  if (map) for (const ms of [400, 800]) setTimeout(() => map!.resize(), ms);
+}
+
 async function runQuery(text: string) {
+  if (document.body.classList.contains("landing")) setLanding(false);
+  else { document.body.classList.remove("show-examples"); $("more").textContent = "Show examples"; }
   go.disabled = true;
   try { await runQuery_(text); } catch (e) {
     queryStatus = "";
@@ -70,13 +84,13 @@ async function runQuery_(text: string) {
   const { parse: p, result: r } = await gp.run(text, b ? [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()] : null);
   const total = (performance.now() - t0) / 1000;
   queryStatus = "";
-  status.textContent = `${p.ok ? "OK" : "Unsupported"} · parse ${p.timings.parse_s.toFixed(2)} s · total ${total.toFixed(2)} s`;
+  status.textContent = `${p.ok ? "" : "Not understood · "}parse ${p.timings.parse_s.toFixed(2)} s · total ${total.toFixed(2)} s`;
   const fc = { type: "FeatureCollection", features: (r?.features ?? []).filter((f) => f.geometry).map((f) => ({ type: "Feature", geometry: f.geometry, properties: { name: f.name, id: f.id } })) };
   await show(fc);
   const feats = r?.features ?? [];
   side.innerHTML = `
     <h3>${headline(p, r)}</h3>
-    ${r ? `<p>${r.ok ? `${feats.length} result(s) in ${(r.timings.total_s ?? 0).toFixed(2)} s` : `<span class="err">${esc(r.error)}</span>`}</p>` : ""}
+    ${r ? `<p>${r.ok ? `${feats.length} result${feats.length === 1 ? "" : "s"} in ${(r.timings.total_s ?? 0).toFixed(2)} s` : `<span class="err">${esc(r.error)}</span>`}</p>` : ""}
     ${(r?.notes ?? []).map((n) => `<p>⚠ ${esc(n)}</p>`).join("")}
     ${HOW_IT_WORKS}
     <h4>How the app read the query</h4>${reading(p, gp.bundle)}
@@ -96,14 +110,18 @@ async function runQuery_(text: string) {
       </table><p>Template ${esc(p.template)} (${esc(p.path)}), parse ${p.timings.parse_s.toFixed(2)} s.</p></details>`;
 }
 
-$("examples").innerHTML = EXAMPLES.map(([g, qs]) => `<span class="group"><span class="muted">${esc(g)}:</span>${qs.map((e) =>
-  `<button data-q="${esc(e)}">${esc(e)}</button>`).join("")}</span>`).join("");
+$("examples").innerHTML = EXAMPLES.map(([g, qs]) => `<div class="group"><div class="label">${esc(g)}</div><div class="items">${qs.map((e) =>
+  `<button type="button" data-q="${esc(e)}">${esc(e)}</button>`).join("")}</div></div>`).join("");
 $("examples").addEventListener("click", (ev) => {
   const b = (ev.target as HTMLElement).closest("button");
   if (b && !go.disabled) { q.value = b.dataset.q!; runQuery(q.value); }
 });
-go.onclick = () => q.value && runQuery(q.value);
-q.onkeydown = (e) => { if (e.key === "Enter" && !go.disabled && q.value) runQuery(q.value); };
+$("form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (!go.disabled && q.value) runQuery(q.value);
+});
+$("more").onclick = () => $("more").textContent = document.body.classList.toggle("show-examples") ? "Hide examples" : "Show examples";
+$("home").onclick = () => setLanding(true);
 
 // Loading screen: one row for each part, with the downloaded and the expected megabytes.
 const STEPS: [string, string][] = [["settings", "Settings and the database engine"], ["data", "Place data (names and borders)"],
@@ -112,17 +130,23 @@ const partOf = (file: string) => (file.startsWith("t5/") ? "t5" : file.startsWit
 const files = new Map<string, Download>();
 const done = new Set<string>();
 const mb = (n: number) => (n / 1e6).toFixed(1);
-$("steps").innerHTML = STEPS.map(([k, label]) => `<div class="step" id="step-${k}"><span class="mark">○</span><span>${label}</span>
-  <span class="size"></span><div class="bar"><i></i></div></div>`).join("");
+const CHECK = `<svg role="img" aria-label="Done" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.5"
+  stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>`;
+$("steps").innerHTML = STEPS.map(([k, label]) => `<div class="step" id="step-${k}"><span class="mark"></span>
+  <div class="line"><span class="label">${label}</span><span class="size"></span></div><div class="bar"><i></i></div></div>`).join("");
 let frame = 0;
 function drawSteps() {
   frame = 0;
+  const all = [...files.values()];
+  const got = all.reduce((a, d) => a + d.loaded, 0), of = all.reduce((a, d) => a + d.total, 0);
+  $("total").textContent = of ? `${mb(got)} / ${mb(of)} MB` : "";
+  $("total-bar").style.width = of ? `${(100 * got) / of}%` : "0";
   for (const [k] of STEPS) {
     const fs = [...files.values()].filter((d) => partOf(d.file) === k);
     const loaded = fs.reduce((a, d) => a + d.loaded, 0), total = fs.reduce((a, d) => a + d.total, 0);
     const el = $(`step-${k}`);
     el.classList.toggle("done", done.has(k));
-    el.querySelector(".mark")!.textContent = done.has(k) ? "✓" : "○";
+    el.querySelector(".mark")!.innerHTML = done.has(k) ? CHECK : "";
     el.querySelector(".size")!.textContent = total ? `${mb(loaded)} / ${mb(total)} MB` : "";
     (el.querySelector(".bar i") as HTMLElement).style.width = done.has(k) ? "100%" : total ? `${(100 * loaded) / total}%` : "0";
   }
@@ -158,7 +182,7 @@ onDownload((d) => {
   files.set(d.file, d);
   if (ready) frame ||= requestAnimationFrame(drawQueryLoads);
   else {
-    $("now").textContent = d.done ? "" : `Downloading ${d.file}`;
+    if (!d.done) $("now").innerHTML = `<span>Downloading <code>${esc(d.file)}</code></span>`;
     redraw();
   }
 });
@@ -190,6 +214,6 @@ load("", progress, data,
   (window as any).geoparse = g;
 }).catch((e) => {
   status.innerHTML = `<span class="err">Load failed: ${esc(e.message)}</span>`;
-  $("now").innerHTML = `<span class="err">Loading failed: ${esc(e.message)}</span><br><button onclick="location.reload()">Try again</button>`;
+  $("now").innerHTML = `<span class="err">Loading failed: ${esc(e.message)}</span><button type="button" onclick="location.reload()">Try again</button>`;
   console.error(e);
 });

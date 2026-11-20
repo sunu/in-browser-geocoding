@@ -65,6 +65,14 @@ function unsupportedText(p: ParseResult): string {
   return `<p>The app cannot answer this query${where}. Reason: ${esc(u.reason)}.</p>`;
 }
 
+const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
+
+/** Choices with a bar for each (the first is the chosen one). */
+function bars(rows: [string, number][], mono: boolean): string {
+  return `<div class="rows${mono ? "" : " text"}">${rows.map(([t, p]) => `<div class="row"><div class="t"><span>${t}</span><span>${pct(p)}</span></div>
+    <div class="b" aria-hidden="true"><i style="width:${pct(p)}"></i></div></div>`).join("")}</div>`;
+}
+
 function slotValue(v: any): string {
   if (v == null) return "";
   if (typeof v === "string" || typeof v === "number") return esc(v);
@@ -83,9 +91,9 @@ export function reading(p: ParseResult, bundle: Bundle): string {
   const tpl = bundle.templates[p.template];
   const chips = Object.entries(p.slots).filter(([, v]) => v != null && v !== "none").map(([k, v]) => {
     const val = tpl?.slots[k]?.type === "distance" && typeof v === "number" ? distance(v) : slotValue(v);
-    return `<span class="chip"><b>${esc(SLOT_LABELS[k] ?? k)}</b> ${val}</span>`;
+    return `<span class="chip"><b>${esc(SLOT_LABELS[k] ?? k)}</b><span>${val}</span></span>`;
   });
-  return `<p>Form: <b>${esc(p.template)}</b>: ${esc(tpl?.description ?? "")}.</p><div class="chips">${chips.join("")}</div>`;
+  return `<p class="form-line">Form: <strong>${esc(p.template)}</strong> · ${esc(lower(tpl?.description ?? ""))}.</p><div class="chips">${chips.join("")}</div>`;
 }
 
 function optionText(t: TraceRecord, key: string, bundle: Bundle): string {
@@ -108,7 +116,7 @@ function answer(t: TraceRecord, bundle: Bundle): string {
   if (base in ANSWER_RULES && !t.options) return esc(ANSWER_RULES[base](t));
   if (base === "generate_frames") {
     const beam: [string, number][] = t.trace?.beam ?? [];
-    return beam.slice(0, 4).map(([f, s]) => `<code>${esc(f)}</code> <span class="muted">${pct(Math.exp(s))}</span>`).join("<br>") || "none";
+    return beam.length ? bars(beam.slice(0, 4).map(([f, s]) => [esc(f), Math.exp(s)]), true) : "none";
   }
   if (t.decision === "is_subquery") return esc(optionText(t, String(t.value), bundle));
   const key = typeof t.value === "string" ? t.value : JSON.stringify(t.value);
@@ -122,24 +130,24 @@ export function decisions(trace: TraceRecord[], bundle: Bundle): string {
     const q = (QUESTIONS[base] ?? (() => t.decision))(t);
     const unsure = t.threshold > 0 && t.confidence < t.threshold;
     const cs = choices(t, bundle);
-    const others = cs.length > 1 ? `<details><summary>Other choices</summary><ul>${cs.map(([k, v]) =>
-      `<li>${pct(v)} ${esc(optionText(t, k, bundle))}</li>`).join("")}</ul></details>` : "";
-    const conf = who(t.impl) === "decision model" || who(t.impl) === "language model"
+    const others = cs.length > 1 ? `<details><summary>Other choices</summary>${bars(cs.map(([k, v]) => [esc(optionText(t, k, bundle)), v]), false)}</details>` : "";
+    const model = who(t.impl) === "decision model" || who(t.impl) === "language model";
+    const conf = model
       ? `<span class="conf ${unsure ? "err" : ""}" title="How sure the model is"><i style="width:${pct(t.confidence)}"></i></span>
          <span class="${unsure ? "err" : "muted"}">${unsure ? "not sure" : `sure: ${pct(t.confidence)}`}</span>` : "";
-    return `<div class="dec" style="margin-left:${Math.min(t.depth, 4) * 14}px">
+    return `<div class="dec${model ? " model" : ""}" style="margin-left:${Math.min(t.depth, 4) * 14}px">
       <div class="q">${esc(q)}</div>
       <div class="a">${answer(t, bundle)}</div>
       <div class="meta"><span class="tag">${who(t.impl)}</span>${conf}</div>${others}</div>`;
   }).join("");
 }
 
-export const HOW_IT_WORKS = `<details class="how"><summary>How this works</summary>
-  <p>1. A small language model (T5) reads your query and writes possible <b>forms</b>, for example
-  “divisions of a level inside a place”, with the words of the query in the <b>parts</b> of the form.</p>
-  <p>2. A small decision model chooses between the possible forms and finds the meaning of words such as
-  “districts” or “coastal”. Some decisions are rules. Each decision shows below with how sure the model was.</p>
-  <p>3. The form becomes a <b>plan</b> (the JSON below): steps such as “find the place”, “get its divisions”,
-  “keep the coastal ones”.</p>
-  <p>4. A database in this browser tab (DuckDB) runs the plan on map data (Overture Maps, Natural Earth). Only
-  street and building names go to an outside search service (Photon).</p></details>`;
+export const HOW_IT_WORKS = `<details class="how" open><summary>How this works</summary><ol>
+  <li>A small language model (T5) reads your query and writes possible <b>forms</b>, for example
+  “divisions of a level inside a place”, with the words of the query in the <b>parts</b> of the form.</li>
+  <li>A small decision model chooses between the possible forms and finds the meaning of words such as
+  “districts” or “coastal”. Some decisions are rules. Each decision shows below with how sure the model was.</li>
+  <li>The form becomes a <b>plan</b> (the JSON below): steps such as “find the place”, “get its divisions”,
+  “keep the coastal ones”.</li>
+  <li>A database in this browser tab (DuckDB) runs the plan on map data (Overture Maps, Natural Earth). Only
+  street and building names go to an outside search service (Photon).</li></ol></details>`;
