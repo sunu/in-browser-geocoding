@@ -24,8 +24,17 @@ data:
   # Natural features (plan-026): Natural Earth 10m physical files, and the Wikidata endpoint for their English names.
   natural_earth_physical: "https://naciscdn.org/naturalearth/10m/physical/"
   natural_earth_files: [ne_10m_rivers_lake_centerlines, ne_10m_lakes, ne_10m_geography_regions_polys,
-                        ne_10m_geography_marine_polys]
+                        ne_10m_geography_marine_polys, ne_10m_geographic_lines]
   wikidata_sparql: "https://query.wikidata.org/sparql"
+  # Natural features that Natural Earth does not have (plan-030): kind, name, Wikidata id (English names), extra
+  # names, and a box (xmin, ymin, xmax, ymax), a point or a line. The lines of latitude and the date line are in
+  # ne_10m_geographic_lines. The Arctic: north of the Arctic Circle; "Artic" is a frequent misspelling.
+  extra_natural:
+    - {kind: area, name: Arctic, wikidata: Q25322, names: [Artic, Arctic region], bbox: [-180, 66.5622, 180, 90]}
+    - {kind: area, name: Antarctic, names: [Antarctic region, Antartic], bbox: [-180, -90, 180, -66.5622]}
+    - {kind: point, name: North Pole, wikidata: Q934, names: [the North Pole], point: [0, 90]}
+    - {kind: point, name: South Pole, wikidata: Q933, names: [the South Pole], point: [0, -90]}
+    - {kind: line, name: Prime Meridian, names: [Greenwich meridian, Greenwich Meridian, zero meridian], line: [[0, -90], [0, 90]]}
   # Simplified country shapes (table country_shapes, web file country_shapes.parquet): the countries around a natural
   # feature. Parts smaller than min_part_deg2 are dropped (the largest part of each country stays).
   country_shapes: {simplify_deg: 0.05, min_part_deg2: 0.05}
@@ -71,6 +80,9 @@ policy:
     UA: {level_words: {state: [oblast, oblasts, region, regions], district: [raion, raions]}}
   # A natural feature is around a country if it is this near (degrees) to the simplified country shape.
   around_tolerance_deg: 0.05
+  # Country level: Overture's disputed areas (subtype country, codes XA to XZ) are not countries, except these codes
+  # (Kosovo; the Gaza Strip and the West Bank, Palestine). Dependencies with X codes (Saba, Jan Mayen) stay.
+  disputed_kept: [XK, XG, XW]
   # Distance in meters to the Natural Earth coastline for an area to count as coastal.
   # Natural Earth 10m is about 1 km from the OSM-based Overture boundaries.
   coastal_tolerance_m: 3000

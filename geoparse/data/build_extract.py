@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -200,6 +201,7 @@ NATURAL_KINDS = {
     "peninsula": "peninsula", "geoarea": "area", "coast": "coast", "valley": "valley",
     "sea": "sea", "ocean": "sea", "gulf": "bay", "bay": "bay", "sound": "bay", "fjord": "bay",
     "strait": "strait", "channel": "strait",
+    "circle of latitude": "line", "date line": "line",
 }
 
 
@@ -248,6 +250,66 @@ def _wikidata_names(qids: list[str], url: str, cache: Path) -> dict[str, dict]:
     return {q: known[q] for q in qids if q in known}
 
 
+def _wikidata_population(qids: list[str], url: str, cache: Path) -> dict[str, int]:
+    """Population (P1082) of Wikidata items: the value of the preferred rank, else the one with the latest date
+    (P585). Cached in `cache` (JSON; null for an item without a population)."""
+    known = json.loads(cache.read_text()) if cache.exists() else {}
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    todo = sorted(set(qids) - set(known))
+    batch = 50
+    for i in range(0, len(todo), batch):
+        values = " ".join(f"wd:{q}" for q in todo[i:i + batch])
+        query = f"""SELECT ?item ?pop ?date ?rank WHERE {{ VALUES ?item {{ {values} }}
+            ?item p:P1082 ?st. ?st ps:P1082 ?pop; wikibase:rank ?rank. OPTIONAL {{ ?st pq:P585 ?date }}
+            FILTER(?rank != wikibase:DeprecatedRank) }}"""
+        req = urllib.request.Request(url, data=urllib.parse.urlencode({"query": query, "format": "json"}).encode(),
+                                     headers={"User-Agent": "geoparse-build/0.1", "Accept": "application/sparql-results+json"})
+        for attempt in range(8):
+            try:
+                with urllib.request.urlopen(req, timeout=180) as r:
+                    rows = json.loads(r.read())["results"]["bindings"]
+                break
+            except (TimeoutError, urllib.error.URLError) as e:
+                if attempt == 7:
+                    raise
+                # Wait as long as the service asks (429 Too Many Requests), else longer after each failure.
+                wait = int((getattr(e, "headers", None) or {}).get("Retry-After", 0) or 0) or 30 * (attempt + 1)
+                print(f"wikidata population: retry in {wait} s after {e}")
+                time.sleep(wait)
+        best: dict[str, tuple] = {}
+        for b in rows:
+            q = b["item"]["value"].rsplit("/", 1)[1]
+            try:
+                pop = int(float(b["pop"]["value"]))
+            except ValueError:
+                continue
+            key = (b["rank"]["value"].endswith("PreferredRank"), b.get("date", {}).get("value", ""), pop)
+            if q not in best or key > best[q]:
+                best[q] = key
+        for q in todo[i:i + batch]:
+            known[q] = best[q][2] if q in best else None
+        # Saved after each batch: a failed run continues where it stopped.
+        cache.write_text(json.dumps(known, indent=0))
+        print(f"wikidata population: {min(i + batch, len(todo))}/{len(todo)} items")
+        time.sleep(2)
+    return {q: known[q] for q in qids if known.get(q)}
+
+
+def add_population(con, cfg, out: Path) -> None:
+    """Fill the population of countries, dependencies, regions and counties that have a Wikidata id and no Overture
+    population (most counties and regions of India, plan-029)."""
+    rows = con.execute("""SELECT DISTINCT wikidata FROM divisions WHERE population IS NULL AND wikidata IS NOT NULL
+                          AND subtype IN ('country', 'dependency', 'region', 'county')""").fetchall()
+    pops = _wikidata_population([r[0] for r in rows], cfg["data"]["wikidata_sparql"], out / "raw" / "wikidata_population.json")
+    con.execute("CREATE OR REPLACE TEMP TABLE wd_pop (wikidata VARCHAR, population BIGINT)")
+    con.executemany("INSERT INTO wd_pop VALUES (?, ?)", [[q, p] for q, p in pops.items() if p < 2**31])
+    con.execute("""UPDATE divisions d SET population = w.population FROM wd_pop w
+                   WHERE d.wikidata = w.wikidata AND d.population IS NULL
+                     AND d.subtype IN ('country', 'dependency', 'region', 'county')""")
+    n = con.execute("SELECT count(*) FROM divisions d JOIN wd_pop w USING (wikidata) WHERE d.subtype IN ('country', 'dependency', 'region', 'county')").fetchone()[0]
+    print(f"population from Wikidata: {len(pops)} of {len(rows)} items, {n} divisions")
+
+
 def build_natural(con, cfg, out: Path) -> None:
     """natural.parquet: one row for each natural feature of the Natural Earth physical files (river segments
     merged by Wikidata id or name), with its names (Natural Earth and the English Wikidata names)."""
@@ -266,10 +328,13 @@ def build_natural(con, cfg, out: Path) -> None:
             FROM ST_Read('/vsizip/{raw / f}.zip/{f}.shp') WHERE geom IS NOT NULL""").fetchall()
         for fc, name, name_en, alt1, alt2, qid, rank, wkb in rows:
             kind = NATURAL_KINDS.get((fc or "").strip())
-            name = _proper_case((name_en or name or "").strip())
+            # Sea parts: name_en is the whole ocean ("Atlantic Ocean"), name is the part ("North Atlantic Ocean").
+            name = _proper_case(((name or name_en) if kind == "sea" and qid else (name_en or name) or "").strip())
             if not kind or not name:
                 continue
-            key = (kind, qid or name.lower())
+            # Seas: Natural Earth parts of one ocean have the id of the whole ocean ("North Atlantic Ocean", Q97);
+            # each part stays a feature (river segments of one river are merged).
+            key = (kind, qid or name.lower(), name.lower() if kind == "sea" and qid else "")
             ft = feats.setdefault(key, {"kind": kind, "name": name, "names": set(), "qid": qid, "rank": rank, "geoms": []})
             ft["names"].update(_proper_case(n.strip()) for n in (name, name_en, alt1, alt2) if n and n.strip())
             ranks = [x for x in (ft["rank"], rank) if x is not None]
@@ -277,29 +342,60 @@ def build_natural(con, cfg, out: Path) -> None:
             ft["geoms"].append(shapely.from_wkb(bytes(wkb)))
     # A feature without a Wikidata id and a feature with one, of the same kind and name, are one feature (rows of
     # different files: "Western Ghats").
+    feats = {(k[0], k[1]) if len(k) == 2 or not k[2] else k: v for k, v in feats.items()}
     with_qid = {(k[0], ft["name"].lower()): ft for k, ft in feats.items() if ft["qid"]}
     for key in [k for k, ft in feats.items() if not ft["qid"] and (k[0], ft["name"].lower()) in with_qid]:
         ft = feats.pop(key)
         target = with_qid[(key[0], ft["name"].lower())]
         target["names"] |= ft["names"]
         target["geoms"] += ft["geoms"]
+    # Features that Natural Earth does not have, from the config: a box ("the Arctic"), a point (the poles) or a line
+    # (the Prime Meridian).
+    for x in d.get("extra_natural", []):
+        g = shapely.box(*x["bbox"]) if "bbox" in x else shapely.Point(x["point"]) if "point" in x else shapely.LineString(x["line"])
+        feats[(x["kind"], x.get("wikidata") or x["name"].lower())] = {
+            "kind": x["kind"], "name": x["name"], "names": set(x.get("names", [])), "qid": x.get("wikidata"), "rank": 0,
+            "geoms": [g]}
+    # Parts of one Wikidata item: the parts keep their Natural Earth names, and the whole is one more feature.
+    parts: dict[tuple, list] = {}
+    for k, ft in feats.items():
+        if len(k) == 3:
+            parts.setdefault((k[0], k[1]), []).append(ft)
+    for (kind, qid), fts in parts.items():
+        if len(fts) == 1:
+            ft = fts[0]
+            feats[(kind, qid)] = feats.pop((kind, qid, ft["name"].lower()))
+            continue
+        for ft in fts:
+            ft["part_of"] = qid
+        feats[(kind, qid)] = {"kind": kind, "name": fts[0]["name"], "names": set(), "qid": qid,
+                              "rank": min((ft["rank"] for ft in fts if ft["rank"] is not None), default=None),
+                              "geoms": [g for ft in fts for g in ft["geoms"]]}
     qids = sorted({ft["qid"] for ft in feats.values() if ft["qid"]})
     wd = _wikidata_names(qids, d["wikidata_sparql"], raw / "wikidata_natural.json")
+    primary = {ft["name"].lower() for ft in feats.values()} | {((wd.get(ft["qid"]) or {}).get("label") or "").lower()
+                                                              for ft in feats.values() if ft["qid"] and not ft.get("part_of")}
     xmin, ymin, xmax, ymax = [-180.0, -90.0, 180.0, 90.0] if scope(cfg) == "world" else d["bbox"]
     box = shapely.box(xmin, ymin, xmax, ymax)
     recs = []
-    for (kind, key), ft in feats.items():
+    for key, ft in feats.items():
+        kind = key[0]
         g = shapely.union_all(ft["geoms"])
         if g.geom_type in ("MultiLineString", "LineString"):
             g = shapely.line_merge(g)
         if not g.intersects(box):
             continue
-        w = wd.get(ft["qid"]) or {}
-        # The English Wikidata label is the name ("Lake Victoria"; Natural Earth has "Nyanza").
+        w = {} if ft.get("part_of") else wd.get(ft["qid"]) or {}
+        # The English Wikidata label is the name ("Lake Victoria"; Natural Earth has "Nyanza"). Aliases that are the
+        # name of another feature are not used (Wikidata gives "Southern Ocean" for the Pacific).
         name = w.get("label") or ft["name"]
-        names = sorted((ft["names"] | set(w.get("aliases", []))) - {name})
+        name = name[:1].upper() + name[1:]  # Wikidata labels of some features are lower case ("equator")
+        aliases = {a for a in w.get("aliases", []) if a.lower() not in primary or a.lower() == name.lower()}
+        whole = ((wd.get(ft["qid"]) or {}).get("label") or "") if ft.get("part_of") else ""
+        names = sorted({n for n in ft["names"] | aliases if n != name and n.lower() != whole.lower()})
         slug = norm_name(ft["name"]).replace(" ", "-")
-        recs.append({"id": f"ne-{kind}-{ft['qid'] or slug}", "kind": kind, "name": name, "alt_names": names,
+        fid = f"ne-{kind}-{ft['qid']}-{slug}" if ft.get("part_of") else f"ne-{kind}-{ft['qid'] or slug}"
+        recs.append({"id": fid, "kind": kind, "name": name, "alt_names": names,
                      "wikidata": ft["qid"], "scalerank": ft["rank"], "wkb": shapely.to_wkb(g)})
     con.execute("""CREATE OR REPLACE TEMP TABLE natural_rows (id VARCHAR, kind VARCHAR, name VARCHAR, alt_names VARCHAR[],
                    wikidata VARCHAR, scalerank INTEGER, wkb BLOB)""")
@@ -354,23 +450,27 @@ def build_lexicon(con, out: Path) -> None:
     src = yaml.safe_load((PACKAGE_DIR / "data" / "lexicon_src.yaml").read_text())
     divs = con.execute(f"""
         SELECT id, subtype, region, country FROM read_parquet('{out / 'divisions.parquet'}')
-        WHERE subtype IN ('country', 'region')
+        WHERE subtype IN ('country', 'dependency', 'region')
     """).fetchall()
     by_code = {}
     for id_, subtype, region, country in divs:
         if subtype == "region" and region:
             by_code[region] = id_
-        if subtype == "country":
+        if subtype == "country" and country:
             by_code[country] = id_
+        elif subtype == "dependency" and country:
+            by_code.setdefault(country, id_)
+    # Ids of an earlier build (the world build) stay for the codes that are not in this extract (the India build).
+    path = PACKAGE_DIR / "data" / "lexicon.json"
+    old = {m["code"]: m["id"] for e in (json.loads(path.read_text()).values() if path.exists() else []) for m in e["members"] if m["id"]}
     lexicon = {}
     for key, entry in src.items():
-        members = [{"code": c, "id": by_code.get(c)} for c in entry["members"]]
+        members = [{"code": c, "id": by_code.get(c) or old.get(c)} for c in entry["members"]]
         lexicon[key] = {
             "aliases": entry["aliases"],
             "members": members,
             "notes": entry.get("notes", ""),
         }
-    path = PACKAGE_DIR / "data" / "lexicon.json"
     path.write_text(json.dumps(lexicon, indent=2) + "\n")
     missing = sum(1 for e in lexicon.values() for m in e["members"] if m["id"] is None)
     print(f"lexicon: {len(lexicon)} sets, {missing} members not in the extract")
@@ -527,6 +627,7 @@ def build_db(cfg, out: Path, simplify_deg: float = 0.001) -> None:
     build_country_shapes(con, cfg)
     if (out / "natural.parquet").exists():
         add_natural(con, out, simplify_deg)
+    add_population(con, cfg, out)
     con.execute("CREATE INDEX names_norm ON names (name_norm)")
     con.execute("CREATE INDEX names_nospace ON names (name_nospace)")
     con.execute("CREATE INDEX div_id ON divisions (id)")
@@ -544,6 +645,9 @@ def main() -> None:
     ap.add_argument("--only-poi", action="store_true", help="Only build the world point datasets (poi/).")
     ap.add_argument("--only-natural", action="store_true",
                     help="Only build natural.parquet and put it into the existing geoparse.duckdb.")
+    ap.add_argument("--only-wikidata", action="store_true",
+                    help="--only-natural, then the Wikidata populations, in the existing geoparse.duckdb.")
+    ap.add_argument("--no-population", action="store_true", help="With --only-wikidata: no Wikidata populations.")
     args = ap.parse_args()
     cfg = load_config()
     out = build_dir(cfg)
@@ -553,26 +657,28 @@ def main() -> None:
     if args.only_poi:
         build_poi(connect(), cfg, out)
         return
-    if args.only_natural:
+    if args.only_natural or args.only_wikidata:
         build_natural(connect(), cfg, out)
         con = duckdb.connect(str(out / "geoparse.duckdb"))
         con.execute("LOAD spatial; SET geometry_always_xy = true;")
         add_natural(con, out)
         build_country_shapes(con, cfg)
+        if args.only_wikidata and not args.no_population:
+            add_population(con, cfg, out)
         con.close()
+        if args.only_wikidata:
+            build_lexicon(connect(), out)
         return
     if not args.db_only:
         con = connect()
         if not args.skip_overture:
             build_divisions(con, cfg, out)
         # The world build has point datasets for some categories, not the full places (plan-008 phase 5).
-        # The lexicon comes from the country build.
         if not args.skip_places:
             (build_poi if world else build_places)(con, cfg, out)
         build_coastline(con, cfg, out)
         build_natural(con, cfg, out)
-        if not world:
-            build_lexicon(con, out)
+        build_lexicon(con, out)
         con.close()
     build_db(cfg, out)
     for f in sorted(list(out.glob("*.parquet")) + list(out.glob("*.duckdb"))):

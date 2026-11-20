@@ -3,7 +3,8 @@
 <out>/<release>/
   manifest.json
   global/admin.parquet         attributes of countries, dependencies, regions, counties, localadmin
-  global/admin_areas.parquet   polygons of countries, dependencies, regions
+  global/admin_areas.parquet   polygons of countries and dependencies
+  country=XX/regions.parquet   polygons of the regions of a country (named sets of states, without the country files)
   global/layers.parquet        coastline, land borders
   country=XX/divisions.parquet, areas.parquet, layer_dist.parquet
   names/index.json             first key of each shard
@@ -91,18 +92,22 @@ def export_country_layout(con: duckdb.DuckDBPyConnection, out: Path, release: st
                             ST_XMax(a.gs) AS xmax, ST_YMax(a.gs) AS ymax, d.country AS c
                      FROM areas a JOIN dv d USING (id) ORDER BY d.n""",
         "layer_dist": "SELECT l.*, d.country AS c FROM layer_dist l JOIN dv d USING (id) ORDER BY d.n",
+        "regions": f"""SELECT d.n, d.id, d.subtype, ST_AsWKB(a.gs) AS gs_wkb, ST_XMin(a.gs) AS xmin, ST_YMin(a.gs) AS ymin,
+                              ST_XMax(a.gs) AS xmax, ST_YMax(a.gs) AS ymax, d.country AS c
+                       FROM dv d JOIN areas a USING (id) WHERE d.subtype = 'region' ORDER BY d.n""",
     }
     for name, sql in jobs.items():
         _partitioned(con, sql, out / f"_tmp_{name}", root, name)
     print(f"country files: {time.time() - t0:.1f}s")
 
     # Global files. admin: attributes of the admin divisions (loaded at start-up, also the ancestor names of the
-    # name shards). admin_areas: polygons of countries, dependencies and regions (queries across borders).
+    # name shards). admin_areas: polygons of countries and dependencies (queries across borders; the regions are in
+    # the regions file of each country).
     _copy(con, f"""SELECT n, id, subtype, class, name, name_en, country, region, population, lon, lat FROM dv
                    WHERE subtype IN ({ADMIN_SUBTYPES}) ORDER BY n""", root / "global" / "admin.parquet")
     _copy(con, """SELECT d.n, d.id, d.subtype, d.country, ST_AsWKB(a.gs) AS gs_wkb, ST_XMin(a.gs) AS xmin,
                          ST_YMin(a.gs) AS ymin, ST_XMax(a.gs) AS xmax, ST_YMax(a.gs) AS ymax
-                  FROM dv d JOIN areas a USING (id) WHERE d.subtype IN ('country', 'dependency', 'region')
+                  FROM dv d JOIN areas a USING (id) WHERE d.subtype IN ('country', 'dependency')
                   ORDER BY d.n""", root / "global" / "admin_areas.parquet")
     _copy(con, "SELECT name, ST_AsWKB(geometry) AS wkb FROM layers", root / "global" / "layers.parquet")
     # Layer distances of countries, dependencies and regions (predicates on them when their country is not loaded).
@@ -165,7 +170,8 @@ def export_country_layout(con: duckdb.DuckDBPyConnection, out: Path, release: st
     for d in sorted(root.glob("country=*")):
         files = {f.stem: f.stat().st_size for f in d.glob("*.parquet")}
         cc = d.name.removeprefix("country=")
-        countries[cc] = {"bytes": files, "total": sum(files.values()), "bbox": bbox[cc]}
+        # total: the files of a full country load (the regions file is only for the named sets).
+        countries[cc] = {"bytes": files, "total": sum(v for k, v in files.items() if k != "regions"), "bbox": bbox[cc]}
     manifest = {
         "release": release,
         "global": {f.name: f.stat().st_size for f in (root / "global").glob("*.parquet")},

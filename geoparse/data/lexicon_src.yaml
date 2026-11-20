@@ -1,7 +1,10 @@
 # Named sets. The build script resolves each member to an Overture ID and writes lexicon.json.
 # Members are ISO 3166-2 region codes (IN-XX) or ISO 3166-1 alpha-2 country codes.
 # Countries that are not in the extract are kept as codes with "id: null".
+# Plan-031: regions of the world. Members from the Wikidata parts (P527) where they are correct, else from the
+# definition in the notes. UN M49 sets follow the M49 standard (countries and the larger dependencies).
 
+# ---------------------------------------------------------------- India
 south_india:
   aliases: ["south india", "southern india", "southern states", "south indian states", "the south"]
   members: [IN-AP, IN-KA, IN-KL, IN-TN, IN-TS, IN-PY, IN-LD, IN-AN]
@@ -15,6 +18,197 @@ seven_sisters:
   aliases: ["seven sisters", "the seven sisters", "seven sister states"]
   members: [IN-AR, IN-AS, IN-MN, IN-ML, IN-MZ, IN-NL, IN-TR]
 
+north_india:
+  aliases: ["north india", "northern india states", "north indian states"]
+  members: [IN-CH, IN-DL, IN-HR, IN-HP, IN-JK, IN-LA, IN-PB, IN-RJ, IN-UP, IN-UK]
+  notes: "Northern Zonal Council area with Uttar Pradesh and Uttarakhand. Wikidata also lists Maharashtra, Goa and West Bengal; not used."
+
+# ---------------------------------------------------------------- United States and Canada
+new_england:
+  aliases: ["new england", "new england states"]
+  members: [US-CT, US-ME, US-MA, US-NH, US-RI, US-VT]
+
+us_northeast:
+  aliases: ["northeastern united states", "northeast us", "the northeast us", "us northeast", "northeastern us"]
+  members: [US-CT, US-ME, US-MA, US-NH, US-RI, US-VT, US-NJ, US-NY, US-PA]
+  notes: "US Census Bureau region 1."
+
+mid_atlantic:
+  aliases: ["mid-atlantic", "mid atlantic", "mid-atlantic states", "mid atlantic states"]
+  members: [US-NY, US-NJ, US-PA, US-DE, US-MD, US-DC]
+
+us_midwest:
+  aliases: ["midwest", "the midwest", "midwestern united states", "midwestern states", "us midwest", "midwest us"]
+  members: [US-IL, US-IN, US-IA, US-KS, US-MI, US-MN, US-MO, US-NE, US-ND, US-OH, US-SD, US-WI]
+  notes: "US Census Bureau region 2."
+
+us_south:
+  aliases: ["southern united states", "the american south", "us south", "southern us", "southern states of the us"]
+  members: [US-DE, US-FL, US-GA, US-MD, US-NC, US-SC, US-VA, US-DC, US-WV, US-AL, US-KY, US-MS, US-TN, US-AR, US-LA, US-OK, US-TX]
+  notes: "US Census Bureau region 3."
+
+deep_south:
+  aliases: ["deep south", "the deep south"]
+  members: [US-AL, US-GA, US-LA, US-MS, US-SC]
+
+us_west:
+  aliases: ["western united states", "the american west", "us west", "western us", "western states of the us"]
+  members: [US-AZ, US-CO, US-ID, US-MT, US-NV, US-NM, US-UT, US-WY, US-AK, US-CA, US-HI, US-OR, US-WA]
+  notes: "US Census Bureau region 4."
+
+pacific_northwest:
+  aliases: ["pacific northwest", "pacific north west", "the pacific northwest", "pnw", "pacific nw"]
+  members: [US-WA, US-OR, US-ID]
+  notes: "The US core. Some definitions add British Columbia (CA-BC)."
+
+great_lakes_states:
+  aliases: ["great lakes states", "great lakes region"]
+  members: [US-IL, US-IN, US-MI, US-MN, US-NY, US-OH, US-PA, US-WI]
+
+new_york_tristate:
+  aliases: ["tri-state area", "tristate area", "the tri-state area"]
+  members: [US-NY, US-NJ, US-CT]
+
+atlantic_canada:
+  aliases: ["atlantic canada", "atlantic provinces"]
+  members: [CA-NB, CA-NS, CA-PE, CA-NL]
+
+maritimes:
+  aliases: ["maritimes", "the maritimes", "maritime provinces"]
+  members: [CA-NB, CA-NS, CA-PE]
+
+canadian_prairies:
+  aliases: ["canadian prairies", "prairie provinces", "the prairies"]
+  members: [CA-AB, CA-SK, CA-MB]
+
+# ---------------------------------------------------------------- Europe
+benelux:
+  aliases: ["benelux", "the benelux", "low countries", "the low countries"]
+  members: [BE, NL, LU]
+
+scandinavia:
+  aliases: ["scandinavia", "scandinavian countries"]
+  members: [DK, "NO", SE]
+
+nordic_countries:
+  aliases: ["nordic countries", "the nordics", "nordics", "nordic region"]
+  members: [DK, FI, IS, "NO", SE]
+
+baltic_states:
+  aliases: ["baltic states", "the baltics", "baltics", "baltic countries"]
+  members: [EE, LV, LT]
+
+balkans:
+  aliases: ["balkans", "the balkans", "balkan peninsula", "balkan countries"]
+  members: [AL, BA, BG, GR, HR, ME, MK, RS, SI, XK]
+  notes: "Wikidata parts of Q23522."
+
+iberian_peninsula:
+  aliases: ["iberian peninsula", "iberia"]
+  members: [ES, PT, AD, GI]
+
+dach:
+  aliases: ["dach", "dach region", "german-speaking countries"]
+  members: [DE, AT, CH]
+
+visegrad_group:
+  aliases: ["visegrad group", "visegrad countries", "v4 countries"]
+  members: [CZ, HU, PL, SK]
+
+caucasus:
+  aliases: ["caucasus", "the caucasus", "south caucasus", "transcaucasia"]
+  members: [AM, AZ, GE]
+
+m49_western_europe:
+  aliases: ["western europe"]
+  members: [AT, BE, FR, DE, LI, LU, MC, NL, CH]
+  notes: "UN M49 code 155."
+
+m49_eastern_europe:
+  aliases: ["eastern europe"]
+  members: [BY, BG, CZ, HU, PL, MD, RO, RU, SK, UA]
+  notes: "UN M49 code 151."
+
+m49_northern_europe:
+  aliases: ["northern europe"]
+  members: [DK, EE, FI, IS, IE, LV, LT, "NO", SE, GB, AX, FO, IM, JE, GG]
+  notes: "UN M49 code 154."
+
+m49_southern_europe:
+  aliases: ["southern europe"]
+  members: [AL, AD, BA, HR, GI, GR, IT, MT, ME, MK, PT, SM, RS, SI, ES, VA, XK]
+  notes: "UN M49 code 039 (Kosovo added)."
+
+m49_europe:
+  aliases: ["europe", "european countries"]
+  members: [AT, BE, FR, DE, LI, LU, MC, NL, CH, BY, BG, CZ, HU, PL, MD, RO, RU, SK, UA, DK, EE, FI, IS, IE, LV, LT, "NO", SE, GB,
+            AX, FO, IM, JE, GG, AL, AD, BA, HR, GI, GR, IT, MT, ME, MK, PT, SM, RS, SI, ES, VA, XK]
+  notes: "UN M49 code 150 (Kosovo added)."
+
+european_union:
+  aliases: ["european union", "the eu", "eu countries", "eu member states"]
+  members: [AT, BE, BG, HR, CY, CZ, DK, EE, FI, FR, DE, GR, HU, IE, IT, LV, LT, LU, MT, NL, PL, PT, RO, SK, SI, ES, SE]
+  notes: "27 member states (2026)."
+
+# ---------------------------------------------------------------- Middle East and Africa
+palestine:
+  aliases: ["palestine", "state of palestine", "palestinian territories", "occupied palestinian territories", "palestinian territory"]
+  members: [XG, XW]
+  notes: "Overture has no row for Palestine: the Gaza Strip (XG) and the West Bank (XW) are disputed areas."
+
+middle_east:
+  aliases: ["middle east", "the middle east", "middle eastern countries", "mideast"]
+  members: [BH, CY, EG, IR, IQ, IL, JO, KW, LB, OM, XG, XW, QA, SA, SY, TR, AE, YE]
+  notes: "The common definition. Wikidata lists only 6 parts."
+
+gulf_states:
+  aliases: ["gulf states", "gulf countries", "gcc countries", "gulf cooperation council", "arab gulf states"]
+  members: [BH, KW, OM, QA, SA, AE]
+
+levant:
+  aliases: ["levant", "the levant"]
+  members: [IL, JO, LB, XG, XW, SY]
+
+maghreb:
+  aliases: ["maghreb", "the maghreb", "maghreb countries"]
+  members: [DZ, LY, MA, MR, TN, EH]
+
+horn_of_africa:
+  aliases: ["horn of africa", "the horn of africa"]
+  members: [DJ, ER, ET, SO]
+
+m49_northern_africa:
+  aliases: ["northern africa", "north africa"]
+  members: [DZ, EG, LY, MA, SD, TN, EH]
+  notes: "UN M49 code 015."
+
+m49_western_africa:
+  aliases: ["western africa", "west africa"]
+  members: [BJ, BF, CV, CI, GM, GH, GN, GW, LR, ML, MR, NE, NG, SN, SL, TG, SH]
+  notes: "UN M49 code 011."
+
+m49_eastern_africa:
+  aliases: ["eastern africa", "east africa"]
+  members: [BI, KM, DJ, ER, ET, KE, MG, MW, MU, YT, MZ, RE, RW, SC, SO, SS, UG, TZ, ZM, ZW]
+  notes: "UN M49 code 014."
+
+m49_middle_africa:
+  aliases: ["middle africa", "central africa"]
+  members: [AO, CM, CF, TD, CG, CD, GQ, GA, ST]
+  notes: "UN M49 code 017."
+
+m49_southern_africa:
+  aliases: ["southern africa"]
+  members: [BW, SZ, LS, NA, ZA]
+  notes: "UN M49 code 018."
+
+m49_africa:
+  aliases: ["africa", "african countries"]
+  members: [DZ, EG, LY, MA, SD, TN, EH, BJ, BF, CV, CI, GM, GH, GN, GW, LR, ML, MR, NE, NG, SN, SL, TG, SH, BI, KM, DJ, ER,
+            ET, KE, MG, MW, MU, YT, MZ, RE, RW, SC, SO, SS, UG, TZ, ZM, ZW, AO, CM, CF, TD, CG, CD, GQ, GA, ST, BW, SZ, LS, NA, ZA]
+  notes: "UN M49 code 002."
+
+# ---------------------------------------------------------------- Asia
 m49_southern_asia:
   aliases: ["southern asia", "south asia"]
   members: [AF, BD, BT, IN, IR, LK, MV, NP, PK]
@@ -23,14 +217,61 @@ m49_southern_asia:
 m49_south_eastern_asia:
   aliases: ["south-eastern asia", "southeast asia", "south east asia"]
   members: [BN, KH, ID, LA, MM, MY, PH, SG, TH, TL, VN]
-  notes: "UN M49 code 035. Only Myanmar is in the extract."
+  notes: "UN M49 code 035."
 
 m49_eastern_asia:
   aliases: ["eastern asia", "east asia"]
   members: [CN, HK, JP, KP, KR, MN, MO, TW]
-  notes: "UN M49 code 030. Only China is in the extract."
+  notes: "UN M49 code 030."
+
+m49_central_asia:
+  aliases: ["central asia"]
+  members: [KZ, KG, TJ, TM, UZ]
+  notes: "UN M49 code 143."
+
+m49_western_asia:
+  aliases: ["western asia", "west asia"]
+  members: [AM, AZ, BH, CY, GE, IQ, IL, JO, KW, LB, OM, QA, SA, XG, XW, SY, TR, AE, YE]
+  notes: "UN M49 code 145."
 
 m49_asia:
-  aliases: ["asia"]
-  members: [AF, BD, BT, CN, IN, IR, LK, MM, MV, NP, PK]
-  notes: "UN M49 code 142. Only the countries in the extract are listed."
+  aliases: ["asia", "asian countries"]
+  members: [AF, BD, BT, IN, IR, LK, MV, NP, PK, BN, KH, ID, LA, MM, MY, PH, SG, TH, TL, VN, CN, HK, JP, KP, KR, MN, MO, TW,
+            KZ, KG, TJ, TM, UZ, AM, AZ, BH, CY, GE, IQ, IL, JO, KW, LB, OM, QA, SA, XG, XW, SY, TR, AE, YE]
+  notes: "UN M49 code 142."
+
+# ---------------------------------------------------------------- Americas and Oceania
+m49_northern_america:
+  aliases: ["northern america"]
+  members: [BM, CA, GL, PM, US]
+  notes: "UN M49 code 021."
+
+m49_central_america:
+  aliases: ["central america"]
+  members: [BZ, CR, SV, GT, HN, MX, NI, PA]
+  notes: "UN M49 code 013 (with Mexico)."
+
+m49_caribbean:
+  aliases: ["caribbean", "the caribbean", "caribbean islands", "west indies"]
+  members: [AI, AG, AW, BS, BB, BQ, VG, KY, CU, CW, DM, DO, GD, GP, HT, JM, MQ, MS, PR, BL, KN, LC, MF, VC, SX, TT, TC, VI]
+  notes: "UN M49 code 029."
+
+m49_south_america:
+  aliases: ["south america", "south american countries"]
+  members: [AR, BO, BR, CL, CO, EC, FK, GF, GY, PY, PE, SR, UY, VE]
+  notes: "UN M49 code 005."
+
+latin_america:
+  aliases: ["latin america", "latin american countries"]
+  members: [AR, BO, BR, CL, CO, EC, GY, PY, PE, SR, UY, VE, BZ, CR, SV, GT, HN, MX, NI, PA, CU, DO, HT, PR]
+  notes: "South America, Central America and the Spanish- and French-speaking Caribbean (common definition)."
+
+m49_oceania:
+  aliases: ["oceania"]
+  members: [AU, NZ, FJ, NC, PG, SB, VU, GU, KI, MH, FM, NR, MP, PW, AS, CK, PF, NU, PN, WS, TK, TO, TV, WF]
+  notes: "UN M49 code 009."
+
+australia_new_zealand:
+  aliases: ["australasia", "australia and new zealand"]
+  members: [AU, NZ]
+  notes: "UN M49 code 053."
