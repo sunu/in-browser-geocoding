@@ -485,7 +485,7 @@ class Run {
     const r = (await this.run(`SELECT ST_XMin(g) AS x0, ST_YMin(g) AS y0, ST_XMax(g) AS x1, ST_YMax(g) AS y1, ST_IsEmpty(g) AS e FROM (SELECT ${g} AS g)`))[0];
     if (!r || r.x0 === null || r.e) { this.notes.push("features: the region is empty, so the result is empty"); return this.emptyRel(); }
     const local = (this.ex.bundle.config.geocoder.features_source ?? "places") === "places";
-    const table = !local ? null : this.ex.db.store ? this.ex.db.store.featuresTable(a.category) : "places";
+    const table = !local ? null : this.ex.db.store ? await this.ex.db.store.featuresTable(a.category) : "places";
     if (!table) {
       if (local) this.notes.push(`features: no local data for ${a.category}; Photon is used`);
       return this.featuresPhoton(a.category, leaf, g, [r.x0, r.y0, r.x1, r.y1]);

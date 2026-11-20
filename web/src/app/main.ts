@@ -242,7 +242,8 @@ onDownload((d) => {
   files.set(d.file, d);
   if (ready) frame ||= requestAnimationFrame(drawQueryLoads);
   else {
-    if (!d.done) $("now").innerHTML = `<span>Downloading <code>${esc(d.file)}</code></span>`;
+    // "Loading": the page cannot see if a file comes from the network or from the browser cache.
+    if (!d.done) $("now").innerHTML = `<span>Loading <code>${esc(d.file)}</code></span>`;
     redraw();
   }
 });

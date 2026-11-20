@@ -51,6 +51,7 @@ export class CountryStore {
   loadedShards = new Map<number, Promise<void>>();
   adminAreas: Promise<void> | null = null;
   regionAreas = new Map<string, Promise<void>>();
+  views = new Map<string, Promise<void>>();
   layers: Promise<void> | null = null;
   countryShapes: Promise<void> | null = null;
   private lock: Promise<unknown> = Promise.resolve();
@@ -90,14 +91,12 @@ export class CountryStore {
       await this.serial([`INSERT INTO layer_dist BY NAME SELECT * FROM read_parquet(${q(ald)})`]);
       await e.release(ald);
     }
-    const places = this.manifest.places;
-    await e.query(places
-      ? `CREATE VIEW places AS SELECT * FROM read_parquet(${q(await e.file(places))})`
-      : `CREATE VIEW places AS SELECT NULL::VARCHAR AS id, NULL::VARCHAR AS name, NULL::VARCHAR AS basic_category,
+    // The places file and the world point datasets (plan-008 phase 5) are read with range requests. Their views are
+    // made on the first query that needs them (featuresTable): a view reads the file metadata over the network, which
+    // took 5 s at start-up.
+    if (!this.manifest.places)
+      await e.query(`CREATE VIEW places AS SELECT NULL::VARCHAR AS id, NULL::VARCHAR AS name, NULL::VARCHAR AS basic_category,
            NULL::VARCHAR[] AS cats, NULL::DOUBLE AS confidence, NULL::DOUBLE AS lon, NULL::DOUBLE AS lat WHERE false`);
-    // World point datasets (plan-008 phase 5), read with range requests.
-    for (const [name, d] of Object.entries<any>(this.manifest.poi ?? {}))
-      await e.query(`CREATE VIEW poi_${name} AS SELECT * FROM read_parquet(${q(await e.file(d.file))})`);
     onProgress?.("data: global files");
     await this.ensureCountries([defaultCountry]);
     onProgress?.(`data: country ${defaultCountry}`);
@@ -205,10 +204,14 @@ export class CountryStore {
 
   /** Table of the Features operator for a category: `places` if the layout has it, else the point dataset of the
    * category, else null (Photon). */
-  featuresTable(category: string): string | null {
-    if (this.manifest.places) return "places";
+  async featuresTable(category: string): Promise<string | null> {
+    const view = async (name: string, file: string) => {
+      await once(this.views, name, async () => { await this.engine.query(`CREATE VIEW ${name} AS SELECT * FROM read_parquet(${q(await this.engine.file(file))})`); });
+      return name;
+    };
+    if (this.manifest.places) return view("places", this.manifest.places);
     const hit = Object.entries<any>(this.manifest.poi ?? {}).find(([, d]) => d.categories.includes(category));
-    return hit ? `poi_${hit[0]}` : null;
+    return hit ? view(`poi_${hit[0]}`, hit[1].file) : null;
   }
 
   /** Extent of the division points of a country (manifest), or null. */
