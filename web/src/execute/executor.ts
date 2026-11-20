@@ -227,9 +227,12 @@ class Run {
     if (!codes.includes(country)) country = codes[0];
     // No level: the highest subtype inside the parent. The admin part has the regions and counties; only if there are
     // none (the parent is a district or a city) the local part is needed.
-    const level = a.level && a.level !== "none" ? a.level
+    let level = a.level && a.level !== "none" ? a.level
       : await this.childLevel(parent, country).catch(async () => { await this.ex.db.store?.ensureLocal(codes); return this.childLevel(parent, country); });
     if (this.needsLocal(level, codes)) await this.ex.db.store?.ensureLocal(codes);
+    if (a.level && a.level !== "none" && codes.length === 1
+      && !(await this.run(`SELECT count(*) AS n FROM divisions d WHERE ${this.levelsFilter(level, codes)}`))[0].n)
+      level = await this.missingLevel(parent, country, level);
     await this.levelData(level);
     const lf = this.levelsFilter(level, codes);
     // A direction part has the id of its source but only a part of its geometry, and a natural feature is not an
@@ -241,6 +244,17 @@ class Run {
     // A natural feature: the divisions that overlap it (a long, narrow range). A direction part: the point inside it.
     if (natural) return this.divisionsRel(`${lf} AND a.id IS NOT NULL AND ST_Intersects(a.gs, ${this.unionGeom(parent, "gs")})`);
     return this.divisionsRel(`${lf} AND ST_Intersects(d.geometry, ${this.unionGeom(parent, "gs")})`);
+  }
+
+  /** Port of missing_level: the country has no division of this level ("districts of Brazil"): the highest level
+   * inside the parent, if it is a state or district level, with a note. */
+  async missingLevel(parent: string, country: string, level: string): Promise<string> {
+    let alt: string;
+    try { alt = await this.childLevel(parent, country); } catch { return level; }
+    const own: string[] = countryPolicy(this.policy, country).admin_levels[alt] ?? [];
+    if (alt === level || !own.every((s) => s === "region" || s === "county")) return level;
+    this.notes.push(`${country} has no ${level} level in the data; the ${alt} level is used`);
+    return alt;
   }
 
   /** Port of child_level: the level of the highest subtype (region, county, locality) of the divisions inside the parent. */

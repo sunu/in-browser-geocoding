@@ -310,6 +310,8 @@ class _Run:
         country = country if country in codes else codes[0]
         if level is None or level == "none":
             level = self.child_level(parent, country)
+        elif len(codes) == 1 and not self.run(f"SELECT count(*) FROM divisions d WHERE {self.levels_filter(level, codes)}").fetchone()[0]:
+            level = self.missing_level(parent, country, level)
         lf = self.levels_filter(level, codes)
         # A direction part has the id of its source but only a part of its geometry, and a natural feature is not
         # an ancestor of divisions: use the geometry.
@@ -323,6 +325,18 @@ class _Run:
         if natural:
             return self.divisions_rel(f"{lf} AND a.id IS NOT NULL AND ST_Intersects(crs84(a.gs), {self.union_geom(parent, 'gs')})")
         return self.divisions_rel(f"{lf} AND ST_Intersects(crs84(d.geometry), {self.union_geom(parent, 'gs')})")
+
+    def missing_level(self, parent: str, country: str, level: str) -> str:
+        """The country has no division of this level in the data ("districts of Brazil"): the highest level inside the
+        parent, if it is a state or district level (not the localities), with a note."""
+        try:
+            alt = self.child_level(parent, country)
+        except ExecutionError:
+            return level
+        if alt == level or not set(country_policy(self.policy, country)["admin_levels"][alt]) <= {"region", "county"}:
+            return level
+        self.notes.append(f"{country} has no {level} level in the data; the {alt} level is used")
+        return alt
 
     def child_level(self, parent: str, country: str) -> str:
         """The level of the highest subtype (region, county, locality) of the divisions inside the parent."""

@@ -73,6 +73,7 @@ function setLanding(on: boolean) {
 
 // Number of the current query: a query that took too long does not show its result when it ends later.
 let current = 0;
+let lastProgress = 0;
 
 async function runQuery(text: string) {
   if (document.body.classList.contains("landing")) setLanding(false);
@@ -80,16 +81,20 @@ async function runQuery(text: string) {
   go.disabled = true;
   const id = ++current;
   const limit = Number(gp.bundle.config.web?.query_timeout_s ?? 90);
+  // The limit is for time without progress: a download that is still arriving (a slow network) restarts the clock.
+  lastProgress = performance.now();
   let timer = 0;
-  const timeout = new Promise<"timeout">((res) => { timer = window.setTimeout(() => res("timeout"), limit * 1000); });
+  const timeout = new Promise<"timeout">((res) => {
+    timer = window.setInterval(() => { if (performance.now() - lastProgress > limit * 1000) res("timeout"); }, 1000);
+  });
   try {
     if ((await Promise.race([runQuery_(text, id), timeout])) === "timeout") {
       current++;
       queryStatus = "";
       $("busy").hidden = true;
-      status.innerHTML = `<span class="err">The query took too long (more than ${limit} s).</span>`;
-      side.innerHTML = `<h3><span class="err">The query took too long</span></h3><p>The app stopped waiting after ${limit} s.
-        Try a smaller area or a more exact query. The next query can be slow while the browser finishes this one.</p>`;
+      status.innerHTML = `<span class="err">The query took too long (no progress for ${limit} s).</span>`;
+      side.innerHTML = `<h3><span class="err">The query took too long</span></h3><p>The app stopped waiting after ${limit} s
+        without progress. Try a smaller area or a more exact query. The next query can be slow while the browser finishes this one.</p>`;
     }
   } catch (e) {
     if (id !== current) return;
@@ -99,7 +104,7 @@ async function runQuery(text: string) {
     side.innerHTML = `<h3><span class="err">Something went wrong</span></h3><p>${esc((e as Error).message)}</p>`;
     console.error(e);
   } finally {
-    clearTimeout(timer);
+    clearInterval(timer);
     go.disabled = false;
   }
 }
@@ -240,6 +245,7 @@ function drawQueryLoads() {
 let ready = false;
 onDownload((d) => {
   files.set(d.file, d);
+  lastProgress = performance.now();
   if (ready) frame ||= requestAnimationFrame(drawQueryLoads);
   else {
     // "Loading": the page cannot see if a file comes from the network or from the browser cache.
