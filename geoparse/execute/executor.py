@@ -209,6 +209,10 @@ class _Run:
                 cond.append(f"{alias}.region NOT IN ({', '.join(_q(u) for u in p['union_territories'])})")
         if level != "country":
             cond.append(f"{alias}.country = {_q(country)}")
+        else:
+            # Overture's disputed areas are country rows with the codes XA to XZ; policy.disputed_kept keeps some (Kosovo).
+            keep = ", ".join(_q(c) for c in p["disputed_kept"]) or "NULL"
+            cond.append(f"({alias}.subtype <> 'country' OR {alias}.country NOT LIKE 'X%' OR {alias}.country IN ({keep}))")
         return " AND ".join(cond)
 
     def divisions_rel(self, where: str, params: list[Any] | None = None) -> str:
@@ -294,6 +298,11 @@ class _Run:
 
     def op_Children(self, of: Any, level: str | None = None) -> str:
         parent = self.eval(of)
+        # A set of divisions of the asked level ("countries of the Balkans", a named set of countries): the set.
+        if level and level != "none":
+            subtypes = {r[0] for r in self.run(f"SELECT DISTINCT subtype FROM {parent}").fetchall()}
+            if subtypes and subtypes <= set(self.policy["admin_levels"].get(level, [])):
+                return parent
         # Several parent countries ("districts along the Danube"), or a natural feature: the level filter of each
         # country.
         codes = self.level_countries(parent)

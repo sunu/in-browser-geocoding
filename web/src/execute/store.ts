@@ -46,6 +46,7 @@ export class CountryStore {
   countries = new Map<string, Promise<void>>();
   loadedShards = new Map<number, Promise<void>>();
   adminAreas: Promise<void> | null = null;
+  regionAreas = new Map<string, Promise<void>>();
   layers: Promise<void> | null = null;
   countryShapes: Promise<void> | null = null;
   private lock: Promise<unknown> = Promise.resolve();
@@ -143,7 +144,20 @@ export class CountryStore {
     return this.countryShapes;
   }
 
-  /** Polygons of the countries, dependencies and regions that are not loaded (operations across borders). */
+  /** Polygons of the regions of countries that are not loaded (named sets of states). A loaded country has them. */
+  ensureRegions(codes: string[]): Promise<void> {
+    return Promise.all([...new Set(codes)].filter((c) => "regions" in (this.manifest.countries[c]?.bytes ?? {}) && !this.countries.has(c))
+      .map((c) => once(this.regionAreas, c, async () => {
+        const f = await this.engine.file(`country=${c}/regions.parquet`);
+        await this.serial([`INSERT INTO areas SELECT id, subtype, ST_GeomFromWKB(gs_wkb), ST_GeomFromWKB(gs_wkb),
+            xmin, ymin, xmax, ymax, ${q(c)} FROM read_parquet(${q(f)}, hive_partitioning = false)
+          WHERE id NOT IN (SELECT id FROM areas)`]);
+        await this.engine.release(f);
+      }))).then(() => {});
+  }
+
+  /** Polygons of the countries and dependencies that are not loaded (operations across borders). In data exported
+   * before plan-031 the file also has the regions. */
   ensureAdminAreas(): Promise<void> {
     this.adminAreas ??= (async () => {
       const f = await this.engine.file("global/admin_areas.parquet");

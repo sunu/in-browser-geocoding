@@ -107,6 +107,7 @@ class Run {
       if (!p.union_territories_are_states && p.union_territories.length) cond.push(`${a}.region NOT IN (${p.union_territories.map(q).join(", ")})`);
     }
     if (level !== "country") cond.push(`${a}.country = ${q(country)}`);
+    else cond.push(`(${a}.subtype <> 'country' OR ${a}.country NOT LIKE 'X%' OR ${a}.country IN (${(p.disputed_kept ?? []).map(q).join(", ") || "NULL"}))`);
     return cond.join(" AND ");
   }
 
@@ -161,6 +162,11 @@ class Run {
     const ids = entry.members.filter((m) => m.id).map((m) => m.id!) as string[];
     const missing = entry.members.filter((m) => !m.id).map((m) => m.code);
     if (missing.length) this.notes.push(`lexicon ${a.key}: members not in the extract: ${missing.join(", ")}`);
+    // The members are countries (the global admin areas) and states (the regions file of their country): no country
+    // data to load.
+    const states = entry.members.filter((m) => m.id && m.code.includes("-")).map((m) => m.code.split("-")[0]);
+    const countries = entry.members.some((m) => m.id && !m.code.includes("-"));
+    await Promise.all([countries ? this.ex.db.store?.ensureAdminAreas() : null, this.ex.db.store?.ensureRegions(states)]);
     return this.divisionsRel(`d.id IN (SELECT unnest(${list(ids)}))`);
   }
 
@@ -174,8 +180,8 @@ class Run {
   // ------------------------------------------------------------ hierarchy
 
   /** Port of level_countries: the countries of the divisions of a relation; for a natural feature, the countries
-   * whose simplified shape is near it (country_shapes). Loads their data. */
-  async levelCountries(rel: string): Promise<string[]> {
+   * whose simplified shape is near it (country_shapes). Loads their data, except with load = false. */
+  async levelCountries(rel: string, load = true): Promise<string[]> {
     let codes = (await this.run(`SELECT DISTINCT d.country FROM ${rel} r JOIN divisions d ON d.id = r.id
       WHERE d.country IS NOT NULL AND d.country <> '${NATURAL_COUNTRY}' ORDER BY 1`)).map((r) => r.country as string);
     if (!codes.length) {
@@ -185,7 +191,7 @@ class Run {
         ${Number(this.policy.around_tolerance_deg)}) ORDER BY 1`)).map((r) => r.country);
       if (!codes.length) return [await this.countryOf(rel)];
     }
-    await this.ex.db.store?.ensureCountries(codes);
+    if (load) await this.ex.db.store?.ensureCountries(codes);
     return codes;
   }
 
@@ -196,6 +202,12 @@ class Run {
 
   async op_Children(a: any) {
     const parent = await this.eval(a.of);
+    // Port: a set of divisions of the asked level ("countries of the Balkans") is the set (no country data to load).
+    if (a.level && a.level !== "none") {
+      const subtypes = (await this.run(`SELECT DISTINCT subtype FROM ${parent}`)).map((r) => r.subtype as string);
+      const own = this.policy.admin_levels[a.level] ?? [];
+      if (subtypes.length && subtypes.every((s) => own.includes(s))) return parent;
+    }
     // Several parent countries ("districts along the Danube"), or a natural feature: the level filter of each country.
     const codes = await this.levelCountries(parent);
     let country = await this.countryOf(parent);
@@ -241,7 +253,8 @@ class Run {
     const src = await this.eval(a.of);
     const tol = this.deg(Number(this.policy.neighbor_tolerance_m), await this.latOf(src));
     let level = a.level;
-    const codes = await this.levelCountries(src);
+    // The data of the countries is not needed at the country level (the admin rows and polygons of all countries are).
+    const codes = await this.levelCountries(src, false);
     let country = await this.countryOf(src);
     if (!codes.includes(country)) country = codes[0];
     if (!level || level === "none") {
@@ -249,6 +262,7 @@ class Run {
       level = Object.entries(countryPolicy(this.policy, country).admin_levels).find(([, v]: any) => subtypes.every((s) => v.includes(s)))?.[0];
       if (!level) throw new ExecError(`cannot find a level for neighbors of subtypes ${subtypes}`);
     }
+    if (level !== "country") await this.ex.db.store?.ensureCountries(codes);
     await this.levelData(level);
     return this.divisionsRel(`${this.levelsFilter(level, codes)} AND a.id IS NOT NULL
       AND d.id NOT IN (SELECT id FROM ${src} WHERE id IS NOT NULL)
