@@ -52,7 +52,8 @@
     body.landing header .inner { grid-template-columns: minmax(0, 1fr); justify-items: stretch; max-width: 860px; gap: 26px; }
     body.landing .brand { align-items: center; }
     body.landing .logo { font-size: 76px; }
-    body.landing .sub, body.landing #more { display: none; }
+    body.landing #more { display: none; }
+    body.landing .sub { font-size: 14px; letter-spacing: 1.6px; margin-top: 8px; }
     body.landing .tagline { display: block; }
     body.landing .search { border: 2px solid var(--accent); border-radius: 14px; padding: 8px; box-shadow: 0 18px 40px -18px rgba(208,66,0,.35); }
     body.landing #q { height: 60px; font-size: 22px; }
@@ -148,7 +149,7 @@
         <button class="logo" id="home" type="button" aria-label="gazetini: show the examples">gazet<span>ini</span><i aria-hidden="true"></i></button>
         <div class="sub">gazet with tiny models</div>
       </div>
-      <p class="tagline">Describe a place in plain words. Tiny models read it, and the map draws it, all inside your browser.</p>
+      <p class="tagline">Describe a place, and watch tiny models find it on the map. All in your browser.</p>
       <form class="search" id="form">
         <label class="sr" for="q">Describe a place</label>
         <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A7D76" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
