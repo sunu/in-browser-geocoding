@@ -54,8 +54,10 @@ async function show(fc: any) {
     map.addLayer({ id: "pts", type: "circle", source: "result", filter: ["==", ["geometry-type"], "Point"], paint: { "circle-radius": 4.5, "circle-color": ACCENT, "circle-stroke-color": "#FFFFFF", "circle-stroke-width": 1.5 } });
   }
   const b = new maplibregl.LngLatBounds();
-  const walk = (c: any) => (typeof c[0] === "number" ? b.extend(c as [number, number]) : c.forEach(walk));
-  fc.features.forEach((f: any) => f.geometry && walk(f.geometry.coordinates));
+  const walk = (c: any) => (!c?.length ? undefined : typeof c[0] === "number" ? b.extend(c as [number, number]) : c.forEach(walk));
+  // A geometry collection (some merged rivers) has its parts in `geometries`, not coordinates.
+  const geom = (g: any) => (g?.type === "GeometryCollection" ? g.geometries.forEach(geom) : walk(g?.coordinates));
+  fc.features.forEach((f: any) => geom(f.geometry));
   if (!b.isEmpty()) map.fitBounds(b, { padding: 40, maxZoom: 14, duration: 500 });
 }
 
@@ -69,15 +71,37 @@ function setLanding(on: boolean) {
   if (map) for (const ms of [400, 800]) setTimeout(() => map!.resize(), ms);
 }
 
+// Number of the current query: a query that took too long does not show its result when it ends later.
+let current = 0;
+
 async function runQuery(text: string) {
   if (document.body.classList.contains("landing")) setLanding(false);
   else { document.body.classList.remove("show-examples"); $("more").textContent = "Show examples"; }
   go.disabled = true;
-  try { await runQuery_(text); } catch (e) {
+  const id = ++current;
+  const limit = Number(gp.bundle.config.web?.query_timeout_s ?? 90);
+  let timer = 0;
+  const timeout = new Promise<"timeout">((res) => { timer = window.setTimeout(() => res("timeout"), limit * 1000); });
+  try {
+    if ((await Promise.race([runQuery_(text, id), timeout])) === "timeout") {
+      current++;
+      queryStatus = "";
+      $("busy").hidden = true;
+      status.innerHTML = `<span class="err">The query took too long (more than ${limit} s).</span>`;
+      side.innerHTML = `<h3><span class="err">The query took too long</span></h3><p>The app stopped waiting after ${limit} s.
+        Try a smaller area or a more exact query. The next query can be slow while the browser finishes this one.</p>`;
+    }
+  } catch (e) {
+    if (id !== current) return;
     queryStatus = "";
+    $("busy").hidden = true;
     status.innerHTML = `<span class="err">Error: ${esc((e as Error).message)}</span>`;
+    side.innerHTML = `<h3><span class="err">Something went wrong</span></h3><p>${esc((e as Error).message)}</p>`;
     console.error(e);
-  } finally { go.disabled = false; }
+  } finally {
+    clearTimeout(timer);
+    go.disabled = false;
+  }
 }
 
 // Progress of a query: the status line, a pill over the map, and a card in the result panel.
@@ -88,18 +112,19 @@ function showProgress(msg: string) {
   if (card) card.textContent = msg;
 }
 
-function setStep(step: string) {
+function setStep(step: string, id: number) {
+  if (id !== current) return;
   queryStatus = step;
   showProgress(step);
 }
 
-async function runQuery_(text: string) {
+async function runQuery_(text: string, id: number) {
   files.clear();
   $("busy").hidden = false;
   // The result of the last query goes away, so that the map does not show it as the answer to this one.
   (map?.getSource("result") as maplibregl.GeoJSONSource | undefined)?.setData({ type: "FeatureCollection", features: [] });
   side.innerHTML = `<div class="working"><span class="spin" aria-hidden="true"></span><span id="working-text"></span></div>`;
-  setStep("Reading your query…");
+  setStep("Reading your query…", id);
   const t0 = performance.now();
   // The map view biases the ranking of places with the same name.
   const b = map?.getBounds();
@@ -108,12 +133,14 @@ async function runQuery_(text: string) {
   try {
     p = await gp.parse(text, view);
     if (p.ok) {
-      setStep("Finding the places…");
+      setStep("Finding the places…", id);
       r = await gp.execute(p.dag, view);
     }
   } finally {
-    $("busy").hidden = true;
+    if (id === current) $("busy").hidden = true;
   }
+  // A query that took too long: the page shows the time-out message, not this result.
+  if (id !== current) return;
   const total = (performance.now() - t0) / 1000;
   queryStatus = "";
   status.textContent = `${p.ok ? "" : "Not understood · "}parse ${p.timings.parse_s.toFixed(2)} s · total ${total.toFixed(2)} s`;

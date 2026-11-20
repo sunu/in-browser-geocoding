@@ -189,3 +189,8 @@ decisions:
     timeout_s: 30
   log_dir: "logs"
   max_depth: 2
+
+# The browser page (plan-032). A query that takes longer than query_timeout_s ends with a message; its work in
+# DuckDB and ONNX Runtime cannot be stopped, and the page does not show its result.
+web:
+  query_timeout_s: 90
