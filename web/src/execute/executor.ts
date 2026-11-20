@@ -1,5 +1,6 @@
 // Port of geoparse/execute/executor.py for DuckDB-WASM (engine 1.5). In the browser data, `geometry` is the
 // simplified polygon (areas.parquet has only the simplified form), so geometry and gs are the same column.
+import { LOCAL_SUBTYPES } from "./store.ts";
 import { countryPolicy, type Bundle } from "../core/bundle.ts";
 import { NATURAL_COUNTRY } from "./gazetteer.ts";
 import { validate } from "../core/dsl.ts";
@@ -202,6 +203,11 @@ class Run {
     return codes;
   }
 
+  /** A level with local subtypes (city, village, locality) in one of the countries: the local part of their data. */
+  needsLocal(level: string, codes: string[]): boolean {
+    return codes.some((c) => (countryPolicy(this.policy, c).admin_levels[level] ?? []).some((s: string) => LOCAL_SUBTYPES.includes(s)));
+  }
+
   /** Port of levels_filter: the level filter of each country, joined with OR. */
   levelsFilter(level: string, codes: string[]): string {
     return codes.length === 1 ? this.levelFilter(level, codes[0]) : `(${codes.map((c) => `(${this.levelFilter(level, c)})`).join(" OR ")})`;
@@ -219,7 +225,11 @@ class Run {
     const codes = await this.levelCountries(parent);
     let country = await this.countryOf(parent);
     if (!codes.includes(country)) country = codes[0];
-    const level = !a.level || a.level === "none" ? await this.childLevel(parent, country) : a.level;
+    // No level: the highest subtype inside the parent. The admin part has the regions and counties; only if there are
+    // none (the parent is a district or a city) the local part is needed.
+    const level = a.level && a.level !== "none" ? a.level
+      : await this.childLevel(parent, country).catch(async () => { await this.ex.db.store?.ensureLocal(codes); return this.childLevel(parent, country); });
+    if (this.needsLocal(level, codes)) await this.ex.db.store?.ensureLocal(codes);
     await this.levelData(level);
     const lf = this.levelsFilter(level, codes);
     // A direction part has the id of its source but only a part of its geometry, and a natural feature is not an
@@ -269,7 +279,7 @@ class Run {
       level = Object.entries(countryPolicy(this.policy, country).admin_levels).find(([, v]: any) => subtypes.every((s) => v.includes(s)))?.[0];
       if (!level) throw new ExecError(`cannot find a level for neighbors of subtypes ${subtypes}`);
     }
-    if (level !== "country") await this.ex.db.store?.ensureCountries(codes);
+    if (level !== "country") await (this.needsLocal(level, codes) ? this.ex.db.store?.ensureLocal(codes) : this.ex.db.store?.ensureCountries(codes));
     await this.levelData(level);
     return this.divisionsRel(`${this.levelsFilter(level, codes)} AND a.id IS NOT NULL
       AND d.id NOT IN (SELECT id FROM ${src} WHERE id IS NOT NULL)

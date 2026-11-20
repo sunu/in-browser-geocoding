@@ -40,7 +40,7 @@ def test_country_layout_matches_tables(tmp_path):
                           JOIN '{root}/global/admin.parquet' a ON a.n = s.region_n WHERE s.key = 'alphacity'""").fetchone()
     assert row == ("primary", True, "Westa")
     assert con.execute(f"SELECT count(*) FROM '{shard}' WHERE key = 'alpha city'").fetchone()[0] == 0
-    n_to_id = con.execute(f"""SELECT d.id FROM '{shard}' s JOIN '{root}/country=TL/divisions.parquet' d USING (n)
+    n_to_id = con.execute(f"""SELECT d.id FROM '{shard}' s JOIN '{root}/country=TL/*divisions.parquet' d USING (n)
                               WHERE s.key = 'alphacity'""").fetchone()[0]
     assert n_to_id == con.execute("SELECT id FROM divisions WHERE name = 'Alpha City'").fetchone()[0]
 

@@ -1,4 +1,5 @@
 // Port of geoparse.execute.data.Store.search and describe.
+import { LOCAL_SUBTYPES } from "./store.ts";
 import { countryPolicy, type Bundle } from "../core/bundle.ts";
 import { normName } from "../core/text.ts";
 import type { Candidate } from "../decisions/types.ts";
@@ -158,6 +159,8 @@ export class Gazetteer {
     // country is inside or outside the view). Returns the divisions (n) to keep, if `cap` cut the list.
     const prepare = async (where: string, sim: string, f: number, cap: number | null): Promise<number[] | null> => {
       if (!store) return null;
+      const loadRows = (rs: any[]) => Promise.all([store.ensureCountries(rs.map((r) => r.country)),
+        store.ensureLocal(rs.filter((r) => LOCAL_SUBTYPES.includes(r.subtype)).map((r) => r.country))]);
       const rows = (await this.db.query(`SELECT r.n, r.country, max(${sim} * ${KIND_SCORE})::DOUBLE AS s,
           any_value(r.subtype) AS subtype, any_value(r.class) AS class, any_value(r.population) AS population,
           bool_or(r.has_area) AS has_area, any_value(a.region) AS region, any_value(r.lon100) AS lon100, any_value(r.lat100) AS lat100
@@ -171,7 +174,7 @@ export class Gazetteer {
         const at = rows[cap - 1];
         // A tie at the cut: the order by id decides, so load all countries at the cut.
         if (rows[cap].s === at.s && pop(rows[cap]) === pop(at)) {
-          await store.ensureCountries(rows.filter((r) => r.s > at.s || (r.s === at.s && pop(r) >= pop(at))).map((r) => r.country));
+          await loadRows(rows.filter((r) => r.s > at.s || (r.s === at.s && pop(r) >= pop(at))));
           return null;
         }
         cand = rows.slice(0, cap);
@@ -193,11 +196,12 @@ export class Gazetteer {
           outside = !!b && (b[2] < x0 || b[0] > x1 || b[3] < y0 || b[1] > y1);
         }
         return [{ country: r.country, lo: p - (inside ? 0 : ranking.view_outside), hi: p + (ctx ? 0.3 : 0) - (outside ? ranking.view_outside : 0),
-          own: COUNTRY_SUBTYPES.includes(r.subtype) }];
+          own: COUNTRY_SUBTYPES.includes(r.subtype), local: LOCAL_SUBTYPES.includes(r.subtype) }];
       });
       // A country or dependency candidate is described by its admin row (loaded at start-up): its country files
-      // are not needed for the ranking ("China" does not load China).
-      const load = (bs: typeof bounds) => store.ensureCountries(bs.filter((b) => !b.own).map((b) => b.country));
+      // are not needed for the ranking ("China" does not load China). A locality or neighbourhood needs the local part.
+      const load = (bs: typeof bounds) => Promise.all([store.ensureCountries(bs.filter((b) => !b.own).map((b) => b.country)),
+        store.ensureLocal(bs.filter((b) => b.local).map((b) => b.country))]);
       // The best candidate is sure to lead all others by close_margin: the parser uses only it (no Photon boost, no
       // disambiguate). Load only its country.
       if (!full && bounds.length > 1) {

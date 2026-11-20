@@ -40,10 +40,14 @@ export function prefixEnd(p: string): string {
   return cs.slice(0, -1).join("") + String.fromCodePoint(cs[cs.length - 1].codePointAt(0)! + 1);
 }
 
+/** Subtypes of the local part of a country (plan-032). */
+export const LOCAL_SUBTYPES = ["locality", "macrohood", "neighborhood", "microhood"];
+
 export class CountryStore {
   manifest: any;
   shards: Shard[] = [];
   countries = new Map<string, Promise<void>>();
+  locals = new Map<string, Promise<void>>();
   loadedShards = new Map<number, Promise<void>>();
   adminAreas: Promise<void> | null = null;
   regionAreas = new Map<string, Promise<void>>();
@@ -99,29 +103,37 @@ export class CountryStore {
     onProgress?.(`data: country ${defaultCountry}`);
   }
 
+  /** The admin part of the countries (plan-032: country, states, districts, local admin areas, natural features). */
   ensureCountries(codes: string[]): Promise<void> {
     return Promise.all([...new Set(codes)].filter((c) => c && this.manifest.countries[c]).map((c) => {
-      return once(this.countries, c, () => this.loadCountry(c));
+      return once(this.countries, c, () => this.loadCountry(c, ""));
     })).then(() => {});
   }
 
-  private async loadCountry(c: string) {
+  /** The admin part and the local part (localities and neighbourhoods) of the countries. Data exported before
+   * plan-032 has no local files: its admin files have the full country. */
+  ensureLocal(codes: string[]): Promise<void> {
+    const cs = [...new Set(codes)].filter((c) => c && this.manifest.countries[c]);
+    return this.ensureCountries(cs).then(() => Promise.all(cs.filter((c) => "local_divisions" in (this.manifest.countries[c].bytes ?? {}))
+      .map((c) => once(this.locals, c, () => this.loadCountry(c, "local_"))))).then(() => {});
+  }
+
+  /** prefix "": the admin part, which replaces the admin rows and polygons of the global files; "local_": the
+   * local part. The natural features (NATURAL_COUNTRY) have no layer_dist file. */
+  private async loadCountry(c: string, prefix: string) {
     const e = this.engine;
-    // The files of the country in the manifest: the natural features (NATURAL_COUNTRY) have no layer_dist file.
     const has = this.manifest.countries[c].bytes ?? {};
-    const [dv, ar] = await Promise.all(["divisions", "areas"].map((f) => e.file(`country=${c}/${f}.parquet`)));
-    const ld = "layer_dist" in has ? await e.file(`country=${c}/layer_dist.parquet`) : null;
-    // The admin rows (and admin polygons) of the country are in the country files too.
+    const file = (f: string) => (`${prefix}${f}` in has ? e.file(`country=${c}/${prefix}${f}.parquet`) : Promise.resolve(null));
+    const [dv, ar, ld] = await Promise.all([file("divisions"), file("areas"), file("layer_dist")]);
     await this.serial([
-      `DELETE FROM divisions WHERE country = ${q(c)}`,
-      `INSERT INTO divisions BY NAME SELECT *, ST_Point(lon, lat) AS geometry FROM read_parquet(${q(dv)}, hive_partitioning = false)`,
-      `DELETE FROM areas WHERE country = ${q(c)}`,
-      `INSERT INTO areas SELECT id, subtype, ST_GeomFromWKB(gs_wkb), ST_GeomFromWKB(gs_wkb), xmin, ymin, xmax, ymax, ${q(c)}
-         FROM read_parquet(${q(ar)}, hive_partitioning = false)`,
+      ...(prefix ? [] : [`DELETE FROM divisions WHERE country = ${q(c)}`, `DELETE FROM areas WHERE country = ${q(c)}`]),
+      ...(dv ? [`INSERT INTO divisions BY NAME SELECT *, ST_Point(lon, lat) AS geometry FROM read_parquet(${q(dv)}, hive_partitioning = false)`] : []),
+      ...(ar ? [`INSERT INTO areas SELECT id, subtype, ST_GeomFromWKB(gs_wkb), ST_GeomFromWKB(gs_wkb), xmin, ymin, xmax, ymax, ${q(c)}
+         FROM read_parquet(${q(ar)}, hive_partitioning = false)`] : []),
       ...(ld ? [`INSERT INTO layer_dist BY NAME SELECT * FROM read_parquet(${q(ld)}, hive_partitioning = false)
          WHERE id NOT IN (SELECT id FROM layer_dist)`] : []),
     ]);
-    await Promise.all([dv, ar, ...(ld ? [ld] : [])].map((f) => e.release(f)));
+    await Promise.all([dv, ar, ld].filter((f): f is string => !!f).map((f) => e.release(f)));
   }
 
   /** Coastline and land borders (9 MB for the world): only DAGs with a Layer operator need them. */
@@ -207,8 +219,9 @@ export class CountryStore {
   /** Load the name rows of keys, then the countries of the divisions with these keys. */
   async ensureKeys(keys: string[]) {
     await this.loadKeys(keys);
-    const rs = await this.engine.query(`SELECT DISTINCT country FROM name_rows WHERE key IN (SELECT unnest(${list(keys)}))`);
-    await this.ensureCountries(rs.map((r) => r.country));
+    const rs = await this.engine.query(`SELECT DISTINCT country, subtype FROM name_rows WHERE key IN (SELECT unnest(${list(keys)}))`);
+    await Promise.all([this.ensureCountries(rs.map((r) => r.country)),
+      this.ensureLocal(rs.filter((r) => LOCAL_SUBTYPES.includes(r.subtype)).map((r) => r.country))]);
   }
 
   /** Load the country of a division id from its name (for DAGs that were not made by this page's parser). */

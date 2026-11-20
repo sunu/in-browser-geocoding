@@ -6,7 +6,8 @@
   global/admin_areas.parquet   polygons of countries and dependencies
   country=XX/regions.parquet   polygons of the regions of a country (named sets of states, without the country files)
   global/layers.parquet        coastline, land borders
-  country=XX/divisions.parquet, areas.parquet, layer_dist.parquet
+  country=XX/divisions.parquet, areas.parquet, layer_dist.parquet   admin divisions (and natural features)
+  country=XX/local_divisions.parquet, local_areas.parquet, local_layer_dist.parquet   localities and neighbourhoods
   names/index.json             first key of each shard
   names/NNNN.parquet           name shards, sorted by key (name key without spaces, Unicode code point order)
 
@@ -28,6 +29,8 @@ ROW_GROUP = 10000
 WORLD = "ST_Extent(ST_MakeEnvelope(-180, -90, 180, 90))"
 # Order of the name kinds. One row for each key and division keeps the best kind.
 ADMIN_SUBTYPES = "'country', 'dependency', 'region', 'county', 'localadmin'"
+# The local part of a country (plan-032): most rows and polygons, loaded only for queries that need them.
+LOCAL_SUBTYPES = "'locality', 'macrohood', 'neighborhood', 'microhood'"
 KIND_RANK = "CASE kind WHEN 'primary' THEN 0 WHEN 'en' THEN 1 WHEN 'alt' THEN 2 WHEN 'common' THEN 3 ELSE 4 END"
 
 
@@ -89,12 +92,18 @@ def export_country_layout(con: duckdb.DuckDBPyConnection, out: Path, release: st
     """)
 
     # Files for each country.
-    jobs = {
-        "divisions": "SELECT *, country AS c FROM dv ORDER BY n",
-        "areas": f"""SELECT a.id, a.subtype, ST_AsWKB(a.gs) AS gs_wkb, ST_XMin(a.gs) AS xmin, ST_YMin(a.gs) AS ymin,
-                            ST_XMax(a.gs) AS xmax, ST_YMax(a.gs) AS ymax, d.country AS c
-                     FROM areas a JOIN dv d USING (id) ORDER BY d.n""",
-        "layer_dist": "SELECT l.*, d.country AS c FROM layer_dist l JOIN dv d USING (id) ORDER BY d.n",
+    # Two parts for each country: the admin divisions (most queries) and the local ones (plan-032).
+    jobs = {}
+    for prefix, cond in (("", f"NOT IN ({LOCAL_SUBTYPES})"), ("local_", f"IN ({LOCAL_SUBTYPES})")):
+        jobs |= {
+            f"{prefix}divisions": f"SELECT *, country AS c FROM dv WHERE subtype {cond} ORDER BY n",
+            f"{prefix}areas": f"""SELECT a.id, a.subtype, ST_AsWKB(a.gs) AS gs_wkb, ST_XMin(a.gs) AS xmin, ST_YMin(a.gs) AS ymin,
+                                         ST_XMax(a.gs) AS xmax, ST_YMax(a.gs) AS ymax, d.country AS c
+                                  FROM areas a JOIN dv d USING (id) WHERE d.subtype {cond} ORDER BY d.n""",
+            f"{prefix}layer_dist": f"""SELECT l.*, d.country AS c FROM layer_dist l JOIN dv d USING (id)
+                                       WHERE d.subtype {cond} ORDER BY d.n""",
+        }
+    jobs |= {
         "regions": f"""SELECT d.n, d.id, d.subtype, ST_AsWKB(a.gs) AS gs_wkb, ST_XMin(a.gs) AS xmin, ST_YMin(a.gs) AS ymin,
                               ST_XMax(a.gs) AS xmax, ST_YMax(a.gs) AS ymax, d.country AS c
                        FROM dv d JOIN areas a USING (id) WHERE d.subtype = 'region' ORDER BY d.n""",
@@ -189,8 +198,9 @@ def verify_country_layout(con: duckdb.DuckDBPyConnection, root: Path) -> list[st
     """Compare the country files and the name shards with the tables in geoparse.duckdb. Returns the errors."""
     errors = []
     for name, table in (("divisions", "divisions"), ("areas", "areas"), ("layer_dist", "layer_dist")):
-        n_files, n_ids = con.execute(
-            f"SELECT count(*), count(DISTINCT id) FROM read_parquet('{root}/country=*/{name}.parquet')").fetchone()
+        # Both parts of each country (plan-032).
+        files = sorted(str(f) for f in root.glob(f"country=*/{name}.parquet")) + sorted(str(f) for f in root.glob(f"country=*/local_{name}.parquet"))
+        n_files, n_ids = con.execute(f"SELECT count(*), count(DISTINCT id) FROM read_parquet({files})").fetchone()
         n_table = con.execute(f"SELECT count(*) FROM {table}").fetchone()[0]
         if not n_files == n_ids == n_table:
             errors.append(f"{name}: {n_files} rows, {n_ids} ids in files, {n_table} in {table}")
