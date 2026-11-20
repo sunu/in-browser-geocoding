@@ -260,7 +260,10 @@ class Store:
         if fuzzy and not scores and len(n) >= 4:
             # Keys with the same first FUZZY_PREFIX characters (one or a few web name shards). The similarity is
             # multiplied by the score of the name kind, so that a transliteration does not win over a primary name.
+            # Many places can have the same similarity ("San Francisco"): the larger population first, so that the cut
+            # at 50 keeps the known places. The country filter is applied before the cut.
             nk = n.replace(" ", "")
+            in_countries = "AND d.country IN (SELECT unnest($cc))" if countries else ""
             rows = cur.execute(f"""
                 SELECT n.id, max(jaro_winkler_similarity(n.name_nospace, $nk) * {KIND_SCORE}) AS s
                 FROM names n JOIN divisions d ON d.id = n.id
@@ -269,8 +272,9 @@ class Store:
                   AND left(n.name_nospace, {FUZZY_PREFIX}) = left($nk, {FUZZY_PREFIX})
                   AND jaro_winkler_similarity(n.name_nospace, $nk) >= 0.85
                   AND damerau_levenshtein(n.name_nospace, $nk) <= CASE WHEN length($nk) >= 10 THEN 2 ELSE 1 END
-                GROUP BY n.id ORDER BY s DESC, n.id LIMIT 50
-            """, {"nk": nk}).fetchall()
+                  {in_countries}
+                GROUP BY n.id ORDER BY s DESC, max(coalesce(d.population, 0)) DESC, n.id LIMIT 50
+            """, {"nk": nk, **({"cc": list(countries)} if countries else {})}).fetchall()
             scores = {r[0]: float(r[1]) * 0.9 for r in rows}
         if not scores:
             return []

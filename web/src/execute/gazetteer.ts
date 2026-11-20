@@ -148,8 +148,8 @@ export class Gazetteer {
     // Name rows with the division id: one relation for the flat layout and the country layout.
     const store = this.db.store;
     const names = store
-      ? "SELECT d.id, d.n, r.kind, r.key, d.subtype, d.class FROM name_rows r JOIN divisions d ON d.n = r.n"
-      : "SELECT n.id, n.kind, n.name_nospace AS key, d.subtype, d.class FROM names n JOIN divisions d ON d.id = n.id";
+      ? "SELECT d.id, d.n, r.kind, r.key, d.subtype, d.class, d.population FROM name_rows r JOIN divisions d ON d.n = r.n"
+      : "SELECT n.id, n.kind, n.name_nospace AS key, d.subtype, d.class, d.population FROM names n JOIN divisions d ON d.id = n.id";
     // Country layout: load only the countries of the candidates that can be in the best `limit`. The name rows
     // give the score except the context match (at most +0.3) and the view penalty (known if the extent of the
     // country is inside or outside the view). Returns the divisions (n) to keep, if `cap` cut the list.
@@ -162,10 +162,15 @@ export class Gazetteer {
         GROUP BY r.n, r.country`)).map((r) => ({ ...r, s: Number(r.s) * f }));
       let cand = rows, keep: number[] | null = null;
       if (cap && rows.length > cap) {
-        rows.sort((a, b) => b.s - a.s);
-        const sCap = rows[cap - 1].s;
+        // As Store.search: similarity, then population (the known places of a frequent name stay in the cut).
+        const pop = (r: any) => Number(r.population ?? 0);
+        rows.sort((a, b) => b.s - a.s || pop(b) - pop(a));
+        const at = rows[cap - 1];
         // A tie at the cut: the order by id decides, so load all countries at the cut.
-        if (rows[cap].s === sCap) { await store.ensureCountries(rows.filter((r) => r.s >= sCap).map((r) => r.country)); return null; }
+        if (rows[cap].s === at.s && pop(rows[cap]) === pop(at)) {
+          await store.ensureCountries(rows.filter((r) => r.s > at.s || (r.s === at.s && pop(r) >= pop(at))).map((r) => r.country));
+          return null;
+        }
         cand = rows.slice(0, cap);
         keep = cand.map((r) => r.n);
       }
@@ -234,7 +239,7 @@ export class Gazetteer {
       }
       const only = keep ? ` AND n IN (SELECT unnest([${keep.join(", ")}]::INTEGER[]))` : "";
       const rs = await this.db.query(`SELECT id, max(jaro_winkler_similarity(key, ${nk}) * ${KIND_SCORE})::DOUBLE AS s
-        FROM (${names}) WHERE ${where}${only} GROUP BY id ORDER BY s DESC, id LIMIT 50`);
+        FROM (${names}) WHERE ${where}${only} GROUP BY id ORDER BY s DESC, max(coalesce(population, 0)) DESC, id LIMIT 50`);
       scores = Object.fromEntries(rs.map((r) => [r.id, Number(r.s) * 0.9]));
     }
     if (!Object.keys(scores).length) return [];
