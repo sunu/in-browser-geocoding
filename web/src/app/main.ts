@@ -1,6 +1,8 @@
 import maplibregl from "maplibre-gl";
 import { onDownload, type Download } from "../core/progress.ts";
 import { load, type Geoparse } from "../geoparse.ts";
+import type { Result } from "../execute/executor.ts";
+import type { ParseResult } from "../parse/pipeline.ts";
 import { decisions, esc, headline, HOW_IT_WORKS, reading } from "./explain.ts";
 
 const $ = (id: string) => document.getElementById(id)!;
@@ -14,7 +16,8 @@ const EXAMPLES: [string, string[]][] = [
   ["Around a place", ["20 km around Nairobi", "10 km around Manchester", "schools in Pune", "cities in California with population over 1 million"]],
   ["Borders", ["states that border Texas", "provinces of South Africa that border Mozambique",
     "10 km zone along the border of India and Pakistan", "border between the United States and Mexico"]],
-  ["Natural features", ["Sahara desert", "counties along the Mississippi", "districts along the Ganga"]],
+  ["Natural features", ["Sahara desert", "counties along the Mississippi", "districts along the Ganga", "countries near the Himalayas"]],
+  ["Regions", ["Pacific Northwest", "the Middle East", "countries of the Balkans", "Southeast Asia"]],
   ["Filters and ranks", ["coastal states of Mexico", "coastal provinces of Vietnam", "the 5 largest states of Brazil"]],
   ["Same name, other place", ["Paris, Texas"]],
 ];
@@ -77,14 +80,40 @@ async function runQuery(text: string) {
   } finally { go.disabled = false; }
 }
 
+// Progress of a query: the status line, a pill over the map, and a card in the result panel.
+function showProgress(msg: string) {
+  status.textContent = msg;
+  $("busy-text").textContent = msg;
+  const card = document.getElementById("working-text");
+  if (card) card.textContent = msg;
+}
+
+function setStep(step: string) {
+  queryStatus = step;
+  showProgress(step);
+}
+
 async function runQuery_(text: string) {
   files.clear();
-  queryStatus = "Working…";
-  status.textContent = queryStatus;
+  $("busy").hidden = false;
+  // The result of the last query goes away, so that the map does not show it as the answer to this one.
+  (map?.getSource("result") as maplibregl.GeoJSONSource | undefined)?.setData({ type: "FeatureCollection", features: [] });
+  side.innerHTML = `<div class="working"><span class="spin" aria-hidden="true"></span><span id="working-text"></span></div>`;
+  setStep("Reading your query…");
   const t0 = performance.now();
   // The map view biases the ranking of places with the same name.
   const b = map?.getBounds();
-  const { parse: p, result: r } = await gp.run(text, b ? [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()] : null);
+  const view = b ? [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()] : null;
+  let p: ParseResult, r: Result | null = null;
+  try {
+    p = await gp.parse(text, view);
+    if (p.ok) {
+      setStep("Finding the places…");
+      r = await gp.execute(p.dag, view);
+    }
+  } finally {
+    $("busy").hidden = true;
+  }
   const total = (performance.now() - t0) / 1000;
   queryStatus = "";
   status.textContent = `${p.ok ? "" : "Not understood · "}parse ${p.timings.parse_s.toFixed(2)} s · total ${total.toFixed(2)} s`;
@@ -166,6 +195,7 @@ function fileLabel(file: string): string {
   if (cc) return countryName(cc);
   if (file.startsWith("names/")) return "place names";
   if (file.includes("layers")) return "coastlines and borders";
+  if (file.includes("admin_areas")) return "country and state outlines";
   if (file.includes("country_shapes")) return "country shapes";
   return file;
 }
@@ -175,10 +205,10 @@ function drawQueryLoads() {
   if (!queryStatus) return;
   // All files of this query in the sum, so that the total does not go down when a file is done.
   const all = [...files.values()], active = all.filter((d) => !d.done);
-  if (!active.length) { status.textContent = queryStatus; return; }
+  if (!active.length) { showProgress(queryStatus); return; }
   const loaded = all.reduce((a, d) => a + d.loaded, 0), total = all.reduce((a, d) => a + d.total, 0);
   const names = [...new Set(active.map((d) => fileLabel(d.file)))].join(", ");
-  status.textContent = `${queryStatus} Loading data for ${names} (${mb(loaded)}${total ? ` / ${mb(total)}` : ""} MB)…`;
+  showProgress(`${queryStatus} Loading data for ${names} (${mb(loaded)}${total ? ` / ${mb(total)}` : ""} MB)…`);
 }
 let ready = false;
 onDownload((d) => {
