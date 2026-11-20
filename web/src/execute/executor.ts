@@ -203,6 +203,19 @@ class Run {
     return codes;
   }
 
+  async countriesOnly(rel: string): Promise<boolean> {
+    const s = (await this.run(`SELECT DISTINCT subtype FROM ${rel}`)).map((r) => r.subtype as string);
+    return s.length > 0 && s.every((x) => x === "country" || x === "dependency");
+  }
+
+  /** Port of countries_near: the other countries whose simplified shape is near the countries of a relation. */
+  async countriesNear(rel: string): Promise<string[]> {
+    await this.ex.db.store?.ensureCountryShapes();
+    const own = (await this.run(`SELECT DISTINCT d.country FROM ${rel} r JOIN divisions d ON d.id = r.id`)).map((r) => r.country as string);
+    return (await this.run(`SELECT country FROM country_shapes WHERE ST_DWithin(geometry, ${this.unionGeom(rel, "gs")},
+      ${Number(this.policy.around_tolerance_deg)}) AND country NOT IN (SELECT unnest(${list(own)})) ORDER BY 1`)).map((r) => r.country as string);
+  }
+
   /** A level with local subtypes (city, village, locality) in one of the countries: the local part of their data. */
   needsLocal(level: string, codes: string[]): boolean {
     return codes.some((c) => (countryPolicy(this.policy, c).admin_levels[level] ?? []).some((s: string) => LOCAL_SUBTYPES.includes(s)));
@@ -285,13 +298,18 @@ class Run {
     const tol = this.deg(Number(this.policy.neighbor_tolerance_m), await this.latOf(src));
     let level = a.level;
     // The data of the countries is not needed at the country level (the admin rows and polygons of all countries are).
-    const codes = await this.levelCountries(src, false);
+    let codes = await this.levelCountries(src, false);
     let country = await this.countryOf(src);
     if (!codes.includes(country)) country = codes[0];
     if (!level || level === "none") {
       const subtypes = (await this.run(`SELECT DISTINCT subtype FROM ${src}`)).map((r) => r.subtype);
       level = Object.entries(countryPolicy(this.policy, country).admin_levels).find(([, v]: any) => subtypes.every((s) => v.includes(s)))?.[0];
       if (!level) throw new ExecError(`cannot find a level for neighbors of subtypes ${subtypes}`);
+    }
+    // Port: "states that border France" are divisions of the other countries near it, not the regions on its edge.
+    if (level !== "country" && (await this.countriesOnly(src))) {
+      const near = await this.countriesNear(src);
+      if (near.length) codes = near;
     }
     if (level !== "country") await (this.needsLocal(level, codes) ? this.ex.db.store?.ensureLocal(codes) : this.ex.db.store?.ensureCountries(codes));
     await this.levelData(level);

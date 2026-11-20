@@ -345,6 +345,16 @@ class Parser:
         alt = self._frame_override(dec, text, tpl.id, cands, tscores, depth)
         if alt:
             tpl = self.templates[alt]
+        inside = re.fullmatch(r"(.+?)\s+(?:inside|in|within)\s+(.+)", text.strip(), re.I) if tpl.id == "natural_in" else None
+        if inside:
+            # "Amazon basin inside Ecuador": a named natural feature in a place is the overlap of the two (intersection),
+            # not the natural features of a kind in the place ("rivers in Germany").
+            top = self.store.search(inside.group(1), fuzzy=False, limit=1, view=dec.view)
+            if top and top[0].subtype == "natural":
+                dec.record_step("frame_override", depth, {"text": text}, "intersection", "rules", {"from": tpl.id, "feature": inside.group(1)})
+                tpl = self.templates["intersection"]
+                cands["intersection"] = [{"segments": {"a": inside.group(1), "b": inside.group(2)}, "feeds": {"a": ["a"], "b": ["b"]},
+                                          "literals": 0, "source": "rule", "score": 0.0, "template": "intersection"}]
         if tpl.family != "lookup" and len(text.split()) <= 4:
             # "Ganga river", "Sahara desert", "Malabar Coast": the exact name of one natural feature, not the features
             # of a kind in a place or the coast of a place. Short texts only (the browser loads a name shard).

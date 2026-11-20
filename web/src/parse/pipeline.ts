@@ -130,6 +130,16 @@ export class Parser {
     let tpl = this.templates[td.value];
     const alt = await this.frameOverride(dec, text, tpl.id, cands, tscore, depth);
     if (alt) tpl = this.templates[alt];
+    const inside = tpl.id === "natural_in" ? text.trim().match(/^(.+?)\s+(?:inside|in|within)\s+(.+)$/i) : null;
+    if (inside) {
+      // Port: "Amazon basin inside Ecuador" is the overlap of a named natural feature and a place (intersection).
+      const top = await this.gaz.search(inside[1], { fuzzy: false, limit: 1, view: dec.view });
+      if (top.length && top[0].subtype === "natural") {
+        dec.recordStep("frame_override", depth, { text }, "intersection", "rules", { from: tpl.id, feature: inside[1] });
+        tpl = this.templates["intersection"];
+        cands["intersection"] = [{ segments: { a: inside[1], b: inside[2] }, feeds: { a: ["a"], b: ["b"] }, score: 0, template: "intersection", t5Score: 0 }];
+      }
+    }
     if (tpl.family !== "lookup" && text.trim().split(/\s+/).length <= 4) {
       // Port: "Ganga river", "Sahara desert", "Malabar Coast" is the exact name of one natural feature.
       const top = await this.gaz.search(text, { fuzzy: false, limit: 1, view: dec.view });

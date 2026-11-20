@@ -187,6 +187,18 @@ class _Run:
                                         f"{self.union_geom(rel, 'gs')}, {tol}) ORDER BY 1").fetchall()]
         return codes or [self.country_of(rel)]
 
+    def countries_only(self, rel: str) -> bool:
+        subtypes = {r[0] for r in self.run(f"SELECT DISTINCT subtype FROM {rel}").fetchall()}
+        return bool(subtypes) and subtypes <= {"country", "dependency"}
+
+    def countries_near(self, rel: str) -> list[str]:
+        """The other countries whose simplified shape is near the countries of a relation (country_shapes)."""
+        own = [r[0] for r in self.run(f"SELECT DISTINCT d.country FROM {rel} r JOIN divisions d ON d.id = r.id").fetchall()]
+        tol = float(self.policy["around_tolerance_deg"])
+        return [r[0] for r in self.run(
+            f"SELECT country FROM country_shapes WHERE ST_DWithin(geometry, {self.union_geom(rel, 'gs')}, {tol}) "
+            f"AND country NOT IN (SELECT unnest(?)) ORDER BY 1", [own]).fetchall()]
+
     def levels_filter(self, level: str, codes: list[str]) -> str:
         """The level filter of each country, joined with OR."""
         if len(codes) == 1:
@@ -375,6 +387,10 @@ class _Run:
             if lvl is None:
                 raise ExecutionError(f"cannot find a level for neighbors of subtypes {subtypes}")
             level = lvl
+        if level != "country" and self.countries_only(src):
+            # "states that border France": the divisions of that level in the other countries near it, not the
+            # French regions on its edge.
+            codes = self.countries_near(src) or codes
         return self.divisions_rel(
             f"{self.levels_filter(level, codes)} AND a.id IS NOT NULL "
             f"AND d.id NOT IN (SELECT id FROM {src} WHERE id IS NOT NULL) "
