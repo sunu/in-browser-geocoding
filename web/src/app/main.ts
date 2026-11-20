@@ -8,6 +8,8 @@ const status = $("status"), side = $("side"), q = $("q") as HTMLInputElement, go
 // Examples: tasks of geo analysis in many countries (plan-028; checked with SET=examples of scripts/world_smoke.ts).
 const EXAMPLES: [string, string[]][] = [
   ["Places", ["Boudh", "the British Isles", "Porto", "Washington DC"]],
+  ["Buildings and streets", ["5 km buffer around the Taj Mahal", "2 km around the Eiffel Tower", "500 m around Shibuya Crossing",
+    "MG Road, Bangalore"]],
   ["Study areas", ["counties of Kenya", "districts of Bavaria", "northern Italy", "Bavaria except Munich"]],
   ["Around a place", ["20 km around Nairobi", "10 km around Manchester", "schools in Pune", "cities in California with population over 1 million"]],
   ["Borders", ["states that border Texas", "provinces of South Africa that border Mozambique",

@@ -39,6 +39,8 @@ const EXAMPLES: [string, string][] = [
   ["MX", "coastal states of Mexico"], ["VN", "coastal provinces of Vietnam"], ["BR", "the 5 largest states of Brazil"],
   ["US", "Paris, Texas"],
   ["IN", "Boudh"], ["GB", "the British Isles"], ["FR", "Porto"], ["US", "Washington DC"], ["AF", "Sahara desert"],
+  ["IN", "5 km buffer around the Taj Mahal"], ["FR", "2 km around the Eiffel Tower"], ["JP", "500 m around Shibuya Crossing"],
+  ["IN", "MG Road, Bangalore"],
 ];
 const QUERIES = (process.env.SET === "poi" ? POI : process.env.SET === "new" ? NEW : process.env.SET === "examples" ? EXAMPLES : BASE)
   .slice(Number(process.env.FROM ?? 0));
