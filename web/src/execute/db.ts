@@ -1,5 +1,6 @@
 // DuckDB-WASM in Node.js (tests) and in the browser (app). Loads the files of scripts/export_web.py.
 import { isNode, nodeImport } from "../models/runtime.ts";
+import { cachedFetch, prune } from "../core/cache.ts";
 import { readBody } from "../core/progress.ts";
 import { CountryStore } from "./store.ts";
 
@@ -95,8 +96,11 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
   // Content hash of each data file (manifest hashes): a changed file has a new URL, so no cache keeps the old one.
   let hashes: Record<string, string> = {};
   const query_ = (rel: string) => (rel.endsWith(".json") ? (version ? `?v=${version}` : "") : hashes[rel] ? `?h=${hashes[rel]}` : "");
+  // Cache Storage: a file with a content hash for as long as the hash does not change; the JSON files when the
+  // network fails.
   const get = async (rel: string) => {
-    const r = await fetch(`${abs}/${rel}${query_(rel)}`);
+    const url = `${abs}/${rel}${query_(rel)}`;
+    const r = await (hashes[rel] ? cachedFetch(url, "immutable") : rel.endsWith(".json") ? cachedFetch(url, "fallback") : fetch(url));
     if (!r.ok) throw new Error(`cannot load ${rel}: HTTP ${r.status}`);
     return r;
   };
@@ -115,11 +119,16 @@ export async function openDb(dataBase: string, onProgress?: (msg: string) => voi
     return cc ? manifest?.countries?.[cc]?.bytes?.[f?.replace(".parquet", "")] ?? 0 : 0;
   };
   for (const s of SETUP) await c.query(s);
-  const m = await fetch(`${abs}/manifest.json${version ? `?v=${version}` : ""}`);
+  const m = await cachedFetch(`${abs}/manifest.json${version ? `?v=${version}` : ""}`, "fallback");
   // A dev server can answer index.html for a missing file, and R2 can send no content type, so check the content.
   const manifest = m.ok ? await m.text().then((t) => { try { return JSON.parse(t); } catch { return null; } }) : null;
   if (manifest?.countries) {
     hashes = manifest.hashes ?? {};
+    const path = new URL(abs).pathname.length + 1;
+    prune(`${abs}/`, (url) => {
+      const u = new URL(url), h = u.searchParams.get("h"), v = u.searchParams.get("v");
+      return h ? hashes[decodeURIComponent(u.pathname.slice(path))] === h : v === null || v === version;
+    });
     const store = new CountryStore({
       query,
       file: async (rel) => {

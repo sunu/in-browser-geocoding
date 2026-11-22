@@ -1,5 +1,6 @@
 // ONNX Runtime and tokenizers for Node.js (tests) and the browser (app). Same API in both.
 import { AutoTokenizer, env } from "@huggingface/transformers";
+import { CACHE_NAME, cachedFetch, prune } from "../core/cache.ts";
 import { readBody } from "../core/progress.ts";
 
 export const isNode = typeof window === "undefined";
@@ -29,6 +30,15 @@ export function modelPath(...parts: string[]): string {
   return [modelBase, ...parts].join("/");
 }
 
+/** A deployed model folder (models/<content hash>) never changes, so its files can stay in Cache Storage. */
+const hashed = () => /\/models\/[0-9a-f]{12}$/.test(modelBase);
+const get = (url: string) => (hashed() ? cachedFetch(url, "immutable") : fetch(url));
+
+/** Remove the stored files of the other model folders. */
+export function pruneModels(): Promise<void> {
+  return hashed() ? prune(modelBase.replace(/[0-9a-f]{12}$/, ""), (u) => u.startsWith(modelBase + "/")) : Promise.resolve();
+}
+
 /** ONNX Runtime Web cannot run one session twice at the same time. Queue the runs of each session. */
 function serialize(sess: any): any {
   let tail: Promise<any> = Promise.resolve();
@@ -45,7 +55,7 @@ function serialize(sess: any): any {
  * response length is not the size). Empty for local files. */
 let sizes: Promise<Record<string, number>> | null = null;
 function modelSizes(): Promise<Record<string, number>> {
-  sizes ??= fetch(modelPath("sizes.json")).then((r) => (r.ok ? r.json() : {})).catch(() => ({}));
+  sizes ??= get(modelPath("sizes.json")).then((r) => (r.ok ? r.json() : {})).catch(() => ({}));
   return sizes;
 }
 
@@ -57,7 +67,7 @@ export async function session(dir: string, file: string, external: Record<string
 /** The bytes of a model file (browser), with download progress. */
 export async function modelFile(dir: string, file: string): Promise<Uint8Array> {
   const key = `${dir}/${file}`;
-  return readBody(await fetch(modelPath(dir, file)), key, (await modelSizes())[key] ?? 0);
+  return readBody(await get(modelPath(dir, file)), key, (await modelSizes())[key] ?? 0);
 }
 
 async function createSession(dir: string, file: string, external: Record<string, Promise<Uint8Array>>): Promise<any> {
@@ -86,6 +96,7 @@ export async function tokenizer(name: string): Promise<any> {
   if (remote) {
     env.remoteHost = modelBase + "/";
     env.remotePathTemplate = "{model}/";
+    if (hashed()) env.cacheKey = CACHE_NAME;
   } else env.localModelPath = modelBase + "/";
   return AutoTokenizer.from_pretrained(name);
 }
@@ -95,7 +106,7 @@ export async function readJson(...parts: string[]): Promise<any> {
     const fs = await nodeImport("node:fs/promises");
     return JSON.parse(await fs.readFile(modelPath(...parts), "utf8"));
   }
-  return (await fetch(modelPath(...parts))).json();
+  return (await get(modelPath(...parts))).json();
 }
 
 /** Tokenizer output (Tensor of int64) to a BigInt64Array and its dims. */

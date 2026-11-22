@@ -1,4 +1,6 @@
 // Bundle exported by scripts/export_web.py. The Python package is the source of truth.
+import { cachedFetch } from "./cache.ts";
+
 export interface SlotDef { type: string; options_ref?: string | null; default?: any; optional?: boolean }
 export interface Template { id: string; family: string; description: string; examples: string[]; slots: Record<string, SlotDef>; dag: any }
 export interface Bundle {
@@ -30,8 +32,7 @@ export async function loadBundle(url: string): Promise<Bundle> {
     const fs = await import(/* @vite-ignore */ name);
     return JSON.parse(await fs.readFile(url, "utf8"));
   }
-  const r = await fetch(url);
-  return r.json();
+  return (await cachedFetch(url, "fallback")).json();
 }
 
 /** geoparse.config.country_policy: the defaults with the values of `policy.countries.<country>`. */

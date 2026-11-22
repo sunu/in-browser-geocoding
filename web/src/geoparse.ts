@@ -5,7 +5,7 @@ import { openDb } from "./execute/db.ts";
 import { Executor, type Result } from "./execute/executor.ts";
 import { Gazetteer } from "./execute/gazetteer.ts";
 import { Photon } from "./execute/photon.ts";
-import { setModelBase } from "./models/runtime.ts";
+import { pruneModels, setModelBase } from "./models/runtime.ts";
 import { T5Frames } from "./models/t5.ts";
 import { CrossEncoder } from "./models/xenc.ts";
 import { Parser, type ParseResult } from "./parse/pipeline.ts";
@@ -32,6 +32,7 @@ export async function load(base = "", onProgress: (msg: string) => void = () => 
     T5Frames.load(true).then((m) => (onProgress("T5 model loaded"), m)),
     CrossEncoder.load(true).then((m) => (onProgress("decision model loaded"), m)),
   ]);
+  pruneModels();
   const photon = new Photon(bundle.config.geocoder.photon_url);
   const parser = new Parser(bundle, t5, new Gazetteer(db, bundle), new Decider(bundle, xenc), photon);
   const executor = new Executor(db, bundle, photon);
