@@ -6,21 +6,19 @@
    "depth": 0,
    "family": "lookup",
    "correct": false,
-   "got": "features",
-   "gold": "lookup",
-   "conf": 0.9134574999999999,
-   "n_options": 3
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup"
   },
   {
    "id": "n001",
    "decision": "pick_template",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup_place",
-   "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
   },
   {
    "id": "n001",
@@ -28,25 +26,20 @@
    "depth": 0,
    "family": "lookup",
    "correct": false,
-   "got": "natural_in",
-   "gold": "lookup_place",
-   "conf": 0.27386499999999997,
-   "n_options": 3
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
   },
   {
    "id": "n001",
    "decision": "pick_split",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": {
-    "anchor": "Ganga river"
-   },
+   "correct": false,
+   "coverage_miss": true,
    "gold": {
     "anchor": "Ganga river"
-   },
-   "conf": 1.0,
-   "n_options": 1
+   }
   },
   {
    "id": "n001",
@@ -64,11 +57,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "got": "hierarchy",
+   "correct": true,
+   "got": "lookup",
    "gold": "lookup",
-   "conf": 0.9765699999999999,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n002",
@@ -86,11 +79,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "got": "children",
+   "correct": true,
+   "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.25119800000000003,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n002",
@@ -126,7 +119,7 @@
    "correct": false,
    "got": "features",
    "gold": "lookup",
-   "conf": 0.9167000000000001,
+   "conf": 0.9439360000000001,
    "n_options": 2
   },
   {
@@ -148,7 +141,7 @@
    "correct": false,
    "got": "natural_in",
    "gold": "lookup_place",
-   "conf": 0.49911799999999995,
+   "conf": 0.3540080000000001,
    "n_options": 2
   },
   {
@@ -163,8 +156,8 @@
    "gold": {
     "anchor": "Sahara desert"
    },
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.982488,
+   "n_options": 2
   },
   {
    "id": "n003",
@@ -226,8 +219,8 @@
     "parent": "Uttar Pradesh",
     "other": "Ganga river"
    },
-   "conf": 0.8077915,
-   "n_options": 3
+   "conf": 0.768712,
+   "n_options": 4
   },
   {
    "id": "n004",
@@ -249,7 +242,7 @@
    "got": false,
    "gold": false,
    "text": "Uttar Pradesh",
-   "conf": 0.990326
+   "conf": 0.996622
   },
   {
    "id": "n004",
@@ -260,7 +253,7 @@
    "got": false,
    "gold": false,
    "text": "Ganga river",
-   "conf": 0.9941
+   "conf": 0.995948
   },
   {
    "id": "n005",
@@ -270,7 +263,7 @@
    "correct": false,
    "got": "features",
    "gold": "lookup",
-   "conf": 0.90717,
+   "conf": 0.934696,
    "n_options": 2
   },
   {
@@ -292,7 +285,7 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.117278,
+   "conf": 0.06374600000000008,
    "n_options": 2
   },
   {
@@ -380,7 +373,7 @@
    "got": false,
    "gold": false,
    "text": "Lake Geneva",
-   "conf": 0.989008
+   "conf": 0.995538
   },
   {
    "id": "n006",
@@ -442,7 +435,7 @@
     "parent": "Haryana",
     "other": "the Yamuna"
    },
-   "conf": 0.8640779999999999,
+   "conf": 0.9429620000000001,
    "n_options": 2
   },
   {
@@ -465,7 +458,7 @@
    "got": false,
    "gold": false,
    "text": "Haryana",
-   "conf": 0.988608
+   "conf": 0.99731
   },
   {
    "id": "n007",
@@ -476,7 +469,7 @@
    "got": false,
    "gold": false,
    "text": "Yamuna",
-   "conf": 0.995348
+   "conf": 0.996984
   },
   {
    "id": "n008",
@@ -486,7 +479,7 @@
    "correct": false,
    "got": "hierarchy",
    "gold": "predicate_filter",
-   "conf": 0.9754320000000001,
+   "conf": 0.93293,
    "n_options": 2
   },
   {
@@ -508,7 +501,7 @@
    "correct": true,
    "got": "children_touching",
    "gold": "children_touching",
-   "conf": 0.404636,
+   "conf": 0.947506,
    "n_options": 2
   },
   {
@@ -533,7 +526,7 @@
    "got": false,
    "gold": false,
    "text": "India",
-   "conf": 0.993856
+   "conf": 0.998034
   },
   {
    "id": "n008",
@@ -544,7 +537,7 @@
    "got": false,
    "gold": false,
    "text": "Yamuna",
-   "conf": 0.995348
+   "conf": 0.996984
   },
   {
    "id": "n009",
@@ -593,7 +586,7 @@
     "level": "states",
     "of": "the Bay of Bengal"
    },
-   "conf": 0.8282860000000001,
+   "conf": 0.9102859999999999,
    "n_options": 2
   },
   {
@@ -616,7 +609,7 @@
    "got": false,
    "gold": false,
    "text": "Bay of Bengal",
-   "conf": 0.991052
+   "conf": 0.990494
   },
   {
    "id": "n010",
@@ -677,7 +670,7 @@
    "got": "north",
    "gold": "north",
    "text": "northern",
-   "conf": 0.999985375
+   "conf": 0.994753
   },
   {
    "id": "n010",
@@ -688,7 +681,7 @@
    "got": false,
    "gold": false,
    "text": "Luzon",
-   "conf": 0.994892
+   "conf": 0.997596
   },
   {
    "id": "n010",
@@ -706,11 +699,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "got": "features",
+   "correct": true,
+   "got": "lookup",
    "gold": "lookup",
-   "conf": 0.913254,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n011",
@@ -728,11 +721,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "got": "natural_in",
+   "correct": true,
+   "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.39147,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n011",
@@ -765,11 +758,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "got": "features",
+   "correct": true,
+   "got": "lookup",
    "gold": "lookup",
-   "conf": 0.8915420000000001,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n012",
@@ -787,11 +780,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "got": "natural_in",
+   "correct": true,
+   "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.082654,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n012",
@@ -824,11 +817,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "got": "features",
+   "correct": true,
+   "got": "lookup",
    "gold": "lookup",
-   "conf": 0.948366,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n013",
@@ -846,11 +839,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "got": "natural_in",
+   "correct": true,
+   "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.5719700000000001,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n013",
@@ -925,7 +918,7 @@
     "level": "districts",
     "parent": "the Western Ghats"
    },
-   "conf": 0.9272720000000001,
+   "conf": 0.960564,
    "n_options": 2
   },
   {
@@ -948,7 +941,7 @@
    "got": true,
    "gold": false,
    "text": "Western Ghats",
-   "conf": 0.8810739999999999
+   "conf": 0.711856
   },
   {
    "id": "n015",
@@ -997,7 +990,7 @@
     "distance": "5 km",
     "target": "the Rhine"
    },
-   "conf": 0.931716,
+   "conf": 0.971962,
    "n_options": 2
   },
   {
@@ -1009,7 +1002,7 @@
    "got": false,
    "gold": false,
    "text": "Rhine",
-   "conf": 0.99554
+   "conf": 0.997388
   },
   {
    "id": "n015",
@@ -1030,7 +1023,7 @@
    "correct": false,
    "got": "features",
    "gold": "lookup",
-   "conf": 0.890406,
+   "conf": 0.918452,
    "n_options": 2
   },
   {
@@ -1052,7 +1045,7 @@
    "correct": false,
    "got": "natural_in",
    "gold": "lookup_place",
-   "conf": 0.559148,
+   "conf": 0.72279,
    "n_options": 2
   },
   {
@@ -1067,8 +1060,8 @@
    "gold": {
     "anchor": "Gobi desert"
    },
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.98505,
+   "n_options": 2
   },
   {
    "id": "n016",
@@ -1145,11 +1138,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "got": "features",
+   "correct": true,
+   "got": "lookup",
    "gold": "lookup",
-   "conf": 0.9501114999999998,
-   "n_options": 3
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n018",
@@ -1167,11 +1160,11 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "got": "natural_in",
+   "correct": true,
+   "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.5676399999999999,
-   "n_options": 3
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "n018",
@@ -1385,9 +1378,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3560988903045654,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.39559507369995117,
+   "model_calls": 2,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -1404,9 +1397,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5669777393341064,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.5090429782867432,
+   "model_calls": 2,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -1423,9 +1416,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9262809753417969,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.38744211196899414,
+   "model_calls": 5,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -1442,7 +1435,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5618231296539307,
+   "latency_s": 0.8644688129425049,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -1461,7 +1454,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.7237629890441895,
+   "latency_s": 1.0106627941131592,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -1480,7 +1473,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4478390216827393,
+   "latency_s": 1.044043779373169,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1499,7 +1492,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.786280870437622,
+   "latency_s": 1.232841968536377,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -1516,19 +1509,19 @@
    "query": "districts along the Yamuna",
    "family": "predicate_filter",
    "depth": 0,
-   "template_ok": false,
+   "template_ok": true,
    "ok": true,
-   "latency_s": 0.9301998615264893,
-   "model_calls": 4,
-   "requests_in_sequence": 2,
+   "latency_s": 0.5121879577636719,
+   "model_calls": 5,
+   "requests_in_sequence": 3,
    "unsupported": null,
-   "got_template": "neighbors",
+   "got_template": "children_touching",
    "path": "complex",
    "slots_ok": false,
    "diffs": [
-    "template"
+    "parent: expected 'India', got None"
    ],
-   "dag_ok": false,
+   "dag_ok": true,
    "exec_ok": true,
    "exec_note": "36 ids vs 36"
   },
@@ -1539,7 +1532,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.0225498676300049,
+   "latency_s": 0.5286569595336914,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -1558,7 +1551,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2177999019622803,
+   "latency_s": 0.5043010711669922,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1577,9 +1570,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.0482971668243408,
-   "model_calls": 4,
-   "requests_in_sequence": 2,
+   "latency_s": 0.7812979221343994,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -1596,9 +1589,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9681241512298584,
-   "model_calls": 4,
-   "requests_in_sequence": 2,
+   "latency_s": 0.8370749950408936,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -1615,9 +1608,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.01882004737854,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.5845801830291748,
+   "model_calls": 2,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -1634,7 +1627,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1474041938781738,
+   "latency_s": 0.32865118980407715,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -1653,7 +1646,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1076288223266602,
+   "latency_s": 0.5803818702697754,
    "model_calls": 3,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -1672,9 +1665,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.311979055404663,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.918956995010376,
+   "model_calls": 5,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -1691,7 +1684,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.2792680263519287,
+   "latency_s": 0.7487108707427979,
    "model_calls": 2,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1710,9 +1703,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8925008773803711,
-   "model_calls": 3,
-   "requests_in_sequence": 2,
+   "latency_s": 0.47365307807922363,
+   "model_calls": 2,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -1729,7 +1722,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.8599526882171631,
+   "latency_s": 0.38051795959472656,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1748,7 +1741,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.0388848781585693,
+   "latency_s": 0.5147242546081543,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1767,7 +1760,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1989881992340088,
+   "latency_s": 0.6130528450012207,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1783,19 +1776,19 @@
  "summary": {
   "pick_family": {
    "n": 21,
-   "correct": 11
+   "correct": 16
   },
   "pick_template": {
    "n": 21,
-   "correct": 21
+   "correct": 20
   },
   "pick_template_flat": {
    "n": 21,
-   "correct": 13
+   "correct": 18
   },
   "pick_split": {
    "n": 21,
-   "correct": 20
+   "correct": 19
   },
   "is_subquery": {
    "n": 11,
@@ -1828,11 +1821,11 @@
    },
    "predicate_filter": {
     "n": 3,
-    "dag_ok": 2
+    "dag_ok": 3
    },
    "ALL": {
     "n": 21,
-    "dag_ok": 20
+    "dag_ok": 21
    }
   }
  }

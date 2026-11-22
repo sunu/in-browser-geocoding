@@ -8,7 +8,7 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 0.9998,
+   "conf": 0.9940960000000001,
    "n_options": 2
   },
   {
@@ -30,8 +30,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.14125999999999994,
-   "n_options": 2
+   "conf": 0.6908814999999999,
+   "n_options": 3
   },
   {
    "id": "z001",
@@ -63,7 +63,7 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 0.9998119999999999,
+   "conf": 0.991892,
    "n_options": 2
   },
   {
@@ -85,8 +85,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.25318799999999997,
-   "n_options": 2
+   "conf": 0.782176,
+   "n_options": 3
   },
   {
    "id": "z002",
@@ -115,11 +115,11 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "got": "hierarchy",
+   "correct": true,
+   "got": "lookup",
    "gold": "lookup",
-   "conf": 0.9275844999999998,
-   "n_options": 3
+   "conf": 0.986566,
+   "n_options": 2
   },
   {
    "id": "z003",
@@ -137,10 +137,10 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "got": "children",
+   "correct": true,
+   "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.24384549999999997,
+   "conf": 0.8327289999999998,
    "n_options": 3
   },
   {
@@ -170,30 +170,33 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "coverage_miss": true,
-   "got": null,
-   "gold": "lookup"
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.97984,
+   "n_options": 2
   },
   {
    "id": "z004",
    "decision": "pick_template",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "coverage_miss": true,
-   "got": null,
-   "gold": "lookup_place"
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "z004",
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "coverage_miss": true,
-   "got": null,
-   "gold": "lookup_place"
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 0.7926549999999999,
+   "n_options": 3
   },
   {
    "id": "z004",
@@ -222,33 +225,30 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup",
-   "gold": "lookup",
-   "conf": 0.999754,
-   "n_options": 2
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup"
   },
   {
    "id": "z005",
    "decision": "pick_template",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup_place",
-   "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
   },
   {
    "id": "z005",
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup_place",
-   "gold": "lookup_place",
-   "conf": 0.25549599999999995,
-   "n_options": 2
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
   },
   {
    "id": "z005",
@@ -381,33 +381,30 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup",
-   "gold": "lookup",
-   "conf": 0.9991540000000001,
-   "n_options": 2
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup"
   },
   {
    "id": "z008",
    "decision": "pick_template",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup_place",
-   "gold": "lookup_place",
-   "conf": 1.0,
-   "n_options": 1
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
   },
   {
    "id": "z008",
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": true,
-   "got": "lookup_place",
-   "gold": "lookup_place",
-   "conf": 0.01673199999999997,
-   "n_options": 2
+   "correct": false,
+   "coverage_miss": true,
+   "got": null,
+   "gold": "lookup_place"
   },
   {
    "id": "z008",
@@ -436,30 +433,33 @@
    "decision": "pick_family",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "coverage_miss": true,
-   "got": null,
-   "gold": "lookup"
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.981676,
+   "n_options": 2
   },
   {
    "id": "z009",
    "decision": "pick_template",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "coverage_miss": true,
-   "got": null,
-   "gold": "lookup_place"
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "z009",
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "lookup",
-   "correct": false,
-   "coverage_miss": true,
-   "got": null,
-   "gold": "lookup_place"
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 0.7559815,
+   "n_options": 3
   },
   {
    "id": "z009",
@@ -491,7 +491,7 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 0.9996499999999999,
+   "conf": 0.9814039999999999,
    "n_options": 2
   },
   {
@@ -513,8 +513,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.3245800000000001,
-   "n_options": 2
+   "conf": 0.748003,
+   "n_options": 3
   },
   {
    "id": "z010",
@@ -585,7 +585,7 @@
     "category": "schools",
     "region": "Cambridge"
    },
-   "conf": 0.944173,
+   "conf": 0.942772,
    "n_options": 3
   },
   {
@@ -597,7 +597,7 @@
    "got": "school",
    "gold": "school",
    "text": "schools",
-   "conf": 0.9972975000000001
+   "conf": 0.999920125
   },
   {
    "id": "z011",
@@ -608,7 +608,7 @@
    "got": false,
    "gold": false,
    "text": "Cambridge",
-   "conf": 0.994446
+   "conf": 0.997628
   },
   {
    "id": "z012",
@@ -618,7 +618,7 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 0.999268,
+   "conf": 0.980054,
    "n_options": 2
   },
   {
@@ -640,7 +640,7 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.16737200000000008,
+   "conf": 0.551398,
    "n_options": 2
   },
   {
@@ -735,7 +735,7 @@
    "got": false,
    "gold": true,
    "text": "eastern Germany",
-   "conf": 0.989062
+   "conf": 0.994424
   },
   {
    "id": "z013",
@@ -745,7 +745,7 @@
    "correct": false,
    "got": "lookup",
    "gold": "modifier",
-   "conf": 0.996632,
+   "conf": 0.975768,
    "n_options": 2
   },
   {
@@ -767,7 +767,7 @@
    "correct": true,
    "got": "direction_part",
    "gold": "direction_part",
-   "conf": 0.618722,
+   "conf": 0.2862579999999999,
    "n_options": 2
   },
   {
@@ -796,7 +796,7 @@
    "got": "east",
    "gold": "east",
    "text": "eastern",
-   "conf": 0.999996625
+   "conf": 0.9914679999999999
   },
   {
    "id": "z013",
@@ -807,7 +807,7 @@
    "got": false,
    "gold": false,
    "text": "Germany",
-   "conf": 0.996092
+   "conf": 0.998188
   },
   {
    "id": "z014",
@@ -828,8 +828,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9968459999999999,
+   "n_options": 2
   },
   {
    "id": "z014",
@@ -839,8 +839,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.8627720000000001,
+   "n_options": 2
   },
   {
    "id": "z014",
@@ -868,7 +868,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitals",
-   "conf": 0.9996988
+   "conf": 0.9999257500000001
   },
   {
    "id": "z014",
@@ -879,18 +879,18 @@
    "got": false,
    "gold": true,
    "text": "southern Spain",
-   "conf": 0.976228
+   "conf": 0.47082
   },
   {
    "id": "z014",
    "decision": "pick_family",
    "depth": 1,
    "family": "modifier",
-   "correct": true,
-   "got": "modifier",
+   "correct": false,
+   "got": "lookup",
    "gold": "modifier",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9643820000000001,
+   "n_options": 2
   },
   {
    "id": "z014",
@@ -911,8 +911,8 @@
    "correct": true,
    "got": "direction_part",
    "gold": "direction_part",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.6108800000000001,
+   "n_options": 2
   },
   {
    "id": "z014",
@@ -940,7 +940,7 @@
    "got": "south",
    "gold": "south",
    "text": "southern",
-   "conf": 0.9999561250000001
+   "conf": 0.986636125
   },
   {
    "id": "z014",
@@ -951,7 +951,7 @@
    "got": false,
    "gold": false,
    "text": "Spain",
-   "conf": 0.99577
+   "conf": 0.99812
   },
   {
    "id": "z015",
@@ -1023,18 +1023,18 @@
    "got": false,
    "gold": true,
    "text": "northern India",
-   "conf": 0.97665
+   "conf": 0.995224
   },
   {
    "id": "z015",
    "decision": "pick_family",
    "depth": 1,
    "family": "modifier",
-   "correct": false,
-   "got": "lookup",
+   "correct": true,
+   "got": "modifier",
    "gold": "modifier",
-   "conf": 0.97746,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "z015",
@@ -1055,8 +1055,8 @@
    "correct": true,
    "got": "direction_part",
    "gold": "direction_part",
-   "conf": 0.845254,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "z015",
@@ -1084,7 +1084,7 @@
    "got": "north",
    "gold": "north",
    "text": "northern",
-   "conf": 0.999985375
+   "conf": 0.994753
   },
   {
    "id": "z015",
@@ -1095,7 +1095,7 @@
    "got": false,
    "gold": false,
    "text": "India",
-   "conf": 0.993856
+   "conf": 0.998034
   },
   {
    "id": "z016",
@@ -1116,7 +1116,7 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 0.973246,
+   "conf": 0.9975719999999999,
    "n_options": 2
   },
   {
@@ -1127,7 +1127,7 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 0.39723200000000003,
+   "conf": 0.880226,
    "n_options": 2
   },
   {
@@ -1156,18 +1156,18 @@
    "got": "school",
    "gold": "school",
    "text": "schools",
-   "conf": 0.9972975000000001
+   "conf": 0.999920125
   },
   {
    "id": "z016",
    "decision": "is_subquery",
    "depth": 0,
    "family": "features",
-   "correct": true,
-   "got": true,
+   "correct": false,
+   "got": false,
    "gold": true,
    "text": "western Kenya",
-   "conf": 0.785874
+   "conf": 0.5785640000000001
   },
   {
    "id": "z016",
@@ -1228,7 +1228,7 @@
    "got": "west",
    "gold": "west",
    "text": "western",
-   "conf": 0.99997525
+   "conf": 0.98964325
   },
   {
    "id": "z016",
@@ -1239,7 +1239,7 @@
    "got": false,
    "gold": false,
    "text": "Kenya",
-   "conf": 0.993878
+   "conf": 0.998054
   },
   {
    "id": "z017",
@@ -1260,8 +1260,8 @@
    "correct": true,
    "got": "union",
    "gold": "union",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9984040000000001,
+   "n_options": 2
   },
   {
    "id": "z017",
@@ -1271,8 +1271,8 @@
    "correct": true,
    "got": "union",
    "gold": "union",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9370940000000001,
+   "n_options": 2
   },
   {
    "id": "z017",
@@ -1288,7 +1288,7 @@
     "a": "Kerala",
     "b": "Tamil Nadu"
    },
-   "conf": 0.933942,
+   "conf": 0.91153,
    "n_options": 2
   },
   {
@@ -1300,7 +1300,7 @@
    "got": false,
    "gold": false,
    "text": "Kerala",
-   "conf": 0.992946
+   "conf": 0.997534
   },
   {
    "id": "z017",
@@ -1311,7 +1311,7 @@
    "got": false,
    "gold": false,
    "text": "Tamil Nadu",
-   "conf": 0.984008
+   "conf": 0.99729
   },
   {
    "id": "z018",
@@ -1321,8 +1321,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 0.9913390000000001,
-   "n_options": 3
+   "conf": 0.8908320000000001,
+   "n_options": 2
   },
   {
    "id": "z018",
@@ -1343,8 +1343,8 @@
    "correct": false,
    "got": "direction_part",
    "gold": "lookup_place",
-   "conf": 0.4306690000000001,
-   "n_options": 3
+   "conf": 0.734958,
+   "n_options": 2
   },
   {
    "id": "z018",
@@ -1440,7 +1440,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.0094211101531982,
+   "latency_s": 0.48655271530151367,
    "model_calls": 1,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1459,7 +1459,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9987277984619141,
+   "latency_s": 0.517629861831665,
    "model_calls": 1,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1478,7 +1478,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9739618301391602,
+   "latency_s": 0.5589549541473389,
    "model_calls": 1,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1497,7 +1497,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9531331062316895,
+   "latency_s": 0.5118091106414795,
    "model_calls": 1,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1516,7 +1516,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4370932579040527,
+   "latency_s": 0.5688278675079346,
    "model_calls": 1,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1535,7 +1535,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.201977252960205,
+   "latency_s": 0.5399253368377686,
    "model_calls": 1,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1554,7 +1554,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.249216079711914,
+   "latency_s": 0.5562009811401367,
    "model_calls": 1,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1573,7 +1573,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3226540088653564,
+   "latency_s": 0.5059499740600586,
    "model_calls": 1,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1592,7 +1592,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.0498368740081787,
+   "latency_s": 0.6935789585113525,
    "model_calls": 1,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1611,7 +1611,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.0050911903381348,
+   "latency_s": 0.6267759799957275,
    "model_calls": 1,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1630,7 +1630,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.162490129470825,
+   "latency_s": 1.523371934890747,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -1651,7 +1651,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3380188941955566,
+   "latency_s": 0.6496529579162598,
    "model_calls": 1,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1670,7 +1670,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.326547861099243,
+   "latency_s": 0.9569828510284424,
    "model_calls": 8,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -1689,9 +1689,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5451481342315674,
-   "model_calls": 8,
-   "requests_in_sequence": 2,
+   "latency_s": 1.124305009841919,
+   "model_calls": 10,
+   "requests_in_sequence": 4,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -1708,9 +1708,9 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.9112977981567383,
-   "model_calls": 8,
-   "requests_in_sequence": 3,
+   "latency_s": 1.5555908679962158,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -1727,7 +1727,7 @@
    "depth": 1,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.9178991317749023,
+   "latency_s": 1.1997652053833008,
    "model_calls": 9,
    "requests_in_sequence": 3,
    "unsupported": null,
@@ -1746,9 +1746,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.0604000091552734,
-   "model_calls": 6,
-   "requests_in_sequence": 2,
+   "latency_s": 1.597804069519043,
+   "model_calls": 7,
+   "requests_in_sequence": 3,
    "unsupported": null,
    "got_template": "union",
    "path": "complex",
@@ -1765,7 +1765,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.4648067951202393,
+   "latency_s": 0.545968770980835,
    "model_calls": 4,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -1784,7 +1784,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5556790828704834,
+   "latency_s": 0.57955002784729,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -1800,7 +1800,7 @@
  "summary": {
   "pick_family": {
    "n": 23,
-   "correct": 16
+   "correct": 17
   },
   "pick_template": {
    "n": 23,
@@ -1808,7 +1808,7 @@
   },
   "pick_template_flat": {
    "n": 23,
-   "correct": 17
+   "correct": 18
   },
   "pick_split": {
    "n": 23,
@@ -1816,7 +1816,7 @@
   },
   "is_subquery": {
    "n": 11,
-   "correct": 8
+   "correct": 7
   },
   "select_source": {
    "n": 13,

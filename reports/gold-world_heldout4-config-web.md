@@ -6,41 +6,33 @@ Records: 21. Depth 0: 21. Depth 1 (two levels): 0.
 
 | Decision | Accuracy | Depth 0 | Depth 1 | Coverage misses | Mean confidence |
 |---|---|---|---|---|---|
-| pick_family | 52% (11/21) | 52% (11/21) | - | 0 | 0.97 |
-| pick_template | 100% (21/21) | 100% (21/21) | - | 0 | 1.00 |
-| pick_template_flat | 62% (13/21) | 62% (13/21) | - | 0 | 0.70 |
-| pick_split | 95% (20/21) | 95% (20/21) | - | 1 | 0.97 |
-| is_subquery | 91% (10/11) | 91% (10/11) | - | 0 | 0.98 |
+| pick_family | 76% (16/21) | 76% (16/21) | - | 1 | 0.99 |
+| pick_template | 95% (20/21) | 95% (20/21) | - | 1 | 1.00 |
+| pick_template_flat | 86% (18/21) | 86% (18/21) | - | 1 | 0.90 |
+| pick_split | 90% (19/21) | 90% (19/21) | - | 2 | 0.97 |
+| is_subquery | 91% (10/11) | 91% (10/11) | - | 0 | 0.97 |
 | select_source | 88% (14/16) | 88% (14/16) | - | 0 | 0.80 |
 | fill_closed_slot.admin_level | 100% (4/4) | 100% (4/4) | - | 0 | 1.00 |
-| fill_closed_slot.direction | 100% (1/1) | 100% (1/1) | - | 0 | 1.00 |
+| fill_closed_slot.direction | 100% (1/1) | 100% (1/1) | - | 0 | 0.99 |
 
 ### Errors in decisions alone
 
 | Gold id | Decision | Depth | Gold | Got | Confidence |
 |---|---|---|---|---|---|
-| n001 | pick_family | 0 | lookup | features | 0.9134574999999999 |
-| n001 | pick_template_flat | 0 | lookup_place | natural_in | 0.27386499999999997 |
-| n002 | pick_family | 0 | lookup | hierarchy | 0.9765699999999999 |
-| n002 | pick_template_flat | 0 | lookup_place | children | 0.25119800000000003 |
-| n003 | pick_family | 0 | lookup | features | 0.9167000000000001 |
-| n003 | pick_template_flat | 0 | lookup_place | natural_in | 0.49911799999999995 |
-| n005 | pick_family | 0 | lookup | features | 0.90717 |
+| n001 | pick_family | 0 | lookup | null | coverage miss |
+| n001 | pick_template | 0 | lookup_place | null | coverage miss |
+| n001 | pick_template_flat | 0 | lookup_place | null | coverage miss |
+| n001 | pick_split | 0 | {"anchor": "Ganga river"} | null | coverage miss |
+| n003 | pick_family | 0 | lookup | features | 0.9439360000000001 |
+| n003 | pick_template_flat | 0 | lookup_place | natural_in | 0.3540080000000001 |
+| n005 | pick_family | 0 | lookup | features | 0.934696 |
 | n005 | select_source | 0 | overture | photon | 0.8 |
 | n006 | select_source | 0 | overture | photon | 0.8 |
-| n008 | pick_family | 0 | predicate_filter | hierarchy | 0.9754320000000001 |
+| n008 | pick_family | 0 | predicate_filter | hierarchy | 0.93293 |
 | n008 | pick_split | 0 | {"level": "district", "parent": "India", "other": "Yamuna"} | null | coverage miss |
-| n011 | pick_family | 0 | lookup | features | 0.913254 |
-| n011 | pick_template_flat | 0 | lookup_place | natural_in | 0.39147 |
-| n012 | pick_family | 0 | lookup | features | 0.8915420000000001 |
-| n012 | pick_template_flat | 0 | lookup_place | natural_in | 0.082654 |
-| n013 | pick_family | 0 | lookup | features | 0.948366 |
-| n013 | pick_template_flat | 0 | lookup_place | natural_in | 0.5719700000000001 |
-| n014 | is_subquery | 0 | false | true | 0.8810739999999999 |
-| n016 | pick_family | 0 | lookup | features | 0.890406 |
-| n016 | pick_template_flat | 0 | lookup_place | natural_in | 0.559148 |
-| n018 | pick_family | 0 | lookup | features | 0.9501114999999998 |
-| n018 | pick_template_flat | 0 | lookup_place | natural_in | 0.5676399999999999 |
+| n014 | is_subquery | 0 | false | true | 0.711856 |
+| n016 | pick_family | 0 | lookup | features | 0.918452 |
+| n016 | pick_template_flat | 0 | lookup_place | natural_in | 0.72279 |
 
 ## Full pipeline
 
@@ -49,17 +41,11 @@ Records: 21. Depth 0: 21. Depth 1 (two levels): 0.
 | hierarchy | 100% (2/2) | 100% (2/2) | 100% (2/2) | 0 | 100% (2/2) |
 | lookup | 100% (13/13) | 100% (13/13) | 100% (13/13) | 0 | 100% (13/13) |
 | modifier | 100% (3/3) | 100% (3/3) | 100% (3/3) | 0 | 100% (3/3) |
-| predicate_filter | 67% (2/3) | 67% (2/3) | 67% (2/3) | 0 | 100% (3/3) |
-| ALL | 95% (20/21) | 95% (20/21) | 95% (20/21) | 0 | 100% (21/21) |
+| predicate_filter | 100% (3/3) | 67% (2/3) | 100% (3/3) | 0 | 100% (3/3) |
+| ALL | 100% (21/21) | 95% (20/21) | 100% (21/21) | 0 | 100% (21/21) |
 
 ### By depth
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 95% (20/21) | 1.11 s | 3.6 | 1.7 |
-
-### Pipeline errors
-
-| Gold id | Query | Got template | Problem |
-|---|---|---|---|
-| n008 | districts along the Yamuna | neighbors | template |
+| 0 | 100% (21/21) | 0.58 s | 3.6 | 1.6 |

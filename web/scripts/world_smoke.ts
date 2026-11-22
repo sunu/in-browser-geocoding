@@ -44,7 +44,14 @@ const EXAMPLES: [string, string][] = [
   ["IN", "countries near the Himalayas"], ["US", "Pacific Northwest"], ["FR", "the Middle East"], ["FR", "countries of the Balkans"],
   ["IN", "Southeast Asia"],
 ];
-const QUERIES = (process.env.SET === "poi" ? POI : process.env.SET === "new" ? NEW : process.env.SET === "examples" ? EXAMPLES : BASE)
+// Lists of places, the any/all quantifier and ranking per parent (plan-036): the parse notes are in the result panel.
+const LISTS: [string, string][] = [
+  ["FR", "border between France, Switzerland and Germany"], ["FR", "countries bordering France or Germany"],
+  ["FR", "countries that border France, Germany and Italy"], ["FR", "countries bordering France and Germany"],
+  ["FR", "countries bordering both France and Germany"], ["KE", "the largest county in each region of Kenya"],
+];
+const SETS: Record<string, [string, string][]> = { poi: POI, new: NEW, examples: EXAMPLES, lists: LISTS };
+const QUERIES = (SETS[process.env.SET ?? ""] ?? BASE)
   .slice(Number(process.env.FROM ?? 0));
 const name = process.argv[2] ?? "chromium";
 // Headless Firefox on Linux without a GPU driver has no WebGL (the map needs it): use the software renderer.

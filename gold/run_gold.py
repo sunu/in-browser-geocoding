@@ -88,6 +88,7 @@ def slots_equal(t: str, got: dict[str, Any], gold: dict[str, Any]) -> tuple[bool
                 if not isinstance(r, str) or ntext(r) != ntext(g):
                     diffs.append(f"{name}: expected {g!r}, got {r!r}")
         elif sd.type in ("distance", "value"):
+            g, r = (None if isinstance(x, str) and x.startswith("policy.") else x for x in (g, r))
             if (g is None) != (r is None) or (g is not None and abs(float(g) - float(r)) > 1e-6):
                 diffs.append(f"{name}: expected {g!r}, got {r!r}")
         elif g != r:

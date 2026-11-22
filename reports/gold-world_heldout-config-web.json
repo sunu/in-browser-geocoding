@@ -67,7 +67,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.9944980000000001,
+   "conf": 0.9814639999999999,
    "n_options": 2
   },
   {
@@ -89,7 +89,7 @@
    "correct": true,
    "got": "neighbors",
    "gold": "neighbors",
-   "conf": 0.4639420000000001,
+   "conf": 0.25772799999999996,
    "n_options": 2
   },
   {
@@ -129,7 +129,7 @@
    "got": false,
    "gold": false,
    "text": "Ontario",
-   "conf": 0.994794
+   "conf": 0.998022
   },
   {
    "id": "x003",
@@ -150,7 +150,7 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 0.980952,
+   "conf": 0.994178,
    "n_options": 2
   },
   {
@@ -161,7 +161,7 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 0.4618279999999999,
+   "conf": 0.7338480000000001,
    "n_options": 2
   },
   {
@@ -190,7 +190,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitals",
-   "conf": 0.9996988
+   "conf": 0.9999257500000001
   },
   {
    "id": "x003",
@@ -201,7 +201,7 @@
    "got": false,
    "gold": false,
    "text": "Vancouver",
-   "conf": 0.995166
+   "conf": 0.997964
   },
   {
    "id": "x004",
@@ -211,7 +211,7 @@
    "correct": false,
    "got": "features",
    "gold": "hierarchy",
-   "conf": 0.9682569999999998,
+   "conf": 0.794929,
    "n_options": 3
   },
   {
@@ -233,7 +233,7 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 0.21889900000000004,
+   "conf": 0.37135900000000005,
    "n_options": 3
   },
   {
@@ -273,7 +273,7 @@
    "got": false,
    "gold": false,
    "text": "Italy",
-   "conf": 0.996656
+   "conf": 0.998232
   },
   {
    "id": "x005",
@@ -283,8 +283,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.9975259999999999,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "x005",
@@ -294,8 +294,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9972240000000001,
+   "n_options": 2
   },
   {
    "id": "x005",
@@ -305,7 +305,7 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 0.568316,
+   "conf": 0.7547520000000001,
    "n_options": 2
   },
   {
@@ -345,7 +345,7 @@
    "got": false,
    "gold": false,
    "text": "Tuscany",
-   "conf": 0.996084
+   "conf": 0.998132
   },
   {
    "id": "x006",
@@ -425,8 +425,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 0.9789079999999999,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "x007",
@@ -436,8 +436,8 @@
    "correct": true,
    "got": "children_with_predicate",
    "gold": "children_with_predicate",
-   "conf": 0.07978799999999997,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "x007",
@@ -455,8 +455,8 @@
     "pred": "landlocked",
     "parent": "Spain"
    },
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.956404,
+   "n_options": 2
   },
   {
    "id": "x007",
@@ -467,7 +467,7 @@
    "got": "landlocked",
    "gold": "landlocked",
    "text": "landlocked",
-   "conf": 0.9972868
+   "conf": 0.9874984
   },
   {
    "id": "x007",
@@ -489,7 +489,7 @@
    "got": false,
    "gold": false,
    "text": "Spain",
-   "conf": 0.99577
+   "conf": 0.99812
   },
   {
    "id": "x008",
@@ -510,8 +510,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.995546,
+   "n_options": 2
   },
   {
    "id": "x008",
@@ -521,8 +521,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.8589260000000001,
+   "n_options": 2
   },
   {
    "id": "x008",
@@ -550,7 +550,7 @@
    "got": "school",
    "gold": "school",
    "text": "schools",
-   "conf": 0.9972975000000001
+   "conf": 0.999920125
   },
   {
    "id": "x008",
@@ -561,7 +561,7 @@
    "got": false,
    "gold": false,
    "text": "Seville",
-   "conf": 0.996116
+   "conf": 0.998274
   },
   {
    "id": "x009",
@@ -582,8 +582,8 @@
    "correct": true,
    "got": "union",
    "gold": "union",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.99787,
+   "n_options": 2
   },
   {
    "id": "x009",
@@ -593,8 +593,8 @@
    "correct": true,
    "got": "union",
    "gold": "union",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.742996,
+   "n_options": 2
   },
   {
    "id": "x009",
@@ -610,8 +610,8 @@
     "a": "Catalonia",
     "b": "Aragon"
    },
-   "conf": 0.94723,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "x009",
@@ -622,7 +622,7 @@
    "got": false,
    "gold": false,
    "text": "Catalonia",
-   "conf": 0.995318
+   "conf": 0.998382
   },
   {
    "id": "x009",
@@ -633,7 +633,7 @@
    "got": false,
    "gold": false,
    "text": "Aragon",
-   "conf": 0.996152
+   "conf": 0.998126
   },
   {
    "id": "x010",
@@ -643,8 +643,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 0.9999659999999999,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "x010",
@@ -665,8 +665,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.3445640000000001,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "x010",
@@ -702,7 +702,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.9905679999999999,
+   "conf": 0.97044,
    "n_options": 2
   },
   {
@@ -721,10 +721,10 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "hierarchy",
-   "correct": true,
-   "got": "neighbors",
+   "correct": false,
+   "got": "children_touching",
    "gold": "neighbors",
-   "conf": 0.13495600000000008,
+   "conf": 0.336012,
    "n_options": 2
   },
   {
@@ -764,7 +764,7 @@
    "got": false,
    "gold": false,
    "text": "Mendoza",
-   "conf": 0.995438
+   "conf": 0.997802
   },
   {
    "id": "x012",
@@ -836,7 +836,7 @@
    "got": false,
    "gold": false,
    "text": "Argentina",
-   "conf": 0.995742
+   "conf": 0.99821
   },
   {
    "id": "x013",
@@ -846,8 +846,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.9976780000000001,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "x013",
@@ -868,8 +868,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 0.5297339999999999,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "x013",
@@ -908,7 +908,7 @@
    "got": false,
    "gold": false,
    "text": "Kenya",
-   "conf": 0.993878
+   "conf": 0.998054
   },
   {
    "id": "x014",
@@ -929,7 +929,7 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 0.9746239999999999,
+   "conf": 0.9963120000000001,
    "n_options": 2
   },
   {
@@ -940,7 +940,7 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 0.29863799999999996,
+   "conf": 0.8057380000000001,
    "n_options": 2
   },
   {
@@ -969,7 +969,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitals",
-   "conf": 0.9996988
+   "conf": 0.9999257500000001
   },
   {
    "id": "x014",
@@ -980,7 +980,7 @@
    "got": false,
    "gold": false,
    "text": "Nairobi",
-   "conf": 0.995364
+   "conf": 0.997482
   },
   {
    "id": "x015",
@@ -1049,8 +1049,8 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.998254,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "x016",
@@ -1071,8 +1071,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 0.5511680000000001,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "x016",
@@ -1111,7 +1111,7 @@
    "got": false,
    "gold": false,
    "text": "Indonesia",
-   "conf": 0.995478
+   "conf": 0.998172
   },
   {
    "id": "x017",
@@ -1183,7 +1183,7 @@
    "got": false,
    "gold": false,
    "text": "Bandung",
-   "conf": 0.995248
+   "conf": 0.997618
   },
   {
    "id": "x018",
@@ -1244,7 +1244,7 @@
    "got": false,
    "gold": false,
    "text": "Yogyakarta",
-   "conf": 0.994558
+   "conf": 0.99577
   },
   {
    "id": "x018",
@@ -1335,8 +1335,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.9928859999999999,
+   "n_options": 2
   },
   {
    "id": "x020",
@@ -1346,8 +1346,8 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 1.0,
-   "n_options": 1
+   "conf": 0.7358359999999999,
+   "n_options": 2
   },
   {
    "id": "x020",
@@ -1375,7 +1375,7 @@
    "got": "school",
    "gold": "school",
    "text": "schools",
-   "conf": 0.9972975000000001
+   "conf": 0.999920125
   },
   {
    "id": "x020",
@@ -1386,7 +1386,7 @@
    "got": false,
    "gold": false,
    "text": "Quezon City",
-   "conf": 0.993256
+   "conf": 0.997302
   },
   {
    "id": "x021",
@@ -1458,7 +1458,7 @@
    "got": false,
    "gold": false,
    "text": "Antioquia",
-   "conf": 0.990822
+   "conf": 0.992708
   },
   {
    "id": "x022",
@@ -1468,7 +1468,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.956656,
+   "conf": 0.981746,
    "n_options": 2
   },
   {
@@ -1487,10 +1487,10 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "hierarchy",
-   "correct": true,
-   "got": "neighbors",
+   "correct": false,
+   "got": "children_touching",
    "gold": "neighbors",
-   "conf": 0.14275400000000005,
+   "conf": 0.7030080000000001,
    "n_options": 2
   },
   {
@@ -1530,7 +1530,7 @@
    "got": false,
    "gold": false,
    "text": "Cundinamarca",
-   "conf": 0.987036
+   "conf": 0.995492
   },
   {
    "id": "x023",
@@ -1540,8 +1540,8 @@
    "correct": true,
    "got": "lookup",
    "gold": "lookup",
-   "conf": 0.9998880000000001,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "x023",
@@ -1562,8 +1562,8 @@
    "correct": true,
    "got": "lookup_place",
    "gold": "lookup_place",
-   "conf": 0.35486799999999996,
-   "n_options": 2
+   "conf": 1.0,
+   "n_options": 1
   },
   {
    "id": "x023",
@@ -1599,7 +1599,7 @@
    "correct": false,
    "got": "features",
    "gold": "hierarchy",
-   "conf": 0.9723369999999999,
+   "conf": 0.5147889999999999,
    "n_options": 3
   },
   {
@@ -1621,8 +1621,8 @@
    "correct": true,
    "got": "children",
    "gold": "children",
-   "conf": 0.2050706666666667,
-   "n_options": 4
+   "conf": 0.37762000000000007,
+   "n_options": 3
   },
   {
    "id": "x024",
@@ -1647,10 +1647,10 @@
    "depth": 0,
    "family": "hierarchy",
    "correct": false,
-   "got": "district",
+   "got": "country",
    "gold": "state",
    "text": "voivodeships",
-   "conf": 0.01740640000000001
+   "conf": 0.04198360000000001
   },
   {
    "id": "x024",
@@ -1661,7 +1661,7 @@
    "got": false,
    "gold": false,
    "text": "Poland",
-   "conf": 0.995888
+   "conf": 0.99808
   },
   {
    "id": "x025",
@@ -1722,7 +1722,7 @@
    "got": false,
    "gold": false,
    "text": "Krakow",
-   "conf": 0.99555
+   "conf": 0.998162
   },
   {
    "id": "x025",
@@ -1733,7 +1733,7 @@
    "got": false,
    "gold": false,
    "text": "Nowa Huta",
-   "conf": 0.994022
+   "conf": 0.995456
   },
   {
    "id": "x026",
@@ -1784,7 +1784,7 @@
     "pred": "coastal",
     "parent": "Poland"
    },
-   "conf": 0.959986,
+   "conf": 0.959114,
    "n_options": 2
   },
   {
@@ -1796,7 +1796,7 @@
    "got": "coastal",
    "gold": "coastal",
    "text": "coastal",
-   "conf": 0.9998020000000001
+   "conf": 0.9996112
   },
   {
    "id": "x026",
@@ -1804,10 +1804,10 @@
    "depth": 0,
    "family": "predicate_filter",
    "correct": false,
-   "got": "district",
+   "got": "country",
    "gold": "state",
    "text": "voivodeships",
-   "conf": 0.01740640000000001
+   "conf": 0.04198360000000001
   },
   {
    "id": "x026",
@@ -1818,7 +1818,7 @@
    "got": false,
    "gold": false,
    "text": "Poland",
-   "conf": 0.995888
+   "conf": 0.99808
   },
   {
    "id": "x027",
@@ -1887,7 +1887,7 @@
    "correct": true,
    "got": "hierarchy",
    "gold": "hierarchy",
-   "conf": 0.992302,
+   "conf": 0.983644,
    "n_options": 2
   },
   {
@@ -1906,10 +1906,10 @@
    "decision": "pick_template_flat",
    "depth": 0,
    "family": "hierarchy",
-   "correct": true,
-   "got": "neighbors",
+   "correct": false,
+   "got": "children_touching",
    "gold": "neighbors",
-   "conf": 0.100522,
+   "conf": 0.40913,
    "n_options": 2
   },
   {
@@ -1949,7 +1949,7 @@
    "got": false,
    "gold": false,
    "text": "Cairo",
-   "conf": 0.99675
+   "conf": 0.997998
   },
   {
    "id": "x029",
@@ -1970,7 +1970,7 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 0.991126,
+   "conf": 0.997258,
    "n_options": 2
   },
   {
@@ -1981,7 +1981,7 @@
    "correct": true,
    "got": "features_in",
    "gold": "features_in",
-   "conf": 0.76315,
+   "conf": 0.8277000000000001,
    "n_options": 2
   },
   {
@@ -2010,7 +2010,7 @@
    "got": "hospital",
    "gold": "hospital",
    "text": "hospitals",
-   "conf": 0.9996988
+   "conf": 0.9999257500000001
   },
   {
    "id": "x029",
@@ -2021,7 +2021,7 @@
    "got": false,
    "gold": false,
    "text": "Giza",
-   "conf": 0.99786
+   "conf": 0.998034
   }
  ],
  "pipeline": [
@@ -2032,7 +2032,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9761388301849365,
+   "latency_s": 0.4705522060394287,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2051,7 +2051,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.333885908126831,
+   "latency_s": 0.2555670738220215,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2070,7 +2070,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.5646238327026367,
+   "latency_s": 0.5962889194488525,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2089,7 +2089,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.7444028854370117,
+   "latency_s": 0.7408230304718018,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2108,7 +2108,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.8705956935882568,
+   "latency_s": 0.532081127166748,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2127,7 +2127,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.9549331665039062,
+   "latency_s": 0.6781730651855469,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2146,7 +2146,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.7812798023223877,
+   "latency_s": 0.7807300090789795,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2165,9 +2165,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6099982261657715,
-   "model_calls": 5,
-   "requests_in_sequence": 1,
+   "latency_s": 0.6241071224212646,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -2184,7 +2184,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5910580158233643,
+   "latency_s": 0.8448131084442139,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2203,9 +2203,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.9535400867462158,
-   "model_calls": 5,
-   "requests_in_sequence": 2,
+   "latency_s": 0.9836080074310303,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -2222,7 +2222,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.624204158782959,
+   "latency_s": 0.7773067951202393,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2241,7 +2241,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6808910369873047,
+   "latency_s": 0.8351578712463379,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2260,9 +2260,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.9444079399108887,
-   "model_calls": 5,
-   "requests_in_sequence": 2,
+   "latency_s": 0.704348087310791,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -2279,7 +2279,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.9671120643615723,
+   "latency_s": 0.7066731452941895,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2298,7 +2298,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.5143327713012695,
+   "latency_s": 0.5889170169830322,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2317,9 +2317,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 0.9694137573242188,
-   "model_calls": 5,
-   "requests_in_sequence": 2,
+   "latency_s": 0.2909069061279297,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "children",
    "path": "complex",
@@ -2336,7 +2336,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.033216953277588,
+   "latency_s": 0.25897693634033203,
    "model_calls": 5,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2355,7 +2355,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.1730809211730957,
+   "latency_s": 0.4045534133911133,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2374,7 +2374,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.656182050704956,
+   "latency_s": 0.5427639484405518,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2393,9 +2393,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.084522008895874,
-   "model_calls": 6,
-   "requests_in_sequence": 1,
+   "latency_s": 0.5451841354370117,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
    "unsupported": null,
    "got_template": "features_in",
    "path": "complex",
@@ -2412,7 +2412,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.271662950515747,
+   "latency_s": 0.6565890312194824,
    "model_calls": 4,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2431,7 +2431,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.0477278232574463,
+   "latency_s": 0.8634240627288818,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2450,9 +2450,9 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.5773580074310303,
-   "model_calls": 4,
-   "requests_in_sequence": 2,
+   "latency_s": 1.068924903869629,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
    "unsupported": null,
    "got_template": "lookup_place",
    "path": "simple",
@@ -2469,7 +2469,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 3.3005759716033936,
+   "latency_s": 1.25105619430542,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2490,7 +2490,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.30711030960083,
+   "latency_s": 0.9124557971954346,
    "model_calls": 6,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2509,7 +2509,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 2.2308030128479004,
+   "latency_s": 0.9134378433227539,
    "model_calls": 6,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2530,7 +2530,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.6957099437713623,
+   "latency_s": 1.010383129119873,
    "model_calls": 3,
    "requests_in_sequence": 1,
    "unsupported": null,
@@ -2549,7 +2549,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.3555169105529785,
+   "latency_s": 0.5543487071990967,
    "model_calls": 5,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2568,7 +2568,7 @@
    "depth": 0,
    "template_ok": true,
    "ok": true,
-   "latency_s": 1.393096923828125,
+   "latency_s": 0.6752090454101562,
    "model_calls": 7,
    "requests_in_sequence": 2,
    "unsupported": null,
@@ -2592,7 +2592,7 @@
   },
   "pick_template_flat": {
    "n": 29,
-   "correct": 29
+   "correct": 26
   },
   "pick_split": {
    "n": 29,

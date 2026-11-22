@@ -6,24 +6,27 @@ Records: 29. Depth 0: 29. Depth 1 (two levels): 0.
 
 | Decision | Accuracy | Depth 0 | Depth 1 | Coverage misses | Mean confidence |
 |---|---|---|---|---|---|
-| pick_family | 93% (27/29) | 93% (27/29) | - | 0 | 1.00 |
+| pick_family | 93% (27/29) | 93% (27/29) | - | 0 | 0.97 |
 | pick_template | 100% (29/29) | 100% (29/29) | - | 0 | 1.00 |
-| pick_template_flat | 100% (29/29) | 100% (29/29) | - | 0 | 0.66 |
+| pick_template_flat | 90% (26/29) | 90% (26/29) | - | 0 | 0.82 |
 | pick_split | 100% (29/29) | 100% (29/29) | - | 0 | 1.00 |
-| is_subquery | 100% (24/24) | 100% (24/24) | - | 0 | 0.99 |
+| is_subquery | 100% (24/24) | 100% (24/24) | - | 0 | 1.00 |
 | select_source | 100% (8/8) | 100% (8/8) | - | 0 | 0.80 |
 | fill_closed_slot.admin_level | 86% (12/14) | 86% (12/14) | - | 0 | 0.86 |
 | fill_closed_slot.category | 100% (5/5) | 100% (5/5) | - | 0 | 1.00 |
-| fill_closed_slot.predicate | 100% (2/2) | 100% (2/2) | - | 0 | 1.00 |
+| fill_closed_slot.predicate | 100% (2/2) | 100% (2/2) | - | 0 | 0.99 |
 
 ### Errors in decisions alone
 
 | Gold id | Decision | Depth | Gold | Got | Confidence |
 |---|---|---|---|---|---|
-| x004 | pick_family | 0 | hierarchy | features | 0.9682569999999998 |
-| x024 | pick_family | 0 | hierarchy | features | 0.9723369999999999 |
-| x024 | fill_closed_slot.admin_level | 0 | state | district | 0.01740640000000001 |
-| x026 | fill_closed_slot.admin_level | 0 | state | district | 0.01740640000000001 |
+| x004 | pick_family | 0 | hierarchy | features | 0.794929 |
+| x011 | pick_template_flat | 0 | neighbors | children_touching | 0.336012 |
+| x022 | pick_template_flat | 0 | neighbors | children_touching | 0.7030080000000001 |
+| x024 | pick_family | 0 | hierarchy | features | 0.5147889999999999 |
+| x024 | fill_closed_slot.admin_level | 0 | state | country | 0.04198360000000001 |
+| x026 | fill_closed_slot.admin_level | 0 | state | country | 0.04198360000000001 |
+| x028 | pick_template_flat | 0 | neighbors | children_touching | 0.40913 |
 
 ## Full pipeline
 
@@ -41,7 +44,7 @@ Records: 29. Depth 0: 29. Depth 1 (two levels): 0.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 93% (27/29) | 1.66 s | 4.9 | 1.6 |
+| 0 | 93% (27/29) | 0.68 s | 4.8 | 1.5 |
 
 ### Pipeline errors
 

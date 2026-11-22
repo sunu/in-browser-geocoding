@@ -6,33 +6,34 @@ Records: 70. Depth 0: 70. Depth 1 (two levels): 0.
 
 | Decision | Accuracy | Depth 0 | Depth 1 | Coverage misses | Mean confidence |
 |---|---|---|---|---|---|
-| pick_family | 94% (66/70) | 94% (66/70) | - | 0 | 0.99 |
+| pick_family | 94% (66/70) | 94% (66/70) | - | 0 | 0.98 |
 | pick_template | 100% (70/70) | 100% (70/70) | - | 0 | 1.00 |
-| pick_template_flat | 93% (65/70) | 93% (65/70) | - | 0 | 0.74 |
+| pick_template_flat | 91% (64/70) | 91% (64/70) | - | 0 | 0.83 |
 | pick_split | 99% (69/70) | 99% (69/70) | - | 0 | 0.99 |
-| is_subquery | 100% (59/59) | 100% (59/59) | - | 0 | 0.99 |
+| is_subquery | 100% (59/59) | 100% (59/59) | - | 0 | 1.00 |
 | select_source | 100% (23/23) | 100% (23/23) | - | 0 | 0.80 |
 | fill_closed_slot.admin_level | 100% (32/32) | 100% (32/32) | - | 0 | 1.00 |
 | fill_closed_slot.attr | 100% (1/1) | 100% (1/1) | - | 0 | 1.00 |
 | fill_closed_slot.category | 100% (10/10) | 100% (10/10) | - | 0 | 1.00 |
-| fill_closed_slot.direction | 100% (3/3) | 100% (3/3) | - | 0 | 1.00 |
-| fill_closed_slot.op | 100% (1/1) | 100% (1/1) | - | 0 | 1.00 |
+| fill_closed_slot.direction | 100% (3/3) | 100% (3/3) | - | 0 | 0.99 |
+| fill_closed_slot.op | 100% (1/1) | 100% (1/1) | - | 0 | 0.98 |
 | fill_closed_slot.predicate | 100% (8/8) | 100% (8/8) | - | 0 | 1.00 |
 
 ### Errors in decisions alone
 
 | Gold id | Decision | Depth | Gold | Got | Confidence |
 |---|---|---|---|---|---|
-| w012 | pick_family | 0 | modifier | lookup | 0.9750920000000001 |
-| w013 | pick_family | 0 | set_algebra | lookup | 0.9996499999999999 |
-| w013 | pick_template_flat | 0 | union | lookup_place | 0.43944000000000005 |
-| w016 | pick_family | 0 | hierarchy | features | 0.952536 |
-| w038 | pick_family | 0 | hierarchy | features | 0.6849144999999999 |
-| w051 | pick_template_flat | 0 | neighbors | children_touching | 0.016788000000000025 |
-| w058 | pick_template_flat | 0 | neighbors | children_touching | 0.220418 |
-| w062 | pick_split | 0 | {"a": "Oaxaca", "b": "Oaxaca de Juarez"} | {"a": "Oaxaca", "b": "Juarez"} | 0.9238554999999998 |
-| w064 | pick_template_flat | 0 | lookup_place | direction_part | 0.295272 |
-| w066 | pick_template_flat | 0 | neighbors | children_touching | 0.017702000000000107 |
+| w012 | pick_family | 0 | modifier | lookup | 0.912946 |
+| w013 | pick_family | 0 | set_algebra | lookup | 0.967444 |
+| w013 | pick_template_flat | 0 | union | lookup_place | 0.20996199999999998 |
+| w013 | pick_split | 0 | {"a": "England", "b": "Wales"} | {"a": "England and Wales", "b": "England and Wales"} | 0.952874 |
+| w016 | pick_family | 0 | hierarchy | features | 0.6586460000000001 |
+| w031 | pick_template_flat | 0 | neighbors | children_touching | 0.0013000000000000789 |
+| w038 | pick_family | 0 | hierarchy | features | 0.3378655 |
+| w038 | pick_template_flat | 0 | neighbors | children_touching | 0.38313549999999996 |
+| w051 | pick_template_flat | 0 | neighbors | children_touching | 0.502108 |
+| w058 | pick_template_flat | 0 | neighbors | children_touching | 0.4746619999999999 |
+| w066 | pick_template_flat | 0 | neighbors | children_touching | 0.5861940000000001 |
 
 ## Full pipeline
 
@@ -51,10 +52,10 @@ Records: 70. Depth 0: 70. Depth 1 (two levels): 0.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 99% (69/70) | 1.82 s | 4.9 | 1.6 |
+| 0 | 99% (69/70) | 0.69 s | 5.0 | 1.6 |
 
 ### Pipeline errors
 
 | Gold id | Query | Got template | Problem |
 |---|---|---|---|
-| w062 | Oaxaca except Oaxaca de Juarez | difference | b: expected 'Oaxaca de Juarez', got 'Juarez' |
+| w013 | England and Wales | union | a: expected 'England', got {'list': ['England', 'Wales'], 'conj': 'and', 'quant': None}; b: expected 'Wales', got {'l... |

@@ -267,3 +267,64 @@ Limits:
   ecoregions (for example WWF, CC BY 4.0) can add forests.
 - "Amazon" alone: the state Amazonas and the Amazon River have close scores (the decision model chooses).
 - The browser loads the name shards again after this release: the new names change most shards (about 195 MB).
+
+## 10. Lists of places, the any/all quantifier and ranking per parent (plan-036)
+
+Changes (Python and the browser version):
+
+1. **Lists of places.** A region slot can hold a list: "France, Switzerland and Germany", "France or Germany". The
+   list is the `Union` of its names. Commas alone do not make a list ("Paris, Texas" is a qualified name). A name that
+   contains "and" stays one name ("Bosnia and Herzegovina"): the split with the fewest parts in which each part is an
+   exact name wins.
+2. **Quantifier.** `neighbors` and `children_touching` have an optional slot `quant` (`any` or `all`). "both", "all
+   of" and "each of" give `all`. "either", "any of" and "or" give `any`. A plain "and" gives `any`, and the result
+   shows a note: "'and' between the places is read as 'or' (any of them); say 'both' or 'all of' for all of them".
+3. **Operators.** `Neighbors(quant=all)` and `Touches(quant=all)`: within the tolerance of each member.
+   `SharedBorder` takes one set of 2 or more places: the union of the borders between each pair, with a note for 3
+   or more places. `Top(per=level)`: the top n in each division of the `per` level.
+4. **Templates.** `neighbors_both` is removed (it is `neighbors` with `quant=all`). `shared_border` has one slot
+   `places`. New template `children_top_per` ("the largest district in each state of India"). 27 templates.
+5. **Models.** T5 v5 (val exact match 0.947; v4: 0.9457) and cross-encoder v4 (new decision
+   `fill_closed_slot.quantifier`, val 61/61). New training data: lists, quantifier words and `children_top_per` in the
+   synthetic generator, and 2,739 LLM paraphrases of list queries ($0.21).
+
+Results (browser setup, `--setup web`):
+
+| Set | Template | DAG | Executed result |
+|---|---|---|---|
+| Held-out 6 (28, new: lists, any/all, ranking per parent, names with "and"), first run | 27/28 | 26/28 | 27/28 (96%) |
+| Held-out 5 | 24/24 | 23/24 | 23/24 (24/24 before) |
+| Held-out 4 | 21/21 | 21/21 (20/21 before) | 21/21 |
+| Held-out 3 | 19/19 | 17/19 | 17/19 (no change) |
+| Held-out 2 | 34/34 | 34/34 (33/34 before) | 34/34 |
+| Held-out 1, world | no change | no change | no change |
+| India gold | 98/98 | 97/98 (98/98 before) | 89/89 (no change) |
+| India held-out | no change | no change | no change |
+
+JS parity: 696/696 (flat and country layout), int8 683/696 (681 before), executor 88/88, operator tests 15/15.
+
+Errors:
+
+| Set | Query | Result | Cause |
+|---|---|---|---|
+| Held-out 6 | districts of Kerala and Goa | `Union(Children(Kerala), Goa)` | Template choice (T5 and the decision model choose `union`) |
+| Held-out 6 | England and Wales | `Union(England ∪ Wales, England ∪ Wales)` | T5 puts the full text in both slots. The result is correct. |
+| Held-out 5 | districts in the Aravalli range | The districts of Aravalli district | The top T5 frame drops "range" |
+| India gold | Kerala and coastal districts of Karnataka | The two parts in the other order | The result is the same. The DAG comparison is not commutative. |
+
+The India reference parse (696 informal queries, no gold labels) changed for 28 queries. By eye: 13 are better, 8 have
+no change in quality, 7 are worse.
+
+- Better: lists in a slot ("coastal districts of Odisha, Andhra Pradesh and West Bengal", "5 km around Charminar,
+  Hitec City and Secunderabad", "West Bengal without Kolkata and Howrah"), typos ("nothern Gujarat", "Wich state is
+  Siliguri in?", "bewteen Lucknow and Kanpur"), and 3 wrong parses that are now `Unsupported`.
+- Worse: "madhya pradesh except bhopal n indore" ("n" is not a list separator; it goes to Photon as one name), two
+  intersections ("Ernakulam intersect with 10 km along the coast of Kerala" loses Ernakulam), "areas souht of
+  Hyderabad" (now `Unsupported`), "nortern Karnataka" (northeast), "banglore airport" (Photon) and "border area with
+  Bangladesh in Tripura" (the union of Bangladesh and Tripura).
+
+Browser smoke test (Chromium, the plan-036 queries, `SET=lists`): all results and notes are correct, except
+"the largest county in each region of Kenya". It gives 1 county. In Overture the 47 counties of Kenya are the
+`state` level and Kenya has no level above them, so "county" and "region" are both `state` and `Top(per=state)` has
+no groups. This is a silent wrong answer. The executor must give an error when no row has a parent at the `per`
+level.
