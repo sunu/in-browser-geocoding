@@ -321,12 +321,14 @@ class Gen:
         return case(self.r, "India") if k == "country" else case(self.r, typo(self.r, self.pick(self.p[k])))
 
     def region(self, depth: int, sub_ok: bool = True) -> tuple[str, int]:
-        """A region slot: a place name, or a sub-query (depth + 1)."""
+        """A region slot: a place name, a list of places, or a sub-query (depth + 1)."""
         if sub_ok and depth == 0 and self.r.random() < 0.15:
             q, f, d = self.sub_query()
             return q, 1
         if self.r.random() < 0.06:
             return self.pick(self.p["lex"]), 0
+        if self.r.random() < 0.1:
+            return self.place_list(self.area)[0], 0
         return self.area(), 0
 
     def sub_query(self):
@@ -353,6 +355,36 @@ class Gen:
 
     def has_world(self) -> bool:
         return bool(self.p.get("w_country")) and bool(self.p.get("n_river"))
+
+    def place_list(self, one, n: int | None = None, conj: str | None = None) -> tuple[str, str]:
+        """A list of 2 to 4 places joined by commas and "and", "or", "&" or "as well as" (plan-036).
+        Returns (span, conjunction)."""
+        n = n or self.r.choice([2, 2, 2, 2, 3, 3, 4])
+        names: list[str] = []
+        while len(names) < n:
+            x = one()
+            if x.lower() not in (y.lower() for y in names):
+                names.append(x)
+        conj = conj or self.r.choices(["and", "or", "&", "as well as"], weights=[6, 3, 1, 1])[0]
+        if n == 2:
+            return f"{names[0]} {conj} {names[1]}", conj
+        oxford = "," if conj in ("and", "or") and self.r.random() < 0.3 else ""
+        return ", ".join(names[:-1]) + f"{oxford} {conj} {names[-1]}", conj
+
+    def quantified(self, one) -> tuple[str, str | None]:
+        """A list of places with or without a quantifier word: (list span, quant span or None). "both", "all of",
+        "each of" mean all; "either", "any of" mean any. A plain list ("A and B", "A or B") has no quant span."""
+        r = self.r.random()
+        if r < 0.35:
+            n = self.r.choice([2, 2, 2, 3])
+            q = self.pick(["both"] if n == 2 else ["all of", "all three of", "each of", "all"])
+            o, _ = self.place_list(one, n, "and")
+            return o, self.note(q, "quantifier", "all")
+        if r < 0.45:
+            o, _ = self.place_list(one, 2, "or")
+            return o, self.note(self.pick(["either", "any of"]), "quantifier", "any")
+        o, _ = self.place_list(one)
+        return o, None
 
     # Each t_* returns (query, slots). Slot values are spans of the query (or quantities).
 
@@ -427,6 +459,16 @@ class Gen:
 
     def t_neighbors(self, depth=0):
         k, lv = self.level(exclude=("union_territory",))
+        if not depth and self.r.random() < 0.55:
+            one = (lambda: self.world(("w_country",))) if self.has_world() and k == "country" else self.area
+            o, qw = self.quantified(one)
+            if qw:
+                form = self.pick(["{l} that border {q} {o}", "{l} bordering {q} {o}", "{l} next to {q} {o}",
+                                  "which {l} touch {q} {o}", "{l} adjacent to {q} {o}", "{l} that share a border with {q} {o}"])
+                return form.format(l=lv, q=qw, o=o), {"level": lv, "quant": qw, "of": o}
+            form = self.pick(["{l} that border {o}", "{l} bordering {o}", "{l} adjacent to {o}", "{l} next to {o}",
+                              "which {l} border {o}", "{l} touching {o}"])
+            return form.format(l=lv, o=o), {"level": lv, "of": o}
         o, _ = self.region(depth)
         form = self.pick(["{l} that border {o}", "{l} bordering {o}", "{l} adjacent to {o}", "neighbouring {l} of {o}",
                           "{l} next to {o}", "{l} touching {o}", "{l} sharing a border with {o}", "{l} around {o}",
@@ -476,6 +518,11 @@ class Gen:
                 return form.format(l=lv, o=o), {"level": lv, "other": o}
             form = self.pick(["{l} of {p} along {o}", "{l} in {p} on the banks of {o}", "{p} {l} along {o}"])
             return form.format(l=lv, p=p, o=o), {"level": lv, "parent": p, "other": o}
+        if self.r.random() < 0.3:
+            o, qw = self.quantified(self.area)
+            if qw:
+                form = self.pick(["{l} of {p} that border {q} {o}", "{l} in {p} bordering {q} {o}", "{l} of {p} touching {q} {o}"])
+                return form.format(l=lv, p=p, q=qw, o=o), {"level": lv, "parent": p, "quant": qw, "other": o}
         form = self.pick(["{l} of {p} that border {o}", "{l} in {p} bordering {o}", "{p} {l} next to {o}",
                           "{l} of {p} adjacent to {o}", "{l} in {p} touching {o}", "{l} of {p} on the border with {o}"])
         return form.format(l=lv, p=p, o=o), {"level": lv, "parent": p, "other": o}
@@ -557,19 +604,21 @@ class Gen:
         return form.format(d=d, r=r), {"distance": dv, "region": r}
 
     def t_shared_border(self, depth=0):
-        if self.has_world() and self.r.random() < 0.6:
-            a, b = self.world(("w_country",)), self.world(("w_country",))
-        else:
-            a, b = self.place(("state", "state", "district")), self.place(("state", "state", "district"))
+        world = self.has_world() and self.r.random() < 0.6
+        one = (lambda: self.world(("w_country",))) if world else (lambda: self.place(("state", "state", "district")))
+        if self.r.random() < 0.15:
+            # Two names with no separator: "India Pakistan border" (a space is a separator in this template only).
+            pl = f"{one()} {one()}"
+            return self.pick(["{p} border", "the {p} border", "{p} boundary"]).format(p=pl), {"places": pl}
+        pl, _ = self.place_list(one, self.r.choice([2, 2, 2, 2, 3, 3, 4]), "and" if self.r.random() < 0.85 else "&")
         if self.r.random() < 0.35:
             d, dv = distance(self.r)
-            form = self.pick(["{d} along the border between {a} and {b}", "{d} zone along the border of {a} and {b}",
-                              "{d} corridor along the {a} {b} border", "{d} strip along the border between {a} and {b}"])
-            return form.format(d=d, a=a, b=b), {"distance": dv, "a": a, "b": b}
-        form = self.pick(["border between {a} and {b}", "the border between {a} and {b}", "boundary between {a} and {b}",
-                          "border of {a} and {b}", "{a}-{b} border", "{a} {b} border", "the frontier between {a} and {b}",
-                          "where {a} meets {b}", "shared border of {a} and {b}"])
-        return form.format(a=a, b=b), {"a": a, "b": b}
+            form = self.pick(["{d} along the border between {p}", "{d} zone along the border of {p}",
+                              "{d} strip along the border between {p}", "{d} along the borders of {p}"])
+            return form.format(d=d, p=pl), {"distance": dv, "places": pl}
+        form = self.pick(["border between {p}", "the border between {p}", "boundary between {p}", "border of {p}",
+                          "the frontier between {p}", "shared border of {p}", "the borders between {p}", "border among {p}"])
+        return form.format(p=pl), {"places": pl}
 
     def t_natural_in(self, depth=0):
         k = self.pick(NATURAL_KINDS)
@@ -624,12 +673,32 @@ class Gen:
                           "which {p} {l} border {o}", "{p} {l} touching {o}"])
         return form.format(p=pr, l=lv, o=o), {"pred": pr, "level": lv, "of": o}
 
-    def t_neighbors_both(self, depth=0):
-        k, lv = self.level(exclude=("union_territory",))
-        a, b = (self.world(("w_country",)), self.world(("w_country",))) if self.has_world() and k == "country" else (self.area(), self.area())
-        form = self.pick(["{l} that border both {a} and {b}", "{l} bordering both {a} and {b}", "{l} next to both {a} and {b}",
-                          "which {l} touch both {a} and {b}", "{l} adjacent to both {a} and {b}"])
-        return form.format(l=lv, a=a, b=b), {"level": lv, "a": a, "b": b}
+    def t_children_top_per(self, depth=0):
+        """The largest or smallest divisions in each division of a higher level (plan-036)."""
+        k, per_k = self.pick([("district", "state"), ("district", "state"), ("city", "state"), ("city", "district"),
+                              ("state", "country")])
+        lv = self.note(self.word_typo(self.pick(LEVEL[k])), "admin_level", k)
+        per = self.note(self.pick({"state": ["state", "province", "region"], "district": ["district", "county"],
+                                   "country": ["country", "nation"]}[per_k]), "admin_level", per_k)
+        ok = self.pick(list(RANK))
+        o = self.note(self.pick(RANK[ok]), "rank_order", ok)
+        slots = {"order": o, "level": lv, "per": per}
+        each = self.pick(["each", "every"])
+        # "states in each country" has no parent; the others are inside one country.
+        p = None if per_k == "country" else (
+            case(self.r, "India") if not self.has_world() or self.r.random() < 0.5 else self.world(("w_country",)))
+        if self.r.random() < 0.35:
+            n = self.r.choice([2, 2, 3, 3, 5])
+            ns = str(n) if self.r.random() < 0.7 else NUM_WORDS[n]
+            slots["n"] = str(n)
+            head = f"{ns} {o}"
+        else:
+            head = f"the {o}" if self.r.random() < 0.6 else o
+        if p is None:
+            return f"{head} {lv} in {each} {per}", slots
+        slots["parent"] = p
+        form = self.pick(["{h} {l} in {e} {per} of {p}", "{h} {l} of {e} {per} in {p}", "{h} {l} in {e} {per} in {p}"])
+        return form.format(h=head, l=lv, e=each, per=per, p=p), slots
 
     def t_features_in(self, depth=0):
         c0 = self.pick(CATEGORIES)
@@ -691,11 +760,11 @@ class Gen:
 
 TEMPLATE_WEIGHTS = {
     "lookup_place": 6, "buffer": 8, "centroid": 2, "direction_part": 4, "direction_outside": 3, "children": 6,
-    "parent": 3, "neighbors": 5, "children_with_predicate": 9, "children_touching": 4, "union": 4, "union3": 2,
+    "parent": 3, "neighbors": 8, "children_with_predicate": 9, "children_touching": 5, "union": 4, "union3": 2,
     "difference": 4, "intersection": 3, "between": 3, "along_coast": 3, "along_border": 2, "along_intl_border": 2,
     "features_in": 8, "features_near": 8, "children_attr": 6, "unsupported": 5,
-    "shared_border": 4, "natural_in": 5, "children_near": 4, "children_top": 5, "neighbors_with_predicate": 3,
-    "neighbors_both": 3,
+    "shared_border": 5, "natural_in": 5, "children_near": 4, "children_top": 5, "neighbors_with_predicate": 3,
+    "children_top_per": 4,
 }
 
 

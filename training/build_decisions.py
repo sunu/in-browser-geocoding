@@ -33,7 +33,7 @@ from training.gen_synthetic import typo_always
 DATA = REPO_ROOT / "training" / "data"
 CLOSED_REF = {"admin_level": "admin_levels", "predicate": "predicates", "direction": "directions",
               "category": "categories", "attr": "attrs", "op": "ops", "natural_kind": "natural_kinds",
-              "rank_order": "rank_orders"}
+              "rank_order": "rank_orders", "quantifier": "quantifiers"}
 
 
 def split_of(query: str) -> str:
