@@ -41,35 +41,40 @@ class OnnxT5:
     def beams(self, query: str, k: int = 4, max_new: int = 96):
         x = self.tok([self.gen["prefix"] + query], return_tensors="np", truncation=True, max_length=64)
         ids, mask = x["input_ids"].astype(np.int64), x["attention_mask"].astype(np.int64)
-        h = self.enc.run(None, {"input_ids": ids, "attention_mask": mask})[0]
+        kv = self.enc.run(None, {"input_ids": ids, "attention_mask": mask})[0]
+        L, _, _, H, _, D = kv.shape
+        past = np.zeros((L, 2, 1, H, 0, D), np.float32)
         eos = self.gen["eos_token_id"]
         alive = [([self.gen["decoder_start_token_id"]], 0.0)]
         done = []
         for step in range(max_new):
-            dec_ids = np.array([s for s, _ in alive], dtype=np.int64)
-            n = len(alive)
-            logits = self.dec.run(None, {"decoder_input_ids": dec_ids, "encoder_hidden_states": np.repeat(h, n, 0),
-                                         "encoder_attention_mask": np.repeat(mask, n, 0)})[0][:, -1, :]
+            dec_ids = np.array([[s[-1]] for s, _ in alive], dtype=np.int64)
+            logits, present = self.dec.run(None, {"input_ids": dec_ids, "past": past, "cross_kv": kv,
+                                                  "encoder_attention_mask": mask})
             lp = log_softmax(logits.astype(np.float64))
             cands = []
             for i, (seq, sc) in enumerate(alive):
                 top = np.argpartition(-lp[i], 2 * k)[: 2 * k]
                 for t in top:
-                    cands.append((seq + [int(t)], sc + float(lp[i, t])))
+                    cands.append((seq + [int(t)], sc + float(lp[i, t]), i))
             cands.sort(key=lambda c: -c[1])
-            alive = []
-            for seq, sc in cands:
+            alive, parents = [], []
+            for seq, sc, i in cands:
                 if seq[-1] == eos:
                     # Length-normalised score (length penalty 1.0), as in transformers.
                     done.append((seq, sc / (len(seq) - 1)))
                 else:
                     alive.append((seq, sc))
+                    parents.append(i)
                 if len(alive) == k:
                     break
+            past = present[:, :, parents]
             if len(done) >= k:
                 best_alive = max((sc / (len(s) - 1) for s, sc in alive), default=-1e9)
                 if sorted(d[1] for d in done)[-k] >= best_alive:
                     break
+            if not alive:
+                break
         done.sort(key=lambda d: -d[1])
         out = []
         for seq, sc in done[:k]:
