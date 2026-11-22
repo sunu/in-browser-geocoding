@@ -33,3 +33,19 @@ templates:
       - "[the] {order} {level} (of|in) {parent}"
       - "[the] {n} {level} (of|in) {parent} with the {order} {by}"
     dag: "Top(Children(${parent}, level=${level}), ${by}, ${n}, ${order})"
+
+  - id: children_top_per
+    description: "The largest or smallest divisions of one level inside each division of a higher level, by area or population"
+    examples: ["the largest district in each state of India", "the 2 smallest counties in every state of the United States"]
+    slots:
+      n: {type: value, default: 1}
+      order: {type: rank_order, options_ref: rank_orders}
+      by: {type: attr, options_ref: attrs, optional: true, default: area}
+      level: {type: admin_level, options_ref: admin_levels}
+      per: {type: admin_level, options_ref: admin_levels}
+      parent: {type: region, optional: true, default: country}
+    patterns:
+      - "[the] [top] {n} {order} {level} (in|of) (each|every) {per} (of|in) {parent}"
+      - "[the] {order} {level} (in|of) (each|every) {per} (of|in) {parent}"
+      - "[the] {order} {level} (in|of) (each|every) {per}"
+    dag: "Top(Children(${parent}, level=${level}), ${by}, ${n}, ${order}, per=${per})"

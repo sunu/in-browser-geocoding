@@ -12,16 +12,17 @@ import type { Photon } from "../execute/photon.ts";
 import type { T5Frames } from "../models/t5.ts";
 
 const OPEN = new Set(["region", "anchor"]);
-const CLOSED = new Set(["admin_level", "predicate", "direction", "category", "attr", "op", "natural_kind", "rank_order"]);
+const CLOSED = new Set(["admin_level", "predicate", "direction", "category", "attr", "op", "natural_kind", "rank_order", "quantifier"]);
 const SIMPLE_FAMILIES = new Set(["lookup", "modifier"]);
 const GEOCODER_FAMILIES = new Set(["lookup", "modifier", "features"]);
 const LABELS: Record<string, string> = { region: "place or area", anchor: "place", admin_level: "level", predicate: "property",
-  direction: "direction", category: "category", attr: "quantity", op: "comparison", distance: "distance", value: "number" };
+  direction: "direction", category: "category", attr: "quantity", op: "comparison", distance: "distance", value: "number",
+  quantifier: "any or all" };
 
 export interface Unsupported { reason: string; decision?: string | null; depth: number; text: string }
 export interface ParseResult {
   query: string; ok: boolean; dag: any | null; unsupported: Unsupported | null; family: string | null; template: string | null;
-  slots: Record<string, any>; path: string | null; trace: TraceRecord[]; timings: Record<string, number>;
+  slots: Record<string, any>; path: string | null; trace: TraceRecord[]; timings: Record<string, number>; notes: string[];
 }
 
 class Stop extends Error {
@@ -39,6 +40,18 @@ function fmt(x: number) { return x.toFixed(2); }
 // geoparse.parse.pipeline.HAS_DISTANCE: a number with a distance unit in a text.
 const HAS_DISTANCE = /\b\d+(?:\.\d+)?\s*(?:km|kms|kilometres?|kilometers?|m|metres?|meters?|mi|miles?)\b/i;
 const AROUND_DEFAULT: Record<string, [string, string]> = { children_touching: ["parent", "other"], children_near: ["parent", "other"] };
+// geoparse.parse.pipeline.LIST_SEP and LIST_MARKER: lists of places in a slot; separators are whole words with spaces.
+const LIST_SEP = /\s*,\s*(?:(?:and|or|&)\s+)?|\s+(?:and|or|&|as well as)\s+/gi;
+const LIST_MARKER = /^(both|either|all of the|all of|each of|any one of|any of)\s+(.+)$/i;
+const LIST_MARKER_QUANT: Record<string, string> = { both: "all", "all of the": "all", "all of": "all", "each of": "all", either: "any",
+  "any one of": "any", "any of": "any" };
+const SPACE_LIST_TEMPLATES = new Set(["shared_border"]);
+
+/** The cuts of n separators into k groups (indexes in order), fewest first. */
+function* combinations(n: number, k: number, start = 0): Generator<number[]> {
+  if (k === 0) { yield []; return; }
+  for (let i = start; i <= n - k; i++) for (const rest of combinations(n, k - 1, i + 1)) yield [i, ...rest];
+}
 
 export class Parser {
   templates: Record<string, Template>;
@@ -58,7 +71,7 @@ export class Parser {
     // The query normalization removes a leading "the"; the lookup rule for natural features uses it.
     dec.article = /^\s*the\s/i.test(query);
     const t0 = performance.now();
-    const res: ParseResult = { query, ok: false, dag: null, unsupported: null, family: null, template: null, slots: {}, path: null, trace: [], timings: {} };
+    const res: ParseResult = { query, ok: false, dag: null, unsupported: null, family: null, template: null, slots: {}, path: null, trace: [], timings: {}, notes: [] };
     try {
       const [dag, info] = await this.parseLevel(dec, normalizeQuery(query, this.bundle.leading_fillers), 0);
       const errors = validate(dag, this.bundle);
@@ -70,6 +83,7 @@ export class Parser {
       else res.unsupported = { reason: `error: ${(e as Error).message}`, depth: 0, text: "" };
     }
     res.trace = dec.trace;
+    res.notes = [...new Set(dec.notes)];
     res.timings.parse_s = (performance.now() - t0) / 1000;
     return res;
   }
@@ -158,7 +172,7 @@ export class Parser {
         return [{ op: "Resolve", args: { name, source: "overture", id: nat[0].id } }, { family: "lookup", template: "lookup_place", slots: { anchor: name } }];
       }
     }
-    if (tpl.family === "lookup" && alt !== "lookup_place") {
+    if (tpl.family === "lookup" && alt !== "lookup_place" && !(await this.listParts(dec, text, false))) {
       const g = await dec.isSubquery(text, depth);
       if (g.value || dec.below("is_subquery", g)) stop("the text is not one place name, and no other template matches", depth, text, "is_subquery");
     }
@@ -260,6 +274,7 @@ export class Parser {
       slots[name] = r.value;
       values[name] = sd.type === "predicate" ? this.bundle.predicate_dags[r.value] : r.value;
     });
+    this.quantifier(dec, tpl, m, values, slots, depth);
     await this.siblingView(dec, tpl, values, depth);
     if (around) { values[around] = await this.around(dec, tpl.slots[around], values[AROUND_DEFAULT[tpl.id][1]]); slots[around] = null; }
     if (this.bundle.structure_level.includes(tpl.id) && values.level == null && "level" in m.segments) {
@@ -354,6 +369,8 @@ export class Parser {
     if (qual) return [qual, text];
     const isRegion = Object.values(tpl.slots).some((s) => s.type === "region") && tpl.family !== "lookup";
     const exact = await this.gaz.search(text, { typeHint, fuzzy: false, limit: 3, view: dec.view });
+    const lst = exact.length ? null : await this.listParts(dec, text, SPACE_LIST_TEMPLATES.has(tpl.id));
+    if (lst) return this.listRegion(dec, tpl, lst, query, depth, typeHint);
     const rest = isRegion && !exact.length ? this.directionRest(text) : null;
     if (rest && (await this.gaz.search(rest, { fuzzy: false, limit: 1, view: dec.view })).length) {
       // "northern France": a direction word and a place name. A subquery, without the model.
@@ -385,6 +402,68 @@ export class Parser {
       }
     }
     return [await this.anchor(dec, tpl, text, query, depth, typeHint, exact), text];
+  }
+
+  /** Port of _list_parts: [names, conjunction, quantifier of a leading word] of a list of named sets or exact names; the
+   * cut with the fewest names wins ("Bosnia and Herzegovina and Croatia" is two names). null if not such a list. */
+  async listParts(dec: Decider, text: string, allowSpace: boolean): Promise<[string[], string, string | null] | null> {
+    let t = text.trim();
+    let marker: string | null = null;
+    const m = LIST_MARKER.exec(t);
+    if (m) { marker = LIST_MARKER_QUANT[m[1].toLowerCase()]; t = m[2]; }
+    let seps = [...t.matchAll(LIST_SEP)];
+    if (!seps.length && allowSpace) seps = [...t.matchAll(/\s+/g)];
+    // Port: commas alone are not a list ("Salt Lake, Kolkata" is a qualified name).
+    if (seps.length && seps.every((s) => s[0].trim() === ",") && !allowSpace) return null;
+    if (!seps.length || seps.length > 6) return null;
+    const known = new Map<string, boolean>();
+    const isName = async (p: string) => {
+      if (!known.has(p)) known.set(p, !!p && (!!lexiconMatch(p, this.bundle) || (await this.gaz.search(p, { fuzzy: false, limit: 1, view: dec.view })).length > 0));
+      return known.get(p)!;
+    };
+    for (let k = 1; k <= seps.length; k++) {
+      for (const cut of combinations(seps.length, k)) {
+        const parts: string[] = [];
+        let start = 0;
+        for (const i of cut) { parts.push(t.slice(start, seps[i].index!).trim()); start = seps[i].index! + seps[i][0].length; }
+        parts.push(t.slice(start).trim());
+        let ok = true;
+        for (const p of parts) if (!(await isName(p))) { ok = false; break; }
+        if (ok) return [parts, cut.some((i) => /\bor\b/i.test(seps[i][0])) ? "or" : "and", marker];
+      }
+    }
+    return null;
+  }
+
+  /** Port of _list_region: the Union of the places of a list. */
+  private async listRegion(dec: Decider, tpl: Template, lst: [string[], string, string | null], query: string, depth: number,
+                           typeHint: string | null): Promise<[any, any]> {
+    const [names, conj, marker] = lst;
+    dec.recordStep("list", depth, { text: names.join(" | ") }, names, "rules", { conjunction: conj, quantifier: marker });
+    let node: any = null;
+    const infos: any[] = [];
+    for (const p of names) {
+      const [dag, info] = await this.region(dec, tpl, p, query, depth, typeHint);
+      node = node === null ? dag : { op: "Union", args: { a: node, b: dag } };
+      infos.push(info);
+    }
+    return [node, { list: infos, conj, quant: marker }];
+  }
+
+  /** Port of _quantifier: a quantifier slot with no text gets the leading word of the list, else `any` (a note for a
+   * list joined by "and"). `any` is the operator default: the DAG has the argument only for `all`. */
+  private quantifier(dec: Decider, tpl: Template, m: Match, values: Record<string, any>, slots: Record<string, any>, depth: number) {
+    const q = Object.keys(tpl.slots).find((n) => tpl.slots[n].type === "quantifier");
+    if (!q) return;
+    const lst = Object.entries(slots).find(([n, s]) => OPEN.has(tpl.slots[n]?.type) && s && typeof s === "object" && "list" in s)?.[1];
+    if (!(q in m.segments) && lst?.quant) {
+      values[q] = slots[q] = lst.quant;
+      dec.recordStep("quantifier", depth, { text: lst.conj }, lst.quant, "rules", { from: "leading word" });
+    } else if (!(q in m.segments) && lst && lst.conj === "and" && values[q] === "any") {
+      dec.recordStep("quantifier", depth, { text: "and" }, "any", "rules", { from: "default", ambiguous: true });
+      dec.notes.push("'and' between the places is read as 'or' (any of them); say 'both' or 'all of' for all of them");
+    }
+    if (values[q] === "any") values[q] = null;
   }
 
   /** Port of _qualified: "Paris, Texas" is the Paris inside an exact match of each later name, or null. */
@@ -432,7 +511,11 @@ export class Parser {
   /** Port of _sibling_view: the close candidates of the places of one template are chosen together, as the combination
    * with the smallest sum of distances between the places. */
   private async siblingView(dec: Decider, tpl: Template, values: Record<string, any>, depth: number) {
-    const res = Object.entries(values).filter(([n, v]) => OPEN.has(tpl.slots[n]?.type) && v?.op === "Resolve" && v.args?.source === "overture" && v.args?.id);
+    // Port: the members of a list (a Union of places) count as places of the template.
+    const leaves = (v: any): any[] => (v?.op === "Union" ? [...leaves(v.args.a), ...leaves(v.args.b)] : [v]);
+    const res = Object.entries(values).filter(([n]) => OPEN.has(tpl.slots[n]?.type))
+      .flatMap(([n, v]) => leaves(v).map((x, i) => [`${n}.${i}`, x] as [string, any]))
+      .filter(([, v]) => v?.op === "Resolve" && v.args?.source === "overture" && v.args?.id);
     if (res.length < 2 || !res.some(([, v]) => dec.closeAnchors.has(v.args.id))) return;
     const options = res.map(([, v]) => dec.closeAnchors.get(v.args.id)?.cands ?? [v.args.id]);
     const info = await this.gaz.describe([...new Set(options.flat())].sort());

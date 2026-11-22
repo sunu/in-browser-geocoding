@@ -26,7 +26,7 @@ from geoparse.dsl.schema import parse_dag_text
 TEMPLATE_DIR = Path(__file__).resolve().parent
 
 OPEN_TYPES = {"region", "anchor"}
-CLOSED_TYPES = {"admin_level", "predicate", "direction", "category", "attr", "op", "natural_kind", "rank_order"}
+CLOSED_TYPES = {"admin_level", "predicate", "direction", "category", "attr", "op", "natural_kind", "rank_order", "quantifier"}
 PARSED_TYPES = {"distance", "value"}
 
 

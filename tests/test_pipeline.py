@@ -133,3 +133,27 @@ def test_qualified_name_with_in(rules_parser):
     assert q and q["args"]["name"] == "Jayanagar" and q["args"]["context"] == "Bengaluru"
     for text in ("districts in Kerala", "hospitals in Pune", "rivers in Kerala", "northern Kerala in India"):
         assert rules_parser._qualified(dec, text, 0) is None, text
+
+
+def test_list_parts(rules_parser):
+    # Lists of places (plan-036): exact names cut at whole-word separators; a leading word gives the quantifier.
+    dec = rules_parser.base_decider.fork()
+    lp = rules_parser._list_parts
+    assert lp(dec, "Kerala and Goa", False) == (["Kerala", "Goa"], "and", None)
+    assert lp(dec, "Kerala or Goa", False) == (["Kerala", "Goa"], "or", None)
+    assert lp(dec, "Karnataka, Kerala and Goa", False) == (["Karnataka", "Kerala", "Goa"], "and", None)
+    assert lp(dec, "both Kerala and Goa", False) == (["Kerala", "Goa"], "and", "all")
+    assert lp(dec, "either Kerala or Goa", False) == (["Kerala", "Goa"], "or", "any")
+    # Commas alone are a qualified name, not a list; a part that is not an exact name stops the list.
+    assert lp(dec, "Salt Lake, Kolkata", False) is None
+    assert lp(dec, "coastal districts of Kerala and Goa", False) is None
+    # A space is a separator only where the template allows it ("India Pakistan border").
+    assert lp(dec, "India Pakistan", False) is None
+    assert lp(dec, "India Pakistan", True) == (["India", "Pakistan"], "and", None)
+
+
+def test_list_keeps_names_with_and(rules_parser):
+    # "Jammu and Kashmir" is one exact name: the slot is the place, not a list.
+    p = rules_parser.parse("districts of Jammu and Kashmir")
+    assert p.ok, p.unsupported
+    assert p.dag["args"]["of"]["op"] == "Resolve"

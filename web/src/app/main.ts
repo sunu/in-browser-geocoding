@@ -155,7 +155,7 @@ async function runQuery_(text: string, id: number) {
   side.innerHTML = `
     <h3>${headline(p, r)}</h3>
     ${r ? `<p>${r.ok ? `${feats.length} result${feats.length === 1 ? "" : "s"} in ${(r.timings.total_s ?? 0).toFixed(2)} s` : `<span class="err">${esc(r.error)}</span>`}</p>` : ""}
-    ${(r?.notes ?? []).map((n) => `<p>⚠ ${esc(n)}</p>`).join("")}
+    ${[...(p.notes ?? []), ...(r?.notes ?? [])].map((n) => `<p>⚠ ${esc(n)}</p>`).join("")}
     ${HOW_IT_WORKS}
     <h4>How the app read the query</h4>${reading(p, gp.bundle)}
     ${feats.length ? `<h4>Results</h4><table id="features"><tr><th>Name</th><th>Type</th><th>Source</th></tr>${feats.slice(0, 200).map((f) =>

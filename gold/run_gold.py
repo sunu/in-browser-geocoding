@@ -39,7 +39,25 @@ def ntext(s: str) -> str:
 def open_text(v: Any) -> str:
     if isinstance(v, dict):
         return v.get("text") or v.get("q") or ""
+    if isinstance(v, list):
+        return " and ".join(v)
     return v
+
+
+LIST_LEAD = re.compile(r"^(both|either|all of the|all of|each of|any one of|any of) ")
+
+
+def list_text_ok(seg: str, names: list[str]) -> bool:
+    """A slot text that holds the gold list: the names in order, from the first to the last (plan-036)."""
+    n = LIST_LEAD.sub("", ntext(seg))
+    parts = [ntext(x) for x in names]
+    pos = 0
+    for p in parts:
+        i = n.find(p, pos)
+        if i < 0:
+            return False
+        pos = i + len(p)
+    return n.startswith(parts[0]) and n.endswith(parts[-1])
 
 
 # ---------------------------------------------------------------- comparisons
@@ -62,6 +80,10 @@ def slots_equal(t: str, got: dict[str, Any], gold: dict[str, Any]) -> tuple[bool
             elif isinstance(g, dict) and "lex" in g:
                 if not (isinstance(r, dict) and r.get("lex") == g["lex"]):
                     diffs.append(f"{name}: expected lexicon {g['lex']}, got {r!r}")
+            elif isinstance(g, list):
+                got_list = [open_text(x) for x in r["list"]] if isinstance(r, dict) and "list" in r else None
+                if got_list is None or [ntext(x) for x in got_list] != [ntext(x) for x in g]:
+                    diffs.append(f"{name}: expected list {g!r}, got {r!r}")
             else:
                 if not isinstance(r, str) or ntext(r) != ntext(g):
                     diffs.append(f"{name}: expected {g!r}, got {r!r}")
@@ -100,7 +122,12 @@ def gold_match(parser: Parser, text: str, t: str, slots: dict[str, Any]) -> dict
                         ok = False
                         break
                     continue
-                if ntext(m["segments"][seg_of[name]]) != ntext(open_text(slots[name])):
+                gold_v = slots[name]
+                if isinstance(gold_v, list):
+                    if not list_text_ok(m["segments"][seg_of[name]], gold_v):
+                        ok = False
+                        break
+                elif ntext(m["segments"][seg_of[name]]) != ntext(open_text(gold_v)):
                     ok = False
                     break
         if ok:
@@ -169,7 +196,8 @@ def eval_isolated(parser: Parser, dec: Decider, rec: dict[str, Any], text: str, 
     for name, sd in tpl.slots.items():
         if sd.type == "region" and tpl.family != "lookup":
             v = slots[name]
-            if isinstance(v, dict) and "lex" in v:
+            if (isinstance(v, dict) and "lex" in v) or isinstance(v, list):
+                # A list is found by a rule before the model (plan-036): no is_subquery question.
                 continue
             gold_sub = isinstance(v, dict) and "q" in v
             txt = re.sub(r"^(the|a|an)\s+", "", open_text(v), flags=re.I)

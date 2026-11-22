@@ -35,23 +35,30 @@ def gold_dag(t: str, s: dict[str, Any], src: dict[str, str] | None = None, view:
     for name, sd in tpl.slots.items():
         v = s.get(name, sd.default)
         if sd.type in OPEN_TYPES:
-            if isinstance(v, dict) and "lex" in v:
-                values[name] = {"op": "LexiconSet", "args": {"key": v["lex"]}}
-            elif isinstance(v, dict) and "q" in v:
-                values[name] = gold_dag(v["t"], v["s"], view=view)
+            def one(v, pin=None):
+                if isinstance(v, dict) and "lex" in v:
+                    return {"op": "LexiconSet", "args": {"key": v["lex"]}}
+                if isinstance(v, dict) and "q" in v:
+                    return gold_dag(v["t"], v["s"], view=view)
+                if (src or {}).get(name, "overture") == "photon":
+                    return {"op": "Resolve", "args": {"name": v, "source": "photon"}}
+                hint = level if t == "neighbors" and level not in (None, "none") else None
+                cands = [] if pin else store.search(v, type_hint=hint, view=view)
+                if not cands and not pin:
+                    raise ValueError(f"gold anchor {v!r} not found")
+                args = {"name": v, "source": "overture", "id": pin or cands[0].id}
+                if hint:
+                    args["type_hint"] = hint
+                return {"op": "Resolve", "args": args}
+
+            if isinstance(v, list):
+                # A list of places: the Union of the names, in the order of the text.
+                node = None
+                for x in v:
+                    node = one(x) if node is None else {"op": "Union", "args": {"a": node, "b": one(x)}}
+                values[name] = node
             else:
-                source = (src or {}).get(name, "overture")
-                if source == "photon":
-                    values[name] = {"op": "Resolve", "args": {"name": v, "source": "photon"}}
-                else:
-                    hint = level if t == "neighbors" and level not in (None, "none") else None
-                    cands = [] if name in (pins or {}) else store.search(v, type_hint=hint, view=view)
-                    if not cands and name not in (pins or {}):
-                        raise ValueError(f"gold anchor {v!r} not found")
-                    args = {"name": v, "source": "overture", "id": (pins or {}).get(name) or cands[0].id}
-                    if hint:
-                        args["type_hint"] = hint
-                    values[name] = {"op": "Resolve", "args": args}
+                values[name] = one(v, (pins or {}).get(name))
         elif sd.type == "predicate":
             values[name] = PREDICATE_DAGS[v]
         elif sd.type == "admin_level" and v == "none":
@@ -59,6 +66,8 @@ def gold_dag(t: str, s: dict[str, Any], src: dict[str, str] | None = None, view:
         elif sd.type == "distance":
             policy_default = v is None or (isinstance(v, str) and v.startswith("policy."))
             values[name] = _slot_default(sd) if policy_default else float(v)
+        elif sd.type == "quantifier":
+            values[name] = None if v in (None, "any") else v  # `any` is the operator default (no argument)
         elif sd.type in CLOSED_TYPES or sd.type == "value":
             values[name] = v
     dag = substitute(tpl.dag_json, values)

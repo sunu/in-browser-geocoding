@@ -38,6 +38,14 @@ AROUND_DEFAULT = {"children_touching": ("parent", "other"), "children_near": ("p
 HAS_DISTANCE = re.compile(r"\b\d+(?:\.\d+)?\s*(?:km|kms|kilometres?|kilometers?|m|metres?|meters?|mi|miles?)\b", re.I)
 # Templates where the admin level can be empty (an unknown level word). The executor uses the data.
 STRUCTURE_LEVEL = {"children", "children_with_predicate"}
+# Lists of places in a slot ("France, Switzerland and Germany"): the separators are whole words with spaces, so a name
+# that contains "and" ("Andorra") is never split. A leading word gives the quantifier ("both France and Germany").
+LIST_SEP = re.compile(r"\s*,\s*(?:(?:and|or|&)\s+)?|\s+(?:and|or|&|as well as)\s+", re.I)
+LIST_MARKER = re.compile(r"^(both|either|all of the|all of|each of|any one of|any of)\s+(.+)$", re.I)
+LIST_MARKER_QUANT = {"both": "all", "all of the": "all", "all of": "all", "each of": "all", "either": "any",
+                     "any one of": "any", "any of": "any"}
+# Templates whose list can have no separator ("India Pakistan border").
+SPACE_LIST_TEMPLATES = {"shared_border"}
 
 LEADING_FILLERS = [
     "show me the", "show me", "show the", "show", "find me", "find the", "find", "list the", "list all", "list",
@@ -71,6 +79,7 @@ class ParseResult(BaseModel):
     path: str | None = None  # simple or complex
     trace: list[dict[str, Any]] = Field(default_factory=list)
     timings: dict[str, float] = Field(default_factory=dict)
+    notes: list[str] = Field(default_factory=list)
 
     @property
     def n_model_calls(self) -> int:
@@ -178,6 +187,7 @@ class Parser:
             # A provider failure (network, quota) is not a parse decision. Report it; do not guess.
             res.unsupported = Unsupported(reason=f"decision provider error: {e}")
         res.trace = dec.trace
+        res.notes = list(dict.fromkeys(dec.notes))
         res.timings["parse_s"] = round(time.time() - t0, 3)
         return res
 
@@ -371,7 +381,7 @@ class Parser:
                 dec.record_step("natural_name", depth, {"text": text}, nat[0].id, "rules", {"article": True})
                 return ({"op": "Resolve", "args": {"name": name, "source": "overture", "id": nat[0].id}},
                         {"family": "lookup", "template": "lookup_place", "slots": {"anchor": name}})
-        if tpl.family == "lookup" and alt != "lookup_place":
+        if tpl.family == "lookup" and alt != "lookup_place" and not self._list_parts(dec, text, False):
             # Guard (not after the exact-name rule of _frame_override): the lookup template takes the whole text as one name. If the text describes a set
             # of places (and no other template matched), it is not supported. Do not geocode it.
             g = dec.is_subquery(text, depth=depth, context={"gazetteer_exact": bool(self.store.search(text, fuzzy=False, limit=1, view=dec.view)),
@@ -414,7 +424,7 @@ class Parser:
                 parts.append({"region": "place or area", "anchor": "place", "admin_level": "level",
                               "predicate": "property", "direction": "direction", "category": "category",
                               "attr": "quantity", "op": "comparison", "distance": "distance",
-                              "value": "number"}.get(sd.type if sd else "", s))
+                              "value": "number", "quantifier": "any or all"}.get(sd.type if sd else "", s))
             labels[seg] = " and ".join(dict.fromkeys(parts))
         return labels
 
@@ -526,6 +536,7 @@ class Parser:
                 values[name] = None
             else:
                 values[name] = r.value
+        self._quantifier(dec, tpl, seg_of, values, slots, depth)
         self._sibling_view(dec, tpl, values, depth)
         if around:
             values[around], slots[around] = self._around(dec, tpl.slots[around], values.get(AROUND_DEFAULT[tpl.id][1])), None
@@ -537,6 +548,24 @@ class Parser:
                 raise _Stop(Unsupported(reason=f"the text {match['segments'][seg_of['level']]!r} names no known admin_level",
                                         decision="fill_closed_slot", depth=depth, text=text))
         return values, slots
+
+    def _quantifier(self, dec: Decider, tpl: Template, seg_of: dict[str, str], values: dict[str, Any],
+                    slots: dict[str, Any], depth: int) -> None:
+        """A quantifier slot with no text: the leading word of the list ("both", "either"), else the default `any`.
+        A list joined by "and" with no such word is ambiguous; the parse says how it read it."""
+        q = next((n for n, sd in tpl.slots.items() if sd.type == "quantifier"), None)
+        if q is None:
+            return
+        lst = next((s for n, s in slots.items() if tpl.slots[n].type in OPEN_TYPES and isinstance(s, dict) and "list" in s), None)
+        if q not in seg_of and lst and lst["quant"]:
+            values[q] = slots[q] = lst["quant"]
+            dec.record_step("quantifier", depth, {"text": lst["conj"]}, lst["quant"], "rules", {"from": "leading word"})
+        elif q not in seg_of and lst and lst["conj"] == "and" and values.get(q) == "any":
+            dec.record_step("quantifier", depth, {"text": "and"}, "any", "rules", {"from": "default", "ambiguous": True})
+            dec.notes.append("'and' between the places is read as 'or' (any of them); say 'both' or 'all of' for all of them")
+        # `any` is the default of the operators: the DAG has the argument only for `all`.
+        if values.get(q) == "any":
+            values[q] = None
 
     def _around(self, dec: Decider, sd, other: Any) -> dict[str, Any]:
         """Default parent of "districts along the Yamuna": the countries whose extent overlaps the extent of the
@@ -623,6 +652,9 @@ class Parser:
         sd = tpl.slots
         is_region = any(s.type == "region" for s in sd.values()) and tpl.family != "lookup"
         exact = self.store.search(text, type_hint=type_hint, fuzzy=False, limit=3, view=dec.view)
+        lst = None if exact else self._list_parts(dec, text, tpl.id in SPACE_LIST_TEMPLATES)
+        if lst:
+            return self._list_region(dec, tpl, lst, spans, query, depth, type_hint)
         rest = _direction_rest(text) if is_region and not exact else None
         if rest and self.store.search(rest, fuzzy=False, limit=1, view=dec.view):
             # "northern France": a direction word and a place name. A subquery, without the model.
@@ -657,6 +689,55 @@ class Parser:
                 sub_dag, info = self._parse_level(dec, text, depth + 1)
                 return sub_dag, {"q": text, "t": info["template"], "s": info["slots"]}
         return self._anchor(dec, tpl, text, spans, query, depth, type_hint, exact), text
+
+    def _list_parts(self, dec: Decider, text: str, allow_space: bool) -> tuple[list[str], str, str | None] | None:
+        """A list of places: (names, conjunction "and" or "or", quantifier of a leading word or None). Each name must be
+        a named set or an exact gazetteer name. Of the ways to cut the text at the separators, the one with the fewest
+        names wins ("Bosnia and Herzegovina and Croatia" is two names). A list needs "and", "or" or "&" (commas alone are
+        a qualified name). None if the text is not such a list."""
+        t = text.strip()
+        marker = None
+        m = LIST_MARKER.match(t)
+        if m:
+            marker, t = LIST_MARKER_QUANT[m.group(1).lower()], m.group(2)
+        seps = list(LIST_SEP.finditer(t))
+        if not seps and allow_space:
+            seps = list(re.finditer(r"\s+", t))
+        # Commas alone are not a list: "Salt Lake, Kolkata" is a place in a city (a qualified name).
+        if seps and all(s.group(0).strip() == "," for s in seps) and not allow_space:
+            return None
+        if not seps or len(seps) > 6:
+            return None
+        known: dict[str, bool] = {}
+
+        def is_name(p: str) -> bool:
+            if p not in known:
+                known[p] = bool(p) and (bool(lexicon_match(p)) or bool(self.store.search(p, fuzzy=False, limit=1, view=dec.view)))
+            return known[p]
+
+        for k in range(1, len(seps) + 1):
+            for cut in itertools.combinations(range(len(seps)), k):
+                parts, start = [], 0
+                for i in cut:
+                    parts.append(t[start:seps[i].start()].strip())
+                    start = seps[i].end()
+                parts.append(t[start:].strip())
+                if all(is_name(p) for p in parts):
+                    conj = "or" if any(re.search(r"\bor\b", seps[i].group(0), re.I) for i in cut) else "and"
+                    return parts, conj, marker
+        return None
+
+    def _list_region(self, dec: Decider, tpl: Template, lst: tuple[list[str], str, str | None], spans: list[Span],
+                     query: str, depth: int, type_hint: str | None) -> tuple[dict[str, Any], Any]:
+        """The Union of the places of a list. The slot info keeps the names, the conjunction and the quantifier word."""
+        names, conj, marker = lst
+        dec.record_step("list", depth, {"text": " | ".join(names)}, names, "rules", {"conjunction": conj, "quantifier": marker})
+        node, infos = None, []
+        for p in names:
+            dag, info = self._region(dec, tpl, p, spans, query, depth, type_hint)
+            node = dag if node is None else {"op": "Union", "args": {"a": node, "b": dag}}
+            infos.append(info)
+        return node, {"list": infos, "conj": conj, "quant": marker}
 
     def _anchor(self, dec: Decider, tpl: Template, text: str, spans: list[Span], query: str, depth: int,
                 type_hint: str | None, exact) -> dict[str, Any]:
@@ -708,7 +789,13 @@ class Parser:
         """Places of one template help each other ("border between Loja and Piura", "London and Manchester"): for the
         names whose candidates were close, the candidates of all places are chosen together, as the combination with
         the smallest sum of distances between the places. A place that was not close has one candidate."""
-        res = {n: v for n, v in values.items() if tpl.slots[n].type in OPEN_TYPES and isinstance(v, dict)
+        def leaves(v):
+            if isinstance(v, dict) and v.get("op") == "Union":
+                return leaves(v["args"]["a"]) + leaves(v["args"]["b"])
+            return [v]
+
+        res = {f"{n}.{i}": v for n, slot_v in values.items() if tpl.slots[n].type in OPEN_TYPES
+               for i, v in enumerate(leaves(slot_v)) if isinstance(v, dict)
                and v.get("op") == "Resolve" and v["args"].get("source") == "overture" and v["args"].get("id")}
         if len(res) < 2 or not any(v["args"]["id"] in dec.close_anchors for v in res.values()):
             return

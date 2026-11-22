@@ -16,8 +16,8 @@ views:
 
 records:
   # shared_border
-  - {cc: FR, q: "border between France and Germany", t: shared_border, s: {a: "France", b: "Germany"}}
-  - {cc: IN, q: "5 km zone along the border of Kerala and Tamil Nadu", t: shared_border, s: {distance: 5000, a: "Kerala", b: "Tamil Nadu"}}
+  - {cc: FR, q: "border between France and Germany", t: shared_border, s: {places: ["France", "Germany"]}}
+  - {cc: IN, q: "5 km zone along the border of Kerala and Tamil Nadu", t: shared_border, s: {distance: 5000, places: ["Kerala", "Tamil Nadu"]}}
 
   # natural_in
   - {cc: DE, q: "rivers in Germany", t: natural_in, s: {kind: river, region: "Germany"}}
@@ -37,9 +37,9 @@ records:
   - {cc: CN, q: "landlocked countries that border China", t: neighbors_with_predicate, s: {pred: landlocked, level: country, of: "China"}}
   - {cc: IN, q: "coastal states bordering Karnataka", t: neighbors_with_predicate, s: {pred: coastal, level: state, of: "Karnataka"}}
 
-  # neighbors_both
-  - {cc: FR, q: "countries bordering both France and Germany", t: neighbors_both, s: {level: country, a: "France", b: "Germany"}}
-  - {cc: IN, q: "states that border both Assam and Arunachal Pradesh", t: neighbors_both, s: {level: state, a: "Assam", b: "Arunachal Pradesh"}}
+  # neighbors_both (plan-036: the template neighbors with quant all)
+  - {cc: FR, q: "countries bordering both France and Germany", t: neighbors, s: {level: country, of: ["France", "Germany"], quant: all}}
+  - {cc: IN, q: "states that border both Assam and Arunachal Pradesh", t: neighbors, s: {level: state, of: ["Assam", "Arunachal Pradesh"], quant: all}}
 
   # Forms of the phase 11 T5 gaps, with other names
   - {cc: IN, q: "Godavari river", t: lookup_place, s: {anchor: "Godavari river"}, src: {anchor: overture}, ids: {anchor: ne-river-Q191314}}
