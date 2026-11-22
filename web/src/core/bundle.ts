@@ -24,6 +24,7 @@ export interface Bundle {
   structure_level: string[];
   rank_by: string[];
   rank_orders: string[];
+  quantifiers: string[];
 }
 
 export async function loadBundle(url: string): Promise<Bundle> {

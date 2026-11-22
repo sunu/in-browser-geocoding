@@ -31,6 +31,7 @@ export function choices(bundle: Bundle): Record<string, string[]> {
     ops: Object.keys(o.ops), categories: leaves, lexicon: Object.keys(bundle.lexicon), layers: bundle.layers,
     direction_modes: bundle.direction_modes, sources: bundle.sources,
     natural_kinds: Object.keys(o.natural_kinds), rank_by: bundle.rank_by, rank_orders: bundle.rank_orders,
+    quantifiers: bundle.quantifiers ?? ["any", "all"],
   };
 }
 

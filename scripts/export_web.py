@@ -26,7 +26,7 @@ import yaml
 from geoparse.config import PACKAGE_DIR, REPO_ROOT, build_dir, load_config
 from geoparse.data.web_layout import export_country_layout, verify_country_layout
 from geoparse.decisions.functions import INSTRUCTIONS, IS_SUBQUERY_CRITERIA, NONE_OPTION, SOURCE_OPTIONS
-from geoparse.dsl.schema import CATALOG, DIRECTION_MODES, LAYERS, PREDICATE_DAGS, RANK_BY, RANK_ORDERS, SOURCES
+from geoparse.dsl.schema import CATALOG, DIRECTION_MODES, LAYERS, PREDICATE_DAGS, QUANTIFIERS, RANK_BY, RANK_ORDERS, SOURCES
 from geoparse.options import categories, lexicon, options
 from geoparse.execute.data import local_level_words
 from geoparse.parse.pipeline import LEADING_FILLERS, STRUCTURE_LEVEL
@@ -70,6 +70,7 @@ def export_bundle() -> None:
         "structure_level": sorted(STRUCTURE_LEVEL),
         "rank_by": RANK_BY,
         "rank_orders": RANK_ORDERS,
+        "quantifiers": QUANTIFIERS,
     }
     WEB.mkdir(parents=True, exist_ok=True)
     (WEB / "bundle.json").write_text(json.dumps(bundle, ensure_ascii=False))

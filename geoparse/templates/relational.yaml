@@ -63,4 +63,4 @@ templates:
       - "{distance} [zone|strip|belt|corridor] along the (border|boundary) between {a} and {b}"
       - "{distance} [zone|strip|belt|corridor] along the (border|boundary) of {a} and {b}"
       - "{a} {b} (border|boundary)"
-    dag: "Along(SharedBorder(${a}, ${b}), ${distance})"
+    dag: "Along(SharedBorder(Union(${a}, ${b})), ${distance})"

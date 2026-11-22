@@ -54,4 +54,4 @@ templates:
     patterns:
       - "{level} (that|which) (border|touch) both {a} and {b}"
       - "{level} (bordering|adjacent to|next to|touching) both {a} and {b}"
-    dag: "Common(Neighbors(${a}, level=${level}), Neighbors(${b}, level=${level}))"
+    dag: "Neighbors(Union(${a}, ${b}), level=${level}, quant=all)"

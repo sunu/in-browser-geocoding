@@ -373,7 +373,7 @@ class _Run:
             f"{lf} AND a.id IS NOT NULL AND ST_Contains(crs84(a.gs), "
             f"(SELECT ST_PointOnSurface(crs84(ST_Union_Agg(gs))) FROM {child}))")
 
-    def op_Neighbors(self, of: Any, level: str | None = None) -> str:
+    def op_Neighbors(self, of: Any, level: str | None = None, quant: str = "any") -> str:
         src = self.eval(of)
         lat = self.lat_of(src)
         tol = self.deg(float(self.policy["neighbor_tolerance_m"]), lat)
@@ -391,10 +391,15 @@ class _Run:
             # "states that border France": the divisions of that level in the other countries near it, not the
             # French regions on its edge.
             codes = self.countries_near(src) or codes
+        if quant == "all":
+            # Near every member of the set ("countries that border both France and Germany").
+            near = (f"(SELECT count(*) FROM {src} x WHERE ST_DWithin(crs84(a.gs), crs84(x.gs), {tol})) "
+                    f"= (SELECT count(*) FROM {src})")
+        else:
+            near = f"ST_DWithin(crs84(a.gs), {self.union_geom(src, 'gs')}, {tol})"
         return self.divisions_rel(
             f"{self.levels_filter(level, codes)} AND a.id IS NOT NULL "
-            f"AND d.id NOT IN (SELECT id FROM {src} WHERE id IS NOT NULL) "
-            f"AND ST_DWithin(crs84(a.gs), {self.union_geom(src, 'gs')}, {tol})")
+            f"AND d.id NOT IN (SELECT id FROM {src} WHERE id IS NOT NULL) AND {near}")
 
     # ------------------------------------------------------------ filters
 
@@ -414,8 +419,11 @@ class _Run:
             t = self.eval(target)
             tol = self.deg(float(self.policy["neighbor_tolerance_m"]), self.lat_of(t))
             # Each member of the target (no union: the union of many features, for example all rivers, is slow).
-            return (f"(EXISTS (SELECT 1 FROM {t} x WHERE ST_DWithin({alias}.gs, crs84(x.gs), {tol})) "
-                    f"AND NOT coalesce({alias}.id IN (SELECT id::VARCHAR FROM {t} WHERE id IS NOT NULL), false))")
+            # quant=all: near every member ("districts that border both Goa and Maharashtra").
+            near = (f"NOT EXISTS (SELECT 1 FROM {t} x WHERE NOT ST_DWithin({alias}.gs, crs84(x.gs), {tol}))"
+                    if args.get("quant") == "all" else
+                    f"EXISTS (SELECT 1 FROM {t} x WHERE ST_DWithin({alias}.gs, crs84(x.gs), {tol}))")
+            return (f"({near} AND NOT coalesce({alias}.id IN (SELECT id::VARCHAR FROM {t} WHERE id IS NOT NULL), false))")
         if op == "Within":
             t = self.eval(target)
             return f"ST_Intersects(ST_PointOnSurface({alias}.gs), {self.union_geom(t, 'gs')})"
@@ -461,14 +469,25 @@ class _Run:
         g = self.union_geom(self.eval(within), "gs")
         return self.divisions_rel(f"{where} AND a.id IS NOT NULL AND ST_Intersects(crs84(a.gs), {g})")
 
-    def op_Top(self, set: Any, by: str, n: float, order: str) -> str:
+    def op_Top(self, set: Any, by: str, n: float, order: str, per: str | None = None) -> str:
         src = self.eval(set)
         if by == "population":
             expr = f"(SELECT {self.population()} FROM divisions d WHERE d.id = s.id)"
         else:
             expr = "(ST_Area(to_m(s.gs, utm(s.gs))) / 1e6)"
         direction = "DESC" if order == "largest" else "ASC"
-        return self.new_rel(f"SELECT s.* FROM {src} s WHERE {expr} IS NOT NULL ORDER BY {expr} {direction}, s.id LIMIT {int(n)}")
+        if not per:
+            return self.new_rel(f"SELECT s.* FROM {src} s WHERE {expr} IS NOT NULL ORDER BY {expr} {direction}, s.id LIMIT {int(n)}")
+        # The first n inside each parent of the level `per` ("the largest district in each state of India"). The parent
+        # is the ancestor of that level; members with no such ancestor form one group.
+        lf = self.levels_filter(per, self.level_countries(src))
+        return self.new_rel(f"""
+            WITH g AS (SELECT c.id AS cid, min(d.id) AS grp FROM divisions c, divisions d
+                       WHERE c.id IN (SELECT id FROM {src} WHERE id IS NOT NULL) AND {lf}
+                         AND list_contains(c.ancestors, d.id) AND d.id <> c.id GROUP BY c.id),
+                 r AS (SELECT s.*, row_number() OVER (PARTITION BY g.grp ORDER BY {expr} {direction}, s.id) AS rk
+                       FROM {src} s LEFT JOIN g ON g.cid = s.id WHERE {expr} IS NOT NULL)
+            SELECT * EXCLUDE (rk) FROM r WHERE rk <= {int(n)}""")
 
     def op_Common(self, a: Any, b: Any) -> str:
         ra, rb = self.eval(a), self.eval(b)
@@ -476,18 +495,26 @@ class _Run:
 
     # ------------------------------------------------------------ geometry
 
-    def op_SharedBorder(self, a: Any, b: Any) -> str:
-        ra, rb = self.eval(a), self.eval(b)
-        tol = self.deg(float(self.policy["neighbor_tolerance_m"]), self.lat_of(ra))
+    def op_SharedBorder(self, of: Any) -> str:
+        src = self.eval(of)
+        n = self.run(f"SELECT count(*) FROM {src} WHERE gs IS NOT NULL").fetchone()[0]
+        if n < 2:
+            raise ExecutionError("a shared border needs two or more places")
+        tol = self.deg(float(self.policy["neighbor_tolerance_m"]), self.lat_of(src))
+        # Each pair of members: the boundary of the first inside a small buffer of the second. Then the union.
         rel = self.new_rel(f"""
-            WITH u AS (SELECT ST_Intersection(ST_Boundary({self.union_geom(ra, 'gs')}),
-                                              ST_Buffer({self.union_geom(rb, 'gs')}, {tol})) AS g)
+            WITH m AS (SELECT row_number() OVER (ORDER BY id) AS k, crs84(gs) AS g FROM {src} WHERE gs IS NOT NULL),
+                 p AS (SELECT ST_Intersection(ST_Boundary(m1.g), ST_Buffer(m2.g, {tol})) AS g
+                       FROM m m1, m m2 WHERE m1.k < m2.k),
+                 u AS (SELECT crs84(ST_Union_Agg(g)) AS g FROM p WHERE NOT ST_IsEmpty(g))
             SELECT NULL AS id, 'shared border' AS name, 'geometry' AS subtype, 'computed' AS source,
                    u.g AS geometry, u.g AS gs
-            FROM u WHERE NOT ST_IsEmpty(u.g)
+            FROM u WHERE u.g IS NOT NULL AND NOT ST_IsEmpty(u.g)
         """)
         if not self.run(f"SELECT count(*) FROM {rel}").fetchone()[0]:
-            raise ExecutionError("the two places do not share a border")
+            raise ExecutionError("the places do not share a border")
+        if n > 2:
+            self.notes.append(f"the border of {n} places: the borders between each pair that share one")
         return rel
 
     def op_Buffer(self, of: Any, distance_m: float) -> str:

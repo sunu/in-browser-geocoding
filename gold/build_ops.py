@@ -20,11 +20,19 @@ from gold.build_gold import geometry_summary
 GOLD_DIR = Path(__file__).resolve().parent
 IN, ES, NP, EU, KA = [68, 8, 97, 37], [-9.3, 36, 3.3, 43.8], [80, 26, 88.2, 30.5], [-10, 36, 30, 60], [74, 11.5, 78.6, 18.5]
 
-# (gap of reports/template-review.md, query, view, DAG with names in angle brackets)
+def U(*nodes):
+    """A list of places: the Union of its members."""
+    out = nodes[0]
+    for n in nodes[1:]:
+        out = {"op": "Union", "args": {"a": out, "b": n}}
+    return out
+
+
+# (gap of reports/template-review.md, or L1 to L3 of plan-036; query, view, DAG with names in angle brackets)
 RECORDS = [
-    ("G1", "border between Spain and Portugal", ES, {"op": "SharedBorder", "args": {"a": "<Spain>", "b": "<Portugal>"}}),
+    ("G1", "border between Spain and Portugal", ES, {"op": "SharedBorder", "args": {"of": U("<Spain>", "<Portugal>")}}),
     ("G1", "10 km zone along the border of India and Pakistan", IN,
-     {"op": "Along", "args": {"line": {"op": "SharedBorder", "args": {"a": "<India>", "b": "<Pakistan>"}}, "distance_m": 10000}}),
+     {"op": "Along", "args": {"line": {"op": "SharedBorder", "args": {"of": U("<India>", "<Pakistan>")}}, "distance_m": 10000}}),
     ("G2", "rivers in Karnataka", KA, {"op": "Naturals", "args": {"kind": "river", "within": "<Karnataka>"}}),
     ("G2", "mountain ranges of Nepal", NP, {"op": "Naturals", "args": {"kind": "range", "within": "<Nepal>"}}),
     ("G3", "countries along the Danube", EU, {"op": "Neighbors", "args": {"of": "<ne-river-Q1653>", "level": "country"}}),
@@ -46,6 +54,19 @@ RECORDS = [
     ("G9", "mountain districts of Uttarakhand", IN,
      {"op": "Filter", "args": {"set": {"op": "Children", "args": {"of": "<Uttarakhand>", "level": "district"}}, "pred": PREDICATE_DAGS["in_mountains"]}}),
     ("Along", "5 km along the Ganges", IN, {"op": "Along", "args": {"line": "<ne-river-Q5089>", "distance_m": 5000}}),
+    # plan-036: lists, any/all, ranking per parent
+    ("L1", "border between France, Switzerland and Germany", EU,
+     {"op": "SharedBorder", "args": {"of": U("<France>", "<Switzerland>", "<Germany>")}}),
+    ("L2", "countries bordering France or Germany", EU,
+     {"op": "Neighbors", "args": {"of": U("<France>", "<Germany>"), "level": "country"}}),
+    ("L2", "countries that border both Austria and Switzerland", EU,
+     {"op": "Neighbors", "args": {"of": U("<Austria>", "<Switzerland>"), "level": "country", "quant": "all"}}),
+    ("L2", "districts of Karnataka that border both Goa and Maharashtra", KA,
+     {"op": "Filter", "args": {"set": {"op": "Children", "args": {"of": "<Karnataka>", "level": "district"}},
+                               "pred": {"op": "Touches", "args": {"target": U("<Goa>", "<Maharashtra>"), "quant": "all"}}}}),
+    ("L3", "the largest district in each state of India", IN,
+     {"op": "Top", "args": {"set": {"op": "Children", "args": {"of": "<India>", "level": "district"}}, "by": "area", "n": 1,
+                            "order": "largest", "per": "state"}}),
 ]
 
 

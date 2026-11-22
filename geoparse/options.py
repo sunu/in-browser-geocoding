@@ -9,7 +9,7 @@ from typing import Any
 import yaml
 
 from geoparse.config import PACKAGE_DIR, load_config
-from geoparse.dsl.schema import DIRECTION_MODES, LAYERS, RANK_BY, RANK_ORDERS, SOURCES
+from geoparse.dsl.schema import DIRECTION_MODES, LAYERS, QUANTIFIERS, RANK_BY, RANK_ORDERS, SOURCES
 
 
 @lru_cache(maxsize=1)
@@ -63,6 +63,7 @@ def choices() -> dict[str, list[str]]:
         "natural_kinds": list(o["natural_kinds"]),
         "rank_by": RANK_BY,
         "rank_orders": RANK_ORDERS,
+        "quantifiers": QUANTIFIERS,
     }
 
 

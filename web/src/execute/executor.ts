@@ -313,9 +313,12 @@ class Run {
     }
     if (level !== "country") await (this.needsLocal(level, codes) ? this.ex.db.store?.ensureLocal(codes) : this.ex.db.store?.ensureCountries(codes));
     await this.levelData(level);
+    // Port: quant=all is near every member of the set ("countries that border both France and Germany").
+    const near = a.quant === "all"
+      ? `(SELECT count(*) FROM ${src} x WHERE ST_DWithin(a.gs, x.gs, ${tol})) = (SELECT count(*) FROM ${src})`
+      : `ST_DWithin(a.gs, ${this.unionGeom(src, "gs")}, ${tol})`;
     return this.divisionsRel(`${this.levelsFilter(level, codes)} AND a.id IS NOT NULL
-      AND d.id NOT IN (SELECT id FROM ${src} WHERE id IS NOT NULL)
-      AND ST_DWithin(a.gs, ${this.unionGeom(src, "gs")}, ${tol})`);
+      AND d.id NOT IN (SELECT id FROM ${src} WHERE id IS NOT NULL) AND ${near}`);
   }
 
   // ------------------------------------------------------------ filters
@@ -334,7 +337,11 @@ class Run {
       const rel = await this.eval(t);
       const tol = this.deg(Number(this.policy.neighbor_tolerance_m), await this.latOf(rel));
       // Each member of the target (no union: the union of many features, for example all rivers, is slow).
-      return `(EXISTS (SELECT 1 FROM ${rel} x WHERE ST_DWithin(${al}.gs, x.gs, ${tol}))
+      // quant=all: near every member ("districts that border both Goa and Maharashtra").
+      const near = args.quant === "all"
+        ? `NOT EXISTS (SELECT 1 FROM ${rel} x WHERE NOT ST_DWithin(${al}.gs, x.gs, ${tol}))`
+        : `EXISTS (SELECT 1 FROM ${rel} x WHERE ST_DWithin(${al}.gs, x.gs, ${tol}))`;
+      return `(${near}
         AND NOT coalesce(${al}.id IN (SELECT id::VARCHAR FROM ${rel} WHERE id IS NOT NULL), false))`;
     }
     if (p.op === "Within") return `ST_Intersects(ST_PointOnSurface(${al}.gs), ${this.unionGeom(await this.eval(t), "gs")})`;
@@ -376,7 +383,17 @@ class Run {
   async op_Top(a: any) {
     const src = await this.eval(a.set);
     const expr = a.by === "population" ? `(SELECT ${await this.population()} FROM divisions d WHERE d.id = s.id)` : "(ST_Area(to_m(s.gs, utm(s.gs))) / 1e6)";
-    return this.newRel(`SELECT s.* FROM ${src} s WHERE ${expr} IS NOT NULL ORDER BY ${expr} ${a.order === "largest" ? "DESC" : "ASC"}, s.id LIMIT ${Math.trunc(Number(a.n))}`);
+    const dir = a.order === "largest" ? "DESC" : "ASC";
+    if (!a.per) return this.newRel(`SELECT s.* FROM ${src} s WHERE ${expr} IS NOT NULL ORDER BY ${expr} ${dir}, s.id LIMIT ${Math.trunc(Number(a.n))}`);
+    // Port: the first n inside each parent of the level `per` (the ancestor of that level).
+    await this.levelData(a.per);
+    const lf = this.levelsFilter(a.per, await this.levelCountries(src));
+    return this.newRel(`WITH g AS (SELECT c.id AS cid, min(d.id) AS grp FROM divisions c, divisions d
+        WHERE c.id IN (SELECT id FROM ${src} WHERE id IS NOT NULL) AND ${lf}
+          AND list_contains(c.ancestors, d.id) AND d.id <> c.id GROUP BY c.id),
+      r AS (SELECT s.*, row_number() OVER (PARTITION BY g.grp ORDER BY ${expr} ${dir}, s.id) AS rk
+        FROM ${src} s LEFT JOIN g ON g.cid = s.id WHERE ${expr} IS NOT NULL)
+      SELECT * EXCLUDE (rk) FROM r WHERE rk <= ${Math.trunc(Number(a.n))}`);
   }
 
   async op_Common(a: any) {
@@ -385,13 +402,18 @@ class Run {
   }
 
   async op_SharedBorder(a: any) {
-    const ra = await this.eval(a.a), rb = await this.eval(a.b);
-    const tol = this.deg(Number(this.policy.neighbor_tolerance_m), await this.latOf(ra));
-    const rel = await this.newRel(`WITH u AS (SELECT ST_Intersection(ST_Boundary(${this.unionGeom(ra, "gs")}),
-        ST_Buffer(${this.unionGeom(rb, "gs")}, ${tol})) AS g)
+    const src = await this.eval(a.of);
+    const n = Number((await this.run(`SELECT count(*) AS n FROM ${src} WHERE gs IS NOT NULL`))[0].n);
+    if (n < 2) throw new ExecError("a shared border needs two or more places");
+    const tol = this.deg(Number(this.policy.neighbor_tolerance_m), await this.latOf(src));
+    // Port: each pair of members (the boundary of the first inside a small buffer of the second), then the union.
+    const rel = await this.newRel(`WITH m AS (SELECT row_number() OVER (ORDER BY id) AS k, gs AS g FROM ${src} WHERE gs IS NOT NULL),
+        p AS (SELECT ST_Intersection(ST_Boundary(m1.g), ST_Buffer(m2.g, ${tol})) AS g FROM m m1, m m2 WHERE m1.k < m2.k),
+        u AS (SELECT ST_Union_Agg(g) AS g FROM p WHERE NOT ST_IsEmpty(g))
       SELECT NULL AS id, 'shared border' AS name, 'geometry' AS subtype, 'computed' AS source, u.g AS geometry, u.g AS gs
-      FROM u WHERE NOT ST_IsEmpty(u.g)`);
-    if (!(await this.run(`SELECT count(*) AS n FROM ${rel}`))[0].n) throw new ExecError("the two places do not share a border");
+      FROM u WHERE u.g IS NOT NULL AND NOT ST_IsEmpty(u.g)`);
+    if (!(await this.run(`SELECT count(*) AS n FROM ${rel}`))[0].n) throw new ExecError("the places do not share a border");
+    if (n > 2) this.notes.push(`the border of ${n} places: the borders between each pair that share one`);
     return rel;
   }
 

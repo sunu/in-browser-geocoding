@@ -98,6 +98,52 @@ def test_neighbors_country(world):
     assert names(res) == ["Otherland"]
 
 
+def U(*nodes):
+    out = nodes[0]
+    for n in nodes[1:]:
+        out = {"op": "Union", "args": {"a": out, "b": n}}
+    return out
+
+
+def test_neighbors_of_a_list_any_and_all(world):
+    # W2 touches W1, W3, W4, E1, E3; E3 touches E1, E2, E4, W2, W4. The members are not in the result.
+    anyof = {"op": "Neighbors", "args": {"of": U(R("d_w2"), R("d_e3"))}}
+    assert names(run(world, anyof)) == ["E1", "E2", "E4", "W1", "W3", "W4"]
+    allof = {"op": "Neighbors", "args": {"of": U(R("d_w2"), R("d_e3")), "quant": "all"}}
+    assert names(run(world, allof)) == ["E1", "W4"]
+
+
+def test_filter_touches_any_and_all(world):
+    def dag(quant):
+        return {"op": "Filter", "args": {"set": {"op": "Children", "args": {"of": R("c_tl"), "level": "district"}},
+                                         "pred": {"op": "Touches", "args": {"target": U(R("d_w1"), R("d_e1")), "quant": quant}}}}
+    assert names(run(world, dag("any"))) == ["E2", "E3", "E4", "W2", "W3", "W4"]
+    # W2 shares an edge with both; W4 touches both at a corner.
+    assert names(run(world, dag("all"))) == ["W2", "W4"]
+
+
+def test_shared_border_of_three(world):
+    # Westa-Easta (x=78) and Easta-Otherland (x=80) share a line of 4 degrees each; Westa and Otherland share none.
+    # The buffer tolerance adds short stubs at the corners (as for two places).
+    res = run(world, {"op": "SharedBorder", "args": {"of": U(R("st_w"), R("st_e"), R("c_ot"))}})
+    assert abs(geom(res).length - 8.0) < 0.05
+    assert any("each pair" in n for n in res.notes)
+
+
+def test_shared_border_needs_two(world):
+    res = world.execute({"op": "SharedBorder", "args": {"of": R("st_w")}})
+    assert not res.ok and "two or more" in res.error
+
+
+def test_top_per_parent(world):
+    # The most populous district in each state: W1 (4,000,000) in Westa, E3 (3,000,000) in Easta.
+    dag = {"op": "Top", "args": {"set": {"op": "Children", "args": {"of": R("c_tl"), "level": "district"}},
+                                 "by": "population", "n": 1, "order": "largest", "per": "state"}}
+    assert names(run(world, dag)) == ["E3", "W1"]
+    dag["args"]["n"] = 2
+    assert names(run(world, dag)) == ["E3", "E4", "W1", "W3"]
+
+
 def test_filter_coastal(world):
     dag = {"op": "Filter", "args": {"set": {"op": "Children", "args": {"of": R("c_tl"), "level": "district"}},
                                     "pred": PREDICATE_DAGS["coastal"]}}
