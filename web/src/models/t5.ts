@@ -1,7 +1,7 @@
 // T5 frame generator: beam search over encoder.onnx and decoder.onnx (one step with a key-value cache).
 // Same algorithm as scripts/onnx_parity.py (checked against transformers generate()).
 import { frameFromText, frameToText, type Frame } from "../core/frames.ts";
-import { int64, ort, readJson, session, tokenizer } from "./runtime.ts";
+import { int64, isNode, modelFile, ort, readJson, session, tokenizer } from "./runtime.ts";
 
 function logSoftmaxRow(x: Float32Array, off: number, n: number): Float64Array {
   let max = -Infinity;
@@ -38,8 +38,10 @@ export class T5Frames {
   static async load(int8 = true): Promise<T5Frames> {
     const m = new T5Frames();
     const s = int8 ? "_int8" : "";
+    // The int8 encoder and decoder share one embedding table (embed.bin): one download for both sessions.
+    const ext: Record<string, Promise<Uint8Array>> = int8 && !isNode ? { "embed.bin": modelFile("t5", "embed.bin") } : {};
     [m.enc, m.dec, m.tok, m.gen] = await Promise.all([
-      session("t5", `encoder${s}.onnx`), session("t5", `decoder${s}.onnx`), tokenizer("t5"), readJson("t5", "generation.json"),
+      session("t5", `encoder${s}.onnx`, ext), session("t5", `decoder${s}.onnx`, ext), tokenizer("t5"), readJson("t5", "generation.json"),
     ]);
     return m;
   }

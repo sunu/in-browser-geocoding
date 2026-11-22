@@ -3,7 +3,8 @@
 T5: encoder.onnx (input_ids, attention_mask -> cross_kv, the cross-attention keys and values of each decoder layer)
 and decoder.onnx, one step with a key-value cache (input_ids [n, 1], past, cross_kv, encoder_attention_mask ->
 logits [n, V], present). past and present: [layers, 2, n, heads, t, d_kv]; the first step has t = 0. cross_kv
-has batch 1 for all beams.
+has batch 1 for all beams. The int8 files share one embedding table (embed.bin, external data): the int8 lm_head
+weight [d_model, V], also read by the token lookups of the encoder and the decoder.
 Cross-encoder: model.onnx (input_ids, attention_mask, token_type_ids -> logits).
 
 Usage: uv run python scripts/export_onnx.py [--t5 models/t5/current] [--xenc models/local/current] [--only t5|xenc]
@@ -16,7 +17,9 @@ import json
 import shutil
 from pathlib import Path
 
+import onnx
 import torch
+from onnx import external_data_helper, helper, numpy_helper
 from onnxruntime.quantization import QuantType, quantize_dynamic
 from transformers import AutoModelForSeq2SeqLM, AutoModelForSequenceClassification, AutoTokenizer
 from transformers.models.t5.modeling_t5 import T5Attention
@@ -107,6 +110,49 @@ def quant(src: Path) -> Path:
     return dst
 
 
+def share_embedding(enc_path: Path, dec_path: Path) -> None:
+    """Replace the uint8 embedding tables of both int8 graphs with lookups in the int8 lm_head weight (tied), and
+    store that weight once in embed.bin."""
+    dec, enc = onnx.load(str(dec_path)), onnx.load(str(enc_path))
+    inits = {t.name: t for t in dec.graph.initializer}
+    head = next(n for n in dec.graph.node if n.op_type == "MatMulInteger" and n.name.startswith("/lm_head/"))
+    w = inits[head.input[1]]
+    scale, zero = inits[head.input[1].replace("_quantized", "_scale")], inits[head.input[3]]
+    data = numpy_helper.to_array(w)
+    (enc_path.parent / "embed.bin").write_bytes(data.tobytes())
+    for m in (enc, dec):
+        g = m.graph
+        gather = next(n for n in g.node if n.op_type == "Gather" and n.input[0].endswith("embed_tokens.weight_quantized"))
+        deq = next(n for n in g.node if n.op_type == "DequantizeLinear" and n.input[0] == gather.output[0])
+        drop = set(deq.input[1:]) | {gather.input[0]}
+        i = list(g.node).index(gather)
+        new = [helper.make_node("Gather", ["shared.weight", gather.input[1]], ["shared/gather"], axis=1),
+               helper.make_node("Transpose", ["shared/gather"], ["shared/rows"], perm=[1, 2, 0]),
+               helper.make_node("DequantizeLinear", ["shared/rows", "shared.scale", "shared.zero_point"], deq.output)]
+        g.node.remove(gather)
+        g.node.remove(deq)
+        for k, n in enumerate(new):
+            g.node.insert(i + k, n)
+        if m is dec:
+            head.input[1], head.input[3] = "shared.weight", "shared.zero_point"
+            for n in g.node:
+                for j, x in enumerate(n.input):
+                    if x == scale.name:
+                        n.input[j] = "shared.scale"
+            drop |= {w.name, scale.name, zero.name}
+        keep = [t for t in g.initializer if t.name not in drop]
+        del g.initializer[:]
+        g.initializer.extend(keep)
+        t = numpy_helper.from_array(data, "shared.weight")
+        external_data_helper.set_external_data(t, "embed.bin", offset=0, length=data.nbytes)
+        t.data_location = onnx.TensorProto.EXTERNAL
+        t.ClearField("raw_data")
+        g.initializer.extend([t, numpy_helper.from_array(numpy_helper.to_array(scale), "shared.scale"),
+                              numpy_helper.from_array(numpy_helper.to_array(zero), "shared.zero_point")])
+    onnx.save(enc, str(enc_path))
+    onnx.save(dec, str(dec_path))
+
+
 def export_t5(d: Path) -> None:
     out = OUT / "t5"
     out.mkdir(parents=True, exist_ok=True)
@@ -131,13 +177,12 @@ def export_t5(d: Path) -> None:
                                     "encoder_attention_mask": {1: "s"}, "logits": {0: "n"},
                                     "present": {2: "n", 4: "t1"}},
                       opset_version=17, dynamo=False)
-    for f in ("encoder.onnx", "decoder.onnx"):
-        quant(out / f)
+    share_embedding(quant(out / "encoder.onnx"), quant(out / "decoder.onnx"))
     tok.save_pretrained(str(out))
     (out / "generation.json").write_text(json.dumps({
         "decoder_start_token_id": m.config.decoder_start_token_id, "eos_token_id": m.config.eos_token_id,
         "pad_token_id": m.config.pad_token_id, "prefix": "parse: ", "max_new_tokens": 96}))
-    print("t5:", {p.name: f"{p.stat().st_size / 1e6:.1f} MB" for p in sorted(out.glob('*.onnx'))})
+    print("t5:", {p.name: f"{p.stat().st_size / 1e6:.1f} MB" for p in sorted([*out.glob('*.onnx'), out / 'embed.bin'])})
 
 
 def export_xenc(d: Path) -> None:
@@ -155,7 +200,7 @@ def export_xenc(d: Path) -> None:
     tok.save_pretrained(str(out))
     shutil.copy(d / "calibration.json", out / "calibration.json")
     (out / "inputs.json").write_text(json.dumps({"input_names": names, "max_length": 128}))
-    print("xenc:", {p.name: f"{p.stat().st_size / 1e6:.1f} MB" for p in sorted(out.glob('*.onnx'))})
+    print("xenc:", {p.name: f"{p.stat().st_size / 1e6:.1f} MB" for p in sorted([*out.glob('*.onnx'), out / 'embed.bin'])})
 
 
 def main() -> None:

@@ -35,12 +35,13 @@ WEB = REPO_ROOT / "web"
 STATE_DIR = REPO_ROOT / ".cache" / "deploy"
 # Brotli copies of the model files (key: the file MD5, so a changed model gets a new copy).
 BR_DIR = REPO_ROOT / ".cache" / "deploy-br"
-BROTLI = {".onnx", ".json"}
+BROTLI = {".onnx", ".json", ".bin"}
 WRANGLER = "wrangler@4.164.0"
 CONTENT_TYPES = {".json": "application/json", ".parquet": "application/vnd.apache.parquet",
                  ".onnx": "application/octet-stream"}
 MODEL_FILES = {
-    "t5": ["encoder_int8.onnx", "decoder_int8.onnx", "tokenizer.json", "tokenizer_config.json", "generation.json"],
+    "t5": ["encoder_int8.onnx", "decoder_int8.onnx", "embed.bin", "tokenizer.json", "tokenizer_config.json",
+           "generation.json"],
     "xenc": ["model_int8.onnx", "tokenizer.json", "tokenizer_config.json", "calibration.json", "inputs.json"],
 }
 # COOP and COEP: the ONNX Runtime threads need SharedArrayBuffer. The Vite dev server sends the same headers.

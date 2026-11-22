@@ -49,19 +49,34 @@ function modelSizes(): Promise<Record<string, number>> {
   return sizes;
 }
 
-export async function session(...parts: string[]): Promise<any> {
-  return serialize(await createSession(...parts));
+/** external: the external data files of the model (browser only; Node.js reads them next to the model file). */
+export async function session(dir: string, file: string, external: Record<string, Promise<Uint8Array>> = {}): Promise<any> {
+  return serialize(await createSession(dir, file, external));
 }
 
-async function createSession(...parts: string[]): Promise<any> {
+/** The bytes of a model file (browser), with download progress. */
+export async function modelFile(dir: string, file: string): Promise<Uint8Array> {
+  const key = `${dir}/${file}`;
+  return readBody(await fetch(modelPath(dir, file)), key, (await modelSizes())[key] ?? 0);
+}
+
+async function createSession(dir: string, file: string, external: Record<string, Promise<Uint8Array>>): Promise<any> {
   const o = await ort();
   const opts: any = { executionProviders: isNode ? ["cpu"] : ["wasm"], graphOptimizationLevel: "all" };
   // Node.js: ORT_THREADS limits the threads of each session (parity checks in several processes).
   if (isNode && process.env.ORT_THREADS) opts.intraOpNumThreads = Number(process.env.ORT_THREADS);
-  if (isNode) return o.InferenceSession.create(modelPath(...parts), opts);
-  const buf = await readBody(await fetch(modelPath(...parts)), parts.join("/"), (await modelSizes())[parts.join("/")] ?? 0);
-  return o.InferenceSession.create(buf, opts);
+  if (isNode) return o.InferenceSession.create(modelPath(dir, file), opts);
+  const names = Object.keys(external);
+  const [buf, ...data] = await Promise.all([modelFile(dir, file), ...names.map((n) => external[n])]);
+  if (names.length) opts.externalData = names.map((path, i) => ({ path, data: data[i] }));
+  // ONNX Runtime Web has one table of external data files, and removes it at the end of each session creation.
+  // Create one session at a time, so that one creation does not remove the files of another.
+  const p = creating.then(() => o.InferenceSession.create(buf, opts));
+  creating = p.catch(() => undefined);
+  return p;
 }
+
+let creating: Promise<any> = Promise.resolve();
 
 export async function tokenizer(name: string): Promise<any> {
   // transformers.js reads a URL with a host only as a remote model location (remoteHost), not as localModelPath.
