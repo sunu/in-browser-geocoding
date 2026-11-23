@@ -158,3 +158,34 @@ def test_list_keeps_names_with_and(rules_parser):
     p = rules_parser.parse("districts of Jammu and Kashmir")
     assert p.ok, p.unsupported
     assert p.dag["args"]["of"]["op"] == "Resolve"
+
+
+def test_frame_coverage(rules_parser):
+    # A frame that leaves out a place name of the query loses to a frame that uses all of them (plan-038).
+    from geoparse.t5.frames import Frame
+
+    dec = rules_parser.base_decider.fork()
+    q = "Kerala, Goa and Karnataka"
+    two = Frame(template="union", slots={"a": "Kerala", "b": "Goa"})
+    three = Frame(template="union3", slots={"a": "Kerala", "b": "Goa", "c": "Karnataka"})
+    assert rules_parser._dropped_names(dec, two, q) == ["Karnataka"]
+    assert rules_parser._covering(dec, [two, three], q, 0) == [three]
+    # If all frames leave out the name, they all stay, with a note.
+    assert rules_parser._covering(dec, [two], q, 0) == [two]
+    assert "'Karnataka' is not used in the result" in dec.notes
+
+
+def test_extend_slot_to_exact_name(rules_parser):
+    from geoparse.t5.frames import Frame
+
+    dec = rules_parser.base_decider.fork()
+    f = Frame(template="children", slots={"level": "districts", "parent": "Tamil"})
+    assert rules_parser._extend_slots(dec, [f], "districts of Tamil Nadu", 0)[0].slots["parent"] == "Tamil Nadu"
+
+
+def test_same_text_in_two_slots():
+    from geoparse.t5.frames import Frame, check_frame
+    from geoparse.templates.model import all_templates
+
+    f = Frame(template="union", slots={"a": "England and Wales", "b": "England and Wales"})
+    assert "the same text in two region slots" in check_frame(f, "England and Wales", all_templates())

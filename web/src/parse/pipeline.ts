@@ -2,7 +2,7 @@
 // T5 frames -> pick_family -> pick_template -> (viable splits) -> pick_split -> slots -> DAG, with recursion.
 import type { Bundle, SlotDef, Template } from "../core/bundle.ts";
 import { substitute, validate } from "../core/dsl.ts";
-import { distanceM, frameToMatch, frameToText, groupFrames, UNSUPPORTED, valueNum, type Match } from "../core/frames.ts";
+import { distanceM, findSpan, frameToMatch, frameToText, groupFrames, UNSUPPORTED, valueNum, type Frame, type Match } from "../core/frames.ts";
 import { keywordHits } from "../core/keywords.ts";
 import { lexiconMatch, norm, normalizeQuery } from "../core/text.ts";
 import { Decider, type TraceRecord } from "../decisions/decider.ts";
@@ -46,6 +46,7 @@ const LIST_MARKER = /^(both|either|all of the|all of|each of|any one of|any of)\
 const LIST_MARKER_QUANT: Record<string, string> = { both: "all", "all of the": "all", "all of": "all", "each of": "all", either: "any",
   "any one of": "any", "any of": "any" };
 const SPACE_LIST_TEMPLATES = new Set(["shared_border"]);
+const WORD = /\p{L}[\p{L}\p{N}_'.-]*/gu;
 
 /** The cuts of n separators into k groups (indexes in order), fewest first. */
 function* combinations(n: number, k: number, start = 0): Generator<number[]> {
@@ -105,8 +106,9 @@ export class Parser {
 
   private async candidates(dec: Decider, text: string, depth: number) {
     const k = Number(this.bundle.config.t5.beams ?? 4);
-    const { frames, latency } = await this.t5.frames(text, k);
-    const groups = groupFrames(frames, text, this.templates, Number(this.bundle.config.t5.margin ?? 2));
+    const { frames: raw, latency } = await this.t5.frames(text, k);
+    const frames = await this.extendSlots(dec, raw, text, depth);
+    const groups = await this.covering(dec, groupFrames(frames, text, this.templates, Number(this.bundle.config.t5.margin ?? 2)), text, depth);
     dec.record("generate_frames", depth, { text }, null,
       { value: groups.map(frameToText), impl: `t5:${this.t5.name}`, confidence: frames.length ? Math.exp(frames[0].score) : 0,
         trace: { beam: frames.map((f) => [frameToText(f), Math.round(f.score * 1e4) / 1e4]) } }, latency);
@@ -115,6 +117,100 @@ export class Parser {
     const out: Record<string, Match[]> = {};
     for (const f of groups) (out[f.template] ??= []).push(frameToMatch(f, text));
     return { cands: out, unsupported };
+  }
+
+  private exactCache = new Map<string, any>();
+  private _frameWords: Set<string> | null = null;
+  private _nameStop: Set<string> | null = null;
+
+  private frameWords(): Set<string> { return this._frameWords ??= new Set(this.bundle.frame_words); }
+
+  /** Port of _name_stop: frame words and the words of the closed options. */
+  private nameStop(): Set<string> {
+    return this._nameStop ??= new Set([...this.frameWords(), ...this.setWords().flatMap((k) => norm(k).split(/\s+/))]);
+  }
+
+  /** Port of _exact: the top exact candidate of a name ("lexicon" for a lexicon key), or null. */
+  private async exact(dec: Decider, name: string): Promise<any> {
+    const key = `${name.toLowerCase()}|${(dec.view ?? []).join(",")}`;
+    if (!this.exactCache.has(key)) {
+      const c = await this.gaz.search(name, { fuzzy: false, limit: 1, view: dec.view });
+      this.exactCache.set(key, lexiconMatch(name, this.bundle) ? "lexicon" : (c[0] ?? null));
+    }
+    return this.exactCache.get(key);
+  }
+
+  /** Port of _extend_slots: a region slot text plus the next 1 or 2 words, if that is an exact name ("Aravalli range"). */
+  private async extendSlots(dec: Decider, frames: Frame[], text: string, depth: number): Promise<Frame[]> {
+    const out: Frame[] = [];
+    for (const f of frames) {
+      const t = this.templates[f.template];
+      if (f.template === UNSUPPORTED || !t) { out.push(f); continue; }
+      const slots = { ...f.slots };
+      const spans = Object.fromEntries(Object.entries(f.slots).map(([k, v]) => [k, findSpan(text, v)]));
+      for (const [k, v] of Object.entries(f.slots)) {
+        const r = spans[k];
+        if (!r || !t.slots[k] || !["region", "anchor"].includes(t.slots[k].type)) continue;
+        const m = /^\s+(\p{L}[\p{L}\p{N}_'-]*)(\s+(\p{L}[\p{L}\p{N}_'-]*))?/u.exec(text.slice(r[1]));
+        if (!m) continue;
+        const ends: [number, string][] = [[r[1] + m[0].length - (m[2]?.length ?? 0), m[1]]];
+        if (m[2]) ends.push([r[1] + m[0].length, m[3]]);
+        for (const [end, word] of ends.reverse()) {
+          const longer = text.slice(r[0], end);
+          if (this.frameWords().has(word.toLowerCase()) || Object.entries(spans).some(([j, o]) => j !== k && o && o[0] < end && o[1] > r[1])) continue;
+          if (await this.exact(dec, longer)) {
+            dec.recordStep("extend_span", depth, { text, slot: k, from: v }, longer, "rules", {});
+            slots[k] = longer;
+            break;
+          }
+        }
+      }
+      out.push(JSON.stringify(slots) !== JSON.stringify(f.slots) ? { ...f, slots } : f);
+    }
+    return out;
+  }
+
+  /** Port of _dropped_names: the exact place names of the query in no slot of the frame (1 to 4 words, 4 or more letters). */
+  private async droppedNames(dec: Decider, f: Frame, text: string): Promise<string[]> {
+    const covered = Object.values(f.slots).map((v) => findSpan(text, v));
+    const words = [...text.matchAll(WORD)].filter((m) => !covered.some((r) => r && r[0] <= m.index! && m.index! < r[1]));
+    const out: string[] = [];
+    const used = new Set<number>();
+    for (const n of [4, 3, 2, 1]) {
+      for (let i = 0; i + n <= words.length; i++) {
+        const ws = words.slice(i, i + n);
+        if (ws.some((_, j) => used.has(i + j))) continue;
+        // Port: only words next to each other in the query (no slot text between them).
+        if (ws.slice(1).some((b, j) => /[\p{L}\p{N}_]/u.test(text.slice(ws[j].index! + ws[j][0].length, b.index!)))) continue;
+        if (this.nameStop().has(ws[0][0].toLowerCase()) || this.nameStop().has(ws[n - 1][0].toLowerCase())) continue;
+        const name = text.slice(ws[0].index!, ws[n - 1].index! + ws[n - 1][0].length);
+        if ([...name].filter((ch) => /\p{L}/u.test(ch)).length < 4 || !(await this.exact(dec, name))) continue;
+        out.push(name);
+        for (let j = 0; j < n; j++) used.add(i + j);
+      }
+    }
+    return out;
+  }
+
+  /** Port of _covering: drop the frames that leave out more exact place names than the best frame; a note if all do. */
+  private async covering(dec: Decider, frames: Frame[], text: string, depth: number): Promise<Frame[]> {
+    if (!frames.length) return frames;
+    const dropped: string[][] = [];
+    for (const f of frames) dropped.push(await this.droppedNames(dec, f, text));
+    const least = Math.min(...dropped.map((d) => d.length));
+    const keep = frames.filter((_, i) => dropped[i].length === least);
+    if (keep.length < frames.length)
+      dec.recordStep("frame_coverage", depth, { text }, keep.map(frameToText), "rules",
+        { dropped: Object.fromEntries(frames.map((f, i) => [frameToText(f), dropped[i]]).filter(([, d]) => d.length)) });
+    if (least) {
+      const kept = dropped.filter((_, i) => dropped[i].length === least);
+      const common = kept[0].filter((n) => kept.every((d) => d.includes(n))).sort();
+      for (const name of common) {
+        const c = await this.exact(dec, name);
+        if (c && c !== "lexicon" && ["country", "dependency", "region", "county"].includes(c.subtype)) dec.notes.push(`'${name}' is not used in the result`);
+      }
+    }
+    return keep;
   }
 
   private async parseLevel(dec: Decider, text: string, depth: number): Promise<[any, any]> {

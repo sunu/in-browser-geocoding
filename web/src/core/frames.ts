@@ -59,6 +59,9 @@ export function checkFrame(f: Frame, query: string, templates: Record<string, Te
     else if (sd.type === "value") { if (valueNum(value) === null) problems.push(`bad value ${value}`); }
     else if (findSpan(query, value) === null) problems.push(`span ${value} is not in the query`);
   }
+  // Port: the same text in two region slots ("union ; a = England and Wales ; b = England and Wales").
+  const texts = Object.entries(f.slots).filter(([k]) => ["region", "anchor"].includes(t.slots[k]?.type)).map(([, v]) => v.trim().toLowerCase());
+  if (texts.length !== new Set(texts).size) problems.push("the same text in two region slots");
   for (const [name, sd] of Object.entries(t.slots)) {
     if (!(name in f.slots) && sd.type !== "distance" && !sd.optional && (sd.default === null || sd.default === undefined))
       problems.push(`missing slot ${name}`);

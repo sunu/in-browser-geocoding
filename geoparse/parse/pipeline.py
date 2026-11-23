@@ -10,6 +10,7 @@ Procedure for one level (plan-001 section 4.3):
 """
 from __future__ import annotations
 
+import functools
 import itertools
 import math
 import re
@@ -59,6 +60,10 @@ LEADING_FILLERS = [
 MAX_CLOSED_WORDS = 6
 CLAUSE_WORDS = {"of", "in", "that", "which", "and", "or", "except", "between", "who"}
 STOP_WORDS = {"the", "a", "an", "all", "any", "some", "of", "in", "and", "that", "which", "with", "me", "show"}
+# Request words that are not in the templates (the coverage check of T5 frames).
+REQUEST_WORDS = {"please", "pls", "plz", "show", "find", "map", "where", "can", "you", "u", "want", "see", "view",
+                 "highlight", "combine", "into", "one", "is", "are", "it", "possible", "locate", "i", "my", "me",
+                 "together", "or", "both", "either", "each", "every", "per", "plus"}
 
 
 class Unsupported(BaseModel):
@@ -136,6 +141,7 @@ class Parser:
         self.families = load_families()
         self.templates = {t.id: t for f in self.families.values() for t in f.templates}
         self._store = store
+        self._exact_cache: dict[tuple, Any] = {}
         # Geocoder for the Photon boost of close candidates (plan-012 section 3.2). None: no boost.
         self.geocoder = geocoder
         self.pool = ThreadPoolExecutor(max_workers=max_workers)
@@ -243,7 +249,11 @@ class Parser:
         from geoparse.t5.frames import UNSUPPORTED, frame_to_match, group_frames
 
         frames, dt = self.t5.frames(text, k=int(self.t5_cfg.get("beams", 4)))
+        if dec is not None:
+            frames = self._extend_slots(dec, frames, text, depth)
         groups = group_frames(frames, text, self.templates, float(self.t5_cfg.get("margin", 2.0)))
+        if dec is not None:
+            groups = self._covering(dec, groups, text, depth)
         if dec is not None:
             import math
 
@@ -265,6 +275,91 @@ class Parser:
             m["score"] = 20.0 + f.score
             out.append(m)
         return out, unsupported
+
+    def _exact(self, dec: Decider, name: str) -> Any:
+        """The top exact candidate of a name (a lexicon key gives "lexicon"), or None. Cached for each name and view."""
+        key = (name.lower(), tuple(dec.view or ()))
+        if key not in self._exact_cache:
+            c = self.store.search(name, fuzzy=False, limit=1, view=dec.view)
+            self._exact_cache[key] = "lexicon" if lexicon_match(name) else (c[0] if c else None)
+        return self._exact_cache[key]
+
+    def _extend_slots(self, dec: Decider, frames: list, text: str, depth: int) -> list:
+        """A region slot text plus the next 1 or 2 words of the query, if that is an exact name and the words are in
+        no other slot ("Aravalli" -> "Aravalli range")."""
+        from geoparse.t5.frames import UNSUPPORTED, find_span
+
+        out = []
+        for f in frames:
+            t = self.templates.get(f.template)
+            if f.template == UNSUPPORTED or t is None:
+                out.append(f)
+                continue
+            slots = dict(f.slots)
+            spans = {k: find_span(text, v) for k, v in f.slots.items()}
+            for k, v in f.slots.items():
+                r = spans[k]
+                if not r or k not in t.slots or t.slots[k].type not in ("region", "anchor"):
+                    continue
+                m = re.match(r"\s+([^\W\d_][\w'-]*)(\s+([^\W\d_][\w'-]*))?", text[r[1]:])
+                if not m:
+                    continue
+                ends = [(r[1] + m.end(1), m.group(1))] + ([(r[1] + m.end(3), m.group(3))] if m.group(3) else [])
+                for end, word in reversed(ends):
+                    longer = text[r[0]:end]
+                    if word.lower() in frame_words() or any(o and o[0] < end and o[1] > r[1] for j, o in spans.items() if j != k):
+                        continue
+                    if self._exact(dec, longer):
+                        dec.record_step("extend_span", depth, {"text": text, "slot": k, "from": v}, longer, "rules", {})
+                        slots[k] = longer
+                        break
+            out.append(f.model_copy(update={"slots": slots}) if slots != f.slots else f)
+        return out
+
+    def _dropped_names(self, dec: Decider, f: Any, text: str) -> list[str]:
+        """The exact place names of the query that are in no slot of the frame (1 to 4 words, 4 or more letters)."""
+        from geoparse.t5.frames import find_span
+
+        covered = [find_span(text, v) for v in f.slots.values()]
+        words = [m for m in re.finditer(r"[^\W\d_][\w'.-]*", text)
+                 if not any(r and r[0] <= m.start() < r[1] for r in covered)]
+        out, used = [], set()
+        for n in (4, 3, 2, 1):
+            for i in range(len(words) - n + 1):
+                ws = words[i:i + n]
+                if used & set(range(i, i + n)):
+                    continue
+                # Only words next to each other in the query (no slot text between them).
+                if any(re.search(r"\w", text[a.end():b.start()]) for a, b in zip(ws, ws[1:])):
+                    continue
+                if ws[0].group(0).lower() in _name_stop() or ws[-1].group(0).lower() in _name_stop():
+                    continue
+                name = text[ws[0].start():ws[-1].end()]
+                if sum(ch.isalpha() for ch in name) < 4 or not self._exact(dec, name):
+                    continue
+                out.append(name)
+                used |= set(range(i, i + n))
+        return out
+
+    def _covering(self, dec: Decider, frames: list, text: str, depth: int) -> list:
+        """Drop the frames that leave out more exact place names of the query than the best frame ("states of France,
+        Spain, Italy and Germany": union3 has no slot for Germany). If all frames leave out a name, keep them, and add
+        a note for a name of an administrative area."""
+        if len(frames) == 0:
+            return frames
+        dropped = [self._dropped_names(dec, f, text) for f in frames]
+        least = min(len(d) for d in dropped)
+        keep = [f for f, d in zip(frames, dropped) if len(d) == least]
+        if len(keep) < len(frames):
+            dec.record_step("frame_coverage", depth, {"text": text}, [f.to_text() for f in keep], "rules",
+                            {"dropped": {f.to_text(): d for f, d in zip(frames, dropped) if d}})
+        if least:
+            common = set.intersection(*(set(d) for f, d in zip(frames, dropped) if f in keep))
+            for name in sorted(common):
+                c = self._exact(dec, name)
+                if c != "lexicon" and c is not None and c.subtype in ("country", "dependency", "region", "county"):
+                    dec.notes.append(f"'{name}' is not used in the result")
+        return keep
 
     def _valid(self, t: Template, m: dict[str, Any]) -> bool:
         for seg_name, text in m["segments"].items():
@@ -878,6 +973,25 @@ class Parser:
         out = [c.model_copy(update={"score": round(c.score + boosts.get(c.id, 0.0), 4)}) for c in cands]
         out.sort(key=lambda c: (-c.score, c.id))
         return out
+
+
+@functools.lru_cache(maxsize=1)
+def frame_words() -> frozenset[str]:
+    """Words that are not place names in a query: stop words, request words and the literal words of the template
+    patterns ("international border", "central point of"). The browser gets the list in bundle.json."""
+    words = set(STOP_WORDS | CLAUSE_WORDS | REQUEST_WORDS)
+    for f in load_families().values():
+        for t in f.templates:
+            for pat in t.patterns:
+                words |= set(re.findall(r"[a-z]+", re.sub(r"\{\w+\}", " ", pat.lower())))
+    return frozenset(words)
+
+
+@functools.lru_cache(maxsize=1)
+def _name_stop() -> frozenset[str]:
+    """Words that cannot start or end a place name that a frame leaves out: frame words and the words of the closed
+    options ("districts", "coastal", "central")."""
+    return frame_words() | {w for k in _set_words() for w in norm(k).split()}
 
 
 def _level_words() -> list[str]:

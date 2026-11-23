@@ -29,7 +29,7 @@ from geoparse.decisions.functions import INSTRUCTIONS, IS_SUBQUERY_CRITERIA, NON
 from geoparse.dsl.schema import CATALOG, DIRECTION_MODES, LAYERS, PREDICATE_DAGS, QUANTIFIERS, RANK_BY, RANK_ORDERS, SOURCES
 from geoparse.options import categories, lexicon, options
 from geoparse.execute.data import local_level_words
-from geoparse.parse.pipeline import LEADING_FILLERS, STRUCTURE_LEVEL
+from geoparse.parse.pipeline import LEADING_FILLERS, STRUCTURE_LEVEL, frame_words
 from geoparse.templates.model import load_families
 
 WEB = REPO_ROOT / "web" / "public"
@@ -71,6 +71,7 @@ def export_bundle() -> None:
         "rank_by": RANK_BY,
         "rank_orders": RANK_ORDERS,
         "quantifiers": QUANTIFIERS,
+        "frame_words": sorted(frame_words()),
     }
     WEB.mkdir(parents=True, exist_ok=True)
     (WEB / "bundle.json").write_text(json.dumps(bundle, ensure_ascii=False))

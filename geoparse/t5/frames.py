@@ -84,6 +84,10 @@ def check_frame(frame: Frame, query: str, templates: dict[str, Any]) -> list[str
                 problems.append(f"bad value {value!r}")
         elif find_span(query, value) is None:
             problems.append(f"span {value!r} is not in the query")
+    # The same text in two region slots ("union ; a = England and Wales ; b = England and Wales").
+    texts = [v.strip().lower() for k, v in frame.slots.items() if k in t.slots and t.slots[k].type in ("region", "anchor")]
+    if len(texts) != len(set(texts)):
+        problems.append("the same text in two region slots")
     for name, sd in t.slots.items():
         if name not in frame.slots and sd.type not in ("distance",) and not sd.optional and sd.default is None:
             problems.append(f"missing slot {name}")
