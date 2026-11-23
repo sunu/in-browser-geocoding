@@ -27,7 +27,7 @@ Records: 70. Depth 0: 70. Depth 1 (two levels): 0.
 | w013 | pick_family | 0 | set_algebra | lookup | 0.967444 |
 | w013 | pick_template_flat | 0 | union | lookup_place | 0.20996199999999998 |
 | w013 | pick_split | 0 | {"a": "England", "b": "Wales"} | {"a": "England and Wales", "b": "England and Wales"} | 0.952874 |
-| w016 | pick_family | 0 | hierarchy | features | 0.6586460000000001 |
+| w016 | pick_family | 0 | hierarchy | features | 0.658642 |
 | w031 | pick_template_flat | 0 | neighbors | children_touching | 0.0013000000000000789 |
 | w038 | pick_family | 0 | hierarchy | features | 0.3378655 |
 | w038 | pick_template_flat | 0 | neighbors | children_touching | 0.38313549999999996 |
@@ -52,7 +52,7 @@ Records: 70. Depth 0: 70. Depth 1 (two levels): 0.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 99% (69/70) | 0.69 s | 5.0 | 1.6 |
+| 0 | 99% (69/70) | 1.63 s | 5.0 | 1.6 |
 
 ### Pipeline errors
 

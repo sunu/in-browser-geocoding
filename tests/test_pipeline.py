@@ -144,6 +144,7 @@ def test_list_parts(rules_parser):
     assert lp(dec, "Karnataka, Kerala and Goa", False) == (["Karnataka", "Kerala", "Goa"], "and", None)
     assert lp(dec, "both Kerala and Goa", False) == (["Kerala", "Goa"], "and", "all")
     assert lp(dec, "either Kerala or Goa", False) == (["Kerala", "Goa"], "or", "any")
+    assert lp(dec, "Kerala n Goa", False) == (["Kerala", "Goa"], "and", None)
     # Commas alone are a qualified name, not a list; a part that is not an exact name stops the list.
     assert lp(dec, "Salt Lake, Kolkata", False) is None
     assert lp(dec, "coastal districts of Kerala and Goa", False) is None

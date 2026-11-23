@@ -144,6 +144,14 @@ def test_top_per_parent(world):
     assert names(run(world, dag)) == ["E3", "E4", "W1", "W3"]
 
 
+def test_top_per_no_parent(world):
+    # The states have no state above them: no groups, an error (not one silent group).
+    dag = {"op": "Top", "args": {"set": {"op": "Children", "args": {"of": R("c_tl"), "level": "state"}},
+                                 "by": "area", "n": 1, "order": "largest", "per": "state"}}
+    res = world.execute(dag)
+    assert not res.ok and "not inside any division" in res.error
+
+
 def test_filter_coastal(world):
     dag = {"op": "Filter", "args": {"set": {"op": "Children", "args": {"of": R("c_tl"), "level": "district"}},
                                     "pred": PREDICATE_DAGS["coastal"]}}

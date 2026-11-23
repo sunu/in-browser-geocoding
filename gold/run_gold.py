@@ -96,14 +96,24 @@ def slots_equal(t: str, got: dict[str, Any], gold: dict[str, Any]) -> tuple[bool
     return not diffs, diffs
 
 
-def canon(dag: Any) -> Any:
+def canon(dag: Any, unordered: bool = False) -> Any:
+    """unordered: the order of the parts of a union does not count (the gold comparison; the reference keeps it)."""
     if isinstance(dag, dict) and "op" in dag:
         a = dag.get("args", {})
         if dag["op"] == "Resolve":
             if a.get("source") == "photon":
                 return ["Resolve", "photon", ntext(a["name"])]
             return ["Resolve", a.get("id") or ntext(a["name"])]
-        return [dag["op"], {k: canon(v) for k, v in sorted(a.items()) if k not in ("type_hint", "context")}]
+        if unordered and dag["op"] == "Union":
+            parts, todo = [], [dag]
+            while todo:
+                x = todo.pop()
+                if isinstance(x, dict) and x.get("op") == "Union":
+                    todo += [x["args"]["a"], x["args"]["b"]]
+                else:
+                    parts.append(canon(x, True))
+            return ["Union", sorted(parts, key=json.dumps)]
+        return [dag["op"], {k: canon(v, unordered) for k, v in sorted(a.items()) if k not in ("type_hint", "context")}]
     return dag
 
 
@@ -328,7 +338,7 @@ def main() -> None:
             sok, diffs = slots_equal(rec["template"], p.slots, rec["slots"]) if p.template == rec["template"] else (False, ["template"])
             row["slots_ok"] = sok
             row["diffs"] = diffs
-            row["dag_ok"] = canon(p.dag) == canon(rec["dag"])
+            row["dag_ok"] = canon(p.dag, True) == canon(rec["dag"], True)
             if ex is not None:
                 row["exec_ok"], row["exec_note"] = exec_compare(rec, p.dag, ex)
         else:

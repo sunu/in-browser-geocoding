@@ -479,14 +479,20 @@ class _Run:
         if not per:
             return self.new_rel(f"SELECT s.* FROM {src} s WHERE {expr} IS NOT NULL ORDER BY {expr} {direction}, s.id LIMIT {int(n)}")
         # The first n inside each parent of the level `per` ("the largest district in each state of India"). The parent
-        # is the ancestor of that level; members with no such ancestor form one group.
+        # is the ancestor of that level; members with no such ancestor form one group. If no member has such an
+        # ancestor, there are no groups ("county in each region of Kenya": the counties are the top level).
         lf = self.levels_filter(per, self.level_countries(src))
+        self.n += 1
+        g = f"g{self.n}"
+        self.run(f"""
+            CREATE TEMP TABLE {g} AS SELECT c.id AS cid, min(d.id) AS grp FROM divisions c, divisions d
+            WHERE c.id IN (SELECT id FROM {src} WHERE id IS NOT NULL) AND {lf}
+              AND list_contains(c.ancestors, d.id) AND d.id <> c.id GROUP BY c.id""")
+        if self.run(f"SELECT count(*) FROM {g}").fetchone()[0] == 0:
+            raise ExecutionError(f"these places are not inside any division of the level '{per}'")
         return self.new_rel(f"""
-            WITH g AS (SELECT c.id AS cid, min(d.id) AS grp FROM divisions c, divisions d
-                       WHERE c.id IN (SELECT id FROM {src} WHERE id IS NOT NULL) AND {lf}
-                         AND list_contains(c.ancestors, d.id) AND d.id <> c.id GROUP BY c.id),
-                 r AS (SELECT s.*, row_number() OVER (PARTITION BY g.grp ORDER BY {expr} {direction}, s.id) AS rk
-                       FROM {src} s LEFT JOIN g ON g.cid = s.id WHERE {expr} IS NOT NULL)
+            WITH r AS (SELECT s.*, row_number() OVER (PARTITION BY g.grp ORDER BY {expr} {direction}, s.id) AS rk
+                       FROM {src} s LEFT JOIN {g} g ON g.cid = s.id WHERE {expr} IS NOT NULL)
             SELECT * EXCLUDE (rk) FROM r WHERE rk <= {int(n)}""")
 
     def op_Common(self, a: Any, b: Any) -> str:

@@ -23,13 +23,13 @@ Records: 30. Depth 0: 27. Depth 1 (two levels): 3.
 
 | Gold id | Decision | Depth | Gold | Got | Confidence |
 |---|---|---|---|---|---|
-| h013 | pick_template_flat | 0 | neighbors | children_touching | 0.7579819999999999 |
-| h014 | pick_template_flat | 0 | neighbors | children_touching | 0.9035519999999999 |
+| h013 | pick_template_flat | 0 | neighbors | children_touching | 0.757984 |
+| h014 | pick_template_flat | 0 | neighbors | children_touching | 0.903554 |
 | h018 | pick_family | 0 | predicate_filter | hierarchy | 0.9732620000000001 |
 | h028 | pick_template_flat | 0 | children_with_predicate | neighbors_with_predicate | 0.11320200000000002 |
 | h028 | pick_template_flat | 1 | neighbors | children_touching | 0.6711499999999999 |
 | h030 | pick_family | 0 | set_algebra | predicate_filter | 0.979552 |
-| h030 | pick_template_flat | 0 | union | children_with_predicate | 0.5307360000000001 |
+| h030 | pick_template_flat | 0 | union | children_with_predicate | 0.5307379999999999 |
 
 ## Full pipeline
 
@@ -49,8 +49,8 @@ Records: 30. Depth 0: 27. Depth 1 (two levels): 3.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 100% (27/27) | 0.41 s | 4.9 | 1.5 |
-| 1 | 100% (3/3) | 1.12 s | 11.7 | 5.0 |
+| 0 | 100% (27/27) | 0.81 s | 4.9 | 1.5 |
+| 1 | 100% (3/3) | 2.11 s | 11.7 | 5.0 |
 
 ### Nested template pairs in the gold suite
 

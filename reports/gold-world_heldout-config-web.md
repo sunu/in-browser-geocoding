@@ -20,8 +20,8 @@ Records: 29. Depth 0: 29. Depth 1 (two levels): 0.
 
 | Gold id | Decision | Depth | Gold | Got | Confidence |
 |---|---|---|---|---|---|
-| x004 | pick_family | 0 | hierarchy | features | 0.794929 |
-| x011 | pick_template_flat | 0 | neighbors | children_touching | 0.336012 |
+| x004 | pick_family | 0 | hierarchy | features | 0.7949274999999998 |
+| x011 | pick_template_flat | 0 | neighbors | children_touching | 0.33601400000000003 |
 | x022 | pick_template_flat | 0 | neighbors | children_touching | 0.7030080000000001 |
 | x024 | pick_family | 0 | hierarchy | features | 0.5147889999999999 |
 | x024 | fill_closed_slot.admin_level | 0 | state | country | 0.04198360000000001 |
@@ -44,7 +44,7 @@ Records: 29. Depth 0: 29. Depth 1 (two levels): 0.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 93% (27/29) | 0.68 s | 4.8 | 1.5 |
+| 0 | 93% (27/29) | 1.67 s | 4.8 | 1.5 |
 
 ### Pipeline errors
 

@@ -20,13 +20,13 @@ Records: 34. Depth 0: 34. Depth 1 (two levels): 0.
 
 | Gold id | Decision | Depth | Gold | Got | Confidence |
 |---|---|---|---|---|---|
-| y002 | pick_template_flat | 0 | neighbors | children_touching | 0.15104800000000007 |
+| y002 | pick_template_flat | 0 | neighbors | children_touching | 0.1510499999999999 |
 | y008 | pick_template_flat | 0 | neighbors | children_touching | 0.13063200000000008 |
-| y011 | pick_family | 0 | hierarchy | features | 0.5691594999999999 |
+| y011 | pick_family | 0 | hierarchy | features | 0.5691579999999999 |
 | y014 | pick_family | 0 | hierarchy | features | 0.33948549999999994 |
 | y030 | pick_family | 0 | hierarchy | features | 0.8273394999999999 |
 | y033 | pick_family | 0 | hierarchy | features | 0.8712500000000001 |
-| y034 | pick_family | 0 | hierarchy | features | 0.6262840000000001 |
+| y034 | pick_family | 0 | hierarchy | features | 0.626282 |
 
 ## Full pipeline
 
@@ -44,4 +44,4 @@ Records: 34. Depth 0: 34. Depth 1 (two levels): 0.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 100% (34/34) | 0.59 s | 4.7 | 1.7 |
+| 0 | 100% (34/34) | 1.40 s | 4.7 | 1.7 |

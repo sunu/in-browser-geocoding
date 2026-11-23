@@ -28,7 +28,7 @@ Records: 24. Depth 0: 24. Depth 1 (two levels): 0.
 | v015 | pick_template_flat | 0 | lookup_place | null | coverage miss |
 | v015 | pick_split | 0 | {"anchor": "Godavari river"} | null | coverage miss |
 | v016 | pick_family | 0 | lookup | features | 0.9835314999999999 |
-| v016 | pick_template_flat | 0 | lookup_place | children | 0.2288065 |
+| v016 | pick_template_flat | 0 | lookup_place | children | 0.22880800000000004 |
 | v017 | pick_family | 0 | predicate_filter | hierarchy | 0.9903 |
 | v017 | pick_split | 0 | {"level": "district", "parent": "India", "other": "Godavari"} | null | coverage miss |
 | v018 | pick_split | 0 | {"level": "districts", "parent": "Aravalli range"} | {"level": "districts", "parent": "Aravalli"} | 0.9654280000000001 |
@@ -53,7 +53,7 @@ Records: 24. Depth 0: 24. Depth 1 (two levels): 0.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 96% (23/24) | 0.93 s | 5.1 | 1.5 |
+| 0 | 96% (23/24) | 1.98 s | 5.1 | 1.5 |
 
 ### Pipeline errors
 

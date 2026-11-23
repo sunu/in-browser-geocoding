@@ -45,21 +45,15 @@ Records: 98. Depth 0: 85. Depth 1 (two levels): 13.
 | modifier | 100% (14/14) | 100% (14/14) | 100% (14/14) | 0 | 100% (11/11) |
 | predicate_filter | 100% (12/12) | 100% (12/12) | 100% (12/12) | 0 | 100% (12/12) |
 | relational | 100% (11/11) | 100% (11/11) | 100% (11/11) | 0 | 100% (11/11) |
-| set_algebra | 100% (12/12) | 92% (11/12) | 92% (11/12) | 0 | 100% (12/12) |
-| ALL | 100% (98/98) | 99% (97/98) | 99% (97/98) | 0 | 100% (89/89) |
+| set_algebra | 100% (12/12) | 92% (11/12) | 100% (12/12) | 0 | 100% (12/12) |
+| ALL | 100% (98/98) | 99% (97/98) | 100% (98/98) | 0 | 100% (89/89) |
 
 ### By depth
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 100% (85/85) | 0.48 s | 4.7 | 1.4 |
-| 1 | 92% (12/13) | 1.09 s | 9.5 | 3.6 |
-
-### Pipeline errors
-
-| Gold id | Query | Got template | Problem |
-|---|---|---|---|
-| g088 | Kerala and coastal districts of Karnataka | union | a: expected 'Kerala', got {'q': 'coastal districts of Karnataka', 't': 'children_with_predicate', 's': {'pred': 'coas... |
+| 0 | 100% (85/85) | 1.50 s | 4.7 | 1.4 |
+| 1 | 100% (13/13) | 3.18 s | 9.5 | 3.6 |
 
 ### Nested template pairs in the gold suite
 

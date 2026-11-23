@@ -40,7 +40,7 @@ HAS_DISTANCE = re.compile(r"\b\d+(?:\.\d+)?\s*(?:km|kms|kilometres?|kilometers?|
 STRUCTURE_LEVEL = {"children", "children_with_predicate"}
 # Lists of places in a slot ("France, Switzerland and Germany"): the separators are whole words with spaces, so a name
 # that contains "and" ("Andorra") is never split. A leading word gives the quantifier ("both France and Germany").
-LIST_SEP = re.compile(r"\s*,\s*(?:(?:and|or|&)\s+)?|\s+(?:and|or|&|as well as)\s+", re.I)
+LIST_SEP = re.compile(r"\s*,\s*(?:(?:and|or|&)\s+)?|\s+(?:and|or|&|n|as well as)\s+", re.I)
 LIST_MARKER = re.compile(r"^(both|either|all of the|all of|each of|any one of|any of)\s+(.+)$", re.I)
 LIST_MARKER_QUANT = {"both": "all", "all of the": "all", "all of": "all", "each of": "all", "either": "any",
                      "any one of": "any", "any of": "any"}

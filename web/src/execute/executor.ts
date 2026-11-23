@@ -388,11 +388,15 @@ class Run {
     // Port: the first n inside each parent of the level `per` (the ancestor of that level).
     await this.levelData(a.per);
     const lf = this.levelsFilter(a.per, await this.levelCountries(src));
-    return this.newRel(`WITH g AS (SELECT c.id AS cid, min(d.id) AS grp FROM divisions c, divisions d
+    const g = `g${this.id}_${++this.n}`;
+    this.tables.push(g);
+    await this.run(`CREATE TEMP TABLE ${g} AS SELECT c.id AS cid, min(d.id) AS grp FROM divisions c, divisions d
         WHERE c.id IN (SELECT id FROM ${src} WHERE id IS NOT NULL) AND ${lf}
-          AND list_contains(c.ancestors, d.id) AND d.id <> c.id GROUP BY c.id),
-      r AS (SELECT s.*, row_number() OVER (PARTITION BY g.grp ORDER BY ${expr} ${dir}, s.id) AS rk
-        FROM ${src} s LEFT JOIN g ON g.cid = s.id WHERE ${expr} IS NOT NULL)
+          AND list_contains(c.ancestors, d.id) AND d.id <> c.id GROUP BY c.id`);
+    if (Number((await this.run(`SELECT count(*) AS n FROM ${g}`))[0].n) === 0)
+      throw new ExecError(`these places are not inside any division of the level '${a.per}'`);
+    return this.newRel(`WITH r AS (SELECT s.*, row_number() OVER (PARTITION BY g.grp ORDER BY ${expr} ${dir}, s.id) AS rk
+        FROM ${src} s LEFT JOIN ${g} g ON g.cid = s.id WHERE ${expr} IS NOT NULL)
       SELECT * EXCLUDE (rk) FROM r WHERE rk <= ${Math.trunc(Number(a.n))}`);
   }
 

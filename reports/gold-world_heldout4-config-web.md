@@ -24,7 +24,7 @@ Records: 21. Depth 0: 21. Depth 1 (two levels): 0.
 | n001 | pick_template_flat | 0 | lookup_place | null | coverage miss |
 | n001 | pick_split | 0 | {"anchor": "Ganga river"} | null | coverage miss |
 | n003 | pick_family | 0 | lookup | features | 0.9439360000000001 |
-| n003 | pick_template_flat | 0 | lookup_place | natural_in | 0.3540080000000001 |
+| n003 | pick_template_flat | 0 | lookup_place | natural_in | 0.35400600000000004 |
 | n005 | pick_family | 0 | lookup | features | 0.934696 |
 | n005 | select_source | 0 | overture | photon | 0.8 |
 | n006 | select_source | 0 | overture | photon | 0.8 |
@@ -32,7 +32,7 @@ Records: 21. Depth 0: 21. Depth 1 (two levels): 0.
 | n008 | pick_split | 0 | {"level": "district", "parent": "India", "other": "Yamuna"} | null | coverage miss |
 | n014 | is_subquery | 0 | false | true | 0.711856 |
 | n016 | pick_family | 0 | lookup | features | 0.918452 |
-| n016 | pick_template_flat | 0 | lookup_place | natural_in | 0.72279 |
+| n016 | pick_template_flat | 0 | lookup_place | natural_in | 0.722788 |
 
 ## Full pipeline
 
@@ -48,4 +48,4 @@ Records: 21. Depth 0: 21. Depth 1 (two levels): 0.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 100% (21/21) | 0.58 s | 3.6 | 1.6 |
+| 0 | 100% (21/21) | 1.51 s | 3.6 | 1.6 |

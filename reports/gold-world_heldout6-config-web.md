@@ -22,7 +22,7 @@ Records: 28. Depth 0: 28. Depth 1 (two levels): 0.
 
 | Gold id | Decision | Depth | Gold | Got | Confidence |
 |---|---|---|---|---|---|
-| u002 | pick_template_flat | 0 | children | union | 0.04657800000000001 |
+| u002 | pick_template_flat | 0 | children | union | 0.046580000000000066 |
 | u006 | pick_family | 0 | set_algebra | lookup | 0.967444 |
 | u006 | pick_template_flat | 0 | union | lookup_place | 0.20996199999999998 |
 | u006 | pick_split | 0 | {"a": "England", "b": "Wales"} | {"a": "England and Wales", "b": "England and Wales"} | 0.952874 |
@@ -46,7 +46,7 @@ Records: 28. Depth 0: 28. Depth 1 (two levels): 0.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 93% (26/28) | 1.66 s | 7.8 | 1.6 |
+| 0 | 93% (26/28) | 2.64 s | 7.8 | 1.6 |
 
 ### Pipeline errors
 

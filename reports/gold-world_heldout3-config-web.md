@@ -46,7 +46,7 @@ Records: 19. Depth 0: 15. Depth 1 (two levels): 4.
 | z012 | pick_split | 0 | {"anchor": "Pittsburg"} | null | coverage miss |
 | z013 | is_subquery | 0 | true | false | 0.994424 |
 | z013 | pick_family | 1 | modifier | lookup | 0.975768 |
-| z014 | is_subquery | 0 | true | false | 0.47082 |
+| z014 | is_subquery | 0 | true | false | 0.47081799999999996 |
 | z014 | pick_family | 1 | modifier | lookup | 0.9643820000000001 |
 | z015 | is_subquery | 0 | true | false | 0.995224 |
 | z016 | is_subquery | 0 | true | false | 0.5785640000000001 |
@@ -66,8 +66,8 @@ Records: 19. Depth 0: 15. Depth 1 (two levels): 4.
 
 | Depth | DAG correct | Median latency | Mean model calls | Mean requests in sequence |
 |---|---|---|---|---|
-| 0 | 87% (13/15) | 0.56 s | 2.1 | 1.3 |
-| 1 | 100% (4/4) | 1.16 s | 8.5 | 3.0 |
+| 0 | 87% (13/15) | 0.57 s | 2.1 | 1.3 |
+| 1 | 100% (4/4) | 3.22 s | 8.5 | 3.0 |
 
 ### Pipeline errors
 

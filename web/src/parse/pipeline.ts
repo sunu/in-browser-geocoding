@@ -41,7 +41,7 @@ function fmt(x: number) { return x.toFixed(2); }
 const HAS_DISTANCE = /\b\d+(?:\.\d+)?\s*(?:km|kms|kilometres?|kilometers?|m|metres?|meters?|mi|miles?)\b/i;
 const AROUND_DEFAULT: Record<string, [string, string]> = { children_touching: ["parent", "other"], children_near: ["parent", "other"] };
 // geoparse.parse.pipeline.LIST_SEP and LIST_MARKER: lists of places in a slot; separators are whole words with spaces.
-const LIST_SEP = /\s*,\s*(?:(?:and|or|&)\s+)?|\s+(?:and|or|&|as well as)\s+/gi;
+const LIST_SEP = /\s*,\s*(?:(?:and|or|&)\s+)?|\s+(?:and|or|&|n|as well as)\s+/gi;
 const LIST_MARKER = /^(both|either|all of the|all of|each of|any one of|any of)\s+(.+)$/i;
 const LIST_MARKER_QUANT: Record<string, string> = { both: "all", "all of the": "all", "all of": "all", "each of": "all", either: "any",
   "any one of": "any", "any of": "any" };

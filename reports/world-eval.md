@@ -328,3 +328,13 @@ Browser smoke test (Chromium, the plan-036 queries, `SET=lists`): all results an
 `state` level and Kenya has no level above them, so "county" and "region" are both `state` and `Top(per=state)` has
 no groups. This is a silent wrong answer. The executor must give an error when no row has a parent at the `per`
 level.
+
+Follow-ups (plan-037):
+
+- `Top(per=level)` gives an error if no member is inside a division of the `per` level. "the largest county in each
+  region of Kenya" now shows "these places are not inside any division of the level 'state'".
+- " n " is a list separator. "madhya pradesh except bhopal n indore" is now `Difference(Madhya Pradesh,
+  Union(Bhopal, Indore))`. This is the only change in the India reference parse.
+- The gold DAG comparison ignores the order of the parts of a union. India gold DAG: 98/98.
+
+All other sets, JS parity (696/696, int8 683/696), executor 88/88 and the operator tests 15/15 did not change.
