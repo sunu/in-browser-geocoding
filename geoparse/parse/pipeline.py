@@ -489,8 +489,16 @@ class Parser:
             g = dec.is_subquery(text, depth=depth, context={"gazetteer_exact": bool(self.store.search(text, fuzzy=False, limit=1, view=dec.view)),
                                                              "has_distance": bool(re.search(r"\d", text))})
             if g.value or dec.below("is_subquery", g):
-                raise _Stop(Unsupported(reason="the text is not one place name, and no other template matches",
-                                        decision="is_subquery", depth=depth, text=text))
+                best = max(cands.get(tpl.id, []), key=lambda m: m["score"], default=None)
+                name = (best or {}).get("segments", {}).get("anchor") or text
+                plural = [k for k in _level_words() if k.endswith("s") and re.search(rf"\b{re.escape(k)}\b", name, re.I)]
+                if not self._geocoder_allowed(tpl, depth) or plural:
+                    # "which states touch the sea" is a set of places, not a name that the geocoder can find.
+                    raise _Stop(Unsupported(reason="the text is not one place name, and no other template matches",
+                                            decision="is_subquery", depth=depth, text=text))
+                # A place name that the local data does not explain: the geocoder searches the name of the frame.
+                return self._photon_fallback(dec, name, depth, "is_subquery"), {
+                    "family": "lookup", "template": "lookup_place", "slots": {"anchor": name}}
         matches = sorted(cands.get(tpl.id, []), key=lambda m: -m["score"])
         if not matches:
             raise _Stop(Unsupported(reason=f"template {tpl.id} has no valid split", decision="pick_split", depth=depth, text=text))
@@ -881,12 +889,21 @@ class Parser:
             infos.append(info)
         return node, {"list": infos, "conj": conj, "quant": marker}
 
+    def _geocoder_allowed(self, tpl: Template, depth: int) -> bool:
+        scope = self.cfg.get("geocoder", {}).get("anchor_scope", "simple_and_features")
+        return scope == "all" or (depth == 0 and tpl.family in GEOCODER_FAMILIES)
+
+    def _photon_fallback(self, dec: Decider, text: str, depth: int, cause: str) -> dict[str, Any]:
+        """A place name that the parser cannot place in the local data: the geocoder (Photon) searches it, with a note."""
+        dec.record_step("photon_fallback", depth, {"text": text}, "photon", "rules", {"cause": cause})
+        dec.notes.append(f"'{text}' is not a known place in the local data: the result is the geocoder's (Photon) match")
+        return {"op": "Resolve", "args": {"name": text, "source": "photon"}}
+
     def _anchor(self, dec: Decider, tpl: Template, text: str, spans: list[Span], query: str, depth: int,
                 type_hint: str | None, exact) -> dict[str, Any]:
         # Spans inside this slot text.
         inside = [s for s in spans if s.label not in ("distance", "facility type") and s.text in text]
-        scope = self.cfg.get("geocoder", {}).get("anchor_scope", "simple_and_features")
-        allow_geocoder = scope == "all" or (depth == 0 and tpl.family in GEOCODER_FAMILIES)
+        allow_geocoder = self._geocoder_allowed(tpl, depth)
         ctx_text = None
         name = text
         if allow_geocoder:
@@ -896,8 +913,7 @@ class Parser:
                                           "gazetteer_top_score": top.score if top else 0.0,
                                           "gazetteer_top_subtype": top.subtype if top else None}, depth=depth)
             if dec.below("select_source", sd):
-                raise _Stop(Unsupported(reason=f"low confidence for select_source ({sd.confidence:.2f})",
-                                        decision="select_source", depth=depth, text=text))
+                return self._photon_fallback(dec, text, depth, "select_source")
             if sd.value == "photon":
                 return {"op": "Resolve", "args": {"name": text, "source": "photon"}}
         # If the whole text is an exact name in the gazetteer, it is the anchor. Else choose among the spans.
@@ -909,6 +925,8 @@ class Parser:
                 ctx_text = rest or None
         cands = self.store.search(name, type_hint=type_hint, context=ctx_text, limit=6, view=dec.view)
         if not cands:
+            if allow_geocoder:
+                return self._photon_fallback(dec, text, depth, "no_local_match")
             raise _Stop(Unsupported(reason=f"cannot resolve {name!r} in the local extract", depth=depth, text=text))
         cands = self._photon_boost(dec, name, merge_nested(cands), depth)
         chosen = cands[0]

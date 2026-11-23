@@ -31,9 +31,10 @@ Code locations: `t5/frames` is `geoparse/t5/frames.py` and `web/src/core/frames.
 | Direction word with a typo | Producer | not written | 038 | Do not write: training data with typos |
 | `frame_words()` (template and option words) | Data for a verifier | `parse/pipeline` | 038 | Keep (derived from the templates) |
 | `is_subquery` (cross-encoder) for region slots | Model | `geoparse/decisions/` | 001 | Replace: the T5 frame of the slot text decides |
+| A place name that the local data cannot place goes to the geocoder (Photon), with a note: a lookup frame that `is_subquery` calls a set, a low-confidence `select_source`, a name with no local candidate. Not for a text with a plural admin level word ("which states touch the sea"). | Policy | `parse/pipeline` | 039 | Added (user, 2026-11-23) |
 
 Count at the start of plan-039: 4 verifiers (one also a producer), 6 producers, 1 policy, 1 model decision, and
-1 data item.
+1 data item. Plan-039 added 1 policy (the geocoder fallback).
 
 ## Measurement at the start of plan-039
 

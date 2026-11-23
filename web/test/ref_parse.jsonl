@@ -400,7 +400,7 @@
 {"query": "what is the population density of Bihar compared to China", "ok": false, "template": null, "dag": null, "reason": "the T5 model classifies the text as unsupported"}
 {"query": "petrol rate today in Hyderabad", "ok": false, "template": null, "dag": null, "reason": "the T5 model classifies the text as unsupported"}
 {"query": "which is the longest river in India and where does it originate? I need it for my school project on geography", "ok": true, "template": "natural_in", "dag": ["Naturals", {"kind": "river", "within": ["Resolve", "c3edf10a-fe23-4c7e-a777-52199ac7df8e"]}], "reason": null}
-{"query": "recomend a good biryani place in Lucknow", "ok": false, "template": null, "dag": null, "reason": "the text is not one place name, and no other template matches"}
+{"query": "recomend a good biryani place in Lucknow", "ok": true, "template": "lookup_place", "dag": ["Resolve", "photon", "good biryani place in lucknow"], "reason": null}
 {"query": "convert 500 rupees to dollars", "ok": false, "template": null, "dag": null, "reason": "the T5 model classifies the text as unsupported"}
 {"query": "districts in Uttar Pradesh with population above 20 lakh", "ok": true, "template": "children_attr", "dag": ["AttrFilter", {"attr": "population", "op": "gt", "set": ["Children", {"level": "district", "of": ["Resolve", "3cdb074f-29f7-45cf-9ff9-041487e0f988"]}], "value": 2000000.0}], "reason": null}
 {"query": "which cities in Gujarat have more than 5 lakh people", "ok": true, "template": "children_attr", "dag": ["AttrFilter", {"attr": "population", "op": "gt", "set": ["Children", {"level": "city", "of": ["Resolve", "cc99fb60-7eaf-4cf1-9e38-a90a9c5f78fc"]}], "value": 500000.0}], "reason": null}
@@ -485,12 +485,12 @@
 {"query": "bandra west mumbai", "ok": true, "template": "lookup_place", "dag": ["Resolve", "photon", "bandra west mumbai"], "reason": null}
 {"query": "Tirupathi temple", "ok": true, "template": "features_in", "dag": ["Features", {"category": "temple", "within": ["Resolve", "95303d99-e5cc-476d-bde5-6fa5e2438df3"]}], "reason": null}
 {"query": "pls show Kozhikode district", "ok": true, "template": "lookup_place", "dag": ["Resolve", "870b35c3-d64d-4501-8c0b-b8bc56bdf8cc"], "reason": null}
-{"query": "can you locate Salt Lake Sector 5 Kolkata on the map", "ok": false, "template": null, "dag": null, "reason": "the text is not one place name, and no other template matches"}
+{"query": "can you locate Salt Lake Sector 5 Kolkata on the map", "ok": true, "template": "lookup_place", "dag": ["Resolve", "photon", "salt lake sector 5 kolkata"], "reason": null}
 {"query": "Mysuru palace", "ok": true, "template": "features_in", "dag": ["Features", {"category": "stadium", "within": ["Resolve", "0823a660-515a-4a53-b4ae-d56173359b6c"]}], "reason": null}
 {"query": "Vishakhapatnam", "ok": true, "template": "lookup_place", "dag": ["Resolve", "4bad4c57-3068-4f41-aa1a-32a143f6e111"], "reason": null}
-{"query": "I want to see Jayanagar 4th Block", "ok": false, "template": null, "dag": null, "reason": "the text is not one place name, and no other template matches"}
+{"query": "I want to see Jayanagar 4th Block", "ok": true, "template": "lookup_place", "dag": ["Resolve", "photon", "jayanagar 4th block"], "reason": null}
 {"query": "marine drive kochi", "ok": true, "template": "lookup_place", "dag": ["Resolve", "photon", "marine drive kochi"], "reason": null}
-{"query": "where exactly is the Rann of Kutch", "ok": false, "template": null, "dag": null, "reason": "the text is not one place name, and no other template matches"}
+{"query": "where exactly is the Rann of Kutch", "ok": true, "template": "lookup_place", "dag": ["Resolve", "photon", "rann of kutch"], "reason": null}
 {"query": "5 km around Connaught Place", "ok": true, "template": "buffer", "dag": ["Buffer", {"distance_m": 5000.0, "of": ["Resolve", "ffaff2ad-21cd-4b73-af1d-2a3866c8d462"]}], "reason": null}
 {"query": "buffer of 500 m around Howrah Bridge", "ok": true, "template": "buffer", "dag": ["Buffer", {"distance_m": 500.0, "of": ["Resolve", "photon", "howrah bridge"]}], "reason": null}
 {"query": "10 kms around Pune", "ok": true, "template": "buffer", "dag": ["Buffer", {"distance_m": 10000.0, "of": ["Resolve", "f89d9ec3-87a7-45a5-9ef0-6f633ad33364"]}], "reason": null}

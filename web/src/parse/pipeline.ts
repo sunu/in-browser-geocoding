@@ -275,7 +275,16 @@ export class Parser {
     }
     if (tpl.family === "lookup" && alt !== "lookup_place" && !(await this.listParts(dec, text, false))) {
       const g = await dec.isSubquery(text, depth);
-      if (g.value || dec.below("is_subquery", g)) stop("the text is not one place name, and no other template matches", depth, text, "is_subquery");
+      if (g.value || dec.below("is_subquery", g)) {
+        const best = [...(cands[tpl.id] ?? [])].sort((a, b) => b.score - a.score)[0];
+        const name: string = best?.segments?.anchor || text;
+        const plural = Object.values<any>(this.bundle.options.admin_levels).flatMap((v) => v.keywords ?? [])
+          .some((k: string) => k.endsWith("s") && new RegExp(`\\b${k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i").test(name));
+        // Port: "which states touch the sea" is a set of places, not a name that the geocoder can find.
+        if (!this.geocoderAllowed(tpl, depth) || plural) stop("the text is not one place name, and no other template matches", depth, text, "is_subquery");
+        // Port: a place name that the local data does not explain: the geocoder searches the name of the frame.
+        return [this.photonFallback(dec, name, depth, "is_subquery"), { family: "lookup", template: "lookup_place", slots: { anchor: name } }];
+      }
     }
     let matches = [...(cands[tpl.id] ?? [])].sort((a, b) => b.score - a.score);
     if (!matches.length) stop(`template ${tpl.id} has no valid split`, depth, text, "pick_split");
@@ -698,19 +707,32 @@ export class Parser {
     return null;
   }
 
-  private async anchor(dec: Decider, tpl: Template, text: string, query: string, depth: number, typeHint: string | null, exact: Candidate[]) {
+  private geocoderAllowed(tpl: Template, depth: number): boolean {
     const scope = this.bundle.config.geocoder?.anchor_scope ?? "simple_and_features";
-    const allowGeocoder = scope === "all" || (depth === 0 && GEOCODER_FAMILIES.has(tpl.family));
+    return scope === "all" || (depth === 0 && GEOCODER_FAMILIES.has(tpl.family));
+  }
+
+  private photonFallback(dec: Decider, text: string, depth: number, cause: string): Record<string, any> {
+    dec.recordStep("photon_fallback", depth, { text }, "photon", "rules", { cause });
+    dec.notes.push(`'${text}' is not a known place in the local data: the result is the geocoder's (Photon) match`);
+    return { op: "Resolve", args: { name: text, source: "photon" } };
+  }
+
+  private async anchor(dec: Decider, tpl: Template, text: string, query: string, depth: number, typeHint: string | null, exact: Candidate[]) {
+    const allowGeocoder = this.geocoderAllowed(tpl, depth);
     if (allowGeocoder) {
       const cands = exact.length ? exact : await this.gaz.search(text, { typeHint, limit: 3, view: dec.view });
       const top = cands[0];
       const sd = await dec.selectSource(text, { gazetteer_match: top?.description ?? null, gazetteer_top_score: top?.score ?? 0, gazetteer_top_subtype: top?.subtype ?? null }, depth);
-      if (dec.below("select_source", sd)) stop(`low confidence for select_source (${fmt(sd.confidence)})`, depth, text, "select_source");
+      if (dec.below("select_source", sd)) return this.photonFallback(dec, text, depth, "select_source");
       if (sd.value === "photon") return { op: "Resolve", args: { name: text, source: "photon" } };
     }
     // No NER spans in the browser version: the whole slot text is the anchor (bind_anchor is not asked).
     let cands = await this.gaz.search(text, { typeHint, limit: 6, view: dec.view });
-    if (!cands.length) stop(`cannot resolve '${text}' in the local extract`, depth, text);
+    if (!cands.length) {
+      if (allowGeocoder) return this.photonFallback(dec, text, depth, "no_local_match");
+      stop(`cannot resolve '${text}' in the local extract`, depth, text);
+    }
     cands = await this.photonBoost(dec, text, mergeNested(cands), depth);
     let chosen = cands[0];
     if (cands.length > 1 && cands[0].score - cands[1].score < this.bundle.config.policy.ranking.close_margin) {
