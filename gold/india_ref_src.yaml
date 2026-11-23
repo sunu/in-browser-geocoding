@@ -1,0 +1,206 @@
+# Labelled sample of the India reference set (plan-039 phase 0). Written on 2026-11-23.
+# 200 queries, drawn with random.Random(39).sample from the sorted llm_dev and llm_test queries that are not
+# in gold or heldout. Draft labels from the parser output (T5 v6, xenc v5), corrected by hand.
+# Do not tune templates, rules, or descriptions on these records. Use them only to report.
+# t: unsupported means that the correct result is a refusal (a message, not a map).
+
+- {q: "can you show eastern Karnataka please", t: "direction_part", s: {dir: "east", target: "Karnataka"}}
+- {q: "district containing Mahabalipuram", t: "parent", s: {level: "district", child: "Mahabalipuram"}, gap: "Mahabalipuram has no district ancestor in the data"}
+- {q: "overlap of Howrah district and 4 km around Howrah Bridge", t: "intersection", s: {a: "Howrah district", b: {q: "4 km around Howrah Bridge", t: "buffer", s: {distance: 4000, target: "Howrah Bridge"}, src: {target: "photon"}}}}
+- {q: "25 km along the international border in North 24 Parganas", t: "along_intl_border", s: {distance: 25000, region: "North 24 Parganas"}}
+- {q: "cafes in Hauz Khas Village", t: "features_in", s: {category: "cafe", region: "Hauz Khas Village"}}
+- {q: "centroid of Koramangala", t: "centroid", s: {target: "Koramangala"}}
+- {q: "places to the south of Koramangala", t: "direction_outside", s: {dir: "south", target: "Koramangala"}, gap: "the place is a point in the data (no area)"}
+- {q: "10 km radius around Pune", t: "buffer", s: {distance: 10000, target: "Pune"}}
+- {q: "disrtict of Bodh Gaya", t: "parent", s: {level: "district", child: "Bodh Gaya"}, n: "'district of X' with X a town: the district that contains X"}
+- {q: "madhya pradesh except bhopal n indore", t: "difference", s: {a: "madhya pradesh", b: ["bhopal", "indore"]}}
+- {q: "border area with Bangladesh in Tripura 3 km along the international border", t: "border_with_in", s: {distance: 3000, other: "Bangladesh", region: "Tripura"}}
+- {q: "25 km around Nashik district", t: "buffer", s: {distance: 25000, target: "Nashik district"}}
+- {q: "half a kilometre around Golden Temple Amritsar", t: "buffer", s: {distance: 500, target: "Golden Temple Amritsar"}, src: {target: "photon"}}
+- {q: "Gujarat and Rajasthan", t: "union", s: {places: ["Gujarat", "Rajasthan"]}}
+- {q: "middle of Assam", t: "centroid", s: {target: "Assam"}}
+- {q: "10 kms around Pune", t: "buffer", s: {distance: 10000, target: "Pune"}}
+- {q: "Pondicherry", t: "lookup_place", s: {anchor: "Pondicherry"}}
+- {q: "shortest train from Chennai Central to Madurai?", t: "unsupported", s: {}}
+- {q: "landlockd states of india", t: "children_with_predicate", s: {pred: "landlocked", level: "state", parent: "india"}}
+- {q: "seaside strip of West Bengal, 8 km", t: "along_coast", s: {distance: 8000, region: "West Bengal"}}
+- {q: "Konark Sun Temple state", t: "parent", s: {level: "state", child: "Konark Sun Temple"}, src: {child: "photon"}}
+- {q: "petrol pumps within 3 km of Hinjewadi", t: "features_near", s: {distance: 3000, category: "fuel", region: "Hinjewadi"}}
+- {q: "where can i find petrol pumps in Navi Mumbai", t: "features_in", s: {category: "fuel", region: "Navi Mumbai"}}
+- {q: "history of the Red Fort", t: "unsupported", s: {}}
+- {q: "districts in Uttar Pradesh with population above 20 lakh", t: "children_attr", s: {value: 2000000, level: "district", attr: "population", op: "gt", parent: "Uttar Pradesh"}}
+- {q: "Delhi NCR but not Gurgaon", t: "difference", s: {a: "Delhi NCR", b: "Gurgaon"}, src: {a: "photon"}}
+- {q: "tehsils in Kutch bordering Pakistan", t: "unsupported", s: {}, n: "the India data has no such admin level"}
+- {q: "south delhi n 3km around saket overlap", t: "intersection", s: {a: "south delhi", b: {q: "3km around saket", t: "buffer", s: {distance: 3000, target: "saket"}}}}
+- {q: "distrcits in Kerela", t: "children", s: {level: "district", parent: "Kerela"}}
+- {q: "i want to see all the districts", t: "children", s: {parent: null, level: "district"}}
+- {q: "1 mile strip along the seashore of Mumbai", t: "along_coast", s: {distance: 1609.344, region: "Mumbai"}, gap: "the place is a point in the data (no area)"}
+- {q: "Are there any coastal districts in Karnataka? show them", t: "children_with_predicate", s: {pred: "coastal", level: "district", parent: "Karnataka"}}
+- {q: "buffer of 500 m around Howrah Bridge", t: "buffer", s: {distance: 500, target: "Howrah Bridge"}, src: {target: "photon"}}
+- {q: "wards in Mumbai with population greater than 50,000", t: "unsupported", s: {}, n: "the India data has no such admin level"}
+- {q: "northern part of Kerala", t: "direction_part", s: {dir: "north", target: "Kerala"}}
+- {q: "how much land lies within 4 km of the coast of Odisha?", t: "along_coast", s: {distance: 4000, region: "Odisha"}}
+- {q: "eastern part of Uttar Pradesh", t: "direction_part", s: {dir: "east", target: "Uttar Pradesh"}}
+- {q: "overlap of Kutch and 10 km along the international border in Gujarat", t: "intersection", s: {a: "Kutch", b: {q: "10 km along the international border in Gujarat", t: "along_intl_border", s: {distance: 10000, region: "Gujarat"}}}}
+- {q: "landlocked mandals in Telangana", t: "unsupported", s: {}, n: "the India data has no such admin level"}
+- {q: "ward that contains Banjara Hills", t: "unsupported", s: {}, n: "the India data has no such admin level"}
+- {q: "all the districts of West Bengal except Kolkata", t: "difference", s: {a: {q: "districts of West Bengal", t: "children", s: {level: "district", parent: "West Bengal"}}, b: "Kolkata"}}
+- {q: "south of Chennai", t: "direction_outside", s: {dir: "south", target: "Chennai"}}
+- {q: "Gateway of India, Marine Drive and Juhu Beach", t: "union", s: {places: [{text: "Gateway of India", src: "photon"}, {text: "Marine Drive", src: "photon"}, {text: "Juhu Beach", src: "photon"}]}}
+- {q: "betwen Indiranagar and Whitefield", t: "between", s: {a: "Indiranagar", b: "Whitefield"}}
+- {q: "highlight Kutch district and Jamnagar district in one view", t: "union", s: {places: ["Kutch district", "Jamnagar district"]}}
+- {q: "gujrat excluding kutch", t: "difference", s: {a: "gujrat", b: "kutch"}}
+- {q: "coastal districts of Odisha and coastal districts of West Bengal", t: "union", s: {places: [{q: "coastal districts of Odisha", t: "children_with_predicate", s: {pred: "coastal", level: "district", parent: "Odisha"}}, {q: "coastal districts of West Bengal", t: "children_with_predicate", s: {pred: "coastal", level: "district", parent: "West Bengal"}}]}}
+- {q: "Lakshadweep and Puducherry", t: "union", s: {places: ["Lakshadweep", "Puducherry"]}}
+- {q: "places touching Ladakh", t: "neighbors", s: {level: "none", quant: "any", of: "Ladakh"}}
+- {q: "towns in Kerala with less than 50000 population", t: "children_attr", s: {value: 50000, level: "city", attr: "population", op: "lt", parent: "Kerala"}}
+- {q: "I want to see all the states which share boundary with Telangana", t: "neighbors", s: {quant: "any", level: "state", of: "Telangana"}}
+- {q: "schools inside Pune Cantonment", t: "features_in", s: {category: "school", region: "Pune Cantonment"}}
+- {q: "5 km around Connaught Place", t: "buffer", s: {distance: 5000, target: "Connaught Place"}}
+- {q: "20 km along border of Kutch", t: "along_border", s: {distance: 20000, region: "Kutch"}}
+- {q: "schools near Jayanagar Bangalore", t: "features_near", s: {distance: null, category: "school", region: "Jayanagar Bangalore"}, src: {region: "photon"}}
+- {q: "10 km along the international border in Rajasthan", t: "along_intl_border", s: {distance: 10000, region: "Rajasthan"}}
+- {q: "northeast Assam map", t: "direction_part", s: {dir: "northeast", target: "Assam"}}
+- {q: "which hotels are within half a kilometre of Golden Temple Amritsar?", t: "features_near", s: {distance: 500, category: "hotel", region: "Golden Temple Amritsar"}, src: {region: "photon"}}
+- {q: "Connaught Place and Karol Bagh", t: "union", s: {places: ["Connaught Place", "Karol Bagh"]}}
+- {q: "what are the subdivisions in Darjeeling", t: "unsupported", s: {}, n: "the India data has no such admin level"}
+- {q: "police stations 10 km from Gurugram", t: "features_near", s: {distance: 10000, category: "police", region: "Gurugram"}}
+- {q: "name the district where Marine Drive Mumbai is located", t: "parent", s: {level: "district", child: "Marine Drive Mumbai"}, src: {child: "photon"}}
+- {q: "states adjacent to Telangana", t: "neighbors", s: {quant: "any", level: "state", of: "Telangana"}}
+- {q: "what is just north of Jaipur?", t: "direction_outside", s: {dir: "north", target: "Jaipur"}}
+- {q: "districts of West Bengal where population is under 10 lakh", t: "children_attr", s: {value: 1000000, level: "district", attr: "population", op: "lt", parent: "West Bengal"}}
+- {q: "how much land is within 500 m along the Bengaluru Urban boundary?", t: "along_border", s: {distance: 500, region: "Bengaluru Urban"}}
+- {q: "Rajasthan, Gujarat and Madhya Pradesh", t: "union", s: {places: ["Rajasthan", "Gujarat", "Madhya Pradesh"]}}
+- {q: "Chennai coast 1 km", t: "along_coast", s: {distance: 1000, region: "Chennai"}}
+- {q: "districts of Gujarat", t: "children", s: {level: "district", parent: "Gujarat"}}
+- {q: "which states have population more than 5 crore", t: "children_attr", s: {value: 50000000, parent: null, level: "state", attr: "population", op: "gt"}}
+- {q: "i want to see everything between Connaught Place and India Gate", t: "between", s: {a: "Connaught Place", b: "India Gate"}, src: {b: "photon"}}
+- {q: "Marine Drive and Juhu Beach", t: "union", s: {places: [{text: "Marine Drive", src: "photon"}, {text: "Juhu Beach", src: "photon"}]}}
+- {q: "distrcts in Odisha with sex ratio above 950", t: "unsupported", s: {}, n: "no sex ratio attribute: population > 950 is a silent wrong answer"}
+- {q: "state that has Ooty", t: "parent", s: {level: "state", child: "Ooty"}}
+- {q: "pls show chennai madurai n coimbatore on map", t: "union", s: {places: ["chennai", "madurai", "coimbatore"]}, n: "list with no comma"}
+- {q: "plz show coastal cities in Tamil Nadu", t: "children_with_predicate", s: {pred: "coastal", level: "city", parent: "Tamil Nadu"}}
+- {q: "Tamil Nadu districts with more than 30 lakh people", t: "children_attr", s: {value: 3000000, level: "district", attr: "population", op: "gt", parent: "Tamil Nadu"}}
+- {q: "show Mysuru city along with Mandya district", t: "union", s: {places: ["Mysuru city", "Mandya district"]}}
+- {q: "state containing Gangtok", t: "parent", s: {level: "state", child: "Gangtok"}}
+- {q: "mandals in Telangana with population above 1 lakh", t: "unsupported", s: {}, n: "the India data has no such admin level"}
+- {q: "Udaipur district, Jodhpur district and Bikaner district", t: "union", s: {places: ["Udaipur district", "Jodhpur district", "Bikaner district"]}}
+- {q: "Dal Lake Srinagar", t: "lookup_place", s: {anchor: "Dal Lake Srinagar"}, src: {anchor: "photon"}}
+- {q: "what are the sub-districts in Kamrup?", t: "unsupported", s: {}, n: "the India data has no such admin level"}
+- {q: "Andhra Pradesh and Telengana", t: "union", s: {places: ["Andhra Pradesh", "Telengana"]}}
+- {q: "how far does 7 km around Sector 62 Noida extend", t: "buffer", s: {distance: 7000, target: "Sector 62 Noida"}, src: {target: "photon"}}
+- {q: "petrol bunks in Coimbatore pls", t: "features_in", s: {category: "fuel", region: "Coimbatore"}}
+- {q: "coffee shops near Fort Kochi", t: "features_near", s: {distance: null, category: "cafe", region: "Fort Kochi"}, src: {region: "photon"}}
+- {q: "best route from Delhi to Jaipur by road", t: "unsupported", s: {}}
+- {q: "state for Gangtok", t: "parent", s: {level: "state", child: "Gangtok"}}
+- {q: "states with less than 1 crore population", t: "children_attr", s: {value: 10000000, parent: null, level: "state", attr: "population", op: "lt"}}
+- {q: "strip along the international border of Gujarat", t: "along_intl_border", s: {distance: null, region: "Gujarat"}}
+- {q: "temples in Madurai", t: "features_in", s: {category: "temple", region: "Madurai"}}
+- {q: "which state is Hampi in", t: "parent", s: {level: "state", child: "Hampi"}}
+- {q: "are there any pharmacies within 500 metres of Charminar?", t: "features_near", s: {distance: 500, category: "pharmacy", region: "Charminar"}, src: {region: "photon"}}
+- {q: "where does Gurgaon overlap with 5 km around Cyber Hub", t: "intersection", s: {a: "Gurgaon", b: {q: "5 km around Cyber Hub", t: "buffer", s: {distance: 5000, target: "Cyber Hub"}, src: {target: "photon"}}}}
+- {q: "mysore palace", t: "lookup_place", s: {anchor: "mysore palace"}, src: {anchor: "photon"}}
+- {q: "southern Tamil Nadu", t: "direction_part", s: {dir: "south", target: "Tamil Nadu"}}
+- {q: "Rajasthan except Jaipur district", t: "difference", s: {a: "Rajasthan", b: "Jaipur district"}}
+- {q: "what is the stretch along the international border inside West Bengal?", t: "along_intl_border", s: {distance: null, region: "West Bengal"}}
+- {q: "convert 500 rupees to dollars", t: "unsupported", s: {}}
+- {q: "Karnatka, Kerela and Tamil Nadu", t: "union", s: {places: ["Karnatka", "Kerela", "Tamil Nadu"]}}
+- {q: "south-west of Delhi NCR", t: "direction_outside", s: {dir: "southwest", target: "Delhi NCR"}, src: {target: "photon"}}
+- {q: "pls show 1 km strip along the boundary of Nagpur city", t: "along_border", s: {distance: 1000, region: "Nagpur city"}, gap: "the place is a point in the data (no area)"}
+- {q: "half a kilometre along the international border in Ferozepur", t: "along_intl_border", s: {distance: 500, region: "Ferozepur"}, ids: {region: "cfafa7b3-244a-4931-b852-d08d9f6a1409"}, n: "the district (Firozpur), not a village in another district"}
+- {q: "which districts of Madhya Pradesh have a population under 8 lakh?", t: "children_attr", s: {value: 800000, level: "district", attr: "population", op: "lt", parent: "Madhya Pradesh"}}
+- {q: "I want to see the 20 km along the sea coast of Dakshina Kannada for CRZ study", t: "along_coast", s: {distance: 20000, region: "Dakshina Kannada"}}
+- {q: "I want to see Himachal Pradesh, Uttarakhand and Jammu and Kashmir on one map", t: "union", s: {places: ["Himachal Pradesh", "Uttarakhand", "Jammu and Kashmir"]}}
+- {q: "borderland of Meghalaya", t: "along_border", s: {distance: null, region: "Meghalaya"}}
+- {q: "banglore airport", t: "lookup_place", s: {anchor: "banglore airport"}, src: {anchor: "photon"}, n: "the airport is outside the Bangalore city polygon"}
+- {q: "area along border of Karnatka 15 km", t: "along_border", s: {distance: 15000, region: "Karnatka"}}
+- {q: "stats that border Utter Pradesh", t: "neighbors", s: {quant: "any", level: "state", of: "Utter Pradesh"}}
+- {q: "2000 metres along the coastline of Visakhapatnam", t: "along_coast", s: {distance: 2000, region: "Visakhapatnam"}}
+- {q: "Combine Leh, Kargil and Srinagar into one area", t: "union", s: {places: ["Leh", "Kargil", "Srinagar"]}}
+- {q: "Mysuru, Hampi and Gokarna", t: "union", s: {places: ["Mysuru", "Hampi", "Gokarna"]}}
+- {q: "where is the centre of Uttar Pradesh located", t: "centroid", s: {target: "Uttar Pradesh"}}
+- {q: "5 km along the border of Rajasthan", t: "along_border", s: {distance: 5000, region: "Rajasthan"}}
+- {q: "southern half of Hyderabad", t: "direction_part", s: {dir: "south", target: "Hyderabad"}}
+- {q: "what borders Goa", t: "neighbors", s: {level: "none", quant: "any", of: "Goa"}}
+- {q: "2000 metres around Victoria Memorial", t: "buffer", s: {distance: 2000, target: "Victoria Memorial"}, src: {target: "photon"}}
+- {q: "Bandra West", t: "lookup_place", s: {anchor: "Bandra West"}}
+- {q: "i want to see the seaside strip of Andhra Pradesh, around 20 km wide", t: "along_coast", s: {distance: 20000, region: "Andhra Pradesh"}}
+- {q: "Chembur and Ghatkopar", t: "union", s: {places: ["Chembur", "Ghatkopar"]}}
+- {q: "Bangalore city except 2 km around Majestic", t: "difference", s: {a: "Bangalore city", b: {q: "2 km around Majestic", t: "buffer", s: {distance: 2000, target: "Majestic"}, src: {target: "photon"}}}}
+- {q: "pls show 1 km buffer near Indiranagar metro station", t: "buffer", s: {distance: 1000, target: "Indiranagar metro station"}, src: {target: "photon"}}
+- {q: "coast strip West Bengal 8km", t: "along_coast", s: {distance: 8000, region: "West Bengal"}}
+- {q: "what does Karnataka look like except coastal districts of Karnataka?", t: "difference", s: {a: "Karnataka", b: {q: "coastal districts of Karnataka", t: "children_with_predicate", s: {pred: "coastal", level: "district", parent: "Karnataka"}}}}
+- {q: "city that contains Salt Lake Sector V", t: "parent", s: {level: "city", child: "Salt Lake Sector V"}, src: {child: "photon"}}
+- {q: "restarants near Connaught Place", t: "features_near", s: {distance: null, category: "restaurant", region: "Connaught Place"}}
+- {q: "which state does Rann of Kutch belong to", t: "parent", s: {level: "state", child: "Rann of Kutch"}, src: {child: "photon"}}
+- {q: "Wich state is Siliguri in?", t: "parent", s: {level: "state", child: "Siliguri"}}
+- {q: "international border strip Gujarat", t: "along_intl_border", s: {distance: null, region: "Gujarat"}}
+- {q: "Mumbai Suburban and Thane", t: "union", s: {places: ["Mumbai Suburban", "Thane"]}}
+- {q: "what is the capital of Rajasthan", t: "unsupported", s: {}}
+- {q: "atms near Howrah Station", t: "features_near", s: {distance: null, category: "atm", region: "Howrah Station"}, src: {region: "photon"}}
+- {q: "Is it possible to see Jaipur, Jodhpur and Udaipur together?", t: "union", s: {places: ["Jaipur", "Jodhpur", "Udaipur"]}}
+- {q: "area common to Thane and 10 km along the coast of Maharashtra", t: "intersection", s: {a: "Thane", b: {q: "10 km along the coast of Maharashtra", t: "along_coast", s: {distance: 10000, region: "Maharashtra"}}}}
+- {q: "districts in Odisha bordering Chhattisgarh pls", t: "children_touching", s: {quant: "any", level: "district", parent: "Odisha", other: "Chhattisgarh"}}
+- {q: "what is within 2 miles of Marina Beach Chennai?", t: "buffer", s: {distance: 3218.688, target: "Marina Beach Chennai"}, src: {target: "photon"}}
+- {q: "what is within 2 miles of Marine Drive Mumbai?", t: "buffer", s: {distance: 3218.688, target: "Marine Drive Mumbai"}, src: {target: "photon"}}
+- {q: "ATMs near Charminar", t: "features_near", s: {distance: null, category: "atm", region: "Charminar"}, src: {region: "photon"}}
+- {q: "coastal belt of Gujarat", t: "along_coast", s: {distance: null, region: "Gujarat"}}
+- {q: "sea coast of Dakshina Kannada 12 km inland", t: "along_coast", s: {distance: 12000, region: "Dakshina Kannada"}}
+- {q: "area around Golden Temple Amritsar", t: "buffer", s: {distance: null, target: "Golden Temple Amritsar"}, src: {target: "photon"}}
+- {q: "15 kms aroud Jaipur airport", t: "buffer", s: {distance: 15000, target: "Jaipur airport"}, src: {target: "photon"}, n: "typo 'aroud'"}
+- {q: "districts of Bihar where literacy rate is below 60", t: "unsupported", s: {}, n: "no literacy attribute: population < 60 is a silent wrong answer"}
+- {q: "Assam + Meghalaya + Tripura", t: "union", s: {places: ["Assam", "Meghalaya", "Tripura"]}}
+- {q: "pls show centre of Hyderabad", t: "centroid", s: {target: "Hyderabad"}}
+- {q: "Jaipur + Udaipur", t: "union", s: {places: ["Jaipur", "Udaipur"]}}
+- {q: "Mumbai without Bandra", t: "difference", s: {a: "Mumbai", b: "Bandra"}, gap: "the place is a point in the data (no area)"}
+- {q: "bus stands in Vishakhapatnam", t: "features_in", s: {category: "bus_station", region: "Vishakhapatnam"}}
+- {q: "Gujarat excluding coastal districts of Gujarat", t: "difference", s: {a: "Gujarat", b: {q: "coastal districts of Gujarat", t: "children_with_predicate", s: {pred: "coastal", level: "district", parent: "Gujarat"}}}}
+- {q: "intersection of Karnataka and 30 km along the border of Goa", t: "intersection", s: {a: "Karnataka", b: {q: "30 km along the border of Goa", t: "along_border", s: {distance: 30000, region: "Goa"}}}}
+- {q: "common area of Salcete and 4 km around Margao", t: "intersection", s: {a: "Salcete", b: {q: "4 km around Margao", t: "buffer", s: {distance: 4000, target: "Margao"}}}, src: {a: "photon"}}
+- {q: "show 12 km strip along the intl border of Jaisalmer", t: "along_intl_border", s: {distance: 12000, region: "Jaisalmer"}}
+- {q: "between Guwahati and Shillong pls", t: "between", s: {a: "Guwahati", b: "Shillong"}}
+- {q: "Goa, Daman and Diu and Dadra and Nagar Haveli together", t: "union", s: {places: ["Goa", "Daman", "Diu", "Dadra and Nagar Haveli"]}}
+- {q: "i want to find the central location of Nashik district in Maharashtra", t: "centroid", s: {target: "Nashik district in Maharashtra"}, ids: {target: "1a0e048e-7a00-47c5-ae75-700b189bd5d1"}, n: "qualified name"}
+- {q: "state of Tirupati", t: "parent", s: {level: "state", child: "Tirupati"}}
+- {q: "chennai and 3 km around marina beach overlap", t: "intersection", s: {a: "chennai", b: {q: "3 km around marina beach", t: "buffer", s: {distance: 3000, target: "marina beach"}, src: {target: "photon"}}}}
+- {q: "landlocked districts in Maharashtra", t: "children_with_predicate", s: {pred: "landlocked", level: "district", parent: "Maharashtra"}}
+- {q: "western Rajasthan", t: "direction_part", s: {dir: "west", target: "Rajasthan"}}
+- {q: "beach side area of Chennai", t: "along_coast", s: {distance: null, region: "Chennai"}}
+- {q: "between Guwahati and Shillong", t: "between", s: {a: "Guwahati", b: "Shillong"}}
+- {q: "geograpical centre of Tamil Nadu", t: "centroid", s: {target: "Tamil Nadu"}}
+- {q: "cities in Gujarat with over 5 lakh population", t: "children_attr", s: {value: 500000, level: "city", attr: "population", op: "gt", parent: "Gujarat"}}
+- {q: "btwn hyderabad and secunderabad", t: "between", s: {a: "hyderabad", b: "secunderabad"}, n: "typo 'btwn'"}
+- {q: "which districts of Uttarakhand touch Himachal Pradesh??", t: "children_touching", s: {quant: "any", level: "district", parent: "Uttarakhand", other: "Himachal Pradesh"}}
+- {q: "25 km strip along international boundary Amritsar district", t: "along_intl_border", s: {distance: 25000, region: "Amritsar district"}}
+- {q: "coastal states", t: "children_with_predicate", s: {parent: null, pred: "coastal", level: "state"}}
+- {q: "UP districts adjoining Madhya Pradesh", t: "children_touching", s: {quant: "any", level: "district", parent: "UP", other: "Madhya Pradesh"}}
+- {q: "schools within 1.5 km of Anna Nagar Chennai", t: "features_near", s: {distance: 1500, category: "school", region: "Anna Nagar Chennai"}, src: {region: "photon"}}
+- {q: "pls show jaipur", t: "lookup_place", s: {anchor: "jaipur"}}
+- {q: "100 m around Anna Salai", t: "buffer", s: {distance: 100, target: "Anna Salai"}, src: {target: "photon"}}
+- {q: "hospitals nearby Sector 17 Chandigarh", t: "features_near", s: {distance: null, category: "hospital", region: "Sector 17 Chandigarh"}, src: {region: "photon"}}
+- {q: "bus timings kolkata to digha", t: "unsupported", s: {}}
+- {q: "districts adjoining Nashik", t: "neighbors", s: {quant: "any", level: "district", of: "Nashik"}}
+- {q: "find Lakshadweep on map", t: "lookup_place", s: {anchor: "Lakshadweep"}}
+- {q: "50 km around Thiruvananthapuram", t: "buffer", s: {distance: 50000, target: "Thiruvananthapuram"}}
+- {q: "are there any landlocked union territories in India", t: "children_with_predicate", s: {pred: "landlocked", level: "union_territory", parent: "India"}}
+- {q: "tehsil that has Lonavala", t: "unsupported", s: {}, n: "the India data has no such admin level"}
+- {q: "1.5 miles along the coast of Visakhapatnam", t: "along_coast", s: {distance: 2414.016, region: "Visakhapatnam"}}
+- {q: "district of Lonavala", t: "parent", s: {level: "district", child: "Lonavala"}, n: "'district of X' with X a town"}
+- {q: "land along the coastl of Kerala 3 km wide", t: "along_coast", s: {distance: 3000, region: "Kerala"}}
+- {q: "disctricts of Odisha with population under 15 lakh", t: "children_attr", s: {value: 1500000, level: "district", attr: "population", op: "lt", parent: "Odisha"}}
+- {q: "blocks of Koraput district touching Andhra Pradesh", t: "unsupported", s: {}, n: "the India data has no such admin level"}
+- {q: "1500 metres along the boundary of Mysuru", t: "along_border", s: {distance: 1500, region: "Mysuru"}, gap: "the place is a point in the data (no area)"}
+- {q: "boundry strip of Ladakh", t: "along_border", s: {distance: null, region: "Ladakh"}}
+- {q: "can you list all the districts of West Bengal which share a boundary with Bangladesh", t: "children_touching", s: {quant: "any", level: "district", parent: "West Bengal", other: "Bangladesh"}}
+- {q: "wards in Chennai", t: "unsupported", s: {}, n: "the India data has no such admin level"}
+- {q: "union of Hyderabad and Secunderabad", t: "union", s: {places: ["Hyderabad", "Secunderabad"]}}
+- {q: "eastern Uttar Pradesh", t: "direction_part", s: {dir: "east", target: "Uttar Pradesh"}}
+- {q: "petrol pumps in Nashik district", t: "features_in", s: {category: "fuel", region: "Nashik district"}}
+- {q: "what lies between Jaipur and Delhi?", t: "between", s: {a: "Jaipur", b: "Delhi"}}
+- {q: "3 km along the coast in Ratnagiri district", t: "along_coast", s: {distance: 3000, region: "Ratnagiri district"}}
+- {q: "which districts in Gujarat are coastal?", t: "children_with_predicate", s: {pred: "coastal", level: "district", parent: "Gujarat"}}
+- {q: "zone around Taj Mahal Agra", t: "buffer", s: {distance: null, target: "Taj Mahal Agra"}, src: {target: "photon"}}
+- {q: "which state does Tawang fall under", t: "parent", s: {level: "state", child: "Tawang"}, gap: "the state ancestor of Tawang is '藏南', not Arunachal Pradesh"}
+- {q: "what is in the western part of Pune district?", t: "direction_part", s: {dir: "west", target: "Pune district"}}
+- {q: "where is the middle of Pune district", t: "centroid", s: {target: "Pune district"}}
+- {q: "all of Karnataka minus Bengaluru Urban", t: "difference", s: {a: "Karnataka", b: "Bengaluru Urban"}}

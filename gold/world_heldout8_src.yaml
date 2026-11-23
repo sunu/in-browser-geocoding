@@ -1,0 +1,46 @@
+# Held-out set for demonyms as places: "Indian states bordering Nepal" (plan-039, phase 0). Written on 2026-11-23,
+# before any code change of plan-039. Do not tune on these records.
+# Same format as world_heldout7_src.yaml. The slot text is the demonym; `ids` pins the place that it names, because the
+# gazetteer has no demonyms ("Indian" is an exact name of two villages in the US, "French" matches French River).
+# Must-not-change records: a name that starts with a demonym ("Indian Ocean", "French Guiana") or contains one ("Indiana").
+# n: the anomaly that the record tests.
+views:
+  IN: [68, 8, 97, 37]
+  FR: [-5, 41, 10, 51.5]
+  DE: [5.8, 47.2, 15.1, 55.1]
+  ES: [-9.3, 36, 3.3, 43.8]
+  IT: [6.6, 36.6, 18.5, 47.1]
+  US: [-125, 24, -66, 50]
+  CA: [-141, 41.7, -52.6, 70]
+  MX: [-117, 14.5, -86.7, 32.7]
+  AU: [113, -44, 154, -10]
+  BR: [-74, -34, -34, 5.5]
+  NG: [2.7, 4.2, 14.7, 13.9]
+
+records:
+  # Country demonyms in the parent slot
+  - {cc: IN, q: "Indian states bordering Nepal", t: children_touching, s: {level: state, parent: "Indian", other: "Nepal"}, ids: {parent: c3edf10a-fe23-4c7e-a777-52199ac7df8e}, n: "The user's case: 'Indian' is an exact name of a village in Maine."}
+  - {cc: IN, q: "which Indian states border Bangladesh", t: children_touching, s: {level: state, parent: "Indian", other: "Bangladesh"}, ids: {parent: c3edf10a-fe23-4c7e-a777-52199ac7df8e}}
+  - {cc: FR, q: "French regions", t: children, s: {level: state, parent: "French"}, ids: {parent: 6fc195b5-361b-487d-99a9-debff18b67c7}, n: "'French' matches French River."}
+  - {cc: FR, q: "French departments bordering Spain", t: children_touching, s: {level: district, parent: "French", other: "Spain"}, ids: {parent: 6fc195b5-361b-487d-99a9-debff18b67c7}}
+  - {cc: MX, q: "Mexican states bordering Texas", t: children_touching, s: {level: state, parent: "Mexican", other: "Texas"}, ids: {parent: fc20aaf8-7a12-4cb2-9b0b-ebb1a4b652aa}}
+  - {cc: MX, q: "mexican states that touch texas", t: children_touching, s: {level: state, parent: "mexican", other: "texas"}, ids: {parent: fc20aaf8-7a12-4cb2-9b0b-ebb1a4b652aa}, n: "Lower case."}
+  - {cc: ES, q: "Spanish provinces bordering Portugal", t: children_touching, s: {level: district, parent: "Spanish", other: "Portugal"}, ids: {parent: a1848d2c-d37f-4009-9410-e13a97d9e6ae}}
+  - {cc: IT, q: "Italian regions bordering Switzerland", t: children_touching, s: {level: state, parent: "Italian", other: "Switzerland"}, ids: {parent: ce63abf0-b955-4f29-b40a-20c569b53da4}}
+  - {cc: CA, q: "Canadian provinces bordering Montana", t: children_touching, s: {level: state, parent: "Canadian", other: "Montana"}, ids: {parent: d5654a87-5adf-42b3-9ff7-c656797a1776}}
+  - {cc: DE, q: "German states", t: children, s: {level: state, parent: "German"}, ids: {parent: 567d1698-7209-4b94-b7b8-0bc71bde0104}}
+  - {cc: NG, q: "Nigerian states bordering Cameroon", t: children_touching, s: {level: state, parent: "Nigerian", other: "Cameroon"}, ids: {parent: 3264d7ab-fdb5-4956-ad97-6307200c9e0a}}
+  - {cc: US, q: "American states bordering Canada", t: children_touching, s: {level: state, parent: "American", other: "Canada"}, ids: {parent: f39eb4af-5206-481b-b19e-bd784ded3f05}, n: "'American' can also mean the Americas; the US reading."}
+
+  # Demonyms in other templates
+  - {cc: BR, q: "coastal Brazilian states", t: children_with_predicate, s: {pred: coastal, level: state, parent: "Brazilian"}, ids: {parent: 6dd0e3d7-b16a-4d38-bffd-9f7e17627b40}}
+  - {cc: AU, q: "Australian states with population over 5 million", t: children_attr, s: {level: state, parent: "Australian", attr: population, op: gt, value: 5000000}, ids: {parent: 0ca3bee0-1166-43e1-a82d-f49e41127170}}
+
+  # Demonyms of large regions
+  - {cc: US, q: "Texan counties bordering Mexico", t: children_touching, s: {level: district, parent: "Texan", other: "Mexico"}, ids: {parent: c784c1f3-4806-4359-9867-7af8861a4acc}}
+  - {cc: DE, q: "Bavarian districts bordering Austria", t: children_touching, s: {level: district, parent: "Bavarian", other: "Austria"}, ids: {parent: 83df49db-87df-4925-80fb-1fbb9cc9802b}}
+
+  # Must not change: a name that starts with or contains a demonym
+  - {cc: IN, q: "Indian Ocean", t: lookup_place, s: {anchor: "Indian Ocean"}, n: "A demonym is a place only if it is the whole slot text."}
+  - {cc: US, q: "counties in Indiana", t: children, s: {level: district, parent: "Indiana"}}
+  - {cc: FR, q: "French Guiana", t: lookup_place, s: {anchor: "French Guiana"}}
