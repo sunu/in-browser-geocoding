@@ -2,7 +2,7 @@
 // T5 frames -> pick_family -> pick_template -> (viable splits) -> pick_split -> slots -> DAG, with recursion.
 import type { Bundle, SlotDef, Template } from "../core/bundle.ts";
 import { substitute, validate } from "../core/dsl.ts";
-import { distanceM, findSpan, frameToMatch, frameToText, groupFrames, mergeUnionSlots, UNSUPPORTED, valueNum, type Frame, type Match } from "../core/frames.ts";
+import { distanceM, findSpan, frameToMatch, frameToText, groupFrames, UNSUPPORTED, valueNum, type Frame, type Match } from "../core/frames.ts";
 import { keywordHits } from "../core/keywords.ts";
 import { lexiconMatch, norm, normalizeQuery } from "../core/text.ts";
 import { Decider, type TraceRecord } from "../decisions/decider.ts";
@@ -110,7 +110,7 @@ export class Parser {
     const k = Number(this.bundle.config.t5.beams ?? 4);
     const { frames: raw, latency } = await this.t5.frames(text, k);
     // Port: a union frame needs a list separator ("madhya pradesh sans bhopal" is not a union).
-    const merged = raw.map((f) => mergeUnionSlots(f, text)).filter((f) => !SUB_LIST_TEMPLATES.has(f.template)
+    const merged = raw.filter((f) => !SUB_LIST_TEMPLATES.has(f.template)
       || new RegExp(LIST_SEP.source, "i").test(f.slots.places ?? "") || LIST_MARKER.test(f.slots.places ?? ""));
     const frames = await this.extendSlots(dec, merged, text, depth);
     const groups = await this.covering(dec, groupFrames(frames, text, this.templates, Number(this.bundle.config.t5.margin ?? 2)), text, depth);
@@ -540,10 +540,9 @@ export class Parser {
     const isName = async (p: string) => {
       if (!known.has(p)) {
         const q = allowSub ? p.replace(/^(the|all of the|all of|whole of)\s+/i, "") : p;
-        // Port: a part with a comma is not a name if a piece is a set ("Sundarbans, 10 km around Kolkata").
-        known.set(p, !!q && !q.split(",").slice(1).some(isSub) && (!!lexiconMatch(q, this.bundle)
-          || (await this.gaz.search(q, { fuzzy: false, limit: 1, view: dec.view })).length > 0
-          || (q.includes(",") && (await this.qualified(probe, q, 0)) !== null)));
+        // Port: a part with a comma is a name only if it is a qualified name ("Paris, Texas"; "France, Spain" is two).
+        if (q.includes(",")) known.set(p, !q.split(",").slice(1).some(isSub) && (await this.qualified(probe, q, 0, true)) !== null);
+        else known.set(p, !!q && (!!lexiconMatch(q, this.bundle) || (await this.gaz.search(q, { fuzzy: false, limit: 1, view: dec.view })).length > 0));
       }
       return known.get(p)!;
     };
@@ -607,9 +606,9 @@ export class Parser {
   }
 
   /** Port of _qualified: "Paris, Texas" is the Paris inside an exact match of each later name, or null. */
-  private async qualified(dec: Decider, text: string, depth: number): Promise<any | null> {
+  private async qualified(dec: Decider, text: string, depth: number, exact = false): Promise<any | null> {
     let parts = text.split(",").map((p) => p.trim());
-    let exactOnly = false;
+    let exactOnly = exact;  // Port: exact: no fuzzy names (the list check)
     if (parts.length === 1) {
       // "Springfield in Illinois": exact names only, and not a set ("districts in Kerala", "hospitals in Pune").
       const m = text.trim().match(/^(.+?)\s+in\s+(.+)$/i);

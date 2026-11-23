@@ -2,6 +2,7 @@
 
   neighbors_both ; level ; a ; b  ->  neighbors ; level ; quant = <word> ; of = <a ... b>
   shared_border ; [distance] ; a ; b  ->  shared_border ; [distance] ; places = <a ... b>
+  union ; a ; b  and  union3 ; a ; b ; c  ->  union ; places = <a ... c>  (plan-038)
 
 A neighbors_both paraphrase without a quantifier word ("countries that touch X and Y") is dropped: with no word, "and"
 reads as "any" (plan-036), so its label would be wrong. A record is also dropped if the text between the two places is
@@ -16,7 +17,7 @@ import json
 import re
 from pathlib import Path
 
-from geoparse.t5.frames import Frame
+from geoparse.t5.frames import Frame, merge_union_slots
 
 ROOT = Path(__file__).resolve().parents[1]
 QUANT_ALL = re.compile(r"\b(both|all three of|all of|each of|in common|common)\b", re.I)
@@ -38,7 +39,12 @@ def list_span(q: str, a: str, b: str, space_ok: bool) -> str | None:
 
 def migrate(rec: dict) -> dict | None:
     f = Frame.from_text(rec["frame"])
-    if f is None or f.template not in ("neighbors_both", "shared_border"):
+    if f is not None and f.template in ("union", "union3") and "places" not in f.slots:
+        new = merge_union_slots(f, rec["query"])
+        if new is f:
+            return None
+        return {**rec, "frame": new.to_text(), "template": "union", "sub_slots": []}
+    if f is None or f.template not in ("neighbors_both", "shared_border") or "places" in f.slots:
         return rec
     q, s = rec["query"], f.slots
     if f.template == "neighbors_both":
@@ -65,7 +71,7 @@ def main() -> None:
     args = ap.parse_args()
     path = Path(args.file)
     recs = [json.loads(l) for l in path.read_text().splitlines() if l.strip()]
-    out, dropped, changed = [], {"neighbors_both": 0, "shared_border": 0}, 0
+    out, dropped, changed = [], {"neighbors_both": 0, "shared_border": 0, "union": 0, "union3": 0}, 0
     for r in recs:
         m = migrate(r)
         if m is None:

@@ -47,16 +47,6 @@ export function findSpan(query: string, span: string): [number, number] | null {
   return m ? [m.index, m.index + m[0].length] : null;
 }
 
-/** Port of merge_union_slots: a frame of the old union templates (a ; b, or a ; b ; c) as union ; places = the text from
- * the first to the last part. Until the frame model is trained again. */
-export function mergeUnionSlots(f: Frame, query: string): Frame {
-  if (!["union", "union3"].includes(f.template) || "places" in f.slots) return f;
-  const spans = ["a", "b", "c"].filter((k) => k in f.slots).map((k) => findSpan(query, f.slots[k]));
-  if (spans.length < 2 || spans.some((r) => !r)) return f;
-  const lo = Math.min(...spans.map((r) => r![0])), hi = Math.max(...spans.map((r) => r![1]));
-  return { ...f, template: "union", slots: { places: query.slice(lo, hi) } };
-}
-
 export function checkFrame(f: Frame, query: string, templates: Record<string, Template>): string[] {
   if (f.template === UNSUPPORTED) return [];
   const t = templates[f.template];

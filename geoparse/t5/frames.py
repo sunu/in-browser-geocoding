@@ -66,7 +66,7 @@ def find_span(query: str, span: str) -> tuple[int, int] | None:
 
 def merge_union_slots(frame: Frame, query: str) -> Frame:
     """A frame of the old union templates (union ; a ; b, union3 ; a ; b ; c) as union ; places = the text from the
-    first to the last part (plan-038: one union template with a list). Until the frame model is trained again."""
+    first to the last part (plan-038: one union template with a list). For training.migrate_frames."""
     if frame.template not in ("union", "union3") or "places" in frame.slots:
         return frame
     spans = [find_span(query, frame.slots[k]) for k in ("a", "b", "c") if k in frame.slots]

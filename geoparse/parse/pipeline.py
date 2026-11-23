@@ -248,11 +248,11 @@ class Parser:
         """Candidate splits from the T5 model, as split matches. Empty if T5 is not enabled or not built."""
         if self.t5 is None:
             return [], False
-        from geoparse.t5.frames import UNSUPPORTED, frame_to_match, group_frames, merge_union_slots
+        from geoparse.t5.frames import UNSUPPORTED, frame_to_match, group_frames
 
         frames, dt = self.t5.frames(text, k=int(self.t5_cfg.get("beams", 4)))
         # A union frame needs a list separator ("madhya pradesh sans bhopal" is not a union).
-        frames = [f for f in (merge_union_slots(f, text) for f in frames)
+        frames = [f for f in frames
                   if f.template not in SUB_LIST_TEMPLATES or LIST_SEP.search(f.slots.get("places", "")) or LIST_MARKER.match(f.slots.get("places", ""))]
         if dec is not None:
             frames = self._extend_slots(dec, frames, text, depth)
@@ -835,10 +835,12 @@ class Parser:
         def is_name(p: str) -> bool:
             if p not in known:
                 q = re.sub(r"^(the|all of the|all of|whole of)\s+", "", p, flags=re.I) if allow_sub else p
-                # A part with a comma is not a name if a piece is a set ("Sundarbans, 10 km around Kolkata").
-                known[p] = bool(q) and not any(is_sub(x) for x in q.split(",")[1:]) and \
-                    (bool(lexicon_match(q)) or bool(self.store.search(q, fuzzy=False, limit=1, view=dec.view))
-                     or ("," in q and self._qualified(probe, q, 0) is not None))
+                # A part with a comma is a name only if it is a qualified name ("Paris, Texas"): the exact search reads
+                # the text after a comma as context ("France, Spain" finds France).
+                if "," in q:
+                    known[p] = not any(is_sub(x) for x in q.split(",")[1:]) and self._qualified(probe, q, 0, exact=True) is not None
+                else:
+                    known[p] = bool(q) and (bool(lexicon_match(q)) or bool(self.store.search(q, fuzzy=False, limit=1, view=dec.view)))
             return known[p]
 
 
@@ -963,12 +965,12 @@ class Parser:
                 dec.record_step("sibling_view", depth, {"text": res[n]["args"]["name"]}, new, "rules", {"from": old})
                 res[n]["args"]["id"] = new
 
-    def _qualified(self, dec: Decider, text: str, depth: int) -> dict[str, Any] | None:
+    def _qualified(self, dec: Decider, text: str, depth: int, exact: bool = False) -> dict[str, Any] | None:
         """A place name with the names of places that contain it, after commas ("Paris, Texas", "San Francisco,
         California, USA"). The Resolve of the best candidate of the first name that is inside one exact match of
         each later name; None if there is no such candidate ("Kerala, Tamil Nadu" is a union)."""
         parts = [p.strip() for p in text.split(",")]
-        exact_only = False
+        exact_only = exact  # exact: no fuzzy names (the list check: "France, Spain" is not a place in Spain)
         if len(parts) == 1:
             # "Springfield in Illinois": exact names only, and not a set ("districts in Kerala", "hospitals in Pune").
             m = re.fullmatch(r"(.+?)\s+in\s+(.+)", text.strip(), re.I)
