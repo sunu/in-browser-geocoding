@@ -116,7 +116,7 @@ def needs_network(dag: Any) -> bool:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-execute", action="store_true")
-    ap.add_argument("--set", default="gold", help="gold, heldout, world, world_heldout, world_heldout2, world_heldout3, world_heldout4, world_heldout5 or world_heldout6 (world sets: GEOPARSE_SCOPE=world)")
+    ap.add_argument("--set", default="gold", help="gold, heldout, world, world_heldout, world_heldout2, world_heldout3, world_heldout4, world_heldout5, world_heldout6 or world_heldout7 (world sets: GEOPARSE_SCOPE=world)")
     args = ap.parse_args()
     src = yaml.safe_load((GOLD_DIR / f"{args.set}_src.yaml").read_text())
     # The world set: {views: {cc: bbox}, records: [... {cc: ...}]}. Each record gets the view of its country.
@@ -130,7 +130,7 @@ def main() -> None:
         view = views.get(r.get("cc"))
         dag = gold_dag(t, r["s"], r.get("src"), view, r.get("ids"))
         rec = {
-            "id": f"{ {'gold': 'g', 'heldout': 'h', 'world': 'w', 'world_heldout': 'x', 'world_heldout2': 'y', 'world_heldout3': 'z', 'world_heldout4': 'n', 'world_heldout5': 'v', 'world_heldout6': 'u'}[args.set]}{i + 1:03d}", "query": r["q"], "lang": "en", "family": templates[t].family, "template": t,
+            "id": f"{ {'gold': 'g', 'heldout': 'h', 'world': 'w', 'world_heldout': 'x', 'world_heldout2': 'y', 'world_heldout3': 'z', 'world_heldout4': 'n', 'world_heldout5': 'v', 'world_heldout6': 'u', 'world_heldout7': 't'}[args.set]}{i + 1:03d}", "query": r["q"], "lang": "en", "family": templates[t].family, "template": t,
             "slots": r["s"], "src": r.get("src", {}), "depth": depth_of(r["s"]), "dag": dag,
             "expected_ids": None, "notes": r.get("n", ""),
         }
