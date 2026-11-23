@@ -96,8 +96,9 @@ def geometry_summary(res) -> dict[str, Any] | None:
 def depth_of(s: dict[str, Any]) -> int:
     d = 0
     for v in s.values():
-        if isinstance(v, dict) and "q" in v:
-            d = max(d, 1 + depth_of(v["s"]))
+        for x in v if isinstance(v, list) else [v]:
+            if isinstance(x, dict) and "q" in x:
+                d = max(d, 1 + depth_of(x["s"]))
     return d
 
 
@@ -142,7 +143,8 @@ def main() -> None:
                 raise RuntimeError(f"{rec['id']} {r['q']!r}: {res.error}")
             rec["expected_ids"] = res.ids
             rec["expected_names"] = sorted({f.name for f in res.features if f.name})[:40]
-            if res.kind == "geometry":
+            # A geometry, or a set of computed areas with no IDs (Intersect of a strip and a place): compare the shape.
+            if res.kind == "geometry" or (res.features and not res.ids):
                 rec["expected_geometry"] = geometry_summary(ex.execute(dag, with_geometry=True, view=view))
         out.append(rec)
         print(f"{rec['id']} d{rec['depth']} {t:24s} {r['q']!r:60s} n={len(rec['expected_ids']) if rec['expected_ids'] is not None else '-'}")

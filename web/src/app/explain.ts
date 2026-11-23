@@ -31,6 +31,7 @@ export const QUESTIONS: Record<string, (t: TraceRecord) => string> = {
   sibling_view: (t) => `Which “${t.inputs?.text}” is near the other places of the query?`,
   list: (t) => `Is “${t.inputs?.text}” a list of places?`,
   extend_span: (t) => `Is “${t.inputs?.from}” part of a longer place name?`,
+  not_inside: (t) => `Is “${t.trace.inner}” inside “${t.value}”?`,
   frame_coverage: (t) => `Which forms of “${t.inputs?.text}” use all the place names?`,
   quantifier: (t) => (t.trace.from === "default" ? "Near any of the places, or near all of them?" : `Does “${t.inputs?.text}” mean any or all of the places?`),
 };
@@ -43,6 +44,7 @@ const ANSWER_RULES: Record<string, (t: TraceRecord) => string> = {
   sibling_view: () => "A different candidate: the places of the query are nearer each other with it.",
   list: (t) => `Yes: ${[t.value].flat().join(", ")}.`,
   extend_span: (t) => `Yes: “${t.value}”.`,
+  not_inside: (t) => `No. The result uses “${t.value}”, not a union of the two.`,
   frame_coverage: (t) => `${[t.value].flat().length} of them. The others leave out ${[...new Set(Object.values<string[]>(t.trace.dropped ?? {}).flat())].map((n) => `“${n}”`).join(", ")}.`,
   quantifier: (t) => (t.value === "all" ? "All of them." : t.trace.ambiguous ? "Any of them (“and” can mean both readings; say “both” for all of them)." : "Any of them."),
 };

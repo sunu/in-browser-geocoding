@@ -63,7 +63,7 @@ records:
   # Frames that can drop a name
   - {cc: FR, q: "Paris intersect 20 km around Versailles", t: intersection, s: {a: "Paris", b: {q: "20 km around Versailles", t: buffer, s: {distance: 20000, target: "Versailles"}}}}
   - {cc: DE, q: "Bavaria except 50 km around Munich", t: difference, s: {a: "Bavaria", b: {q: "50 km around Munich", t: buffer, s: {distance: 50000, target: "Munich"}}}}
-  - {cc: IN, q: "Thane intersect 15 km around Mumbai", t: intersection, s: {a: "Thane", b: {q: "15 km around Mumbai", t: buffer, s: {distance: 15000, target: "Mumbai"}}}}
+  - {cc: IN, q: "Thane intersect 25 km around Mumbai", t: intersection, s: {a: "Thane", b: {q: "25 km around Mumbai", t: buffer, s: {distance: 25000, target: "Mumbai"}}}}
   - {cc: GB, q: "20 km around Leeds, Bradford and York", t: buffer, s: {distance: 20000, target: ["Leeds", "Bradford", "York"]}}
   - {cc: US, q: "counties in the Rocky Mountains", t: children, s: {level: district, parent: "Rocky Mountains"}, ids: {parent: ne-range-Q5463}, n: "A natural parent of 2 words; the frame must not drop 'Mountains'."}
   - {cc: ES, q: "provinces of Spain except Madrid and Barcelona", t: difference, s: {a: {q: "provinces of Spain", t: children, s: {level: district, parent: "Spain"}}, b: ["Madrid", "Barcelona"]}}

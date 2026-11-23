@@ -46,7 +46,7 @@ records:
   - {cc: NL, q: "provinces of the Netherlands", t: children, s: {level: state, parent: "Netherlands"}}
   - {cc: NL, q: "coastal provinces of the Netherlands", t: children_with_predicate, s: {pred: coastal, level: state, parent: "Netherlands"}}
   - {cc: NL, q: "municipalities of Utrecht", t: children, s: {level: district, parent: "Utrecht"}}
-  - {cc: NL, q: "Amsterdam and Rotterdam", t: union, s: {a: "Amsterdam", b: "Rotterdam"}}
+  - {cc: NL, q: "Amsterdam and Rotterdam", t: union, s: {places: ["Amsterdam", "Rotterdam"]}}
 
   - {cc: PT, q: "districts of Portugal", t: children, s: {level: state, parent: "Portugal"}}
   - {cc: PT, q: "Porto", t: lookup_place, s: {anchor: "Porto"}, src: {anchor: overture}}

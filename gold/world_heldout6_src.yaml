@@ -22,7 +22,7 @@ records:
   - {cc: FR, q: "5 km around Lyon and Grenoble", t: buffer, s: {distance: 5000, target: ["Lyon", "Grenoble"]}}
   - {cc: IN, q: "coastal districts of Kerala, Karnataka and Goa", t: children_with_predicate, s: {pred: coastal, level: district, parent: ["Kerala", "Karnataka", "Goa"]}}
   - {cc: ES, q: "schools in Madrid or Barcelona", t: features_in, s: {category: school, region: ["Madrid", "Barcelona"]}}
-  - {cc: GB, q: "England and Wales", t: union, s: {a: "England", b: "Wales"}, n: "Open error before plan-036 (T5 read one place)."}
+  - {cc: GB, q: "England and Wales", t: union, s: {places: ["England", "Wales"]}, n: "Open error before plan-036 (T5 read one place)."}
 
   # Neighbours: any and all
   - {cc: FR, q: "countries bordering France or Germany", t: neighbors, s: {level: country, of: ["France", "Germany"], quant: any}}
@@ -50,10 +50,10 @@ records:
 
   # Names with "and" inside a list
   - {cc: BA, q: "countries bordering Bosnia and Herzegovina or Serbia", t: neighbors, s: {level: country, of: ["Bosnia and Herzegovina", "Serbia"], quant: any}}
-  - {cc: TT, q: "Trinidad and Tobago and Barbados", t: union, s: {a: "Trinidad and Tobago", b: "Barbados"}}
+  - {cc: TT, q: "Trinidad and Tobago and Barbados", t: union, s: {places: ["Trinidad and Tobago", "Barbados"]}}
 
   # Must not change
   - {cc: BA, q: "Bosnia and Herzegovina", t: lookup_place, s: {anchor: "Bosnia and Herzegovina"}, src: {anchor: overture}}
   - {cc: IN, q: "Jammu and Kashmir", t: lookup_place, s: {anchor: "Jammu and Kashmir"}, src: {anchor: overture}}
   - {cc: ES, q: "Andorra", t: lookup_place, s: {anchor: "Andorra"}, src: {anchor: overture}}
-  - {cc: IN, q: "Kerala and Tamil Nadu", t: union, s: {a: "Kerala", b: "Tamil Nadu"}}
+  - {cc: IN, q: "Kerala and Tamil Nadu", t: union, s: {places: ["Kerala", "Tamil Nadu"]}}

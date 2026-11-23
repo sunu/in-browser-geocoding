@@ -2,7 +2,7 @@
 // T5 frames -> pick_family -> pick_template -> (viable splits) -> pick_split -> slots -> DAG, with recursion.
 import type { Bundle, SlotDef, Template } from "../core/bundle.ts";
 import { substitute, validate } from "../core/dsl.ts";
-import { distanceM, findSpan, frameToMatch, frameToText, groupFrames, UNSUPPORTED, valueNum, type Frame, type Match } from "../core/frames.ts";
+import { distanceM, findSpan, frameToMatch, frameToText, groupFrames, mergeUnionSlots, UNSUPPORTED, valueNum, type Frame, type Match } from "../core/frames.ts";
 import { keywordHits } from "../core/keywords.ts";
 import { lexiconMatch, norm, normalizeQuery } from "../core/text.ts";
 import { Decider, type TraceRecord } from "../decisions/decider.ts";
@@ -41,11 +41,13 @@ function fmt(x: number) { return x.toFixed(2); }
 const HAS_DISTANCE = /\b\d+(?:\.\d+)?\s*(?:km|kms|kilometres?|kilometers?|m|metres?|meters?|mi|miles?)\b/i;
 const AROUND_DEFAULT: Record<string, [string, string]> = { children_touching: ["parent", "other"], children_near: ["parent", "other"] };
 // geoparse.parse.pipeline.LIST_SEP and LIST_MARKER: lists of places in a slot; separators are whole words with spaces.
-const LIST_SEP = /\s*,\s*(?:(?:and|or|&)\s+)?|\s+(?:and|or|&|n|as well as)\s+/gi;
+const LIST_SEP = /\s*,\s*(?:(?:and|or|&|plus)\s+)?|\s+(?:and|or|&|n|plus|as well as|along with|together with)\s+|\s*\+\s*/gi;
 const LIST_MARKER = /^(both|either|all of the|all of|each of|any one of|any of)\s+(.+)$/i;
 const LIST_MARKER_QUANT: Record<string, string> = { both: "all", "all of the": "all", "all of": "all", "each of": "all", either: "any",
   "any one of": "any", "any of": "any" };
 const SPACE_LIST_TEMPLATES = new Set(["shared_border"]);
+// geoparse.parse.pipeline.SUB_LIST_TEMPLATES: list parts can be sub-queries ("Kerala and coastal districts of Karnataka").
+const SUB_LIST_TEMPLATES = new Set(["union"]);
 const WORD = /\p{L}[\p{L}\p{N}_'.-]*/gu;
 
 /** The cuts of n separators into k groups (indexes in order), fewest first. */
@@ -107,7 +109,10 @@ export class Parser {
   private async candidates(dec: Decider, text: string, depth: number) {
     const k = Number(this.bundle.config.t5.beams ?? 4);
     const { frames: raw, latency } = await this.t5.frames(text, k);
-    const frames = await this.extendSlots(dec, raw, text, depth);
+    // Port: a union frame needs a list separator ("madhya pradesh sans bhopal" is not a union).
+    const merged = raw.map((f) => mergeUnionSlots(f, text)).filter((f) => !SUB_LIST_TEMPLATES.has(f.template)
+      || new RegExp(LIST_SEP.source, "i").test(f.slots.places ?? "") || LIST_MARKER.test(f.slots.places ?? ""));
+    const frames = await this.extendSlots(dec, merged, text, depth);
     const groups = await this.covering(dec, groupFrames(frames, text, this.templates, Number(this.bundle.config.t5.margin ?? 2)), text, depth);
     dec.record("generate_frames", depth, { text }, null,
       { value: groups.map(frameToText), impl: `t5:${this.t5.name}`, confidence: frames.length ? Math.exp(frames[0].score) : 0,
@@ -447,7 +452,8 @@ export class Parser {
     return null;
   }
 
-  private async region(dec: Decider, tpl: Template, text: string, query: string, depth: number, typeHint: string | null): Promise<[any, any]> {
+  private async region(dec: Decider, tpl: Template, text: string, query: string, depth: number, typeHint: string | null,
+                       part = false): Promise<[any, any]> {
     const article = /^the\s/i.test(text.trim());
     text = text.trim().replace(/^(the|a|an|whole|entire|all of|all of the|whole of)\s+/i, "");
     // A named set first ("the Balkans" is the countries, not Natural Earth's Balkan Peninsula).
@@ -465,8 +471,21 @@ export class Parser {
     if (qual) return [qual, text];
     const isRegion = Object.values(tpl.slots).some((s) => s.type === "region") && tpl.family !== "lookup";
     const exact = await this.gaz.search(text, { typeHint, fuzzy: false, limit: 3, view: dec.view });
-    const lst = exact.length ? null : await this.listParts(dec, text, SPACE_LIST_TEMPLATES.has(tpl.id));
+    const lst = exact.length || part ? null : await this.listParts(dec, text, SPACE_LIST_TEMPLATES.has(tpl.id), SUB_LIST_TEMPLATES.has(tpl.id));
     if (lst) return this.listRegion(dec, tpl, lst, query, depth, typeHint);
+    if (SUB_LIST_TEMPLATES.has(tpl.id) && !part) stop("a union needs two or more places", depth, text, "pick_split");
+    const inside = isRegion && !exact.length ? /^(.+?)\s+in\s+(.+)$/i.exec(text) : null;
+    if (inside && ![inside[1], inside[2]].some((x) => keywordHits(x, this.setWords(), false))) {
+      const found: boolean[] = [];
+      for (const x of [inside[1], inside[2]]) found.push((await this.gaz.search(x, { fuzzy: false, limit: 1, view: dec.view })).length > 0);
+      if (found.every(Boolean)) {
+        // Port: "Bangladesh in Tripura": two exact names, the first not inside the second. Never a union: "in" limits
+        // the area to the second name.
+        dec.recordStep("not_inside", depth, { text }, inside[2], "rules", { inner: inside[1] });
+        dec.notes.push(`'${inside[1]}' is not inside '${inside[2]}': the result uses '${inside[2]}'`);
+        return this.region(dec, tpl, inside[2], query, depth, typeHint, true);
+      }
+    }
     const rest = isRegion && !exact.length ? this.directionRest(text) : null;
     if (rest && (await this.gaz.search(rest, { fuzzy: false, limit: 1, view: dec.view })).length) {
       // "northern France": a direction word and a place name. A subquery, without the model.
@@ -502,7 +521,7 @@ export class Parser {
 
   /** Port of _list_parts: [names, conjunction, quantifier of a leading word] of a list of named sets or exact names; the
    * cut with the fewest names wins ("Bosnia and Herzegovina and Croatia" is two names). null if not such a list. */
-  async listParts(dec: Decider, text: string, allowSpace: boolean): Promise<[string[], string, string | null] | null> {
+  async listParts(dec: Decider, text: string, allowSpace: boolean, allowSub = false): Promise<[string[], string, string | null] | null> {
     let t = text.trim();
     let marker: string | null = null;
     const m = LIST_MARKER.exec(t);
@@ -510,25 +529,50 @@ export class Parser {
     let seps = [...t.matchAll(LIST_SEP)];
     if (!seps.length && allowSpace) seps = [...t.matchAll(/\s+/g)];
     // Port: commas alone are not a list ("Salt Lake, Kolkata" is a qualified name).
-    if (seps.length && seps.every((s) => s[0].trim() === ",") && !allowSpace) return null;
+    // Port: in a union, _qualified was tried first, so commas alone are a list there.
+    if (seps.length && seps.every((s) => s[0].trim() === ",") && !allowSpace && !allowSub) return null;
     if (!seps.length || seps.length > 6) return null;
     const known = new Map<string, boolean>();
+    const levelWords = Object.values<any>(this.bundle.options.admin_levels).flatMap((v) => v.keywords ?? []);
+    const probe = dec.fork();  // Port: the qualified-name check, without steps in the trace
+    probe.view = dec.view;
+    const isSub = (p: string) => !!keywordHits(p, levelWords, false) || HAS_DISTANCE.test(p);
     const isName = async (p: string) => {
-      if (!known.has(p)) known.set(p, !!p && (!!lexiconMatch(p, this.bundle) || (await this.gaz.search(p, { fuzzy: false, limit: 1, view: dec.view })).length > 0));
+      if (!known.has(p)) {
+        const q = allowSub ? p.replace(/^(the|all of the|all of|whole of)\s+/i, "") : p;
+        // Port: a part with a comma is not a name if a piece is a set ("Sundarbans, 10 km around Kolkata").
+        known.set(p, !!q && !q.split(",").slice(1).some(isSub) && (!!lexiconMatch(q, this.bundle)
+          || (await this.gaz.search(q, { fuzzy: false, limit: 1, view: dec.view })).length > 0
+          || (q.includes(",") && (await this.qualified(probe, q, 0)) !== null)));
+      }
       return known.get(p)!;
     };
-    for (let k = 1; k <= seps.length; k++) {
-      for (const cut of combinations(seps.length, k)) {
-        const parts: string[] = [];
-        let start = 0;
-        for (const i of cut) { parts.push(t.slice(start, seps[i].index!).trim()); start = seps[i].index! + seps[i][0].length; }
-        parts.push(t.slice(start).trim());
-        let ok = true;
-        for (const p of parts) if (!(await isName(p))) { ok = false; break; }
-        if (ok) return [parts, cut.some((i) => /\bor\b/i.test(seps[i][0])) ? "or" : "and", marker];
+    const conjOf = (cut: number[]) => cut.some((i) => /\bor\b/i.test(seps[i][0])) ? "or" : "and";
+    const partsOf = (cut: number[]) => {
+      const parts: string[] = [];
+      let start = 0;
+      for (const i of cut) { parts.push(t.slice(start, seps[i].index!).trim()); start = seps[i].index! + seps[i][0].length; }
+      return [...parts, t.slice(start).trim()];
+    };
+    // Port: exact names first; then (a union) exact names or sub-queries.
+    const tests: ((p: string) => Promise<boolean>)[] = [isName];
+    if (allowSub) tests.push(async (p) => (await isName(p)) || (isSub(p) && !p.includes(",")));
+    for (const ok of tests) {
+      for (let k = 1; k <= seps.length; k++) {
+        for (const cut of combinations(seps.length, k)) {
+          const parts = partsOf(cut);
+          let good = true;
+          for (const p of parts) if (!(await ok(p))) { good = false; break; }
+          if (good) return [parts, conjOf(cut), marker];
+        }
       }
     }
-    return null;
+    if (!allowSub) return null;
+    // Port: a union: the cut at all separators; a part that is not a name stays one part (typos, Photon). Spaces are not
+    // separators ("Taj Mahal").
+    const all = [...Array(seps.length).keys()];
+    const parts = partsOf(all);
+    return parts.every(Boolean) ? [parts, conjOf(all), marker] : null;
   }
 
   /** Port of _list_region: the Union of the places of a list. */
@@ -539,7 +583,7 @@ export class Parser {
     let node: any = null;
     const infos: any[] = [];
     for (const p of names) {
-      const [dag, info] = await this.region(dec, tpl, p, query, depth, typeHint);
+      const [dag, info] = await this.region(dec, tpl, p, query, depth, typeHint, true);
       node = node === null ? dag : { op: "Union", args: { a: node, b: dag } };
       infos.push(info);
     }

@@ -32,6 +32,6 @@ records:
   - {cc: KE, q: "schools in western Kenya", t: features_in, s: {category: "school", region: {q: "western Kenya", t: direction_part, s: {dir: west, target: "Kenya"}}}}
 
   # Must not change
-  - {cc: IN, q: "Kerala, Tamil Nadu", t: union, s: {a: "Kerala", b: "Tamil Nadu"}}
+  - {cc: IN, q: "Kerala, Tamil Nadu", t: union, s: {places: ["Kerala", "Tamil Nadu"]}}
   - {cc: IN, q: "North Goa", t: lookup_place, s: {anchor: "North Goa"}, src: {anchor: overture}}
   - {cc: US, q: "Springfield", t: lookup_place, s: {anchor: "Springfield"}, src: {anchor: overture}}

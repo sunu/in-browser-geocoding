@@ -20,8 +20,8 @@
 - {q: "landlocked districts in Tamil Nadu", t: children_with_predicate, s: {pred: landlocked, level: district, parent: "Tamil Nadu"}}
 - {q: "border districts of Rajasthan", t: children_with_predicate, s: {pred: border, level: district, parent: "Rajasthan"}}
 - {q: "districts of Kerala that border Tamil Nadu", t: children_touching, s: {level: district, parent: "Kerala", other: "Tamil Nadu"}}
-- {q: "Punjab and Haryana", t: union, s: {a: "Punjab", b: "Haryana"}}
-- {q: "Goa, Kerala and Tamil Nadu", t: union3, s: {a: "Goa", b: "Kerala", c: "Tamil Nadu"}}
+- {q: "Punjab and Haryana", t: union, s: {places: ["Punjab", "Haryana"]}}
+- {q: "Goa, Kerala and Tamil Nadu", t: union, s: {places: ["Goa", "Kerala", "Tamil Nadu"]}}
 - {q: "Tamil Nadu except Chennai", t: difference, s: {a: "Tamil Nadu", b: "Chennai"}}
 - {q: "seven sisters excluding Assam", t: difference, s: {a: {lex: seven_sisters, text: "seven sisters"}, b: "Assam"}}
 - {q: "between Delhi and Agra", t: between, s: {a: "Delhi", b: "Agra"}}
@@ -31,4 +31,4 @@
 - {q: "cities in Uttar Pradesh with population over 1 million", t: children_attr, s: {level: city, parent: "Uttar Pradesh", attr: population, op: gt, value: 1000000}}
 - {q: "coastal districts of states bordering Kerala", t: children_with_predicate, s: {pred: coastal, level: district, parent: {q: "states bordering Kerala", t: neighbors, s: {level: state, of: "Kerala"}}}}
 - {q: "hospitals in coastal districts of Goa", t: features_in, s: {category: "hospital", region: {q: "coastal districts of Goa", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Goa"}}}}
-- {q: "Karnataka and landlocked districts of Kerala", t: union, s: {a: "Karnataka", b: {q: "landlocked districts of Kerala", t: children_with_predicate, s: {pred: landlocked, level: district, parent: "Kerala"}}}}
+- {q: "Karnataka and landlocked districts of Kerala", t: union, s: {places: ["Karnataka", {q: "landlocked districts of Kerala", t: children_with_predicate, s: {pred: landlocked, level: district, parent: "Kerala"}}]}}

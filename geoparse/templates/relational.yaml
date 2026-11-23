@@ -62,3 +62,16 @@ templates:
       - "{distance} [zone|strip|belt|corridor] along the (border|boundary|borders) (between|of|among) {places}"
       - "{places} (border|boundary|borders)"
     dag: "Along(SharedBorder(${places}), ${distance})"
+
+  - id: border_with_in
+    description: "The part of the border with another place that is inside a place, or a strip along it inside the place"
+    examples: ["border area with Bangladesh in Tripura", "3 km along the border with Nepal in Bihar", "the Bihar part of the border with Nepal"]
+    slots:
+      distance: {type: distance, default: policy.default_strip_m}
+      other: {type: region}
+      region: {type: region}
+    patterns:
+      - "[the] (border|boundary|frontier) [area|areas|region|zone|strip|belt|districts] with {other} in {region}"
+      - "{distance} [zone|strip|belt|corridor] along the (border|boundary|frontier) with {other} in {region}"
+      - "[the] {region} (part|side|section|stretch) of the (border|boundary|frontier) with {other}"
+    dag: "Intersect(Along(SharedBorder(Union(${region}, ${other})), ${distance}), ${region})"

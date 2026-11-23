@@ -187,5 +187,5 @@ def test_same_text_in_two_slots():
     from geoparse.t5.frames import Frame, check_frame
     from geoparse.templates.model import all_templates
 
-    f = Frame(template="union", slots={"a": "England and Wales", "b": "England and Wales"})
-    assert "the same text in two region slots" in check_frame(f, "England and Wales", all_templates())
+    f = Frame(template="intersection", slots={"a": "Kerala", "b": "Kerala"})
+    assert "the same text in two region slots" in check_frame(f, "overlap of Kerala and Kerala", all_templates())
