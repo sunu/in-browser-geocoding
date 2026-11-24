@@ -59,3 +59,20 @@ def test_group_frames_merges_closed_and_quantity_variants():
 def test_frame_to_match_uses_query_case():
     m = frame_to_match(Frame.from_text("children ; level = districts ; parent = kerala"), "districts of Kerala")
     assert m["segments"] == {"level": "districts", "parent": "Kerala"}
+
+
+def test_list_and_within_slots():
+    # plan-039: list parts with " | ", and a qualifier `<slot>.within`. Each part and the qualifier are spans.
+    q = "states of France, Spain or Italy"
+    f = Frame.from_text("children ; level = states ; parent = France | Spain | Italy")
+    assert check_frame(f, q, T) == []
+    assert frame_to_match(f, q.lower())["segments"]["parent"] == "france | spain | italy"
+    bad = Frame.from_text("children ; level = states ; parent = France | Germany")
+    assert any("Germany" in p for p in check_frame(bad, q, T))
+    assert "the same text in two region slots" in check_frame(
+        Frame.from_text("union ; places = France | France"), q, T)
+    w = Frame.from_text("lookup_place ; anchor = Springfield ; anchor.within = Illinois")
+    assert check_frame(w, "Springfield, Illinois", T) == []
+    assert frame_to_match(w, "Springfield, Illinois")["within"] == {"anchor": "Illinois"}
+    assert any("unknown slot" in p for p in check_frame(
+        Frame.from_text("lookup_place ; anchor = Springfield ; level.within = Illinois"), "Springfield, Illinois", T))

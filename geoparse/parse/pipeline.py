@@ -236,7 +236,7 @@ class Parser:
             for m in ms:
                 seg_of = {s: seg for seg, fed in m["feeds"].items() for s in fed}
                 key = tuple(sorted((n, norm(m["segments"][seg_of[n]])) for n, sd in t.slots.items()
-                                   if n in seg_of and sd.type in OPEN_TYPES))
+                                   if n in seg_of and sd.type in OPEN_TYPES)) + tuple(sorted(m.get("within", {}).items()))
                 # A T5 frame wins over a pattern match with the same open spans (its spans are more precise).
                 if key not in best or (m.get("source") == "t5") > (best[key].get("source") == "t5") or (
                         (m.get("source") == "t5") == (best[key].get("source") == "t5") and m["score"] > best[key]["score"]):
@@ -248,12 +248,12 @@ class Parser:
         """Candidate splits from the T5 model, as split matches. Empty if T5 is not enabled or not built."""
         if self.t5 is None:
             return [], False
-        from geoparse.t5.frames import UNSUPPORTED, frame_to_match, group_frames
+        from geoparse.t5.frames import PART_SEP, UNSUPPORTED, frame_to_match, group_frames
 
         frames, dt = self.t5.frames(text, k=int(self.t5_cfg.get("beams", 4)))
         # A union frame needs a list separator ("madhya pradesh sans bhopal" is not a union).
-        frames = [f for f in frames
-                  if f.template not in SUB_LIST_TEMPLATES or LIST_SEP.search(f.slots.get("places", "")) or LIST_MARKER.match(f.slots.get("places", ""))]
+        frames = [f for f in frames if f.template not in SUB_LIST_TEMPLATES or PART_SEP in f.slots.get("places", "")
+                  or LIST_SEP.search(f.slots.get("places", "")) or LIST_MARKER.match(f.slots.get("places", ""))]
         kept = frames
         if dec is not None:
             frames = self._extend_slots(dec, frames, text, depth)
@@ -345,9 +345,22 @@ class Parser:
                     out.append(f"the text '{v}' names no known {sd.type}")
         return out
 
+    def _within_faults(self, dec: Decider, f: Any) -> list[str]:
+        """A slot with `<slot>.within` needs a candidate of each of its names inside an exact match of the qualifier."""
+        from geoparse.t5.frames import WITHIN, slot_parts
+
+        probe = dec.fork()  # without steps in the trace
+        probe.view = dec.view
+        out = []
+        for k, w in f.slots.items():
+            if k.endswith(WITHIN) and k[:-len(WITHIN)] in f.slots:
+                out += [f"no place '{p}' is inside '{w}'" for p in slot_parts(f.slots[k[:-len(WITHIN)]])
+                        if self._inside(probe, p, [w], 0, exact_only=False) is None]
+        return out
+
     def _checked(self, dec: Decider, frames: list, text: str, depth: int) -> list:
         """The frames with no fault. If no frame is left, the first fault is the reason of the refusal."""
-        faults = [self._faults(f, text) for f in frames]
+        faults = [self._faults(f, text) + self._within_faults(dec, f) for f in frames]
         keep = [f for f, x in zip(frames, faults) if not x]
         if len(keep) < len(frames):
             dec.record_step("frame_check", depth, {"text": text}, [f.to_text() for f in keep], "rules",
@@ -359,11 +372,11 @@ class Parser:
     def _dropped_names(self, dec: Decider, f: Any, text: str) -> list[str]:
         """The exact place names of the query that are in no open slot of the frame (1 to 4 words, 4 or more letters).
         A name in a closed slot is left out ("states that touch Pakistan": `pred = touch Pakistan`)."""
-        from geoparse.t5.frames import find_span
+        from geoparse.t5.frames import find_span, slot_parts
 
         t = self.templates.get(f.template)
-        covered = [find_span(text, v) for k, v in f.slots.items()
-                   if t is None or k not in t.slots or t.slots[k].type not in CLOSED_TYPES]
+        covered = [find_span(text, p) for k, v in f.slots.items()
+                   if t is None or k not in t.slots or t.slots[k].type not in CLOSED_TYPES for p in slot_parts(v)]
         words = [m for m in re.finditer(r"[^\W\d_][\w'.-]*", text)
                  if not any(r and r[0] <= m.start() < r[1] for r in covered)]
         out, used = [], set()
@@ -521,7 +534,8 @@ class Parser:
                 dec.record_step("natural_name", depth, {"text": text}, nat[0].id, "rules", {"article": True})
                 return ({"op": "Resolve", "args": {"name": name, "source": "overture", "id": nat[0].id}},
                         {"family": "lookup", "template": "lookup_place", "slots": {"anchor": name}})
-        if tpl.family == "lookup" and alt != "lookup_place" and not self._list_parts(dec, text, False):
+        if tpl.family == "lookup" and alt != "lookup_place" and not self._list_parts(dec, text, False) \
+                and not any(m.get("within") for m in cands.get(tpl.id, [])):
             # Guard (not after the exact-name rule of _frame_override): the lookup template takes the whole text as one name. If the text describes a set
             # of places (and no other template matched), it is not supported. Do not geocode it.
             g = dec.is_subquery(text, depth=depth, context={"gazetteer_exact": bool(self.store.search(text, fuzzy=False, limit=1, view=dec.view)),
@@ -654,7 +668,8 @@ class Parser:
             if sd.type in OPEN_TYPES:
                 seg_text = match["segments"][seg_of[name]]
                 hint = level_hint if tpl.id in ("neighbors",) else None
-                jobs[name] = self.pool.submit(self._region, dec, tpl, seg_text, spans, text, depth, hint)
+                jobs[name] = self.pool.submit(self._region, dec, tpl, seg_text, spans, text, depth, hint,
+                                              within=match.get("within", {}).get(name))
 
         for name, fut in jobs.items():
             sd = tpl.slots[name]
@@ -780,9 +795,23 @@ class Parser:
         return None
 
     def _region(self, dec: Decider, tpl: Template, text: str, spans: list[Span], query: str, depth: int,
-                type_hint: str | None, part: bool = False) -> tuple[dict[str, Any], Any]:
+                type_hint: str | None, part: bool = False, within: str | None = None) -> tuple[dict[str, Any], Any]:
+        from geoparse.t5.frames import PART_SEP, find_span, slot_parts
+
+        if PART_SEP in text:
+            # The parts of a list from the frame. "or" between two parts in the query is the conjunction.
+            names = slot_parts(text)
+            r = [find_span(query, p) for p in names]
+            gaps = [query[a[1]:b[0]] for a, b in zip(r, r[1:]) if a and b and a[1] <= b[0]]
+            conj = "or" if any(re.search(r"\bor\b", g, re.I) for g in gaps) else "and"
+            return self._list_region(dec, tpl, (names, conj, None), spans, query, depth, type_hint, within)
         article = bool(re.match(r"^the\s", text.strip(), re.I))
         text = re.sub(r"^(the|a|an|whole|entire|all of|all of the|whole of)\s+", "", text.strip(), flags=re.I)
+        if within:
+            res = self._inside(dec, text, [within], depth, exact_only=False)
+            if res is None:
+                raise _Stop(Unsupported(reason=f"no place '{text}' is inside '{within}'", depth=depth, text=text))
+            return res, text
         # A named set first ("the Balkans" is the countries, not Natural Earth's Balkan Peninsula).
         lex = lexicon_match(text)
         if lex:
@@ -916,13 +945,13 @@ class Parser:
         return (parts, conj_of(range(len(seps))), marker) if all(parts) else None
 
     def _list_region(self, dec: Decider, tpl: Template, lst: tuple[list[str], str, str | None], spans: list[Span],
-                     query: str, depth: int, type_hint: str | None) -> tuple[dict[str, Any], Any]:
+                     query: str, depth: int, type_hint: str | None, within: str | None = None) -> tuple[dict[str, Any], Any]:
         """The Union of the places of a list. The slot info keeps the names, the conjunction and the quantifier word."""
         names, conj, marker = lst
         dec.record_step("list", depth, {"text": " | ".join(names)}, names, "rules", {"conjunction": conj, "quantifier": marker})
         node, infos = None, []
         for p in names:
-            dag, info = self._region(dec, tpl, p, spans, query, depth, type_hint, part=True)
+            dag, info = self._region(dec, tpl, p, spans, query, depth, type_hint, part=True, within=within)
             node = dag if node is None else {"op": "Union", "args": {"a": node, "b": dag}}
             infos.append(info)
         return node, {"list": infos, "conj": conj, "quant": marker}
@@ -1035,8 +1064,13 @@ class Parser:
             parts, exact_only = [m.group(1), m.group(2)], True
         if not 2 <= len(parts) <= 3 or not all(parts) or any(re.search(r"\band\b|&", p, re.I) for p in parts):
             return None
+        return self._inside(dec, parts[0], parts[1:], depth, exact_only, text)
+
+    def _inside(self, dec: Decider, name: str, outers: list[str], depth: int, exact_only: bool = True,
+                text: str | None = None) -> dict[str, Any] | None:
+        """The Resolve of the best candidate of `name` that is inside one exact match of each outer name, or None."""
         outer = []
-        for p in parts[1:]:
+        for p in outers:
             ids = {c.id for c in self.store.search(p, fuzzy=False, limit=5, view=dec.view)}
             if not ids:
                 return None
@@ -1044,14 +1078,14 @@ class Parser:
         # A candidate inside the outer places is in their countries: search only there (the browser then loads only
         # these countries, not the countries of all places named "Paris").
         countries = sorted({d["country"] for d in self.store.describe(sorted(set().union(*outer))).values() if d["country"]})
-        context = ", ".join(parts[1:])
+        context = ", ".join(outers)
         # Exact names first; fuzzy names only if no exact name is inside ("Sanfransisco, California").
         for fuzzy in ((False,) if exact_only else (True, "only")):
-            for c in self.store.search(parts[0], context=context, limit=20, fuzzy=fuzzy, view=dec.view, countries=countries):
+            for c in self.store.search(name, context=context, limit=20, fuzzy=fuzzy, view=dec.view, countries=countries):
                 if all(ids & set(c.ancestors) for ids in outer):
-                    dec.record_step("qualified_name", depth, {"text": text}, c.id, "rules",
-                                    {"name": parts[0], "context": context, "fuzzy": fuzzy})
-                    return {"op": "Resolve", "args": {"name": parts[0], "source": "overture", "id": c.id, "context": context}}
+                    dec.record_step("qualified_name", depth, {"text": text or f"{name}, {context}"}, c.id, "rules",
+                                    {"name": name, "context": context, "fuzzy": fuzzy})
+                    return {"op": "Resolve", "args": {"name": name, "source": "overture", "id": c.id, "context": context}}
         return None
 
     def _photon_boost(self, dec: Decider, name: str, cands: list, depth: int) -> list:

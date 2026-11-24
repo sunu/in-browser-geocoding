@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { checkFrame, distanceM, findSpan, frameFromText, frameToText, groupFrames, valueNum } from "../src/core/frames.ts";
+import { checkFrame, distanceM, findSpan, frameFromText, frameToMatch, frameToText, groupFrames, valueNum } from "../src/core/frames.ts";
 import { keywordHits } from "../src/core/keywords.ts";
 import { normalizeQuery, normName } from "../src/core/text.ts";
 import { substitute } from "../src/core/dsl.ts";
@@ -29,6 +29,18 @@ describe("frames (same as geoparse/t5/frames.py)", () => {
       frameFromText("lookup_place ; anchor = Charminar", -1.5)!];
     expect(groupFrames(fs, q, T, 2).map(frameToText)).toEqual(["buffer ; distance = 0.5 km ; target = Charminar", "lookup_place ; anchor = Charminar"]);
     expect(checkFrame(frameFromText("buffer ; target = Hyderabad")!, q, T)[0]).toContain("not in the query");
+  });
+  it("reads list parts and the within qualifier (plan-039)", () => {
+    const q = "1 km around charminar or golconda";
+    const f = frameFromText("buffer ; distance = 1 km ; target = Charminar | Golconda")!;
+    expect(checkFrame(f, q, T)).toEqual([]);
+    expect(frameToMatch(f, q).segments.target).toBe("charminar | golconda");
+    expect(checkFrame(frameFromText("buffer ; target = Charminar | Charminar")!, q, T)).toContain("the same text in two region slots");
+    expect(checkFrame(frameFromText("buffer ; target = Charminar | Hyderabad")!, q, T)[0]).toContain("Hyderabad");
+    const w = frameFromText("lookup_place ; anchor = Springfield ; anchor.within = Illinois")!;
+    expect(checkFrame(w, "Springfield, Illinois", T)).toEqual([]);
+    expect(frameToMatch(w, "Springfield, Illinois").within).toEqual({ anchor: "Illinois" });
+    expect(checkFrame(frameFromText("buffer ; target = Springfield ; distance.within = Illinois")!, "Springfield, Illinois", T)[0]).toContain("unknown slot");
   });
 });
 

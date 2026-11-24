@@ -3,6 +3,9 @@ import type { Template } from "./bundle.ts";
 import { escapeRegExp, norm } from "./text.ts";
 
 export const UNSUPPORTED = "unsupported";
+// Port: plan-039 list parts ("parent = France | Spain") and the qualifier `<slot>.within`.
+export const PART_SEP = " | ";
+export const WITHIN = ".within";
 const DISTANCE_UNITS: Record<string, number> = { m: 1, km: 1000, mi: 1609.344 };
 const VALUE_SCALES: Record<string, number> = { "": 1, thousand: 1e3, lakh: 1e5, million: 1e6, crore: 1e7, billion: 1e9 };
 const DIST = /^(\d+(?:\.\d+)?)\s*(m|km|mi)$/;
@@ -38,6 +41,8 @@ export function valueNum(text: string): number | null {
   return m ? parseFloat(m[1]) * VALUE_SCALES[m[2] ?? ""] : null;
 }
 
+export function slotParts(value: string): string[] { return value.split(PART_SEP).map((p) => p.trim()); }
+
 /** Case-insensitive, whole-word span search. */
 export function findSpan(query: string, span: string): [number, number] | null {
   const s = span.trim();
@@ -54,13 +59,20 @@ export function checkFrame(f: Frame, query: string, templates: Record<string, Te
   const problems: string[] = [];
   for (const [name, value] of Object.entries(f.slots)) {
     const sd = t.slots[name];
-    if (!sd) problems.push(`unknown slot ${name}`);
+    if (name.endsWith(WITHIN)) {
+      const base = name.slice(0, -WITHIN.length);
+      if (!["region", "anchor"].includes(t.slots[base]?.type) || !(base in f.slots)) problems.push(`unknown slot ${name}`);
+      else if (findSpan(query, value) === null) problems.push(`span ${value} is not in the query`);
+    } else if (!sd) problems.push(`unknown slot ${name}`);
     else if (sd.type === "distance") { if (distanceM(value) === null) problems.push(`bad distance ${value}`); }
     else if (sd.type === "value") { if (valueNum(value) === null) problems.push(`bad value ${value}`); }
-    else if (findSpan(query, value) === null) problems.push(`span ${value} is not in the query`);
+    else if (["region", "anchor"].includes(sd.type) && value.includes(PART_SEP)) {
+      for (const p of slotParts(value)) if (findSpan(query, p) === null) problems.push(`span ${p} is not in the query`);
+    } else if (findSpan(query, value) === null) problems.push(`span ${value} is not in the query`);
   }
-  // Port: the same text in two region slots ("union ; a = England and Wales ; b = England and Wales").
-  const texts = Object.entries(f.slots).filter(([k]) => ["region", "anchor"].includes(t.slots[k]?.type)).map(([, v]) => v.trim().toLowerCase());
+  // Port: the same text in two region slots or list parts ("union ; a = England and Wales ; b = England and Wales").
+  const texts = Object.entries(f.slots).filter(([k]) => ["region", "anchor"].includes(t.slots[k]?.type))
+    .flatMap(([, v]) => slotParts(v).map((p) => p.toLowerCase()));
   if (texts.length !== new Set(texts).size) problems.push("the same text in two region slots");
   for (const [name, sd] of Object.entries(t.slots)) {
     if (!(name in f.slots) && sd.type !== "distance" && !sd.optional && (sd.default === null || sd.default === undefined))
@@ -75,7 +87,7 @@ export function groupFrames(frames: Frame[], query: string, templates: Record<st
     if (f.template === UNSUPPORTED || checkFrame(f, query, templates).length) continue;
     const t = templates[f.template];
     const open = Object.entries(f.slots)
-      .filter(([k]) => t.slots[k] && (t.slots[k].type === "region" || t.slots[k].type === "anchor"))
+      .filter(([k]) => k.endsWith(WITHIN) || (t.slots[k] && (t.slots[k].type === "region" || t.slots[k].type === "anchor")))
       .map(([k, v]) => [k, v.toLowerCase()] as [string, string])
       .sort((a, b) => (a[0] < b[0] ? -1 : 1));
     const key = JSON.stringify([f.template, open]);
@@ -87,20 +99,24 @@ export function groupFrames(frames: Frame[], query: string, templates: Record<st
   return [...best.values()].filter((f) => f.score >= top - margin).sort((a, b) => b.score - a.score);
 }
 
-export interface Match { segments: Record<string, string>; feeds: Record<string, string[]>; score: number; template: string; t5Score: number }
+export interface Match { segments: Record<string, string>; feeds: Record<string, string[]>; within?: Record<string, string>; score: number; template: string; t5Score: number }
 
 export function frameToMatch(f: Frame, query: string): Match {
   const segments: Record<string, string> = {};
   const feeds: Record<string, string[]> = {};
+  const within: Record<string, string> = {};
+  const inQuery = (v: string) => { const r = findSpan(query, v); return r ? query.slice(r[0], r[1]) : v; };
   for (const [name, value] of Object.entries(f.slots)) {
+    if (name.endsWith(WITHIN)) { within[name.slice(0, -WITHIN.length)] = inQuery(value); continue; }
     if (name === "distance" || name === "value") segments[name] = value;
+    else if (value.includes(PART_SEP)) segments[name] = slotParts(value).map(inQuery).join(PART_SEP);
     else {
       const r = findSpan(query, value);
       segments[name] = r ? query.slice(r[0], r[1]) : value;
     }
     feeds[name] = [name];
   }
-  return { segments, feeds, score: 20 + f.score, template: f.template, t5Score: f.score };
+  return { segments, feeds, within, score: 20 + f.score, template: f.template, t5Score: f.score };
 }
 
 export { norm };

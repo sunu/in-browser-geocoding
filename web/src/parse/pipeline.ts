@@ -2,7 +2,7 @@
 // T5 frames -> pick_family -> pick_template -> (viable splits) -> pick_split -> slots -> DAG, with recursion.
 import type { Bundle, SlotDef, Template } from "../core/bundle.ts";
 import { substitute, validate } from "../core/dsl.ts";
-import { distanceM, findSpan, frameToMatch, frameToText, groupFrames, UNSUPPORTED, valueNum, type Frame, type Match } from "../core/frames.ts";
+import { distanceM, findSpan, frameToMatch, frameToText, groupFrames, PART_SEP, slotParts, UNSUPPORTED, valueNum, WITHIN, type Frame, type Match } from "../core/frames.ts";
 import { keywordHits } from "../core/keywords.ts";
 import { lexiconMatch, norm, normalizeQuery } from "../core/text.ts";
 import { Decider, type TraceRecord } from "../decisions/decider.ts";
@@ -110,10 +110,10 @@ export class Parser {
     const k = Number(this.bundle.config.t5.beams ?? 4);
     const { frames: raw, latency } = await this.t5.frames(text, k);
     // Port: a union frame needs a list separator ("madhya pradesh sans bhopal" is not a union).
-    const merged = raw.filter((f) => !SUB_LIST_TEMPLATES.has(f.template)
+    const merged = raw.filter((f) => !SUB_LIST_TEMPLATES.has(f.template) || (f.slots.places ?? "").includes(PART_SEP)
       || new RegExp(LIST_SEP.source, "i").test(f.slots.places ?? "") || LIST_MARKER.test(f.slots.places ?? ""));
     const frames = await this.extendSlots(dec, merged, text, depth);
-    const kept = this.checked(dec, frames, text, depth);
+    const kept = await this.checked(dec, frames, text, depth);
     const groups = await this.covering(dec, groupFrames(kept, text, this.templates, Number(this.bundle.config.t5.margin ?? 2)), text, depth);
     dec.record("generate_frames", depth, { text }, null,
       { value: groups.map(frameToText), impl: `t5:${this.t5.name}`, confidence: frames.length ? Math.exp(frames[0].score) : 0,
@@ -180,7 +180,7 @@ export class Parser {
   private async droppedNames(dec: Decider, f: Frame, text: string): Promise<string[]> {
     // Port: a name in a closed slot is left out ("states that touch Pakistan": pred = touch Pakistan).
     const t = this.templates[f.template];
-    const covered = Object.entries(f.slots).filter(([k]) => !t?.slots[k] || !CLOSED.has(t.slots[k].type)).map(([, v]) => findSpan(text, v));
+    const covered = Object.entries(f.slots).filter(([k]) => !t?.slots[k] || !CLOSED.has(t.slots[k].type)).flatMap(([, v]) => slotParts(v).map((p) => findSpan(text, p)));
     const words = [...text.matchAll(WORD)].filter((m) => !covered.some((r) => r && r[0] <= m.index! && m.index! < r[1]));
     const out: string[] = [];
     const used = new Set<number>();
@@ -219,14 +219,28 @@ export class Parser {
   }
 
   /** Port of _checked: the frames with no fault; if none is left, the first fault is the reason of the refusal. */
-  private checked(dec: Decider, frames: Frame[], text: string, depth: number): Frame[] {
-    const faults = frames.map((f) => this.faults(f, text));
+  private async checked(dec: Decider, frames: Frame[], text: string, depth: number): Promise<Frame[]> {
+    const faults: string[][] = [];
+    for (const f of frames) faults.push([...this.faults(f, text), ...(await this.withinFaults(dec, f))]);
     const keep = frames.filter((_, i) => !faults[i].length);
     if (keep.length < frames.length)
       dec.recordStep("frame_check", depth, { text }, keep.map(frameToText), "rules",
         { faults: Object.fromEntries(frames.map((f, i) => [frameToText(f), faults[i]]).filter(([, x]) => x.length)) });
     if (frames.length && !keep.length) stop(faults.find((x) => x.length)![0], depth, text, "frame_check");
     return keep;
+  }
+
+  /** Port of _within_faults: a slot with `<slot>.within` needs a candidate of each name inside an exact match of the qualifier. */
+  private async withinFaults(dec: Decider, f: Frame): Promise<string[]> {
+    const probe = dec.fork();  // Port: without steps in the trace
+    probe.view = dec.view;
+    const out: string[] = [];
+    for (const [k, w] of Object.entries(f.slots)) {
+      const base = k.slice(0, -WITHIN.length);
+      if (!k.endsWith(WITHIN) || !(base in f.slots)) continue;
+      for (const p of slotParts(f.slots[base])) if ((await this.inside(probe, p, [w], 0, false)) === null) out.push(`no place '${p}' is inside '${w}'`);
+    }
+    return out;
   }
 
   private optionWords(ref: string): string[] {
@@ -310,7 +324,8 @@ export class Parser {
         return [{ op: "Resolve", args: { name, source: "overture", id: nat[0].id } }, { family: "lookup", template: "lookup_place", slots: { anchor: name } }];
       }
     }
-    if (tpl.family === "lookup" && alt !== "lookup_place" && !(await this.listParts(dec, text, false))) {
+    if (tpl.family === "lookup" && alt !== "lookup_place" && !(await this.listParts(dec, text, false))
+        && !(cands[tpl.id] ?? []).some((m) => Object.keys(m.within ?? {}).length)) {
       const g = await dec.isSubquery(text, depth);
       if (g.value || dec.below("is_subquery", g)) {
         const best = [...(cands[tpl.id] ?? [])].sort((a, b) => b.score - a.score)[0];
@@ -403,7 +418,7 @@ export class Parser {
       if (!(name in m.segments) && AROUND_DEFAULT[tpl.id]?.[0] === name) { around = name; continue; }
       if (!(name in m.segments)) { values[name] = await this.defaultRegion(sd, dec); slots[name] = null; continue; }
       const hint = tpl.id === "neighbors" ? levelHint : null;
-      jobs[name] = this.region(dec, tpl, m.segments[name], text, depth, hint);
+      jobs[name] = this.region(dec, tpl, m.segments[name], text, depth, hint, false, m.within?.[name] ?? null);
     }
     const names = Object.keys(jobs);
     const results = await Promise.all(names.map((n) => jobs[n]));
@@ -499,9 +514,22 @@ export class Parser {
   }
 
   private async region(dec: Decider, tpl: Template, text: string, query: string, depth: number, typeHint: string | null,
-                       part = false): Promise<[any, any]> {
+                       part = false, within: string | null = null): Promise<[any, any]> {
+    if (text.includes(PART_SEP)) {
+      // Port: the parts of a list from the frame; "or" between two parts in the query is the conjunction.
+      const names = slotParts(text);
+      const r = names.map((p) => findSpan(query, p));
+      const gaps = r.slice(1).map((b, i) => (r[i] && b && r[i]![1] <= b[0] ? query.slice(r[i]![1], b[0]) : ""));
+      const conj = gaps.some((g) => /\bor\b/i.test(g)) ? "or" : "and";
+      return this.listRegion(dec, tpl, [names, conj, null], query, depth, typeHint, within);
+    }
     const article = /^the\s/i.test(text.trim());
     text = text.trim().replace(/^(the|a|an|whole|entire|all of|all of the|whole of)\s+/i, "");
+    if (within) {
+      const res = await this.inside(dec, text, [within], depth, false);
+      if (res === null) stop(`no place '${text}' is inside '${within}'`, depth, text);
+      return [res, text];
+    }
     // A named set first ("the Balkans" is the countries, not Natural Earth's Balkan Peninsula).
     const lex = lexiconMatch(text, this.bundle);
     if (lex) return [{ op: "LexiconSet", args: { key: lex } }, { lex, text }];
@@ -622,13 +650,13 @@ export class Parser {
 
   /** Port of _list_region: the Union of the places of a list. */
   private async listRegion(dec: Decider, tpl: Template, lst: [string[], string, string | null], query: string, depth: number,
-                           typeHint: string | null): Promise<[any, any]> {
+                           typeHint: string | null, within: string | null = null): Promise<[any, any]> {
     const [names, conj, marker] = lst;
     dec.recordStep("list", depth, { text: names.join(" | ") }, names, "rules", { conjunction: conj, quantifier: marker });
     let node: any = null;
     const infos: any[] = [];
     for (const p of names) {
-      const [dag, info] = await this.region(dec, tpl, p, query, depth, typeHint, true);
+      const [dag, info] = await this.region(dec, tpl, p, query, depth, typeHint, true, within);
       node = node === null ? dag : { op: "Union", args: { a: node, b: dag } };
       infos.push(info);
     }
@@ -663,8 +691,13 @@ export class Parser {
       exactOnly = true;
     }
     if (parts.length < 2 || parts.length > 3 || parts.some((p) => !p || /\band\b|&/i.test(p))) return null;
+    return this.inside(dec, parts[0], parts.slice(1), depth, exactOnly, text);
+  }
+
+  /** Port of _inside: the Resolve of the best candidate of `name` inside one exact match of each outer name, or null. */
+  private async inside(dec: Decider, name: string, outers: string[], depth: number, exactOnly = true, text: string | null = null): Promise<any | null> {
     const outer: Set<string>[] = [];
-    for (const p of parts.slice(1)) {
+    for (const p of outers) {
       const ids = new Set((await this.gaz.search(p, { fuzzy: false, limit: 5, view: dec.view, full: true })).map((c) => c.id));
       if (!ids.size) return null;
       outer.push(ids);
@@ -672,12 +705,12 @@ export class Parser {
     // Port: search only in the countries of the outer places (the browser then loads only these countries).
     const outerIds = [...new Set(outer.flatMap((s) => [...s]))].sort();
     const countries = [...new Set(Object.values(await this.gaz.describe(outerIds)).map((d: any) => d.country).filter(Boolean))].sort() as string[];
-    const context = parts.slice(1).join(", ");
+    const context = outers.join(", ");
     for (const fuzzy of exactOnly ? [false] as const : [true, "only"] as const) {
-      for (const c of await this.gaz.search(parts[0], { context, limit: 20, fuzzy, view: dec.view, countries, full: true })) {
+      for (const c of await this.gaz.search(name, { context, limit: 20, fuzzy, view: dec.view, countries, full: true })) {
         if (outer.every((ids) => c.ancestors.some((a) => ids.has(a)))) {
-          dec.recordStep("qualified_name", depth, { text }, c.id, "rules", { name: parts[0], context, fuzzy });
-          return { op: "Resolve", args: { name: parts[0], source: "overture", id: c.id, context } };
+          dec.recordStep("qualified_name", depth, { text: text ?? `${name}, ${context}` }, c.id, "rules", { name, context, fuzzy });
+          return { op: "Resolve", args: { name, source: "overture", id: c.id, context } };
         }
       }
     }

@@ -189,3 +189,21 @@ def test_same_text_in_two_slots():
 
     f = Frame(template="intersection", slots={"a": "Kerala", "b": "Kerala"})
     assert "the same text in two region slots" in check_frame(f, "overlap of Kerala and Kerala", all_templates())
+
+
+def test_frame_list_and_within(rules_parser):
+    # plan-039: the parts of a list and the qualifier come from the frame, not from a cut of the text.
+    from geoparse.t5.frames import Frame
+
+    dec = rules_parser.base_decider.fork()
+    tpl = rules_parser.templates["children"]
+    q = "districts of Kerala or Goa"
+    dag, info = rules_parser._region(dec, tpl, "Kerala | Goa", [], q, 0, None)
+    assert dag["op"] == "Union" and info["conj"] == "or" and [x for x in info["list"]] == ["Kerala", "Goa"]
+    look = rules_parser.templates["lookup_place"]
+    dag, _ = rules_parser._region(dec, look, "Jayanagar", [], "Jayanagar, Bengaluru", 0, None, within="Bengaluru")
+    assert dag["args"]["name"] == "Jayanagar" and dag["args"]["context"] == "Bengaluru"
+    ok = Frame(template="lookup_place", slots={"anchor": "Jayanagar", "anchor.within": "Bengaluru"})
+    bad = Frame(template="lookup_place", slots={"anchor": "Jayanagar", "anchor.within": "Kerala"})
+    assert rules_parser._within_faults(dec, ok) == []
+    assert rules_parser._within_faults(dec, bad) == ["no place 'Jayanagar' is inside 'Kerala'"]

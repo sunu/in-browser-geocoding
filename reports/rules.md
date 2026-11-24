@@ -34,10 +34,13 @@ Code locations: `t5/frames` is `geoparse/t5/frames.py` and `web/src/core/frames.
 | Direction word with a typo | Producer | not written | 038 | Do not write: training data with typos |
 | `frame_words()` (template and option words) | Data for a verifier | `parse/pipeline` | 038 | Keep (derived from the templates) |
 | `is_subquery` (cross-encoder) for region slots | Model | `geoparse/decisions/` | 001 | Replace: the T5 frame of the slot text decides |
+| Each list part (" \| ") and each `<slot>.within` text is a span of the query; no part is in two slots (`check_frame`) | Verifier | `t5/frames` | 039 | Added (phase 2: the frame format) |
+| A name with `<slot>.within` needs a candidate inside an exact match of the qualifier (`_within_faults`, `_inside`) | Verifier | `parse/pipeline` | 039 | Added (phase 2). The containment check of `_qualified`, for the frame |
+| The conjunction of a frame list: "or" between two parts in the query | Policy | `parse/pipeline` | 039 | Added (phase 2). The parts are spans, so the words between them are known. There is no `conj` slot for T5 to learn |
 | A place name that the local data cannot place goes to the geocoder (Photon), with a note: a lookup frame that `is_subquery` calls a set, a low-confidence `select_source`, a name with no local candidate. Not for a text with a plural admin level word ("which states touch the sea"). | Policy | `parse/pipeline` | 039 | Added (user, 2026-11-23) |
 
 Count at the start of plan-039: 4 verifiers (one also a producer), 6 producers, 1 policy, 1 model decision, and
-1 data item. Plan-039 added 1 policy (the geocoder fallback) and 3 verifiers.
+1 data item. Plan-039 added 2 policies (the geocoder fallback, the conjunction of a frame list) and 5 verifiers.
 
 ## Measurement at the start of plan-039
 
