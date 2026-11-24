@@ -81,8 +81,20 @@ export function checkFrame(f: Frame, query: string, templates: Record<string, Te
   return problems;
 }
 
+// Port: in a group, a frame within COVER_MARGIN of the best score that covers more of the query wins.
+export const COVER_MARGIN = 0.5;
+
+export function covered(f: Frame, query: string): number {
+  const chars = new Set<number>();
+  for (const v of Object.values(f.slots)) for (const p of slotParts(v)) {
+    const r = findSpan(query, p);
+    if (r) for (let i = r[0]; i < r[1]; i++) chars.add(i);
+  }
+  return chars.size;
+}
+
 export function groupFrames(frames: Frame[], query: string, templates: Record<string, Template>, margin: number): Frame[] {
-  const best = new Map<string, Frame>();
+  const groups = new Map<string, Frame[]>();
   for (const f of frames) {
     if (f.template === UNSUPPORTED || checkFrame(f, query, templates).length) continue;
     const t = templates[f.template];
@@ -91,10 +103,20 @@ export function groupFrames(frames: Frame[], query: string, templates: Record<st
       .map(([k, v]) => [k, v.toLowerCase()] as [string, string])
       .sort((a, b) => (a[0] < b[0] ? -1 : 1));
     const key = JSON.stringify([f.template, open]);
-    const prev = best.get(key);
-    if (!prev || f.score > prev.score) best.set(key, f);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(f);
   }
-  if (!best.size) return [];
+  if (!groups.size) return [];
+  const best = new Map<string, Frame>();
+  for (const [key, fs] of groups) {
+    const top = Math.max(...fs.map((f) => f.score));
+    let pick: Frame | null = null;
+    for (const f of fs) {
+      if (f.score < top - COVER_MARGIN) continue;
+      if (!pick || covered(f, query) > covered(pick, query) || (covered(f, query) === covered(pick, query) && f.score > pick.score)) pick = f;
+    }
+    best.set(key, pick!.score !== top ? { ...pick!, score: top } : pick!);
+  }
   const top = Math.max(...[...best.values()].map((f) => f.score));
   return [...best.values()].filter((f) => f.score >= top - margin).sort((a, b) => b.score - a.score);
 }

@@ -76,3 +76,12 @@ def test_list_and_within_slots():
     assert frame_to_match(w, "Springfield, Illinois")["within"] == {"anchor": "Illinois"}
     assert any("unknown slot" in p for p in check_frame(
         Frame.from_text("lookup_place ; anchor = Springfield ; level.within = Illinois"), "Springfield, Illinois", T))
+
+
+def test_group_prefers_the_frame_that_covers_more():
+    # plan-039: a near tie in a group goes to the frame that explains more of the query, with the best score.
+    q = "states bordering Rajasthan"
+    fs = [Frame.from_text("neighbors ; of = Rajasthan", score=-0.069),
+          Frame.from_text("neighbors ; level = states ; of = Rajasthan", score=-0.081)]
+    g = group_frames(fs, q, T, margin=2.0)
+    assert [f.to_text() for f in g] == ["neighbors ; level = states ; of = Rajasthan"] and g[0].score == -0.069

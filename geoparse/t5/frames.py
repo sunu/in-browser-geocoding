@@ -146,22 +146,37 @@ def frame_to_match(frame: Frame, query: str) -> dict[str, Any]:
     return {"segments": segments, "feeds": feeds, "within": within, "literals": 0, "source": "t5", "t5_score": frame.score}
 
 
+COVER_MARGIN = 0.5
+
+
+def covered(frame: Frame, query: str) -> int:
+    """The number of query characters in the slot spans of the frame."""
+    spans = [find_span(query, p) for k, v in frame.slots.items() for p in slot_parts(v)]
+    return len(set().union(*(range(*r) for r in spans if r))) if spans else 0
+
+
 def group_frames(frames: list[Frame], query: str, templates: dict[str, Any], margin: float) -> list[Frame]:
     """Usable frames, one for each (template, open-slot spans) group, within `margin` of the best score.
 
-    Frames that differ only in closed-slot spans or quantities are one group. The best frame of the group
-    gives its closed spans and quantities. The decision model does not choose quantities.
+    Frames that differ only in closed-slot spans or quantities are one group. One frame of the group gives its closed
+    spans and quantities (see COVER_MARGIN). The decision model does not choose quantities.
     """
-    best: dict[tuple, Frame] = {}
+    groups: dict[tuple, list[Frame]] = {}
     for f in frames:
         if f.template == UNSUPPORTED or check_frame(f, query, templates):
             continue
         t = templates[f.template]
         key = (f.template,) + tuple(sorted((k, v.lower()) for k, v in f.slots.items()
                                            if k.endswith(WITHIN) or k in t.slots and t.slots[k].type in ("region", "anchor")))
-        if key not in best or f.score > best[key].score:
-            best[key] = f
-    if not best:
+        groups.setdefault(key, []).append(f)
+    if not groups:
         return []
+    # In a group, a frame within COVER_MARGIN of the best score that covers more of the query wins ("neighbors ; of =
+    # Rajasthan" loses to "neighbors ; level = states ; of = Rajasthan"). Its score is the best score of the group.
+    best = {}
+    for key, fs in groups.items():
+        top = max(f.score for f in fs)
+        pick = max((f for f in fs if f.score >= top - COVER_MARGIN), key=lambda f: (covered(f, query), f.score))
+        best[key] = pick.model_copy(update={"score": top}) if pick.score != top else pick
     top = max(f.score for f in best.values())
     return sorted([f for f in best.values() if f.score >= top - margin], key=lambda f: -f.score)

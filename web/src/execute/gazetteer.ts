@@ -22,9 +22,12 @@ const COUNTRY_SUBTYPES = ["country", "dependency"];
 
 export class Gazetteer {
   aliases: Record<string, string>;
+  demonyms: Record<string, string>;
   constructor(public db: Db, public bundle: Bundle) {
     this.aliases = {};
     for (const [k, v] of Object.entries(bundle.aliases)) this.aliases[normName(k)] = normName(v);
+    this.demonyms = {};
+    for (const [k, v] of Object.entries(bundle.demonyms ?? {})) this.demonyms[normName(k)] = normName(v);
   }
 
   async describe(ids: string[]) {
@@ -129,6 +132,8 @@ export class Gazetteer {
       ws.forEach((w, i) => { if (w in this.aliases) qList.push([...ws.slice(0, i), this.aliases[w], ...ws.slice(i + 1)].join(" ")); });
       if (x in this.aliases) qList.push(this.aliases[x]);
     }
+    // Port: a demonym only for the whole name text ("Indian", not "Indian Ocean").
+    if (n in this.demonyms) qList.push(this.demonyms[n]);
     const { policy: base } = this.bundle.config;
     const ranking = base.ranking;
     const [vb, viewCountry] = await this.view(view);

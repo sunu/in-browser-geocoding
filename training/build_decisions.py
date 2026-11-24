@@ -26,7 +26,7 @@ from geoparse.config import REPO_ROOT
 from geoparse.decisions.functions import INSTRUCTIONS, IS_SUBQUERY_CRITERIA, NONE_OPTION
 from geoparse.options import categories, norm, option_descriptions
 from geoparse.parse.pipeline import Parser, normalize_query
-from geoparse.t5.frames import Frame, frame_to_match, group_frames
+from geoparse.t5.frames import PART_SEP, Frame, frame_to_match, group_frames, slot_parts
 from geoparse.templates.model import CLOSED_TYPES, OPEN_TYPES
 from training.gen_synthetic import typo_always
 
@@ -111,12 +111,16 @@ def from_generator(parser: Parser, beams: dict[str, list], rng: random.Random) -
             stats["closed"] += 1
         # Region slots: sub-query or a name?
         subs = set(r.get("sub_slots") or [])
+        sub_parts = set(r.get("sub_parts") or [])
         for name, span in gold.slots.items():
             sd = tpl.slots.get(name)
             if sd is None or sd.type != "region" or tpl.family == "lookup":
                 continue
-            out.append(ex("is_subquery", {"text": re.sub(r"^(the|a|an)\s+", "", span, flags=re.I)}, crit,
-                          "true" if name in subs else "false", q, src))
+            # A list slot (plan-039): one question for each part.
+            for part in (slot_parts(span) if PART_SEP in span else [span]):
+                sub = part in sub_parts if PART_SEP in span else name in subs
+                out.append(ex("is_subquery", {"text": re.sub(r"^(the|a|an)\s+", "", part, flags=re.I)}, crit,
+                              "true" if sub else "false", q, src))
         # Frame choice from the T5 beams of this query.
         b = beams.get(q)
         if not b:
