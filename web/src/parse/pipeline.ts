@@ -37,15 +37,7 @@ function fmt(x: number) { return x.toFixed(2); }
 
 // geoparse.parse.pipeline.AROUND_DEFAULT: the optional parent (first) without text is the countries around the
 // other slot (second).
-// geoparse.parse.pipeline.HAS_DISTANCE: a number with a distance unit in a text.
-const HAS_DISTANCE = /\b\d+(?:\.\d+)?\s*(?:km|kms|kilometres?|kilometers?|m|metres?|meters?|mi|miles?)\b/i;
 const AROUND_DEFAULT: Record<string, [string, string]> = { children_touching: ["parent", "other"], children_near: ["parent", "other"] };
-// geoparse.parse.pipeline.LIST_SEP and LIST_MARKER: lists of places in a slot; separators are whole words with spaces.
-const LIST_SEP = /\s*,\s*(?:(?:and|or|&|plus)\s+)?|\s+(?:and|or|&|n|plus|as well as|along with|together with)\s+|\s*\+\s*/gi;
-const LIST_MARKER = /^(both|either|all of the|all of|each of|any one of|any of)\s+(.+)$/i;
-const LIST_MARKER_QUANT: Record<string, string> = { both: "all", "all of the": "all", "all of": "all", "each of": "all", either: "any",
-  "any one of": "any", "any of": "any" };
-const SPACE_LIST_TEMPLATES = new Set(["shared_border"]);
 // geoparse.parse.pipeline.SUB_LIST_TEMPLATES: list parts can be sub-queries ("Kerala and coastal districts of Karnataka").
 const SUB_LIST_TEMPLATES = new Set(["union"]);
 const WORD = /\p{L}[\p{L}\p{N}_'.-]*/gu;
@@ -108,11 +100,15 @@ export class Parser {
 
   private async candidates(dec: Decider, text: string, depth: number) {
     const k = Number(this.bundle.config.t5.beams ?? 4);
-    const { frames: raw, latency } = await this.t5.frames(text, k);
-    // Port: a union frame needs a list separator ("madhya pradesh sans bhopal" is not a union).
-    const merged = raw.filter((f) => !SUB_LIST_TEMPLATES.has(f.template) || (f.slots.places ?? "").includes(PART_SEP)
-      || new RegExp(LIST_SEP.source, "i").test(f.slots.places ?? "") || LIST_MARKER.test(f.slots.places ?? ""));
-    const frames = await this.extendSlots(dec, merged, text, depth);
+    // Port: the frames of a slot text are generated two times (the sub-query check, then the sub-query): one T5 call.
+    const key = `${k}|${text}`;
+    if (!this.t5Cache.has(key)) {
+      if (this.t5Cache.size > 256) this.t5Cache.clear();
+      this.t5Cache.set(key, await this.t5.frames(text, k));
+    }
+    const { frames: raw, latency } = this.t5Cache.get(key)!;
+    // Port: a union frame needs two or more parts ("madhya pradesh sans bhopal" is not a union).
+    const frames = raw.filter((f) => !SUB_LIST_TEMPLATES.has(f.template) || (f.slots.places ?? "").includes(PART_SEP));
     const kept = await this.checked(dec, frames, text, depth);
     const groups = await this.covering(dec, groupFrames(kept, text, this.templates, Number(this.bundle.config.t5.margin ?? 2)), text, depth);
     dec.record("generate_frames", depth, { text }, null,
@@ -126,6 +122,7 @@ export class Parser {
   }
 
   private exactCache = new Map<string, any>();
+  private t5Cache = new Map<string, { frames: Frame[]; latency: number }>();
   private _frameWords: Set<string> | null = null;
   private _nameStop: Set<string> | null = null;
 
@@ -144,36 +141,6 @@ export class Parser {
       this.exactCache.set(key, lexiconMatch(name, this.bundle) ? "lexicon" : (c[0] ?? null));
     }
     return this.exactCache.get(key);
-  }
-
-  /** Port of _extend_slots: a region slot text plus the next 1 or 2 words, if that is an exact name ("Aravalli range"). */
-  private async extendSlots(dec: Decider, frames: Frame[], text: string, depth: number): Promise<Frame[]> {
-    const out: Frame[] = [];
-    for (const f of frames) {
-      const t = this.templates[f.template];
-      if (f.template === UNSUPPORTED || !t) { out.push(f); continue; }
-      const slots = { ...f.slots };
-      const spans = Object.fromEntries(Object.entries(f.slots).map(([k, v]) => [k, findSpan(text, v)]));
-      for (const [k, v] of Object.entries(f.slots)) {
-        const r = spans[k];
-        if (!r || !t.slots[k] || !["region", "anchor"].includes(t.slots[k].type)) continue;
-        const m = /^\s+(\p{L}[\p{L}\p{N}_'-]*)(\s+(\p{L}[\p{L}\p{N}_'-]*))?/u.exec(text.slice(r[1]));
-        if (!m) continue;
-        const ends: [number, string][] = [[r[1] + m[0].length - (m[2]?.length ?? 0), m[1]]];
-        if (m[2]) ends.push([r[1] + m[0].length, m[3]]);
-        for (const [end, word] of ends.reverse()) {
-          const longer = text.slice(r[0], end);
-          if (this.frameWords().has(word.toLowerCase()) || Object.entries(spans).some(([j, o]) => j !== k && o && o[0] < end && o[1] > r[1])) continue;
-          if (await this.exact(dec, longer)) {
-            dec.recordStep("extend_span", depth, { text, slot: k, from: v }, longer, "rules", {});
-            slots[k] = longer;
-            break;
-          }
-        }
-      }
-      out.push(JSON.stringify(slots) !== JSON.stringify(f.slots) ? { ...f, slots } : f);
-    }
-    return out;
   }
 
   /** Port of _dropped_names: the exact place names of the query in no slot of the frame (1 to 4 words, 4 or more letters). */
@@ -324,7 +291,7 @@ export class Parser {
         return [{ op: "Resolve", args: { name, source: "overture", id: nat[0].id } }, { family: "lookup", template: "lookup_place", slots: { anchor: name } }];
       }
     }
-    if (tpl.family === "lookup" && alt !== "lookup_place" && !(await this.listParts(dec, text, false))
+    if (tpl.family === "lookup" && alt !== "lookup_place"
         && !(cands[tpl.id] ?? []).some((m) => Object.keys(m.within ?? {}).length)) {
       const g = await dec.isSubquery(text, depth);
       if (g.value || dec.below("is_subquery", g)) {
@@ -521,7 +488,7 @@ export class Parser {
       const r = names.map((p) => findSpan(query, p));
       const gaps = r.slice(1).map((b, i) => (r[i] && b && r[i]![1] <= b[0] ? query.slice(r[i]![1], b[0]) : ""));
       const conj = gaps.some((g) => /\bor\b/i.test(g)) ? "or" : "and";
-      return this.listRegion(dec, tpl, [names, conj, null], query, depth, typeHint, within);
+      return this.listRegion(dec, tpl, [names, conj], query, depth, typeHint, within);
     }
     const article = /^the\s/i.test(text.trim());
     text = text.trim().replace(/^(the|a|an|whole|entire|all of|all of the|whole of)\s+/i, "");
@@ -545,46 +512,14 @@ export class Parser {
     if (qual) return [qual, text];
     const isRegion = Object.values(tpl.slots).some((s) => s.type === "region") && tpl.family !== "lookup";
     const exact = await this.gaz.search(text, { typeHint, fuzzy: false, limit: 3, view: dec.view });
-    const lst = exact.length || part ? null : await this.listParts(dec, text, SPACE_LIST_TEMPLATES.has(tpl.id), SUB_LIST_TEMPLATES.has(tpl.id));
-    if (lst) return this.listRegion(dec, tpl, lst, query, depth, typeHint);
     if (SUB_LIST_TEMPLATES.has(tpl.id) && !part) stop("a union needs two or more places", depth, text, "pick_split");
-    const inside = isRegion && !exact.length ? /^(.+?)\s+in\s+(.+)$/i.exec(text) : null;
-    if (inside && ![inside[1], inside[2]].some((x) => keywordHits(x, this.setWords(), false))) {
-      const found: boolean[] = [];
-      for (const x of [inside[1], inside[2]]) found.push((await this.gaz.search(x, { fuzzy: false, limit: 1, view: dec.view })).length > 0);
-      if (found.every(Boolean)) {
-        // Port: "Bangladesh in Tripura": two exact names, the first not inside the second. Never a union: "in" limits
-        // the area to the second name.
-        dec.recordStep("not_inside", depth, { text }, inside[2], "rules", { inner: inside[1] });
-        dec.notes.push(`'${inside[1]}' is not inside '${inside[2]}': the result uses '${inside[2]}'`);
-        return this.region(dec, tpl, inside[2], query, depth, typeHint, true);
-      }
-    }
-    const rest = isRegion && !exact.length ? this.directionRest(text) : null;
-    if (rest && (await this.gaz.search(rest, { fuzzy: false, limit: 1, view: dec.view })).length) {
-      // "northern France": a direction word and a place name. A subquery, without the model.
-      dec.recordStep("is_subquery", depth, { text }, true, "rules", { direction_rest: rest });
-      if (depth + 1 > this.maxDepth) stop("depth limit", depth, text);
-      const [sub, info] = await this.parseLevel(dec, text, depth + 1);
-      return [sub, { q: text, t: info.template, s: info.slots }];
-    }
-    const levelWords = Object.values<any>(this.bundle.options.admin_levels).flatMap((v) => v.keywords ?? []);
-    if (isRegion && !exact.length && (keywordHits(text, levelWords, false) || HAS_DISTANCE.test(text))) {
-      // Port: a set by a level or a distance ("coastal districts of Odisha"), not a place name. A sub-query.
-      dec.recordStep("is_subquery", depth, { text }, true, "rules", { level_or_distance: true });
-      if (depth + 1 > this.maxDepth) stop("depth limit", depth, text);
-      const [sub, info] = await this.parseLevel(dec, text, depth + 1);
-      return [sub, { q: text, t: info.template, s: info.slots }];
-    }
-    if (isRegion && exact.length && !keywordHits(text, levelWords, false)) {
-      // Port: the whole text is an exact place name ("Western Ghats", "Northern Ireland"): a place, also with a direction word.
+    if (isRegion && exact.length) {
+      // Port: the whole text is an exact place name ("Western Ghats", "Pune district"): a place, also with a direction or level word.
       dec.recordStep("is_subquery", depth, { text }, false, "rules", { exact_name: true });
       return [await this.anchor(dec, tpl, text, query, depth, typeHint, exact), text];
     }
     if (isRegion) {
-      const d = await dec.isSubquery(text, depth);
-      if (dec.below("is_subquery", d)) stop(`low confidence for is_subquery (${fmt(d.confidence)})`, depth, text, "is_subquery");
-      if (d.value) {
+      if (await this.slotIsSubquery(dec, text, depth)) {
         if (depth + 1 > this.maxDepth) stop("depth limit", depth, text);
         const [sub, info] = await this.parseLevel(dec, text, depth + 1);
         return [sub, { q: text, t: info.template, s: info.slots }];
@@ -593,66 +528,27 @@ export class Parser {
     return [await this.anchor(dec, tpl, text, query, depth, typeHint, exact), text];
   }
 
-  /** Port of _list_parts: [names, conjunction, quantifier of a leading word] of a list of named sets or exact names; the
-   * cut with the fewest names wins ("Bosnia and Herzegovina and Croatia" is two names). null if not such a list. */
-  async listParts(dec: Decider, text: string, allowSpace: boolean, allowSub = false): Promise<[string[], string, string | null] | null> {
-    let t = text.trim();
-    let marker: string | null = null;
-    const m = LIST_MARKER.exec(t);
-    if (m) { marker = LIST_MARKER_QUANT[m[1].toLowerCase()]; t = m[2]; }
-    let seps = [...t.matchAll(LIST_SEP)];
-    if (!seps.length && allowSpace) seps = [...t.matchAll(/\s+/g)];
-    // Port: commas alone are not a list ("Salt Lake, Kolkata" is a qualified name).
-    // Port: in a union, _qualified was tried first, so commas alone are a list there.
-    if (seps.length && seps.every((s) => s[0].trim() === ",") && !allowSpace && !allowSub) return null;
-    if (!seps.length || seps.length > 6) return null;
-    const known = new Map<string, boolean>();
-    const levelWords = Object.values<any>(this.bundle.options.admin_levels).flatMap((v) => v.keywords ?? []);
-    const probe = dec.fork();  // Port: the qualified-name check, without steps in the trace
+  /** Port of _slot_is_subquery: a region slot text is a sub-query if its top T5 frame is not a lookup. */
+  private async slotIsSubquery(dec: Decider, text: string, depth: number): Promise<boolean> {
+    const probe = dec.fork();  // Port: without steps in the trace
     probe.view = dec.view;
-    const isSub = (p: string) => !!keywordHits(p, levelWords, false) || HAS_DISTANCE.test(p);
-    const isName = async (p: string) => {
-      if (!known.has(p)) {
-        const q = allowSub ? p.replace(/^(the|all of the|all of|whole of)\s+/i, "") : p;
-        // Port: a part with a comma is a name only if it is a qualified name ("Paris, Texas"; "France, Spain" is two).
-        if (q.includes(",")) known.set(p, !q.split(",").slice(1).some(isSub) && (await this.qualified(probe, q, 0, true)) !== null);
-        else known.set(p, !!q && (!!lexiconMatch(q, this.bundle) || (await this.gaz.search(q, { fuzzy: false, limit: 1, view: dec.view })).length > 0));
-      }
-      return known.get(p)!;
-    };
-    const conjOf = (cut: number[]) => cut.some((i) => /\bor\b/i.test(seps[i][0])) ? "or" : "and";
-    const partsOf = (cut: number[]) => {
-      const parts: string[] = [];
-      let start = 0;
-      for (const i of cut) { parts.push(t.slice(start, seps[i].index!).trim()); start = seps[i].index! + seps[i][0].length; }
-      return [...parts, t.slice(start).trim()];
-    };
-    // Port: exact names first; then (a union) exact names or sub-queries.
-    const tests: ((p: string) => Promise<boolean>)[] = [isName];
-    if (allowSub) tests.push(async (p) => (await isName(p)) || (isSub(p) && !p.includes(",")));
-    for (const ok of tests) {
-      for (let k = 1; k <= seps.length; k++) {
-        for (const cut of combinations(seps.length, k)) {
-          const parts = partsOf(cut);
-          let good = true;
-          for (const p of parts) if (!(await ok(p))) { good = false; break; }
-          if (good) return [parts, conjOf(cut), marker];
-        }
-      }
+    let top: string | undefined;
+    try {
+      const { cands } = await this.candidates(probe, text, depth + 1);
+      top = Object.keys(cands)[0];
+    } catch (e) {
+      if (!(e instanceof Stop)) throw e;
     }
-    if (!allowSub) return null;
-    // Port: a union: the cut at all separators; a part that is not a name stays one part (typos, Photon). Spaces are not
-    // separators ("Taj Mahal").
-    const all = [...Array(seps.length).keys()];
-    const parts = partsOf(all);
-    return parts.every(Boolean) ? [parts, conjOf(all), marker] : null;
+    const sub = !!top && top in this.templates && this.templates[top].family !== "lookup";
+    dec.recordStep("is_subquery", depth, { text }, sub, "t5", { template: top ?? null });
+    return sub;
   }
 
   /** Port of _list_region: the Union of the places of a list. */
-  private async listRegion(dec: Decider, tpl: Template, lst: [string[], string, string | null], query: string, depth: number,
+  private async listRegion(dec: Decider, tpl: Template, lst: [string[], string], query: string, depth: number,
                            typeHint: string | null, within: string | null = null): Promise<[any, any]> {
-    const [names, conj, marker] = lst;
-    dec.recordStep("list", depth, { text: names.join(" | ") }, names, "rules", { conjunction: conj, quantifier: marker });
+    const [names, conj] = lst;
+    dec.recordStep("list", depth, { text: names.join(" | ") }, names, "rules", { conjunction: conj });
     let node: any = null;
     const infos: any[] = [];
     for (const p of names) {
@@ -660,19 +556,15 @@ export class Parser {
       node = node === null ? dag : { op: "Union", args: { a: node, b: dag } };
       infos.push(info);
     }
-    return [node, { list: infos, conj, quant: marker }];
+    return [node, { list: infos, conj }];
   }
 
-  /** Port of _quantifier: a quantifier slot with no text gets the leading word of the list, else `any` (a note for a
-   * list joined by "and"). `any` is the operator default: the DAG has the argument only for `all`. */
+  /** Port of _quantifier: a quantifier slot with no text gets `any` (a note for a list joined by "and"). `any` is the operator default: the DAG has the argument only for `all`. */
   private quantifier(dec: Decider, tpl: Template, m: Match, values: Record<string, any>, slots: Record<string, any>, depth: number) {
     const q = Object.keys(tpl.slots).find((n) => tpl.slots[n].type === "quantifier");
     if (!q) return;
     const lst = Object.entries(slots).find(([n, s]) => OPEN.has(tpl.slots[n]?.type) && s && typeof s === "object" && "list" in s)?.[1];
-    if (!(q in m.segments) && lst?.quant) {
-      values[q] = slots[q] = lst.quant;
-      dec.recordStep("quantifier", depth, { text: lst.conj }, lst.quant, "rules", { from: "leading word" });
-    } else if (!(q in m.segments) && lst && lst.conj === "and" && values[q] === "any") {
+    if (!(q in m.segments) && lst && lst.conj === "and" && values[q] === "any") {
       dec.recordStep("quantifier", depth, { text: "and" }, "any", "rules", { from: "default", ambiguous: true });
       dec.notes.push("'and' between the places is read as 'or' (any of them); say 'both' or 'all of' for all of them");
     }

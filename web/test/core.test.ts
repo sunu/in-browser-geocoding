@@ -36,6 +36,7 @@ describe("frames (same as geoparse/t5/frames.py)", () => {
     expect(checkFrame(f, q, T)).toEqual([]);
     expect(frameToMatch(f, q).segments.target).toBe("charminar | golconda");
     expect(checkFrame(frameFromText("buffer ; target = Charminar | Charminar")!, q, T)).toContain("the same text in two region slots");
+    expect(checkFrame(frameFromText("buffer ; distance = 1 km ; target = Charminar | Charminar")!, "1 km around Charminar and Charminar", T)).toEqual([]);
     expect(checkFrame(frameFromText("buffer ; target = Charminar | Hyderabad")!, q, T)[0]).toContain("Hyderabad");
     const w = frameFromText("lookup_place ; anchor = Springfield ; anchor.within = Illinois")!;
     expect(checkFrame(w, "Springfield, Illinois", T)).toEqual([]);

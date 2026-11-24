@@ -12,6 +12,7 @@ scale word. Code converts them: distance to meters, value to a plain number.
 from __future__ import annotations
 
 import re
+from collections import Counter
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -115,10 +116,11 @@ def check_frame(frame: Frame, query: str, templates: dict[str, Any]) -> list[str
             problems += [f"span {p!r} is not in the query" for p in parts if find_span(query, p) is None]
         elif find_span(query, value) is None:
             problems.append(f"span {value!r} is not in the query")
-    # The same text in two region slots or list parts ("union ; a = England and Wales ; b = England and Wales").
-    texts = [p.lower() for k, v in frame.slots.items() if k in t.slots and t.slots[k].type in ("region", "anchor")
-             for p in slot_parts(v)]
-    if len(texts) != len(set(texts)):
+    # The same text in two region slots or list parts ("union ; a = England and Wales ; b = England and Wales"), more
+    # times than the query has it ("Kerala and Kerala" has two).
+    texts = Counter(p.strip().lower() for k, v in frame.slots.items()
+                    if k in t.slots and t.slots[k].type in ("region", "anchor") for p in slot_parts(v))
+    if any(n > len(re.findall(r"(?<!\w)" + re.escape(x) + r"(?!\w)", query, re.I)) for x, n in texts.items() if n > 1):
         problems.append("the same text in two region slots")
     for name, sd in t.slots.items():
         if name not in frame.slots and sd.type not in ("distance",) and not sd.optional and sd.default is None:

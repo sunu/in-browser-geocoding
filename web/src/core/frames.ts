@@ -70,10 +70,12 @@ export function checkFrame(f: Frame, query: string, templates: Record<string, Te
       for (const p of slotParts(value)) if (findSpan(query, p) === null) problems.push(`span ${p} is not in the query`);
     } else if (findSpan(query, value) === null) problems.push(`span ${value} is not in the query`);
   }
-  // Port: the same text in two region slots or list parts ("union ; a = England and Wales ; b = England and Wales").
-  const texts = Object.entries(f.slots).filter(([k]) => ["region", "anchor"].includes(t.slots[k]?.type))
-    .flatMap(([, v]) => slotParts(v).map((p) => p.toLowerCase()));
-  if (texts.length !== new Set(texts).size) problems.push("the same text in two region slots");
+  // Port: the same text in two region slots or list parts, more times than the query has it ("Kerala and Kerala" has two).
+  const texts = new Map<string, number>();
+  for (const [k, v] of Object.entries(f.slots)) if (["region", "anchor"].includes(t.slots[k]?.type))
+    for (const p of slotParts(v)) texts.set(p.trim().toLowerCase(), (texts.get(p.trim().toLowerCase()) ?? 0) + 1);
+  const occurrences = (x: string) => query.match(new RegExp("(?<![\\p{L}\\p{N}_])" + escapeRegExp(x) + "(?![\\p{L}\\p{N}_])", "giu"))?.length ?? 0;
+  if ([...texts].some(([x, n]) => n > 1 && n > occurrences(x))) problems.push("the same text in two region slots");
   for (const [name, sd] of Object.entries(t.slots)) {
     if (!(name in f.slots) && sd.type !== "distance" && !sd.optional && (sd.default === null || sd.default === undefined))
       problems.push(`missing slot ${name}`);

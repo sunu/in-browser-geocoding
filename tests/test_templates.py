@@ -1,5 +1,5 @@
 from geoparse.dsl.schema import CATALOG
-from geoparse.parse.pipeline import Parser
+from geoparse.parse.pipeline import SUB_LIST_TEMPLATES, Parser
 from geoparse.templates.model import load_families, match_pattern
 
 
@@ -40,6 +40,8 @@ def test_every_example_matches_its_own_template():
     p._store = _NoStore()
     p.t5, p.use_patterns, p.t5_cfg = None, "always", {}
     for t in p.templates.values():
+        if t.id in SUB_LIST_TEMPLATES:  # the parts of a list come from the T5 frame (plan-039)
+            continue
         for ex in t.examples:
             cands = p.candidates(ex)
             assert t.id in cands, f"{t.id}: example {ex!r} has no valid split"

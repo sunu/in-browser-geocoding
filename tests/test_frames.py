@@ -71,6 +71,7 @@ def test_list_and_within_slots():
     assert any("Germany" in p for p in check_frame(bad, q, T))
     assert "the same text in two region slots" in check_frame(
         Frame.from_text("union ; places = France | France"), q, T)
+    assert check_frame(Frame.from_text("children ; level = states ; parent = Kerala | Kerala"), "states of Kerala and Kerala", T) == []
     w = Frame.from_text("lookup_place ; anchor = Springfield ; anchor.within = Illinois")
     assert check_frame(w, "Springfield, Illinois", T) == []
     assert frame_to_match(w, "Springfield, Illinois")["within"] == {"anchor": "Illinois"}
