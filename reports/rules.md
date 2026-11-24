@@ -19,7 +19,10 @@ Code locations: `t5/frames` is `geoparse/t5/frames.py` and `web/src/core/frames.
 |---|---|---|---|---|
 | Slot text is a span of the query (`check_frame`) | Verifier | `t5/frames` | 005 | Keep |
 | Same text in two region slots | Verifier | `t5/frames` | 038 | Keep |
-| Frame coverage: drop the frames that leave out more place names (`_covering`) | Verifier | `parse/pipeline` | 038 | Keep; count a name in a closed slot as left out |
+| Frame coverage: drop the frames that leave out more place names (`_covering`) | Verifier | `parse/pipeline` | 038 | Keep. Done in 039: a name in a closed slot counts as left out |
+| A frame whose open slot is the whole text is not valid (not for lookup and list templates) (`_faults`) | Verifier | `parse/pipeline` | 039 | Added |
+| A closed slot text (not an admin level) must contain a keyword of its options (`_faults`) | Verifier | `parse/pipeline` | 039 | Added. The decision model gives confidence 1.0 to wrong maps ("palace" to stadium), so a threshold does not work |
+| The divisions of a geocoder point: an error message, not an empty set (`op_Children`) | Verifier | `execute/executor` | 039 | Added |
 | A union frame needs a list separator | Verifier | `parse/pipeline` | 038 | Remove (the frame lists its parts) |
 | List split: separators, fewest parts, comma rule, sub-query parts, fuzzy fallback (`_list_parts`) | Producer | `parse/pipeline` | 036, 038 | Replace: T5 writes the parts |
 | `LIST_SEP`, `LIST_MARKER` word lists | Producer | `parse/pipeline` | 036, 038 | Remove (the quantifier words stay, as option keywords) |
@@ -34,7 +37,7 @@ Code locations: `t5/frames` is `geoparse/t5/frames.py` and `web/src/core/frames.
 | A place name that the local data cannot place goes to the geocoder (Photon), with a note: a lookup frame that `is_subquery` calls a set, a low-confidence `select_source`, a name with no local candidate. Not for a text with a plural admin level word ("which states touch the sea"). | Policy | `parse/pipeline` | 039 | Added (user, 2026-11-23) |
 
 Count at the start of plan-039: 4 verifiers (one also a producer), 6 producers, 1 policy, 1 model decision, and
-1 data item. Plan-039 added 1 policy (the geocoder fallback).
+1 data item. Plan-039 added 1 policy (the geocoder fallback) and 3 verifiers.
 
 ## Measurement at the start of plan-039
 
@@ -48,3 +51,14 @@ same as the result of the gold DAG. Records that need Photon are not executed.
 
 `india_ref` has 18 queries that the parser must refuse (`t: unsupported`), and 6 records with a data gap (`gap`: a
 city that is a point, or a missing ancestor). A data gap has labels, but it is not executed.
+
+## Measurement after plan-039 phase 1 (verifiers)
+
+| Set | Executed result before | After |
+|---|---|---|
+| `india_ref` | 149/157 | 151/157 |
+| `world_heldout8` | 8/19 | 8/19 (the 'Indian' records give an error message, not an empty result) |
+| All other gold and held-out sets | | No change |
+
+The India reference set: 6 of 696 parses changed, all as intended (two attributes with no data are refused, "Mysuru
+palace" is a lookup, "states in India that touch Pakistan" uses the border with Pakistan).

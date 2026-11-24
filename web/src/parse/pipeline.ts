@@ -113,7 +113,8 @@ export class Parser {
     const merged = raw.filter((f) => !SUB_LIST_TEMPLATES.has(f.template)
       || new RegExp(LIST_SEP.source, "i").test(f.slots.places ?? "") || LIST_MARKER.test(f.slots.places ?? ""));
     const frames = await this.extendSlots(dec, merged, text, depth);
-    const groups = await this.covering(dec, groupFrames(frames, text, this.templates, Number(this.bundle.config.t5.margin ?? 2)), text, depth);
+    const kept = this.checked(dec, frames, text, depth);
+    const groups = await this.covering(dec, groupFrames(kept, text, this.templates, Number(this.bundle.config.t5.margin ?? 2)), text, depth);
     dec.record("generate_frames", depth, { text }, null,
       { value: groups.map(frameToText), impl: `t5:${this.t5.name}`, confidence: frames.length ? Math.exp(frames[0].score) : 0,
         trace: { beam: frames.map((f) => [frameToText(f), Math.round(f.score * 1e4) / 1e4]) } }, latency);
@@ -177,7 +178,9 @@ export class Parser {
 
   /** Port of _dropped_names: the exact place names of the query in no slot of the frame (1 to 4 words, 4 or more letters). */
   private async droppedNames(dec: Decider, f: Frame, text: string): Promise<string[]> {
-    const covered = Object.values(f.slots).map((v) => findSpan(text, v));
+    // Port: a name in a closed slot is left out ("states that touch Pakistan": pred = touch Pakistan).
+    const t = this.templates[f.template];
+    const covered = Object.entries(f.slots).filter(([k]) => !t?.slots[k] || !CLOSED.has(t.slots[k].type)).map(([, v]) => findSpan(text, v));
     const words = [...text.matchAll(WORD)].filter((m) => !covered.some((r) => r && r[0] <= m.index! && m.index! < r[1]));
     const out: string[] = [];
     const used = new Set<number>();
@@ -195,6 +198,40 @@ export class Parser {
       }
     }
     return out;
+  }
+
+  /** Port of _faults: an open slot that is the whole text of a template that is not a lookup or a list, or a closed slot text
+   * (not an admin level) with no keyword of its options. */
+  private faults(f: Frame, text: string): string[] {
+    const t = this.templates[f.template];
+    if (f.template === UNSUPPORTED || !t) return [];
+    const out: string[] = [];
+    for (const [k, v] of Object.entries(f.slots)) {
+      const sd = t.slots[k];
+      if (!sd) continue;
+      if (OPEN.has(sd.type) && t.family !== "lookup" && !SUB_LIST_TEMPLATES.has(t.id) && norm(v) === norm(text)) out.push(`the frame of '${text}' does not make it shorter`);
+      else if (CLOSED.has(sd.type) && sd.type !== "admin_level" && sd.options_ref) {
+        const kws = this.optionWords(sd.options_ref);
+        if (kws.length && !keywordHits(v, kws)) out.push(`the text '${v}' names no known ${sd.type}`);
+      }
+    }
+    return out;
+  }
+
+  /** Port of _checked: the frames with no fault; if none is left, the first fault is the reason of the refusal. */
+  private checked(dec: Decider, frames: Frame[], text: string, depth: number): Frame[] {
+    const faults = frames.map((f) => this.faults(f, text));
+    const keep = frames.filter((_, i) => !faults[i].length);
+    if (keep.length < frames.length)
+      dec.recordStep("frame_check", depth, { text }, keep.map(frameToText), "rules",
+        { faults: Object.fromEntries(frames.map((f, i) => [frameToText(f), faults[i]]).filter(([, x]) => x.length)) });
+    if (frames.length && !keep.length) stop(faults.find((x) => x.length)![0], depth, text, "frame_check");
+    return keep;
+  }
+
+  private optionWords(ref: string): string[] {
+    if (ref === "categories") return Object.values(this.bundle.categories).flatMap((g) => Object.values(g.items).flatMap((i) => i.keywords));
+    return Object.values<any>(this.bundle.options[ref] ?? {}).flatMap((v) => v.keywords ?? []);
   }
 
   /** Port of _covering: drop the frames that leave out more exact place names than the best frame; a note if all do. */

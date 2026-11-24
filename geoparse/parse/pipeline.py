@@ -254,9 +254,11 @@ class Parser:
         # A union frame needs a list separator ("madhya pradesh sans bhopal" is not a union).
         frames = [f for f in frames
                   if f.template not in SUB_LIST_TEMPLATES or LIST_SEP.search(f.slots.get("places", "")) or LIST_MARKER.match(f.slots.get("places", ""))]
+        kept = frames
         if dec is not None:
             frames = self._extend_slots(dec, frames, text, depth)
-        groups = group_frames(frames, text, self.templates, float(self.t5_cfg.get("margin", 2.0)))
+            kept = self._checked(dec, frames, text, depth)
+        groups = group_frames(kept, text, self.templates, float(self.t5_cfg.get("margin", 2.0)))
         if dec is not None:
             groups = self._covering(dec, groups, text, depth)
         if dec is not None:
@@ -321,11 +323,47 @@ class Parser:
             out.append(f.model_copy(update={"slots": slots}) if slots != f.slots else f)
         return out
 
+    def _faults(self, f: Any, text: str) -> list[str]:
+        """Why a frame cannot be correct: an open slot that is the whole text of a template that is not a lookup or a list
+        (the sub-query does not get shorter), or a closed slot text with no keyword of its options ("sex ratio" is not an
+        attribute, "palace" is not a category). Admin levels have their own check (no known admin_level)."""
+        from geoparse.t5.frames import UNSUPPORTED
+
+        t = self.templates.get(f.template)
+        if f.template == UNSUPPORTED or t is None:
+            return []
+        out = []
+        for k, v in f.slots.items():
+            sd = t.slots.get(k)
+            if sd is None:
+                continue
+            if sd.type in OPEN_TYPES and t.family != "lookup" and t.id not in SUB_LIST_TEMPLATES and norm(v) == norm(text):
+                out.append(f"the frame of '{text}' does not make it shorter")
+            elif sd.type in CLOSED_TYPES and sd.type != "admin_level" and sd.options_ref:
+                kws = [w for ws in option_keywords(sd.options_ref).values() for w in ws]
+                if kws and not keyword_hits(v, kws):
+                    out.append(f"the text '{v}' names no known {sd.type}")
+        return out
+
+    def _checked(self, dec: Decider, frames: list, text: str, depth: int) -> list:
+        """The frames with no fault. If no frame is left, the first fault is the reason of the refusal."""
+        faults = [self._faults(f, text) for f in frames]
+        keep = [f for f, x in zip(frames, faults) if not x]
+        if len(keep) < len(frames):
+            dec.record_step("frame_check", depth, {"text": text}, [f.to_text() for f in keep], "rules",
+                            {"faults": {f.to_text(): x for f, x in zip(frames, faults) if x}})
+        if frames and not keep:
+            raise _Stop(Unsupported(reason=next(x for x in faults if x)[0], decision="frame_check", depth=depth, text=text))
+        return keep
+
     def _dropped_names(self, dec: Decider, f: Any, text: str) -> list[str]:
-        """The exact place names of the query that are in no slot of the frame (1 to 4 words, 4 or more letters)."""
+        """The exact place names of the query that are in no open slot of the frame (1 to 4 words, 4 or more letters).
+        A name in a closed slot is left out ("states that touch Pakistan": `pred = touch Pakistan`)."""
         from geoparse.t5.frames import find_span
 
-        covered = [find_span(text, v) for v in f.slots.values()]
+        t = self.templates.get(f.template)
+        covered = [find_span(text, v) for k, v in f.slots.items()
+                   if t is None or k not in t.slots or t.slots[k].type not in CLOSED_TYPES]
         words = [m for m in re.finditer(r"[^\W\d_][\w'.-]*", text)
                  if not any(r and r[0] <= m.start() < r[1] for r in covered)]
         out, used = [], set()
