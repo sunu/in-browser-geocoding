@@ -1,7 +1,7 @@
 // Public API of the browser version: load(), parse(query), execute(dag), run(query).
 import { loadBundle, type Bundle } from "./core/bundle.ts";
 import { Decider } from "./decisions/decider.ts";
-import { openDb } from "./execute/db.ts";
+import { logged, openDb, type QueryRecord } from "./execute/db.ts";
 import { Executor, type Result } from "./execute/executor.ts";
 import { Gazetteer } from "./execute/gazetteer.ts";
 import { Photon } from "./execute/photon.ts";
@@ -12,6 +12,8 @@ import { Parser, type ParseResult } from "./parse/pipeline.ts";
 
 export interface Geoparse {
   bundle: Bundle; parser: Parser; executor: Executor;
+  /** The SQL statements of the parse (gazetteer lookups) and of the plan, in order. The caller empties it. */
+  queries: QueryRecord[];
   /** view: map view (xmin, ymin, xmax, ymax) for the ranking of places. */
   parse(q: string, view?: number[] | null): Promise<ParseResult>;
   execute(dag: any, view?: number[] | null): Promise<Result>;
@@ -20,9 +22,10 @@ export interface Geoparse {
 
 /** data: URL of the data files (flat layout or country layout); default `${base}/data`.
  * opts.models: URL of the model files; default `${base}/models`. opts.dataVersion: see openDb. opts.preload: load the
- * default country (config data.country) at start-up; the page does not (it loads countries on demand). */
+ * default country (config data.country) at start-up; the page does not (it loads countries on demand).
+ * opts.logQueries: keep the SQL statements and their first rows in `queries` (the page shows them). */
 export async function load(base = "", onProgress: (msg: string) => void = () => {}, data = `${base}/data`,
-                           opts: { models?: string; dataVersion?: string; preload?: boolean } = {}): Promise<Geoparse> {
+                           opts: { models?: string; dataVersion?: string; preload?: boolean; logQueries?: boolean } = {}): Promise<Geoparse> {
   setModelBase(opts.models ?? `${base}/models`);
   onProgress("bundle");
   const bundle = await loadBundle(`${base}/bundle.json`);
@@ -34,10 +37,12 @@ export async function load(base = "", onProgress: (msg: string) => void = () => 
   ]);
   pruneModels();
   const photon = new Photon(bundle.config.geocoder.photon_url);
-  const parser = new Parser(bundle, t5, new Gazetteer(db, bundle), new Decider(bundle, xenc), photon);
-  const executor = new Executor(db, bundle, photon);
+  const queries: QueryRecord[] = [];
+  const ldb = opts.logQueries ? logged(db, queries) : db;
+  const parser = new Parser(bundle, t5, new Gazetteer(ldb, bundle), new Decider(bundle, xenc), photon);
+  const executor = new Executor(ldb, bundle, photon);
   return {
-    bundle, parser, executor,
+    bundle, parser, executor, queries,
     parse: (q, view = null) => parser.parse(q, view),
     execute: (dag, view = null) => executor.execute(dag, true, view),
     async run(q, view = null) {

@@ -122,6 +122,12 @@
     .row:first-child .b i { background: var(--accent); }
     .rows.text .t { font-family: inherit; font-size: 14px; }
     #side details > summary { cursor: pointer; }
+    details.sql { margin: 8px 0; font-size: 14px; }
+    details.sql summary code { font-size: 12.5px; word-break: break-all; }
+    details.sql pre { margin: 8px 0; }
+    .sqlrows { overflow-x: auto; max-width: 100%; }
+    .sqlrows table { font: 12px/1.4 var(--mono); width: auto; }
+    .sqlrows th, .sqlrows td { padding: 4px 8px; white-space: nowrap; max-width: 320px; overflow: hidden; text-overflow: ellipsis; }
 
     /* Loading screen. */
     #loading { position: fixed; inset: 0; z-index: 10; display: flex; align-items: center; justify-content: center; padding: 32px 16px; background: rgba(251,247,244,.6); backdrop-filter: blur(2px); }

@@ -1,6 +1,7 @@
 // Plain-language text for the result panel: what the query was read as, and the decisions that made the parse.
 import type { Bundle } from "../core/bundle.ts";
 import type { TraceRecord } from "../decisions/decider.ts";
+import type { QueryRecord } from "../execute/db.ts";
 import type { Result } from "../execute/executor.ts";
 import type { ParseResult } from "../parse/pipeline.ts";
 
@@ -153,6 +154,38 @@ export function decisions(trace: TraceRecord[], bundle: Bundle): string {
       <div class="a">${answer(t, bundle)}</div>
       <div class="meta"><span class="tag">${who(t.impl)}</span>${conf}</div>${others}</div>`;
   }).join("");
+}
+
+const MAX_QUERIES = 200;
+
+function cell(v: any): string {
+  return v == null ? `<span class="muted">null</span>` : esc(typeof v === "object" ? JSON.stringify(v) : v);
+}
+
+function queryRecord(r: QueryRecord): string {
+  const first = r.sql.split("\n")[0];
+  const head = first.length > 80 ? `${first.slice(0, 80)}…` : first;
+  const cols = r.rows.length ? Object.keys(r.rows[0]) : [];
+  const table = cols.length ? `<div class="sqlrows"><table><tr>${cols.map((c) => `<th>${esc(c)}</th>`).join("")}</tr>${r.rows.map((row) =>
+    `<tr>${cols.map((c) => `<td>${cell(row[c])}</td>`).join("")}</tr>`).join("")}</table></div>` : "";
+  const more = r.count > r.rows.length ? `<p class="muted">The first ${r.rows.length} of ${r.count} rows.</p>` : "";
+  return `<details class="sql"><summary><code>${esc(head)}</code> <span class="muted">${r.count} row${r.count === 1 ? "" : "s"} ·
+    ${r.ms.toFixed(0)} ms</span>${r.error ? ` <span class="err">error</span>` : ""}</summary>
+    <pre>${esc(r.sql)}</pre>${r.error ? `<p class="err">${esc(r.error)}</p>` : ""}${table}${more}</details>`;
+}
+
+function queryGroup(title: string, rs: QueryRecord[]): string {
+  if (!rs.length) return "";
+  const more = rs.length > MAX_QUERIES ? `<p class="muted">The first ${MAX_QUERIES} of ${rs.length} queries.</p>` : "";
+  return `<h4>${esc(title)}</h4>${rs.slice(0, MAX_QUERIES).map(queryRecord).join("")}${more}`;
+}
+
+/** The SQL statements of a query and the rows they fetched, in a closed section. */
+export function sqlLog(parse: QueryRecord[], run: QueryRecord[]): string {
+  const n = parse.length + run.length;
+  if (!n) return "";
+  return `<details class="how"><summary>SQL queries and data (${n})</summary>
+    ${queryGroup("Name lookups while reading the query", parse)}${queryGroup("Steps of the plan", run)}</details>`;
 }
 
 export const HOW_IT_WORKS = `<details class="how" open><summary>How this works</summary><ol>
