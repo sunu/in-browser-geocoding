@@ -28,6 +28,8 @@ const EXAMPLES: [string, string[]][] = [
 const STYLE = "https://tiles.versatiles.org/assets/styles/gray/style.json";
 let map: maplibregl.Map | null = null;
 try {
+  // Arabic and Hebrew labels: the plugin loads only when a tile has right-to-left text.
+  maplibregl.setRTLTextPlugin("https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.4.0/dist/mapbox-gl-rtl-text.js", true).catch(console.error);
   map = new maplibregl.Map({ container: "map", style: STYLE, center: [78.9, 22.5], zoom: 4 });
 } catch (e) {
   $("map").innerHTML = `<p class="err" style="padding:16px">The map cannot show in this browser (WebGL is not available).
