@@ -53,6 +53,8 @@
     body.landing .brand { align-items: center; }
     body.landing .logo { font-size: 76px; }
     body.landing #more { display: none; }
+    .sub span { color: var(--accent-text); font-weight: 600; }
+    .sub b { color: var(--fg); font-weight: 600; }
     body.landing .sub { font-size: 14px; letter-spacing: 1.6px; margin-top: 8px; }
     body.landing .tagline { display: block; }
     body.landing .search { border: 2px solid var(--accent); border-radius: 14px; padding: 8px; box-shadow: 0 18px 40px -18px rgba(208,66,0,.35); }
@@ -129,6 +131,13 @@
     .sqlrows table { font: 12px/1.4 var(--mono); width: auto; }
     .sqlrows th, .sqlrows td { padding: 4px 8px; white-space: nowrap; max-width: 320px; overflow: hidden; text-overflow: ellipsis; }
 
+    footer { margin-top: auto; border-top: 1px solid var(--line); padding: 10px 32px; font-size: 13px; color: var(--muted); }
+    footer .inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; margin: 0 auto; max-width: 1376px; }
+    footer a { color: var(--accent-text); }
+    body.landing footer { border-top-color: transparent; padding-bottom: 24px; }
+    body.landing footer .inner { justify-content: center; text-align: center; }
+    @media (max-width: 800px) { footer { padding: 10px 16px; } }
+
     /* Loading screen. */
     #loading { position: fixed; inset: 0; z-index: 10; display: flex; align-items: center; justify-content: center; padding: 32px 16px; background: rgba(251,247,244,.6); backdrop-filter: blur(2px); }
     #loading[hidden] { display: none; }
@@ -160,8 +169,8 @@
   <header>
     <div class="inner">
       <div class="brand">
-        <button class="logo" id="home" type="button" aria-label="gazetini: show the examples">gazet<span>ini</span><i aria-hidden="true"></i></button>
-        <div class="sub">gazet with tiny models</div>
+        <button class="logo" id="home" type="button" aria-label="gazetini: show the examples">gaze<span>tini</span><i aria-hidden="true"></i></button>
+        <div class="sub"><b>gazet</b> with <span>tiny</span> models</div>
       </div>
       <p class="tagline">Describe a place, and watch tiny models find it on the map. All in your browser.</p>
       <form class="search" id="form">
@@ -193,6 +202,15 @@
     <div id="map"></div>
     <div id="side"></div>
   </main>
+  <footer>
+    <div class="inner">
+      <span>gazetini is a natural-language geocoding experiment, similar to
+        <a href="https://github.com/developmentseed/gazet" target="_blank" rel="noopener">gazet</a> by Development Seed.
+        It has no backend server: the models and the database run in your browser. Street and building search
+        uses <a href="https://photon.komoot.io" target="_blank" rel="noopener">Photon</a>, kindly provided by Komoot.</span>
+      <a href="https://github.com/sunu/in-browser-geocoding" target="_blank" rel="noopener">Source code on GitHub</a>
+    </div>
+  </footer>
   <script type="module" src="/src/app/main.ts"></script>
 </body>
 </html>
