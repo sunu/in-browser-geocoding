@@ -11,6 +11,7 @@ export interface Bundle {
   categories: Record<string, { description: string; items: Record<string, { description: string; match: string[]; keywords: string[] }> }>;
   lexicon: Record<string, { aliases: string[]; members: { code: string; id: string | null }[]; notes: string }>;
   aliases: Record<string, string>;
+  demonyms?: Record<string, string>;
   instructions: Record<string, string>;
   is_subquery_criteria: { true: string; false: string };
   none_option: string;

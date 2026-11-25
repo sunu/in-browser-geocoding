@@ -46,6 +46,17 @@ def name_aliases() -> dict[str, str]:
     return {norm_name(k): norm_name(v) for k, v in raw.items()}
 
 
+@lru_cache(maxsize=1)
+def demonyms() -> dict[str, str]:
+    """Demonyms as names of a country or region ("indian": "india"); only for the whole name text."""
+    import yaml
+
+    from geoparse.config import PACKAGE_DIR
+
+    raw = yaml.safe_load((PACKAGE_DIR / "data" / "demonyms.yaml").read_text()) or {}
+    return {norm_name(k): norm_name(v) for k, v in raw.items()}
+
+
 # Latin letters that NFKD does not split into a base letter and a mark.
 NAME_FOLD = {"ł": "l", "ø": "o", "đ": "d", "ð": "d", "ħ": "h", "ı": "i", "ŀ": "l", "ß": "ss", "æ": "ae", "œ": "oe", "þ": "th"}
 _GENERIC_MARKS = re.compile("[̀-ͯ]")
@@ -235,6 +246,8 @@ class Store:
                     q_list.append(" ".join(ws[:i] + [aliases[w]] + ws[i + 1:]))
             if x in aliases:
                 q_list.append(aliases[x])
+        if n in demonyms():
+            q_list.append(demonyms()[n])
         # The key is the name without spaces (the key of the web name shards). It gives the matches of
         # "name_norm OR name_nospace".
         rows = [] if fuzzy == "only" else cur.execute(f"""

@@ -69,7 +69,7 @@ def test_unsupported_is_returned_not_guessed(rules_parser):
 
 def test_simple_and_complex_path(rules_parser):
     assert rules_parser.parse("2 km around MG Road Bangalore").path == "simple"
-    assert rules_parser.parse("Kerala and Tamil Nadu").path == "complex"
+    assert rules_parser.parse("coastal districts of Kerala").path == "complex"
 
 
 def _t5_available():
@@ -135,24 +135,6 @@ def test_qualified_name_with_in(rules_parser):
         assert rules_parser._qualified(dec, text, 0) is None, text
 
 
-def test_list_parts(rules_parser):
-    # Lists of places (plan-036): exact names cut at whole-word separators; a leading word gives the quantifier.
-    dec = rules_parser.base_decider.fork()
-    lp = rules_parser._list_parts
-    assert lp(dec, "Kerala and Goa", False) == (["Kerala", "Goa"], "and", None)
-    assert lp(dec, "Kerala or Goa", False) == (["Kerala", "Goa"], "or", None)
-    assert lp(dec, "Karnataka, Kerala and Goa", False) == (["Karnataka", "Kerala", "Goa"], "and", None)
-    assert lp(dec, "both Kerala and Goa", False) == (["Kerala", "Goa"], "and", "all")
-    assert lp(dec, "either Kerala or Goa", False) == (["Kerala", "Goa"], "or", "any")
-    assert lp(dec, "Kerala n Goa", False) == (["Kerala", "Goa"], "and", None)
-    # Commas alone are a qualified name, not a list; a part that is not an exact name stops the list.
-    assert lp(dec, "Salt Lake, Kolkata", False) is None
-    assert lp(dec, "coastal districts of Kerala and Goa", False) is None
-    # A space is a separator only where the template allows it ("India Pakistan border").
-    assert lp(dec, "India Pakistan", False) is None
-    assert lp(dec, "India Pakistan", True) == (["India", "Pakistan"], "and", None)
-
-
 def test_list_keeps_names_with_and(rules_parser):
     # "Jammu and Kashmir" is one exact name: the slot is the place, not a list.
     p = rules_parser.parse("districts of Jammu and Kashmir")
@@ -175,17 +157,46 @@ def test_frame_coverage(rules_parser):
     assert "'Karnataka' is not used in the result" in dec.notes
 
 
-def test_extend_slot_to_exact_name(rules_parser):
-    from geoparse.t5.frames import Frame
-
-    dec = rules_parser.base_decider.fork()
-    f = Frame(template="children", slots={"level": "districts", "parent": "Tamil"})
-    assert rules_parser._extend_slots(dec, [f], "districts of Tamil Nadu", 0)[0].slots["parent"] == "Tamil Nadu"
-
-
 def test_same_text_in_two_slots():
     from geoparse.t5.frames import Frame, check_frame
     from geoparse.templates.model import all_templates
 
     f = Frame(template="intersection", slots={"a": "Kerala", "b": "Kerala"})
-    assert "the same text in two region slots" in check_frame(f, "overlap of Kerala and Kerala", all_templates())
+    assert "the same text in two region slots" in check_frame(f, "overlap of Kerala and Goa", all_templates())
+
+
+def test_frame_list_and_within(rules_parser):
+    # plan-039: the parts of a list and the qualifier come from the frame, not from a cut of the text.
+    from geoparse.t5.frames import Frame
+
+    dec = rules_parser.base_decider.fork()
+    tpl = rules_parser.templates["children"]
+    q = "districts of Kerala or Goa"
+    dag, info = rules_parser._region(dec, tpl, "Kerala | Goa", [], q, 0, None)
+    assert dag["op"] == "Union" and info["conj"] == "or" and [x for x in info["list"]] == ["Kerala", "Goa"]
+    look = rules_parser.templates["lookup_place"]
+    dag, _ = rules_parser._region(dec, look, "Jayanagar", [], "Jayanagar, Bengaluru", 0, None, within="Bengaluru")
+    assert dag["args"]["name"] == "Jayanagar" and dag["args"]["context"] == "Bengaluru"
+    ok = Frame(template="lookup_place", slots={"anchor": "Jayanagar", "anchor.within": "Bengaluru"})
+    bad = Frame(template="lookup_place", slots={"anchor": "Jayanagar", "anchor.within": "Kerala"})
+    assert rules_parser._within_faults(dec, ok) == []
+    assert rules_parser._within_faults(dec, bad) == ["no place 'Jayanagar' is inside 'Kerala'"]
+
+
+@pytest.mark.skipif(not _t5_available(), reason="T5 model or runtime not available")
+@pytest.mark.xfail(strict=True, reason="known fault (plan-039 phase 4): T5 reads 'marina beach' as the beaches of 'marina', "
+                                      "and the fuzzy search finds 'Maria' in Madhya Pradesh")
+def test_marina_beach_is_not_maria():
+    p = _parser("rules", use_t5=True)
+    r = p.parse("chennai and 3 km around marina beach overlap")
+    assert r.ok, r.unsupported
+
+    def ids(n):
+        if isinstance(n, dict):
+            if n.get("op") == "Resolve" and n["args"].get("id"):
+                yield n["args"]["id"]
+            for v in n.get("args", {}).values():
+                yield from ids(v)
+
+    names = {d["name"] for d in p.store.describe(sorted(set(ids(r.dag)))).values()}
+    assert "Maria" not in names, names

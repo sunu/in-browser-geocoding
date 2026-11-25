@@ -5,7 +5,8 @@ Procedure for one level (plan-001 section 4.3):
     (a distance slot must parse as a distance, a closed-slot segment must contain a known keyword).
  2. pick_family, then pick_template, among the templates that matched.
  3. pick_split among the candidate splits of the chosen template.
- 4. For each region slot: lexicon first; else is_subquery; a sub-query recurses (depth limit).
+ 4. For each region slot: the list parts of the frame; a lexicon key or an exact place name; else the top T5 frame of
+    the slot text: a lookup is a name, any other frame is a sub-query, which recurses (depth limit).
  5. Fill closed slots. The independent decisions of one level run in parallel threads.
 """
 from __future__ import annotations
@@ -35,18 +36,8 @@ SIMPLE_FAMILIES = {"lookup", "modifier"}
 GEOCODER_FAMILIES = {"lookup", "modifier", "features"}
 # Templates whose optional parent (first name) without text is the countries around another slot (second name).
 AROUND_DEFAULT = {"children_touching": ("parent", "other"), "children_near": ("parent", "other")}
-# A number with a distance unit in a text ("10 km around Whitefield"; not "Sector 5").
-HAS_DISTANCE = re.compile(r"\b\d+(?:\.\d+)?\s*(?:km|kms|kilometres?|kilometers?|m|metres?|meters?|mi|miles?)\b", re.I)
 # Templates where the admin level can be empty (an unknown level word). The executor uses the data.
 STRUCTURE_LEVEL = {"children", "children_with_predicate"}
-# Lists of places in a slot ("France, Switzerland and Germany"): the separators are whole words with spaces, so a name
-# that contains "and" ("Andorra") is never split. A leading word gives the quantifier ("both France and Germany").
-LIST_SEP = re.compile(r"\s*,\s*(?:(?:and|or|&|plus)\s+)?|\s+(?:and|or|&|n|plus|as well as|along with|together with)\s+|\s*\+\s*", re.I)
-LIST_MARKER = re.compile(r"^(both|either|all of the|all of|each of|any one of|any of)\s+(.+)$", re.I)
-LIST_MARKER_QUANT = {"both": "all", "all of the": "all", "all of": "all", "each of": "all", "either": "any",
-                     "any one of": "any", "any of": "any"}
-# Templates whose list can have no separator ("India Pakistan border").
-SPACE_LIST_TEMPLATES = {"shared_border"}
 # Templates whose list parts can be sub-queries ("Kerala and coastal districts of Karnataka").
 SUB_LIST_TEMPLATES = {"union"}
 
@@ -144,6 +135,7 @@ class Parser:
         self.templates = {t.id: t for f in self.families.values() for t in f.templates}
         self._store = store
         self._exact_cache: dict[tuple, Any] = {}
+        self._t5_cache: dict[tuple, Any] = {}
         # Geocoder for the Photon boost of close candidates (plan-012 section 3.2). None: no boost.
         self.geocoder = geocoder
         self.pool = ThreadPoolExecutor(max_workers=max_workers)
@@ -236,7 +228,7 @@ class Parser:
             for m in ms:
                 seg_of = {s: seg for seg, fed in m["feeds"].items() for s in fed}
                 key = tuple(sorted((n, norm(m["segments"][seg_of[n]])) for n, sd in t.slots.items()
-                                   if n in seg_of and sd.type in OPEN_TYPES))
+                                   if n in seg_of and sd.type in OPEN_TYPES)) + tuple(sorted(m.get("within", {}).items()))
                 # A T5 frame wins over a pattern match with the same open spans (its spans are more precise).
                 if key not in best or (m.get("source") == "t5") > (best[key].get("source") == "t5") or (
                         (m.get("source") == "t5") == (best[key].get("source") == "t5") and m["score"] > best[key]["score"]):
@@ -248,15 +240,21 @@ class Parser:
         """Candidate splits from the T5 model, as split matches. Empty if T5 is not enabled or not built."""
         if self.t5 is None:
             return [], False
-        from geoparse.t5.frames import UNSUPPORTED, frame_to_match, group_frames
+        from geoparse.t5.frames import PART_SEP, UNSUPPORTED, frame_to_match, group_frames
 
-        frames, dt = self.t5.frames(text, k=int(self.t5_cfg.get("beams", 4)))
-        # A union frame needs a list separator ("madhya pradesh sans bhopal" is not a union).
-        frames = [f for f in frames
-                  if f.template not in SUB_LIST_TEMPLATES or LIST_SEP.search(f.slots.get("places", "")) or LIST_MARKER.match(f.slots.get("places", ""))]
+        # The frames of a slot text are generated two times (the sub-query check, then the sub-query): one T5 call.
+        key = (text, int(self.t5_cfg.get("beams", 4)))
+        if key not in self._t5_cache:
+            if len(self._t5_cache) > 256:
+                self._t5_cache.clear()
+            self._t5_cache[key] = self.t5.frames(text, k=key[1])
+        frames, dt = self._t5_cache[key]
+        # A union frame needs two or more parts ("madhya pradesh sans bhopal" is not a union).
+        frames = [f for f in frames if f.template not in SUB_LIST_TEMPLATES or PART_SEP in f.slots.get("places", "")]
+        kept = frames
         if dec is not None:
-            frames = self._extend_slots(dec, frames, text, depth)
-        groups = group_frames(frames, text, self.templates, float(self.t5_cfg.get("margin", 2.0)))
+            kept = self._checked(dec, frames, text, depth)
+        groups = group_frames(kept, text, self.templates, float(self.t5_cfg.get("margin", 2.0)))
         if dec is not None:
             groups = self._covering(dec, groups, text, depth)
         if dec is not None:
@@ -289,43 +287,60 @@ class Parser:
             self._exact_cache[key] = "lexicon" if lexicon_match(name) else (c[0] if c else None)
         return self._exact_cache[key]
 
-    def _extend_slots(self, dec: Decider, frames: list, text: str, depth: int) -> list:
-        """A region slot text plus the next 1 or 2 words of the query, if that is an exact name and the words are in
-        no other slot ("Aravalli" -> "Aravalli range")."""
-        from geoparse.t5.frames import UNSUPPORTED, find_span
+    def _faults(self, f: Any, text: str) -> list[str]:
+        """Why a frame cannot be correct: an open slot that is the whole text of a template that is not a lookup or a list
+        (the sub-query does not get shorter), or a closed slot text with no keyword of its options ("sex ratio" is not an
+        attribute, "palace" is not a category). Admin levels have their own check (no known admin_level)."""
+        from geoparse.t5.frames import UNSUPPORTED
 
+        t = self.templates.get(f.template)
+        if f.template == UNSUPPORTED or t is None:
+            return []
         out = []
-        for f in frames:
-            t = self.templates.get(f.template)
-            if f.template == UNSUPPORTED or t is None:
-                out.append(f)
+        for k, v in f.slots.items():
+            sd = t.slots.get(k)
+            if sd is None:
                 continue
-            slots = dict(f.slots)
-            spans = {k: find_span(text, v) for k, v in f.slots.items()}
-            for k, v in f.slots.items():
-                r = spans[k]
-                if not r or k not in t.slots or t.slots[k].type not in ("region", "anchor"):
-                    continue
-                m = re.match(r"\s+([^\W\d_][\w'-]*)(\s+([^\W\d_][\w'-]*))?", text[r[1]:])
-                if not m:
-                    continue
-                ends = [(r[1] + m.end(1), m.group(1))] + ([(r[1] + m.end(3), m.group(3))] if m.group(3) else [])
-                for end, word in reversed(ends):
-                    longer = text[r[0]:end]
-                    if word.lower() in frame_words() or any(o and o[0] < end and o[1] > r[1] for j, o in spans.items() if j != k):
-                        continue
-                    if self._exact(dec, longer):
-                        dec.record_step("extend_span", depth, {"text": text, "slot": k, "from": v}, longer, "rules", {})
-                        slots[k] = longer
-                        break
-            out.append(f.model_copy(update={"slots": slots}) if slots != f.slots else f)
+            if sd.type in OPEN_TYPES and t.family != "lookup" and t.id not in SUB_LIST_TEMPLATES and norm(v) == norm(text):
+                out.append(f"the frame of '{text}' does not make it shorter")
+            elif sd.type in CLOSED_TYPES and sd.type != "admin_level" and sd.options_ref:
+                kws = [w for ws in option_keywords(sd.options_ref).values() for w in ws]
+                if kws and not keyword_hits(v, kws):
+                    out.append(f"the text '{v}' names no known {sd.type}")
         return out
 
-    def _dropped_names(self, dec: Decider, f: Any, text: str) -> list[str]:
-        """The exact place names of the query that are in no slot of the frame (1 to 4 words, 4 or more letters)."""
-        from geoparse.t5.frames import find_span
+    def _within_faults(self, dec: Decider, f: Any) -> list[str]:
+        """A slot with `<slot>.within` needs a candidate of each of its names inside an exact match of the qualifier."""
+        from geoparse.t5.frames import WITHIN, slot_parts
 
-        covered = [find_span(text, v) for v in f.slots.values()]
+        probe = dec.fork()  # without steps in the trace
+        probe.view = dec.view
+        out = []
+        for k, w in f.slots.items():
+            if k.endswith(WITHIN) and k[:-len(WITHIN)] in f.slots:
+                out += [f"no place '{p}' is inside '{w}'" for p in slot_parts(f.slots[k[:-len(WITHIN)]])
+                        if self._inside(probe, p, [w], 0, exact_only=False) is None]
+        return out
+
+    def _checked(self, dec: Decider, frames: list, text: str, depth: int) -> list:
+        """The frames with no fault. If no frame is left, the first fault is the reason of the refusal."""
+        faults = [self._faults(f, text) + self._within_faults(dec, f) for f in frames]
+        keep = [f for f, x in zip(frames, faults) if not x]
+        if len(keep) < len(frames):
+            dec.record_step("frame_check", depth, {"text": text}, [f.to_text() for f in keep], "rules",
+                            {"faults": {f.to_text(): x for f, x in zip(frames, faults) if x}})
+        if frames and not keep:
+            raise _Stop(Unsupported(reason=next(x for x in faults if x)[0], decision="frame_check", depth=depth, text=text))
+        return keep
+
+    def _dropped_names(self, dec: Decider, f: Any, text: str) -> list[str]:
+        """The exact place names of the query that are in no open slot of the frame (1 to 4 words, 4 or more letters).
+        A name in a closed slot is left out ("states that touch Pakistan": `pred = touch Pakistan`)."""
+        from geoparse.t5.frames import find_span, slot_parts
+
+        t = self.templates.get(f.template)
+        covered = [find_span(text, p) for k, v in f.slots.items()
+                   if t is None or k not in t.slots or t.slots[k].type not in CLOSED_TYPES for p in slot_parts(v)]
         words = [m for m in re.finditer(r"[^\W\d_][\w'.-]*", text)
                  if not any(r and r[0] <= m.start() < r[1] for r in covered)]
         out, used = [], set()
@@ -369,7 +384,7 @@ class Parser:
     def _valid(self, t: Template, m: dict[str, Any]) -> bool:
         for seg_name, text in m["segments"].items():
             fed = m["feeds"][seg_name]
-            if t.id in SUB_LIST_TEMPLATES and not (LIST_SEP.search(text) or LIST_MARKER.match(text)):
+            if t.id in SUB_LIST_TEMPLATES:  # the parts of a list come from the T5 frame
                 return False
             types = {t.slots[s].type for s in fed if s in t.slots}
             if "distance" in types and parse_distance(text) is None:
@@ -483,14 +498,22 @@ class Parser:
                 dec.record_step("natural_name", depth, {"text": text}, nat[0].id, "rules", {"article": True})
                 return ({"op": "Resolve", "args": {"name": name, "source": "overture", "id": nat[0].id}},
                         {"family": "lookup", "template": "lookup_place", "slots": {"anchor": name}})
-        if tpl.family == "lookup" and alt != "lookup_place" and not self._list_parts(dec, text, False):
+        if tpl.family == "lookup" and alt != "lookup_place" and not any(m.get("within") for m in cands.get(tpl.id, [])):
             # Guard (not after the exact-name rule of _frame_override): the lookup template takes the whole text as one name. If the text describes a set
             # of places (and no other template matched), it is not supported. Do not geocode it.
             g = dec.is_subquery(text, depth=depth, context={"gazetteer_exact": bool(self.store.search(text, fuzzy=False, limit=1, view=dec.view)),
                                                              "has_distance": bool(re.search(r"\d", text))})
             if g.value or dec.below("is_subquery", g):
-                raise _Stop(Unsupported(reason="the text is not one place name, and no other template matches",
-                                        decision="is_subquery", depth=depth, text=text))
+                best = max(cands.get(tpl.id, []), key=lambda m: m["score"], default=None)
+                name = (best or {}).get("segments", {}).get("anchor") or text
+                plural = [k for k in _level_words() if k.endswith("s") and re.search(rf"\b{re.escape(k)}\b", name, re.I)]
+                if not self._geocoder_allowed(tpl, depth) or plural:
+                    # "which states touch the sea" is a set of places, not a name that the geocoder can find.
+                    raise _Stop(Unsupported(reason="the text is not one place name, and no other template matches",
+                                            decision="is_subquery", depth=depth, text=text))
+                # A place name that the local data does not explain: the geocoder searches the name of the frame.
+                return self._photon_fallback(dec, name, depth, "is_subquery"), {
+                    "family": "lookup", "template": "lookup_place", "slots": {"anchor": name}}
         matches = sorted(cands.get(tpl.id, []), key=lambda m: -m["score"])
         if not matches:
             raise _Stop(Unsupported(reason=f"template {tpl.id} has no valid split", decision="pick_split", depth=depth, text=text))
@@ -608,7 +631,8 @@ class Parser:
             if sd.type in OPEN_TYPES:
                 seg_text = match["segments"][seg_of[name]]
                 hint = level_hint if tpl.id in ("neighbors",) else None
-                jobs[name] = self.pool.submit(self._region, dec, tpl, seg_text, spans, text, depth, hint)
+                jobs[name] = self.pool.submit(self._region, dec, tpl, seg_text, spans, text, depth, hint,
+                                              within=match.get("within", {}).get(name))
 
         for name, fut in jobs.items():
             sd = tpl.slots[name]
@@ -653,16 +677,13 @@ class Parser:
 
     def _quantifier(self, dec: Decider, tpl: Template, seg_of: dict[str, str], values: dict[str, Any],
                     slots: dict[str, Any], depth: int) -> None:
-        """A quantifier slot with no text: the leading word of the list ("both", "either"), else the default `any`.
-        A list joined by "and" with no such word is ambiguous; the parse says how it read it."""
+        """A quantifier slot with no text: the default `any`. A list joined by "and" is ambiguous; the parse says how it
+        read it."""
         q = next((n for n, sd in tpl.slots.items() if sd.type == "quantifier"), None)
         if q is None:
             return
         lst = next((s for n, s in slots.items() if tpl.slots[n].type in OPEN_TYPES and isinstance(s, dict) and "list" in s), None)
-        if q not in seg_of and lst and lst["quant"]:
-            values[q] = slots[q] = lst["quant"]
-            dec.record_step("quantifier", depth, {"text": lst["conj"]}, lst["quant"], "rules", {"from": "leading word"})
-        elif q not in seg_of and lst and lst["conj"] == "and" and values.get(q) == "any":
+        if q not in seg_of and lst and lst["conj"] == "and" and values.get(q) == "any":
             dec.record_step("quantifier", depth, {"text": "and"}, "any", "rules", {"from": "default", "ambiguous": True})
             dec.notes.append("'and' between the places is read as 'or' (any of them); say 'both' or 'all of' for all of them")
         # `any` is the default of the operators: the DAG has the argument only for `all`.
@@ -734,9 +755,23 @@ class Parser:
         return None
 
     def _region(self, dec: Decider, tpl: Template, text: str, spans: list[Span], query: str, depth: int,
-                type_hint: str | None, part: bool = False) -> tuple[dict[str, Any], Any]:
+                type_hint: str | None, part: bool = False, within: str | None = None) -> tuple[dict[str, Any], Any]:
+        from geoparse.t5.frames import PART_SEP, find_span, slot_parts
+
+        if PART_SEP in text:
+            # The parts of a list from the frame. "or" between two parts in the query is the conjunction.
+            names = slot_parts(text)
+            r = [find_span(query, p) for p in names]
+            gaps = [query[a[1]:b[0]] for a, b in zip(r, r[1:]) if a and b and a[1] <= b[0]]
+            conj = "or" if any(re.search(r"\bor\b", g, re.I) for g in gaps) else "and"
+            return self._list_region(dec, tpl, (names, conj), spans, query, depth, type_hint, within)
         article = bool(re.match(r"^the\s", text.strip(), re.I))
         text = re.sub(r"^(the|a|an|whole|entire|all of|all of the|whole of)\s+", "", text.strip(), flags=re.I)
+        if within:
+            res = self._inside(dec, text, [within], depth, exact_only=False)
+            if res is None:
+                raise _Stop(Unsupported(reason=f"no place '{text}' is inside '{within}'", depth=depth, text=text))
+            return res, text
         # A named set first ("the Balkans" is the countries, not Natural Earth's Balkan Peninsula).
         lex = lexicon_match(text)
         if lex:
@@ -754,139 +789,69 @@ class Parser:
         sd = tpl.slots
         is_region = any(s.type == "region" for s in sd.values()) and tpl.family != "lookup"
         exact = self.store.search(text, type_hint=type_hint, fuzzy=False, limit=3, view=dec.view)
-        lst = None if exact or part else self._list_parts(dec, text, tpl.id in SPACE_LIST_TEMPLATES, tpl.id in SUB_LIST_TEMPLATES)
-        if lst:
-            return self._list_region(dec, tpl, lst, spans, query, depth, type_hint)
         if tpl.id in SUB_LIST_TEMPLATES and not part:
             raise _Stop(Unsupported(reason="a union needs two or more places", decision="pick_split", depth=depth, text=text))
-        inside = re.fullmatch(r"(.+?)\s+in\s+(.+)", text, re.I) if is_region and not exact else None
-        if inside and not any(keyword_hits(x, _set_words(), typo=False) for x in inside.groups()) \
-                and all(self.store.search(x, fuzzy=False, limit=1, view=dec.view) for x in inside.groups()):
-            # "Bangladesh in Tripura": two exact names, the first not inside the second (else _qualified). Never a
-            # union: "in" limits the area to the second name, with a note.
-            x, y = inside.groups()
-            dec.record_step("not_inside", depth, {"text": text}, y, "rules", {"inner": x})
-            dec.notes.append(f"'{x}' is not inside '{y}': the result uses '{y}'")
-            return self._region(dec, tpl, y, spans, query, depth, type_hint, part=True)
-        rest = _direction_rest(text) if is_region and not exact else None
-        if rest and self.store.search(rest, fuzzy=False, limit=1, view=dec.view):
-            # "northern France": a direction word and a place name. A subquery, without the model.
-            dec.record_step("is_subquery", depth, {"text": text}, True, "rules", {"direction_rest": rest})
-            if depth + 1 > self.max_depth:
-                raise _Stop(Unsupported(reason="depth limit", depth=depth, text=text))
-            sub_dag, info = self._parse_level(dec, text, depth + 1)
-            return sub_dag, {"q": text, "t": info["template"], "s": info["slots"]}
-        if is_region and not exact and (keyword_hits(text, _level_words(), typo=False) or HAS_DISTANCE.search(text)):
-            # "coastal districts of Odisha", "10 km around Whitefield": a set by a level or a distance, not a place
-            # name. A sub-query, without the model.
-            dec.record_step("is_subquery", depth, {"text": text}, True, "rules", {"level_or_distance": True})
-            if depth + 1 > self.max_depth:
-                raise _Stop(Unsupported(reason="depth limit", depth=depth, text=text))
-            sub_dag, info = self._parse_level(dec, text, depth + 1)
-            return sub_dag, {"q": text, "t": info["template"], "s": info["slots"]}
-        if is_region and exact and not keyword_hits(text, _level_words(), typo=False):
-            # The whole text is an exact place name ("Western Ghats", "Northern Ireland", "Central Delhi"): a place, not
-            # a sub-query, also with a direction word.
+        if is_region and exact:
+            # The whole text is an exact place name ("Western Ghats", "Northern Ireland", "Pune district"): a place, not
+            # a sub-query, also with a direction word or a level word.
             dec.record_step("is_subquery", depth, {"text": text}, False, "rules", {"exact_name": True})
             return self._anchor(dec, tpl, text, spans, query, depth, type_hint, exact), text
         if is_region:
-            d = dec.is_subquery(text, depth=depth, context={"gazetteer_exact": bool(exact),
-                                                             "has_distance": parse_distance(text) is not None
-                                                             or bool(re.search(r"\d", text))})
-            if dec.below("is_subquery", d):
-                raise _Stop(Unsupported(reason=f"low confidence for is_subquery ({d.confidence:.2f})",
-                                        decision="is_subquery", depth=depth, text=text))
-            if d.value:
+            if self._slot_is_subquery(dec, text, depth, exact):
                 if depth + 1 > self.max_depth:
                     raise _Stop(Unsupported(reason="depth limit", depth=depth, text=text))
                 sub_dag, info = self._parse_level(dec, text, depth + 1)
                 return sub_dag, {"q": text, "t": info["template"], "s": info["slots"]}
         return self._anchor(dec, tpl, text, spans, query, depth, type_hint, exact), text
 
-    def _list_parts(self, dec: Decider, text: str, allow_space: bool,
-                    allow_sub: bool = False) -> tuple[list[str], str, str | None] | None:
-        """A list of places: (names, conjunction "and" or "or", quantifier of a leading word or None). Each name must be
-        a named set or an exact gazetteer name. Of the ways to cut the text at the separators, the one with the fewest
-        names wins ("Bosnia and Herzegovina and Croatia" is two names). A list needs "and", "or" or "&" (commas alone are
-        a qualified name). allow_sub: a part can also be a sub-query (a level word or a distance: "districts of Goa"),
-        and, if no cut has only such parts, the cut at all separators with names that the gazetteer finds with typos
-        ("Frnace, Spain and Itlay"). None if the text is not such a list."""
-        t = text.strip()
-        marker = None
-        m = LIST_MARKER.match(t)
-        if m:
-            marker, t = LIST_MARKER_QUANT[m.group(1).lower()], m.group(2)
-        seps = list(LIST_SEP.finditer(t))
-        if not seps and allow_space:
-            seps = list(re.finditer(r"\s+", t))
-        # Commas alone are not a list: "Salt Lake, Kolkata" is a place in a city (a qualified name).
-        # In a union, _qualified was tried first: commas alone are a list there ("Uttar Pradesh, Bihar, Jharkhand").
-        if seps and all(s.group(0).strip() == "," for s in seps) and not allow_space and not allow_sub:
-            return None
-        if not seps or len(seps) > 6:
-            return None
-        known: dict[str, bool] = {}
-        probe = dec.fork()  # for the qualified-name check, without steps in the trace
+    def _slot_is_subquery(self, dec: Decider, text: str, depth: int, exact: list) -> bool:
+        """A region slot text is a sub-query if its top T5 frame is not a lookup (plan-039). Without T5, the decision
+        model decides."""
+        if self.t5 is None:
+            d = dec.is_subquery(text, depth=depth, context={"gazetteer_exact": bool(exact),
+                                                             "has_distance": parse_distance(text) is not None
+                                                             or bool(re.search(r"\d", text))})
+            if dec.below("is_subquery", d):
+                raise _Stop(Unsupported(reason=f"low confidence for is_subquery ({d.confidence:.2f})",
+                                        decision="is_subquery", depth=depth, text=text))
+            return bool(d.value)
+        probe = dec.fork()  # without steps in the trace
         probe.view = dec.view
+        try:
+            top = next(iter(self.candidates(text, None, probe, depth + 1)), None)
+        except _Stop:
+            top = None
+        sub = top in self.templates and self.templates[top].family != "lookup"
+        dec.record_step("is_subquery", depth, {"text": text}, sub, "t5", {"template": top})
+        return sub
 
-        def is_sub(p: str) -> bool:
-            return bool(keyword_hits(p, _level_words(), typo=False)) or bool(HAS_DISTANCE.search(p))
-
-        def is_name(p: str) -> bool:
-            if p not in known:
-                q = re.sub(r"^(the|all of the|all of|whole of)\s+", "", p, flags=re.I) if allow_sub else p
-                # A part with a comma is a name only if it is a qualified name ("Paris, Texas"): the exact search reads
-                # the text after a comma as context ("France, Spain" finds France).
-                if "," in q:
-                    known[p] = not any(is_sub(x) for x in q.split(",")[1:]) and self._qualified(probe, q, 0, exact=True) is not None
-                else:
-                    known[p] = bool(q) and (bool(lexicon_match(q)) or bool(self.store.search(q, fuzzy=False, limit=1, view=dec.view)))
-            return known[p]
-
-
-        def conj_of(cut) -> str:
-            return "or" if any(re.search(r"\bor\b", seps[i].group(0), re.I) for i in cut) else "and"
-
-        def parts_of(cut) -> list[str]:
-            parts, start = [], 0
-            for i in cut:
-                parts.append(t[start:seps[i].start()].strip())
-                start = seps[i].end()
-            return parts + [t[start:].strip()]
-
-        # Exact names first; then (a union) exact names or sub-queries ("Udaipur district, Jodhpur district and Bikaner
-        # district" is three names, not a name and a sub-query).
-        for ok in ([is_name] + ([lambda p: is_name(p) or (is_sub(p) and "," not in p)] if allow_sub else [])):
-            for k in range(1, len(seps) + 1):
-                for cut in itertools.combinations(range(len(seps)), k):
-                    parts = parts_of(cut)
-                    if all(ok(p) for p in parts):
-                        return parts, conj_of(cut), marker
-        if not allow_sub:
-            return None
-        # A union: the cut at all separators; a part that is not a name stays one part for _region (typos, Photon:
-        # "Howrah Bridge"). Spaces are not separators: "Taj Mahal" is not "Taj" and "Mahal".
-        parts = parts_of(range(len(seps)))
-        return (parts, conj_of(range(len(seps))), marker) if all(parts) else None
-
-    def _list_region(self, dec: Decider, tpl: Template, lst: tuple[list[str], str, str | None], spans: list[Span],
-                     query: str, depth: int, type_hint: str | None) -> tuple[dict[str, Any], Any]:
-        """The Union of the places of a list. The slot info keeps the names, the conjunction and the quantifier word."""
-        names, conj, marker = lst
-        dec.record_step("list", depth, {"text": " | ".join(names)}, names, "rules", {"conjunction": conj, "quantifier": marker})
+    def _list_region(self, dec: Decider, tpl: Template, lst: tuple[list[str], str], spans: list[Span],
+                     query: str, depth: int, type_hint: str | None, within: str | None = None) -> tuple[dict[str, Any], Any]:
+        """The Union of the places of a list. The slot info keeps the names and the conjunction."""
+        names, conj = lst
+        dec.record_step("list", depth, {"text": " | ".join(names)}, names, "rules", {"conjunction": conj})
         node, infos = None, []
         for p in names:
-            dag, info = self._region(dec, tpl, p, spans, query, depth, type_hint, part=True)
+            dag, info = self._region(dec, tpl, p, spans, query, depth, type_hint, part=True, within=within)
             node = dag if node is None else {"op": "Union", "args": {"a": node, "b": dag}}
             infos.append(info)
-        return node, {"list": infos, "conj": conj, "quant": marker}
+        return node, {"list": infos, "conj": conj}
+
+    def _geocoder_allowed(self, tpl: Template, depth: int) -> bool:
+        scope = self.cfg.get("geocoder", {}).get("anchor_scope", "simple_and_features")
+        return scope == "all" or (depth == 0 and tpl.family in GEOCODER_FAMILIES)
+
+    def _photon_fallback(self, dec: Decider, text: str, depth: int, cause: str) -> dict[str, Any]:
+        """A place name that the parser cannot place in the local data: the geocoder (Photon) searches it, with a note."""
+        dec.record_step("photon_fallback", depth, {"text": text}, "photon", "rules", {"cause": cause})
+        dec.notes.append(f"'{text}' is not a known place in the local data: the result is the geocoder's (Photon) match")
+        return {"op": "Resolve", "args": {"name": text, "source": "photon"}}
 
     def _anchor(self, dec: Decider, tpl: Template, text: str, spans: list[Span], query: str, depth: int,
                 type_hint: str | None, exact) -> dict[str, Any]:
         # Spans inside this slot text.
         inside = [s for s in spans if s.label not in ("distance", "facility type") and s.text in text]
-        scope = self.cfg.get("geocoder", {}).get("anchor_scope", "simple_and_features")
-        allow_geocoder = scope == "all" or (depth == 0 and tpl.family in GEOCODER_FAMILIES)
+        allow_geocoder = self._geocoder_allowed(tpl, depth)
         ctx_text = None
         name = text
         if allow_geocoder:
@@ -896,8 +861,7 @@ class Parser:
                                           "gazetteer_top_score": top.score if top else 0.0,
                                           "gazetteer_top_subtype": top.subtype if top else None}, depth=depth)
             if dec.below("select_source", sd):
-                raise _Stop(Unsupported(reason=f"low confidence for select_source ({sd.confidence:.2f})",
-                                        decision="select_source", depth=depth, text=text))
+                return self._photon_fallback(dec, text, depth, "select_source")
             if sd.value == "photon":
                 return {"op": "Resolve", "args": {"name": text, "source": "photon"}}
         # If the whole text is an exact name in the gazetteer, it is the anchor. Else choose among the spans.
@@ -909,6 +873,8 @@ class Parser:
                 ctx_text = rest or None
         cands = self.store.search(name, type_hint=type_hint, context=ctx_text, limit=6, view=dec.view)
         if not cands:
+            if allow_geocoder:
+                return self._photon_fallback(dec, text, depth, "no_local_match")
             raise _Stop(Unsupported(reason=f"cannot resolve {name!r} in the local extract", depth=depth, text=text))
         cands = self._photon_boost(dec, name, merge_nested(cands), depth)
         chosen = cands[0]
@@ -979,8 +945,13 @@ class Parser:
             parts, exact_only = [m.group(1), m.group(2)], True
         if not 2 <= len(parts) <= 3 or not all(parts) or any(re.search(r"\band\b|&", p, re.I) for p in parts):
             return None
+        return self._inside(dec, parts[0], parts[1:], depth, exact_only, text)
+
+    def _inside(self, dec: Decider, name: str, outers: list[str], depth: int, exact_only: bool = True,
+                text: str | None = None) -> dict[str, Any] | None:
+        """The Resolve of the best candidate of `name` that is inside one exact match of each outer name, or None."""
         outer = []
-        for p in parts[1:]:
+        for p in outers:
             ids = {c.id for c in self.store.search(p, fuzzy=False, limit=5, view=dec.view)}
             if not ids:
                 return None
@@ -988,14 +959,14 @@ class Parser:
         # A candidate inside the outer places is in their countries: search only there (the browser then loads only
         # these countries, not the countries of all places named "Paris").
         countries = sorted({d["country"] for d in self.store.describe(sorted(set().union(*outer))).values() if d["country"]})
-        context = ", ".join(parts[1:])
+        context = ", ".join(outers)
         # Exact names first; fuzzy names only if no exact name is inside ("Sanfransisco, California").
         for fuzzy in ((False,) if exact_only else (True, "only")):
-            for c in self.store.search(parts[0], context=context, limit=20, fuzzy=fuzzy, view=dec.view, countries=countries):
+            for c in self.store.search(name, context=context, limit=20, fuzzy=fuzzy, view=dec.view, countries=countries):
                 if all(ids & set(c.ancestors) for ids in outer):
-                    dec.record_step("qualified_name", depth, {"text": text}, c.id, "rules",
-                                    {"name": parts[0], "context": context, "fuzzy": fuzzy})
-                    return {"op": "Resolve", "args": {"name": parts[0], "source": "overture", "id": c.id, "context": context}}
+                    dec.record_step("qualified_name", depth, {"text": text or f"{name}, {context}"}, c.id, "rules",
+                                    {"name": name, "context": context, "fuzzy": fuzzy})
+                    return {"op": "Resolve", "args": {"name": name, "source": "overture", "id": c.id, "context": context}}
         return None
 
     def _photon_boost(self, dec: Decider, name: str, cands: list, depth: int) -> list:

@@ -20,7 +20,7 @@ admin_levels:
                local government areas, lga, lgas]
   city:
     description: "Cities and towns (also metros, big cities, urban centres)"
-    keywords: [city, cities, town, towns, urban areas, municipalities]
+    keywords: [city, cities, citys, town, towns, urban areas, municipalities]
   none:
     description: "The text does not name a level of division"
     keywords: []
@@ -28,7 +28,7 @@ admin_levels:
 predicates:
   coastal:
     description: "On the sea coast (touches the sea or the ocean)"
-    keywords: [coastal, seaside, coast, sea-facing, maritime, littoral, on the coast, by the sea]
+    keywords: [coastal, seaside, coast, sea-facing, maritime, littoral, on the coast, by the sea, near the sea]
   landlocked:
     description: "Not on the sea coast (landlocked, inland, no access to the sea)"
     keywords: [landlocked, land-locked, inland, non-coastal, noncoastal, interior]

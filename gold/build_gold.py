@@ -39,8 +39,13 @@ def gold_dag(t: str, s: dict[str, Any], src: dict[str, str] | None = None, view:
                 if isinstance(v, dict) and "lex" in v:
                     return {"op": "LexiconSet", "args": {"key": v["lex"]}}
                 if isinstance(v, dict) and "q" in v:
-                    return gold_dag(v["t"], v["s"], view=view)
-                if (src or {}).get(name, "overture") == "photon":
+                    return gold_dag(v["t"], v["s"], v.get("src"), view=view)
+                if isinstance(v, dict) and "src" in v:
+                    # A part of a list with its own source: {text: "Gateway of India", src: photon}.
+                    v, part_src = v["text"], v["src"]
+                else:
+                    part_src = (src or {}).get(name, "overture")
+                if part_src == "photon":
                     return {"op": "Resolve", "args": {"name": v, "source": "photon"}}
                 hint = level if t == "neighbors" and level not in (None, "none") else None
                 cands = [] if pin else store.search(v, type_hint=hint, view=view)
@@ -51,7 +56,14 @@ def gold_dag(t: str, s: dict[str, Any], src: dict[str, str] | None = None, view:
                     args["type_hint"] = hint
                 return {"op": "Resolve", "args": args}
 
-            if isinstance(v, list):
+            if v is None and sd.default == "country" and view is None:
+                # No parent in the text: the country of the data, as the parser does (`_default_region`).
+                from geoparse.config import load_config
+
+                row = store.cursor().execute("SELECT id, name FROM divisions WHERE subtype = 'country' AND country = ?",
+                                             [load_config()["data"]["country"]]).fetchone()
+                values[name] = {"op": "Resolve", "args": {"name": row[1], "source": "overture", "id": row[0]}}
+            elif isinstance(v, list):
                 # A list of places: the Union of the names, in the order of the text.
                 node = None
                 for x in v:
@@ -117,7 +129,7 @@ def needs_network(dag: Any) -> bool:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-execute", action="store_true")
-    ap.add_argument("--set", default="gold", help="gold, heldout, world, world_heldout, world_heldout2, world_heldout3, world_heldout4, world_heldout5, world_heldout6 or world_heldout7 (world sets: GEOPARSE_SCOPE=world)")
+    ap.add_argument("--set", default="gold", help="gold, heldout, world, world_heldout, world_heldout2, world_heldout3, world_heldout4, world_heldout5, world_heldout6 world_heldout7, world_heldout8 or india_ref (world sets: GEOPARSE_SCOPE=world)")
     args = ap.parse_args()
     src = yaml.safe_load((GOLD_DIR / f"{args.set}_src.yaml").read_text())
     # The world set: {views: {cc: bbox}, records: [... {cc: ...}]}. Each record gets the view of its country.
@@ -129,15 +141,19 @@ def main() -> None:
     for i, r in enumerate(src):
         t = r["t"]
         view = views.get(r.get("cc"))
-        dag = gold_dag(t, r["s"], r.get("src"), view, r.get("ids"))
+        # A query that the parser must refuse (plan-039): no DAG; correct if the parse is not ok.
+        dag = None if t == "unsupported" else gold_dag(t, r["s"], r.get("src"), view, r.get("ids"))
         rec = {
-            "id": f"{ {'gold': 'g', 'heldout': 'h', 'world': 'w', 'world_heldout': 'x', 'world_heldout2': 'y', 'world_heldout3': 'z', 'world_heldout4': 'n', 'world_heldout5': 'v', 'world_heldout6': 'u', 'world_heldout7': 't'}[args.set]}{i + 1:03d}", "query": r["q"], "lang": "en", "family": templates[t].family, "template": t,
+            "id": f"{ {'gold': 'g', 'heldout': 'h', 'world': 'w', 'world_heldout': 'x', 'world_heldout2': 'y', 'world_heldout3': 'z', 'world_heldout4': 'n', 'world_heldout5': 'v', 'world_heldout6': 'u', 'world_heldout7': 't', 'world_heldout8': 's', 'india_ref': 'r'}[args.set]}{i + 1:03d}", "query": r["q"], "lang": "en", "family": "unsupported" if dag is None else templates[t].family, "template": t,
             "slots": r["s"], "src": r.get("src", {}), "depth": depth_of(r["s"]), "dag": dag,
             "expected_ids": None, "notes": r.get("n", ""),
         }
+        if r.get("gap"):
+            # The data cannot give the correct result (a city as a point, a missing ancestor): labels only.
+            rec["gap"] = r["gap"]
         if view:
             rec["cc"], rec["view"] = r["cc"], view
-        if not args.no_execute and not needs_network(dag):
+        if dag is not None and not r.get("gap") and not args.no_execute and not needs_network(dag):
             res = ex.execute(dag, with_geometry=False, view=view)
             if not res.ok:
                 raise RuntimeError(f"{rec['id']} {r['q']!r}: {res.error}")

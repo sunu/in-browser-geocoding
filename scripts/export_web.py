@@ -48,6 +48,7 @@ def export_bundle() -> None:
                                 "choices_ref": a.choices_ref} for a in spec.args], "out": spec.out}
                for name, spec in CATALOG.items()}
     aliases = yaml.safe_load((PACKAGE_DIR / "data" / "name_aliases.yaml").read_text()) or {}
+    demonyms = yaml.safe_load((PACKAGE_DIR / "data" / "demonyms.yaml").read_text()) or {}
     bundle = {
         "version": time.strftime("%Y-%m-%d %H:%M"),
         "config": load_config(),
@@ -57,6 +58,7 @@ def export_bundle() -> None:
         "categories": categories(),
         "lexicon": lexicon(),
         "aliases": {str(k): str(v) for k, v in aliases.items()},
+        "demonyms": {str(k): str(v) for k, v in demonyms.items()},
         "instructions": INSTRUCTIONS,
         "is_subquery_criteria": IS_SUBQUERY_CRITERIA,
         "none_option": NONE_OPTION,
