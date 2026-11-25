@@ -24,16 +24,30 @@ const EXAMPLES: [string, string[]][] = [
 
 // Basemap: OpenFreeMap (free, no API key; data © OpenStreetMap contributors).
 // Without WebGL there is no map; the queries and the result list still work.
+const STYLE = "https://tiles.openfreemap.org/styles/positron";
 let map: maplibregl.Map | null = null;
 try {
-  map = new maplibregl.Map({
-    container: "map", style: "https://tiles.openfreemap.org/styles/positron", center: [78.9, 22.5], zoom: 4,
-  });
+  map = new maplibregl.Map({ container: "map", style: STYLE, center: [78.9, 22.5], zoom: 4 });
 } catch (e) {
   $("map").innerHTML = `<p class="err" style="padding:16px">The map cannot show in this browser (WebGL is not available).
     The results show in the list.</p>`;
   console.error(e);
 }
+// MapLibre does not try again when the style or a TileJSON fails to load (a short network error), and the basemap stays empty.
+const retries = new Map<string, number>();
+map?.on("error", (e: any) => {
+  const url: string | undefined = e.error?.url;
+  if (!map || !url || e.tile) return;
+  const n = retries.get(url) ?? 0;
+  if (n >= 6) return;
+  retries.set(url, n + 1);
+  setTimeout(() => {
+    if (url === STYLE) return map!.setStyle(STYLE);
+    const sources = map!.getStyle()?.sources ?? {};
+    for (const [id, s] of Object.entries(sources))
+      if ((s as any).url === url) (map!.getSource(id) as maplibregl.VectorTileSource).setUrl(url);
+  }, 1000 * 2 ** n);
+});
 const mapReady = new Promise<void>((res) => (!map || map.loaded() ? res() : map.once("load", () => res())));
 // For scripts/world_smoke.ts: set the map view before a query.
 (window as any).geoparseMap = map;
