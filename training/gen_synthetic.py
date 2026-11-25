@@ -84,14 +84,16 @@ def load_world(rng: random.Random) -> dict[str, list[str]]:
 
 
 LEVEL = {
-    "district": ["districts", "district", "dists", "zillas", "districts"],
-    "state": ["states", "state", "provinces", "states"],
+    "district": ["districts", "district", "dists", "zillas", "districts", "counties", "local government areas", "LGAs"],
+    "state": ["states", "state", "provinces", "states", "regions", "regions", "prefectures"],
     "city": ["cities", "towns", "city", "big cities", "metros", "urban centres", "major cities", "cities and towns"],
     "union_territory": ["union territories", "UTs"],
     "country": ["countries", "nations"],
     "village": ["villages", "village", "hamlets"],
     "other": ["wards", "mandals", "tehsils", "taluks", "talukas", "blocks", "panchayats", "municipalities",
-              "sub-districts", "circles", "localities", "neighbourhoods", "areas"],
+              "sub-districts", "circles", "localities", "neighbourhoods", "areas",
+              # World level words that the data maps for each country (plan-038): "departments of Bretagne".
+              "departments", "voivodeships", "governorates", "oblasts", "cantons", "communes", "parishes"],
 }
 PRED_PRE = {
     "on_river": ["riverside", "riverine", "river"],
@@ -309,6 +311,15 @@ class Gen:
         words = phrase.split(" ")
         return " ".join(typo_always(self.r, w) if len(w) >= 5 and self.r.random() < p else w for w in words)
 
+    def parent_or_list(self, level_key: str, depth: int) -> str:
+        """A parent, or at depth 0 (35%) a list of 2 to 5 parents: "states of France, Spain and Italy" is the states of
+        each name (plan-038)."""
+        if depth == 0 and self.r.random() < 0.35:
+            one = (lambda: self.world(("w_country",))) if level_key == "state" and self.has_world() and self.r.random() < 0.6 \
+                else (lambda: self.parent_for(level_key, 1))
+            return self.place_list(one)[0]
+        return self.parent_for(level_key, depth)
+
     def parent_for(self, level_key: str, depth: int) -> str:
         """A parent region that can contain divisions of the level."""
         if depth == 0 and self.r.random() < 0.12:
@@ -329,6 +340,9 @@ class Gen:
             return self.pick(self.p["lex"]), 0
         if self.r.random() < 0.1:
             return self.place_list(self.area)[0], 0
+        if self.r.random() < 0.04:
+            # "Springfield in Illinois": a place in a place is one name (a qualified name), not a union (plan-038).
+            return f"{self.place(('city', 'hood', 'district'))} in {self.place(('state', 'district'))}", 0
         return self.area(), 0
 
     def sub_query(self):
@@ -359,15 +373,21 @@ class Gen:
     def place_list(self, one, n: int | None = None, conj: str | None = None) -> tuple[str, str]:
         """A list of 2 to 4 places joined by commas and "and", "or", "&" or "as well as" (plan-036).
         Returns (span, conjunction)."""
-        n = n or self.r.choice([2, 2, 2, 2, 3, 3, 4])
+        n = n or self.r.choice([2, 2, 2, 2, 3, 3, 4, 5])
         names: list[str] = []
         while len(names) < n:
             x = one()
             if x.lower() not in (y.lower() for y in names):
                 names.append(x)
-        conj = conj or self.r.choices(["and", "or", "&", "as well as"], weights=[6, 3, 1, 1])[0]
+        conj = conj or self.r.choices(["and", "or", "&", "as well as", "plus", "n", "+"], weights=[12, 6, 2, 2, 1, 1, 1])[0]
+        if conj in ("+", "n", "plus") and self.r.random() < 0.5:
+            # The same separator between all names ("Bihar n Jharkhand n Odisha", "Texas+Oklahoma").
+            sep = self.pick(["+", " + "]) if conj == "+" else f" {conj} "
+            return sep.join(names), conj
         if n == 2:
             return f"{names[0]} {conj} {names[1]}", conj
+        if self.r.random() < 0.1:
+            return ", ".join(names), "and"
         oxford = "," if conj in ("and", "or") and self.r.random() < 0.3 else ""
         return ", ".join(names[:-1]) + f"{oxford} {conj} {names[-1]}", conj
 
@@ -437,7 +457,7 @@ class Gen:
 
     def t_children(self, depth=0):
         k, lv = self.level(exclude=("country",))
-        p = self.parent_for(k, depth)
+        p = self.parent_or_list(k, depth)
         if self.has_world() and self.r.random() < 0.2:
             # A natural region as the parent ("districts in the Western Ghats"), or a parent in another country.
             p = self.natural(("range", "range", "desert", "plateau", "delta", "island", "plain")) if self.r.random() < 0.5 else self.world(("w_country", "w_region"))
@@ -486,7 +506,7 @@ class Gen:
     def t_children_with_predicate(self, depth=0):
         k, lv = self.level(exclude=("country",))
         pk = self.pick(list(PRED_PRE))
-        p = self.parent_for(k, depth) if self.r.random() > 0.15 else None
+        p = self.parent_or_list(k, depth) if self.r.random() > 0.15 else None
         if self.r.random() < 0.5:
             pr = self.note(self.word_typo(self.pick(PRED_PRE[pk])), "predicate", pk)
             head = f"{pr} {lv}"
@@ -528,18 +548,23 @@ class Gen:
         return form.format(l=lv, p=p, o=o), {"level": lv, "parent": p, "other": o}
 
     def t_union(self, depth=0):
-        a, _ = self.region(depth)
-        b, _ = self.region(depth, sub_ok=False)
-        form = self.pick(["{a} and {b}", "{a} & {b}", "{a} plus {b}", "both {a} and {b}", "{a} as well as {b}",
-                          "{a}, {b}", "{a} together with {b}", "{a} or {b}", "{a} n {b}", "{a}+{b}", "{a} + {b}",
-                          "{a} and {b} together", "{a} along with {b}"])
-        return form.format(a=a, b=b), {"a": a, "b": b}
+        """Two to five places or sets together: one slot `places` (plan-038). A part can be a sub-query ("Kerala and
+        the coastal districts of Karnataka"); "LEVEL of A and B" is not a union (children of a list)."""
+        subs = depth == 0 and self.r.random() < 0.35
 
-    def t_union3(self, depth=0):
-        a, b, c = self.area(), self.area(), self.area()
-        form = self.pick(["{a}, {b} and {c}", "{a}, {b}, {c}", "{a}, {b} & {c}", "{a}, {b}, and {c}", "{a} {b} n {c}",
-                          "{a}, {b} n {c}", "{a}+{b}+{c}", "{a}, {b} as well as {c}"])
-        return form.format(a=a, b=b, c=c), {"a": a, "b": b, "c": c}
+        def part():
+            if subs and self.r.random() < 0.5:
+                for _ in range(10):
+                    q, _, _ = self.sub_query()
+                    if q.split(" ", 1)[0].lower() not in ("show", "list", "which", "what", "all", "the", "a"):
+                        return self.pick(["", "", "the "]) + q
+            return self.region(1, sub_ok=False)[0]
+        pl, _ = self.place_list(part, self.r.choice([2, 2, 3]) if subs else None)
+        form = self.pick(["{p}", "{p}", "{p}", "{p}", "both {p}", "{p} together", "union of {p}", "combine {p}",
+                          "{p} in one view", "{p} on one map"])
+        if form.startswith("both") and (" and " not in pl or pl.count(",")):
+            form = "{p}"
+        return form.format(p=pl), {"places": pl}
 
     def t_difference(self, depth=0):
         a, _ = self.region(depth)
@@ -620,6 +645,24 @@ class Gen:
                           "the frontier between {p}", "shared border of {p}", "the borders between {p}", "border among {p}"])
         return form.format(p=pl), {"places": pl}
 
+    def t_border_with_in(self, depth=0):
+        """The part of the border with another place that is inside a place (plan-038): "border area with Bangladesh in
+        Tripura", "3 km along the border with Nepal in Bihar"."""
+        if self.has_world() and self.r.random() < 0.5:
+            o, r = self.world(("w_country",)), self.world(("w_region",))
+        else:
+            o = case(self.r, self.pick(["Nepal", "Bangladesh", "Pakistan", "China", "Bhutan", "Myanmar", "Sri Lanka"]))
+            r = self.place(("state", "state", "district"))
+        w = self.pick(["border", "boundary", "frontier"])
+        if self.r.random() < 0.4:
+            d, dv = distance(self.r)
+            form = self.pick(["{d} along the {w} with {o} in {r}", "{d} strip along the {w} with {o} in {r}",
+                              "{d} zone along the {w} with {o} in {r}", "{d} belt along the {w} with {o} in {r}"])
+            return form.format(d=d, w=w, o=o, r=r), {"distance": dv, "other": o, "region": r}
+        form = self.pick(["{w} area with {o} in {r}", "the {w} with {o} in {r}", "{w} region with {o} in {r}",
+                          "the {r} part of the {w} with {o}", "the {r} side of the {w} with {o}", "{w} zone with {o} in {r}"])
+        return form.format(w=w, o=o, r=r), {"other": o, "region": r}
+
     def t_natural_in(self, depth=0):
         k = self.pick(NATURAL_KINDS)
         kw = self.note(self.word_typo(self.pick(NATURAL_WORDS[k])), "natural_kind", k)
@@ -645,7 +688,7 @@ class Gen:
     def t_children_top(self, depth=0):
         k, lv = self.level(exclude=("country",))
         ok = self.pick(list(RANK))
-        p = self.parent_for(k, 1)
+        p = self.parent_or_list(k, depth)
         if self.r.random() < 0.3:
             # "the most populous state of India": order "most", by "populous".
             o = self.note(self.pick({"largest": ["most", "most"], "smallest": ["least"]}[ok]), "rank_order", ok)
@@ -687,6 +730,9 @@ class Gen:
         # "states in each country" has no parent; the others are inside one country.
         p = None if per_k == "country" else (
             case(self.r, "India") if not self.has_world() or self.r.random() < 0.5 else self.world(("w_country",)))
+        if p is not None and per_k == "state" and depth == 0 and self.r.random() < 0.2:
+            # "the largest district in each state of Kerala and Tamil Nadu": a list of the `per` divisions.
+            p = self.place_list(lambda: self.pick(self.p["state"]), self.r.choice([2, 2, 3]))[0]
         if self.r.random() < 0.35:
             n = self.r.choice([2, 2, 3, 3, 5])
             ns = str(n) if self.r.random() < 0.7 else NUM_WORDS[n]
@@ -760,11 +806,11 @@ class Gen:
 
 TEMPLATE_WEIGHTS = {
     "lookup_place": 6, "buffer": 8, "centroid": 2, "direction_part": 4, "direction_outside": 3, "children": 6,
-    "parent": 3, "neighbors": 8, "children_with_predicate": 9, "children_touching": 5, "union": 4, "union3": 2,
+    "parent": 3, "neighbors": 8, "children_with_predicate": 9, "children_touching": 5, "union": 7,
     "difference": 4, "intersection": 3, "between": 3, "along_coast": 3, "along_border": 2, "along_intl_border": 2,
     "features_in": 8, "features_near": 8, "children_attr": 6, "unsupported": 5,
     "shared_border": 5, "natural_in": 5, "children_near": 4, "children_top": 5, "neighbors_with_predicate": 3,
-    "children_top_per": 4,
+    "children_top_per": 4, "border_with_in": 4,
 }
 
 

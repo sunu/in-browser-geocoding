@@ -64,6 +64,18 @@ def find_span(query: str, span: str) -> tuple[int, int] | None:
     return (m.start(), m.end()) if m else None
 
 
+def merge_union_slots(frame: Frame, query: str) -> Frame:
+    """A frame of the old union templates (union ; a ; b, union3 ; a ; b ; c) as union ; places = the text from the
+    first to the last part (plan-038: one union template with a list). For training.migrate_frames."""
+    if frame.template not in ("union", "union3") or "places" in frame.slots:
+        return frame
+    spans = [find_span(query, frame.slots[k]) for k in ("a", "b", "c") if k in frame.slots]
+    if len(spans) < 2 or not all(spans):
+        return frame
+    places = query[min(r[0] for r in spans):max(r[1] for r in spans)]
+    return frame.model_copy(update={"template": "union", "slots": {"places": places}})
+
+
 def check_frame(frame: Frame, query: str, templates: dict[str, Any]) -> list[str]:
     """Hard checks in code. Returns a list of problems; empty means the frame is usable."""
     if frame.template == UNSUPPORTED:
@@ -84,6 +96,10 @@ def check_frame(frame: Frame, query: str, templates: dict[str, Any]) -> list[str
                 problems.append(f"bad value {value!r}")
         elif find_span(query, value) is None:
             problems.append(f"span {value!r} is not in the query")
+    # The same text in two region slots ("union ; a = England and Wales ; b = England and Wales").
+    texts = [v.strip().lower() for k, v in frame.slots.items() if k in t.slots and t.slots[k].type in ("region", "anchor")]
+    if len(texts) != len(set(texts)):
+        problems.append("the same text in two region slots")
     for name, sd in t.slots.items():
         if name not in frame.slots and sd.type not in ("distance",) and not sd.optional and sd.default is None:
             problems.append(f"missing slot {name}")

@@ -338,3 +338,63 @@ Follow-ups (plan-037):
 - The gold DAG comparison ignores the order of the parts of a union. India gold DAG: 98/98.
 
 All other sets, JS parity (696/696, int8 683/696), executor 88/88 and the operator tests 15/15 did not change.
+
+## 11. Long lists, frames that drop names, the border with X in Y (plan-038)
+
+Changes (Python and the browser version):
+
+1. **Coverage check of frames.** A T5 frame that leaves out more exact place names of the query than the best frame
+   is not used ("states of France, Spain, Italy and Germany": the `union3` frame has no slot for Germany). If all
+   frames leave out a name of an administrative area, the result has a note. The words that are not place names come
+   from the templates and the options (`frame_words()`, in `bundle.json`). A frame with the same text in two region
+   slots is not used. A region slot takes a longer exact name of the query ("Aravalli" → "Aravalli range").
+2. **One union template.** `union` has one slot `places` (a list of 2 or more parts); `union3` is removed. A part can be
+   a sub-query ("Kerala and coastal districts of Karnataka"). New separators: "+", "plus", "along with", "together
+   with". In a list, a part with a comma is a name only if it is an exact qualified name.
+3. **The border with X in Y.** New template `border_with_in`: `Intersect(Along(SharedBorder(Y, X)), Y)`. "X in Y" with
+   two exact names, X not inside Y, is never a union: the result uses Y, with a note.
+4. **Models.** T5 v6 (val exact match 0.947) and cross-encoder v5. The generator has lists in parent slots, union lists
+   with sub-query parts, `border_with_in`, "X in Y" names and the world level words (regions, departments,
+   voivodeships, local government areas). A first T5 v6 without the world level words gave 5 errors in the world sets
+   ("regions of Italy" as a direction); the second run fixed them. These errors came from held-out sets 1 and 2; the
+   fix is general (the generator had only Indian level words). 2,158 new LLM paraphrases ($0.19).
+5. **Gold.** The union records of all sets use `places` lists; the gold DAGs did not change. The builder stores the
+   geometry of results without IDs (the border strips).
+
+Results (browser setup):
+
+| Set | Template | DAG | Executed result |
+|---|---|---|---|
+| Held-out 7 (73, new: long lists, parent lists, unions with sub-queries, frames that drop names, border with X in Y, anomalies), first run | 67/73 | 58/73 | 60/73 (82%) |
+| Held-out 6 | 28/28 | 28/28 | 28/28 (27/28 before) |
+| Held-out 5 | 24/24 | 24/24 | 24/24 (23/24 before) |
+| World | 70/70 | 70/70 | 70/70 (DAG 69/70 before) |
+| Held-out 1 to 4, India gold, India held-out | no change | no change | no change |
+
+JS parity: 696/696 (flat and country layout), int8 684/696, executor 88/88, operator tests 15/15. Browser smoke test
+(Chromium): the list cases and the 32 page examples, no console errors.
+
+Held-out 7 errors by cause:
+
+| Cause | Queries |
+|---|---|
+| A comma part read as a qualified name (a place with the first name exists inside the second) | Jalisco, Sonora and Chihuahua; border between France, Belgium and Luxembourg |
+| Typos in list names (the result is correct; the slot text keeps the typo) | Frnace, Spain and Itlay |
+| Direction words with a typo | nortern Spain; areas souht of Lyon |
+| "X in Y" inside other templates | 10 km around London in Ontario; schools in Union County in New Jersey |
+| Distributive reading against the data | the 3 largest states of Brazil and Argentina; states of the United States and Mexico; districts of Kerala and Coimbatore |
+| Other | Rome or Milan or Naples; hospitals in State College; schools near me in Pune; Kerala and Kerala; Richmond, Virginia |
+
+The India reference parse changed for 16 queries with the new models (by eye: 5 better, 9 worse, 2 the same). The
+worse ones: "states in India that touch Pakistan" (T5 puts the place in the predicate slot), "coastline buffer gujrat
+15 km" (a sub-query that does not get shorter), "Salt Lake Sector 5" and "Jayanagar 4th Block" (`is_subquery` reads
+numbers as a description), "districts around Gurugram that share a border with it", "Mysuru palace", and three typos.
+
+Open items, and the next plan (plan-039):
+
+- Most errors above come from rules in code that make a reading (the list split, the comma rule, "X in Y"). Plan-039
+  moves the list parts and the qualified names into the T5 frame format, keeps the rules that only reject frames, and
+  removes `is_subquery` for region slots. It also labels 200 India reference queries, so that "better or worse" is
+  measured.
+- "nortern Spain" covers 499,000 of the 506,000 km² of Spain (the direction part of a place with far islands).
+- In the world data with the IN view, "Punjab" gives the Pakistani Punjab first.

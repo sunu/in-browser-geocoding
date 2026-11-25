@@ -49,6 +49,9 @@ const LISTS: [string, string][] = [
   ["FR", "border between France, Switzerland and Germany"], ["FR", "countries bordering France or Germany"],
   ["FR", "countries that border France, Germany and Italy"], ["FR", "countries bordering France and Germany"],
   ["FR", "countries bordering both France and Germany"], ["KE", "the largest county in each region of Kenya"],
+  // Plan-038: long lists, a union with a sub-query part, the border with X in Y.
+  ["FR", "states of France, Spain, Italy and Germany"], ["IN", "Kerala and coastal districts of Karnataka"],
+  ["IN", "border area with Bangladesh in Tripura 3 km along the international border"],
 ];
 const SETS: Record<string, [string, string][]> = { poi: POI, new: NEW, examples: EXAMPLES, lists: LISTS };
 const QUERIES = (SETS[process.env.SET ?? ""] ?? BASE)

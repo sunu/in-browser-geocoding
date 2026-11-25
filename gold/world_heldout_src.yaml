@@ -24,7 +24,7 @@ records:
 
   - {cc: ES, q: "landlocked regions of Spain", t: children_with_predicate, s: {pred: landlocked, level: state, parent: "Spain"}}
   - {cc: ES, q: "schools in Seville", t: features_in, s: {category: "school", region: "Seville"}}
-  - {cc: ES, q: "Catalonia and Aragon", t: union, s: {a: "Catalonia", b: "Aragon"}}
+  - {cc: ES, q: "Catalonia and Aragon", t: union, s: {places: ["Catalonia", "Aragon"]}}
 
   - {cc: AR, q: "Cordoba", t: lookup_place, s: {anchor: "Cordoba"}, src: {anchor: overture}}
   - {cc: AR, q: "provinces bordering Mendoza", t: neighbors, s: {level: state, of: "Mendoza"}}

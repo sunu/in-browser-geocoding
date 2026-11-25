@@ -188,7 +188,7 @@ uv run python -m gold.run_gold --provider jev --jev-mode cached
 - `gold/gold_src.yaml`: 98 India queries with gold labels for the template, each slot, and each nested level.
 - `gold/heldout_src.yaml`: 30 India queries for reports only. Do not tune on them.
 - `gold/world_src.yaml`: 70 queries in 10 countries (world scope). For reports only.
-- `gold/world_heldout_src.yaml` to `gold/world_heldout6_src.yaml`: world held-out sets. For reports only.
+- `gold/world_heldout_src.yaml` to `gold/world_heldout7_src.yaml`: world held-out sets. For reports only.
 - `gold/build_gold.py`: writes the gold DAG and the expected result IDs to `gold/*.jsonl`.
 - `gold/run_gold.py`: scores each decision alone and the full pipeline. `--provider config` uses the providers in the config file. `--setup web` uses the browser setup (T5 frames only, no GLiNER).
 

@@ -25,6 +25,8 @@ export interface Bundle {
   rank_by: string[];
   rank_orders: string[];
   quantifiers: string[];
+  /** geoparse.parse.pipeline.frame_words: words that are not place names (stop, request and template words). */
+  frame_words: string[];
 }
 
 export async function loadBundle(url: string): Promise<Bundle> {

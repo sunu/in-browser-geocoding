@@ -1,0 +1,121 @@
+# Held-out set for long lists, lists in parent slots, frames that drop names, "the border with X in Y" and "X in Y"
+# (plan-038, phase 0). Written on 2026-11-23, before any code change of plan-038. Do not tune on these records.
+# Same format as world_heldout6_src.yaml, plus (built in plan-038 phase 2):
+#   - union has one slot `places` (a list of 2 or more parts; a part is a name or a sub-query {q, t, s});
+#   - border_with_in: slots other, region, distance (optional): the shared border of the two, inside `region`.
+# "LEVEL of A, B and C" has the distributive reading (the level inside each name). "and" with no "both" has quant any.
+# n: the anomaly that the record tests. The executed result is the measure; some slot texts can differ.
+views:
+  IN: [68, 8, 97, 37]
+  FR: [-5, 41, 10, 51.5]
+  DE: [5.8, 47.2, 15.1, 55.1]
+  ES: [-9.3, 36, 3.3, 43.8]
+  IT: [6.6, 36.6, 18.5, 47.1]
+  US: [-125, 24, -66, 50]
+  CA: [-141, 41.7, -52.6, 70]
+  MX: [-117, 14.5, -86.7, 32.7]
+  AU: [113, -44, 154, -10]
+  GB: [-8.7, 49.8, 1.8, 60.9]
+  BR: [-74, -34, -34, 5.5]
+  ZA: [16.4, -34.9, 32.9, -22.1]
+  JO: [34.9, 29.2, 39.3, 33.4]
+  CB: [-62.5, 10, -59.4, 18]
+  BA: [15.7, 42.5, 19.7, 45.3]
+
+records:
+  # Top-level lists of 3 to 5 places, all separators, mixed levels
+  - {cc: FR, q: "Lyon, Marseille and Nice", t: union, s: {places: ["Lyon", "Marseille", "Nice"]}}
+  - {cc: DE, q: "Berlin, Hamburg, Munich and Cologne", t: union, s: {places: ["Berlin", "Hamburg", "Munich", "Cologne"]}}
+  - {cc: IT, q: "Rome or Milan or Naples", t: union, s: {places: ["Rome", "Milan", "Naples"]}}
+  - {cc: ES, q: "Madrid & Barcelona & Seville", t: union, s: {places: ["Madrid", "Barcelona", "Seville"]}}
+  - {cc: AU, q: "New South Wales, Victoria and Queensland", t: union, s: {places: ["New South Wales", "Victoria", "Queensland"]}, n: "Names of 2 or more words; 'Victoria' is also a city."}
+  - {cc: US, q: "Texas + Oklahoma + Kansas + Nebraska + Iowa", t: union, s: {places: ["Texas", "Oklahoma", "Kansas", "Nebraska", "Iowa"]}, n: "5 parts, '+' as the separator."}
+  - {cc: IN, q: "Goa as well as Kerala and Karnataka", t: union, s: {places: ["Goa", "Kerala", "Karnataka"]}}
+  - {cc: IN, q: "Bihar n Jharkhand n Odisha", t: union, s: {places: ["Bihar", "Jharkhand", "Odisha"]}}
+  - {cc: GB, q: "Scotland, Wales, Northern Ireland and England", t: union, s: {places: ["Scotland", "Wales", "Northern Ireland", "England"]}, n: "A direction word inside a name ('Northern Ireland')."}
+  - {cc: CA, q: "Ontario, Quebec, Manitoba, Alberta and British Columbia", t: union, s: {places: ["Ontario", "Quebec", "Manitoba", "Alberta", "British Columbia"]}}
+  - {cc: IN, q: "Mumbai, Gujarat and Rajasthan", t: union, s: {places: ["Mumbai", "Gujarat", "Rajasthan"]}, n: "A city and two states."}
+  - {cc: MX, q: "Jalisco, Sonora and Chihuahua", t: union, s: {places: ["Jalisco", "Sonora", "Chihuahua"]}}
+
+  # "LEVEL of A, B and C": the level inside each name
+  - {cc: FR, q: "regions of France, Spain and Italy", t: children, s: {level: state, parent: ["France", "Spain", "Italy"]}}
+  - {cc: DE, q: "states of Germany and Austria", t: children, s: {level: state, parent: ["Germany", "Austria"]}}
+  - {cc: US, q: "counties of Nevada, Utah, Arizona and New Mexico", t: children, s: {level: district, parent: ["Nevada", "Utah", "Arizona", "New Mexico"]}}
+  - {cc: IN, q: "districts of Bihar, Jharkhand, West Bengal, Odisha and Assam", t: children, s: {level: district, parent: ["Bihar", "Jharkhand", "West Bengal", "Odisha", "Assam"]}, n: "5 names in the parent slot."}
+  - {cc: IN, q: "districts of Himachal Pradesh and Uttarakhand", t: children, s: {level: district, parent: ["Himachal Pradesh", "Uttarakhand"]}}
+  - {cc: US, q: "counties of Oregon and Washington", t: children, s: {level: district, parent: ["Oregon", "Washington"]}, n: "'Washington' is a state and a city."}
+  - {cc: IN, q: "coastal districts of Gujarat and Maharashtra", t: children_with_predicate, s: {pred: coastal, level: district, parent: ["Gujarat", "Maharashtra"]}}
+  - {cc: IT, q: "landlocked regions of Italy, Austria and Switzerland", t: children_with_predicate, s: {pred: landlocked, level: state, parent: ["Italy", "Austria", "Switzerland"]}}
+  - {cc: BR, q: "the 3 largest states of Brazil and Argentina", t: children_top, s: {n: 3, order: largest, by: area, level: state, parent: ["Brazil", "Argentina"]}, n: "The top 3 of all the states of both countries, not 3 for each country."}
+  - {cc: IN, q: "the most populous district in each state of Kerala and Tamil Nadu", t: children_top_per, s: {n: 1, order: largest, by: population, level: district, per: state, parent: ["Kerala", "Tamil Nadu"]}}
+
+  # The other reading: the same names, with a split that a user can see
+  - {cc: IN, q: "Himachal Pradesh and the districts of Uttarakhand", t: union, s: {places: ["Himachal Pradesh", {q: "districts of Uttarakhand", t: children, s: {level: district, parent: "Uttarakhand"}}]}, n: "Contrast with 'districts of Himachal Pradesh and Uttarakhand'."}
+  - {cc: DE, q: "Bavaria and the districts of Saxony", t: union, s: {places: ["Bavaria", {q: "districts of Saxony", t: children, s: {level: district, parent: "Saxony"}}]}}
+  - {cc: FR, q: "departments of Brittany and all of Normandy", t: union, s: {places: [{q: "departments of Brittany", t: children, s: {level: district, parent: "Brittany"}}, "Normandy"]}}
+  - {cc: DE, q: "Austria and the states of Germany", t: union, s: {places: ["Austria", {q: "states of Germany", t: children, s: {level: state, parent: "Germany"}}]}, n: "Contrast with 'states of Germany and Austria'."}
+
+  # Unions with sub-query parts
+  - {cc: IN, q: "Goa and coastal districts of Karnataka", t: union, s: {places: ["Goa", {q: "coastal districts of Karnataka", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Karnataka"}}]}}
+  - {cc: ES, q: "10 km around Madrid and the provinces of Catalonia", t: union, s: {places: [{q: "10 km around Madrid", t: buffer, s: {distance: 10000, target: "Madrid"}}, {q: "provinces of Catalonia", t: children, s: {level: district, parent: "Catalonia"}}]}, n: "Two sub-query parts."}
+  - {cc: IT, q: "Sicily, Sardinia and the provinces of Calabria", t: union, s: {places: ["Sicily", "Sardinia", {q: "provinces of Calabria", t: children, s: {level: district, parent: "Calabria"}}]}}
+
+  # Frames that can drop a name
+  - {cc: FR, q: "Paris intersect 20 km around Versailles", t: intersection, s: {a: "Paris", b: {q: "20 km around Versailles", t: buffer, s: {distance: 20000, target: "Versailles"}}}}
+  - {cc: DE, q: "Bavaria except 50 km around Munich", t: difference, s: {a: "Bavaria", b: {q: "50 km around Munich", t: buffer, s: {distance: 50000, target: "Munich"}}}}
+  - {cc: IN, q: "Thane intersect 25 km around Mumbai", t: intersection, s: {a: "Thane", b: {q: "25 km around Mumbai", t: buffer, s: {distance: 25000, target: "Mumbai"}}}}
+  - {cc: GB, q: "20 km around Leeds, Bradford and York", t: buffer, s: {distance: 20000, target: ["Leeds", "Bradford", "York"]}}
+  - {cc: US, q: "counties in the Rocky Mountains", t: children, s: {level: district, parent: "Rocky Mountains"}, ids: {parent: ne-range-Q5463}, n: "A natural parent of 2 words; the frame must not drop 'Mountains'."}
+  - {cc: ES, q: "provinces of Spain except Madrid and Barcelona", t: difference, s: {a: {q: "provinces of Spain", t: children, s: {level: district, parent: "Spain"}}, b: ["Madrid", "Barcelona"]}}
+
+  # The border with X in Y
+  - {cc: IN, q: "3 km along the border with Nepal in Bihar", t: border_with_in, s: {distance: 3000, other: "Nepal", region: "Bihar"}}
+  - {cc: IN, q: "border area with Pakistan in Rajasthan", t: border_with_in, s: {other: "Pakistan", region: "Rajasthan"}}
+  - {cc: FR, q: "the border with Spain in Occitanie", t: border_with_in, s: {other: "Spain", region: "Occitanie"}}
+  - {cc: DE, q: "10 km strip along the border with Poland in Saxony", t: border_with_in, s: {distance: 10000, other: "Poland", region: "Saxony"}}
+  - {cc: US, q: "the border with Mexico in Arizona", t: border_with_in, s: {other: "Mexico", region: "Arizona"}}
+
+  # "X in Y": a qualified name, never a union
+  - {cc: US, q: "hospitals in Springfield in Illinois", t: features_in, s: {category: hospital, region: "Springfield"}, ids: {region: 374889b2-e986-4c45-9e1c-5ae1bd5897cc}}
+  - {cc: US, q: "Salem in Oregon", t: lookup_place, s: {anchor: "Salem"}, src: {anchor: overture}, ids: {anchor: dbbe410b-abef-4aee-bc08-1642432575af}}
+  - {cc: CA, q: "10 km around London in Ontario", t: buffer, s: {distance: 10000, target: "London"}, ids: {target: fbd58ec5-d280-4a67-a638-688492b51ef4}}
+  - {cc: US, q: "schools in Union County in New Jersey", t: features_in, s: {category: school, region: "Union County"}, ids: {region: 4c09e213-8339-4cba-8539-1117d365129b}}
+
+  # Coverage guard anomalies: a word outside the slots that is also a place name must not change the result
+  - {cc: US, q: "hospitals in State College", t: features_in, s: {category: hospital, region: "State College"}, n: "'State' is a level word."}
+  - {cc: US, q: "Union County, New Jersey", t: lookup_place, s: {anchor: "Union County"}, src: {anchor: overture}, ids: {anchor: 4c09e213-8339-4cba-8539-1117d365129b}, n: "'Union' is a template word."}
+  - {cc: IN, q: "border districts of Gujarat", t: children_with_predicate, s: {pred: border, level: district, parent: "Gujarat"}, n: "'border' is a template word."}
+  - {cc: AU, q: "Victoria, Australia", t: lookup_place, s: {anchor: "Victoria"}, src: {anchor: overture}, ids: {anchor: ea41fd02-c67e-43d7-8041-dd36d3548716}}
+  - {cc: US, q: "New York state", t: lookup_place, s: {anchor: "New York"}, src: {anchor: overture}, ids: {anchor: af4de2ef-11a7-45a8-a0a1-cfa91a8c6b16}, n: "A level word after the name."}
+  - {cc: US, q: "counties of Georgia", t: children, s: {level: district, parent: "Georgia"}, n: "'Georgia' is also a country."}
+  - {cc: JO, q: "governorates of Jordan", t: children, s: {level: state, parent: "Jordan"}}
+  - {cc: US, q: "counties of North Carolina and South Carolina", t: children, s: {level: district, parent: ["North Carolina", "South Carolina"]}, n: "Direction words in names, in a list."}
+  - {cc: IN, q: "districts of West Bengal", t: children, s: {level: district, parent: "West Bengal"}}
+  - {cc: ZA, q: "landlocked provinces of South Africa", t: children_with_predicate, s: {pred: landlocked, level: state, parent: "South Africa"}, n: "A direction word in a name."}
+  - {cc: FR, q: "show me hospitals in Lyon please", t: features_in, s: {category: hospital, region: "Lyon"}, n: "Filler words."}
+  - {cc: IN, q: "schools near me in Pune", t: features_in, s: {category: school, region: "Pune"}, n: "'near me' is not a place."}
+
+  # List rule anomalies
+  - {cc: CB, q: "Antigua and Barbuda, Barbados and Dominica", t: union, s: {places: ["Antigua and Barbuda", "Barbados", "Dominica"]}, n: "A name with 'and' in a list."}
+  - {cc: BA, q: "Bosnia and Herzegovina, Croatia and Serbia", t: union, s: {places: ["Bosnia and Herzegovina", "Croatia", "Serbia"]}}
+  - {cc: US, q: "Oregon and Idaho", t: union, s: {places: ["Oregon", "Idaho"]}, n: "'or' inside 'Oregon'."}
+  - {cc: IN, q: "Orissa", t: lookup_place, s: {anchor: "Orissa"}, src: {anchor: overture}, n: "'or' inside a name; an old name."}
+  - {cc: IN, q: "Kerala and Kerala", t: lookup_place, s: {anchor: "Kerala"}, src: {anchor: overture}, n: "A duplicate name: the result is Kerala."}
+  - {cc: FR, q: "France", t: lookup_place, s: {anchor: "France"}, src: {anchor: overture}}
+
+  # Distributive reading anomalies
+  - {cc: US, q: "states of the United States and Mexico", t: children, s: {level: state, parent: ["United States", "Mexico"]}, n: "The level word is also in a name ('United States')."}
+  - {cc: IN, q: "districts of Kerala and Coimbatore", t: union, s: {places: [{q: "districts of Kerala", t: children, s: {level: district, parent: "Kerala"}}, "Coimbatore"]}, n: "Coimbatore is a district: the level applies only to Kerala."}
+
+  # Typos
+  - {cc: ES, q: "Frnace, Spain and Itlay", t: union, s: {places: ["France", "Spain", "Italy"]}}
+  - {cc: ES, q: "nortern Spain", t: direction_part, s: {dir: north, target: "Spain"}}
+  - {cc: FR, q: "areas souht of Lyon", t: direction_outside, s: {dir: south, target: "Lyon"}}
+
+  # Must not change
+  - {cc: US, q: "Richmond, Virginia", t: lookup_place, s: {anchor: "Richmond"}, src: {anchor: overture}, ids: {anchor: da5fdc33-d861-4fbd-be0b-0cf342716ada}}
+  - {cc: DE, q: "Bavaria without Munich and Nuremberg", t: difference, s: {a: "Bavaria", b: ["Munich", "Nuremberg"]}}
+  - {cc: DE, q: "countries that border both Germany and Poland", t: neighbors, s: {level: country, of: ["Germany", "Poland"], quant: all}}
+  - {cc: FR, q: "border between France, Belgium and Luxembourg", t: shared_border, s: {places: ["France", "Belgium", "Luxembourg"]}}
+  - {cc: IT, q: "provinces of Sicily", t: children, s: {level: district, parent: "Sicily"}}
+  - {cc: IN, q: "Karnataka and Telangana", t: union, s: {places: ["Karnataka", "Telangana"]}}

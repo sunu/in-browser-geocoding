@@ -63,10 +63,10 @@
 - {q: "districts in Odisha bordering Andhra Pradesh", t: children_touching, s: {level: district, parent: "Odisha", other: "Andhra Pradesh"}}
 
 # ---------------------------------------------------------------- set_algebra
-- {q: "Kerala and Tamil Nadu", t: union, s: {a: "Kerala", b: "Tamil Nadu"}}
-- {q: "Goa & Karnataka", t: union, s: {a: "Goa", b: "Karnataka"}}
-- {q: "Kerala, Goa and Karnataka", t: union3, s: {a: "Kerala", b: "Goa", c: "Karnataka"}}
-- {q: "Delhi, Haryana and Punjab", t: union3, s: {a: "Delhi", b: "Haryana", c: "Punjab"}}
+- {q: "Kerala and Tamil Nadu", t: union, s: {places: ["Kerala", "Tamil Nadu"]}}
+- {q: "Goa & Karnataka", t: union, s: {places: ["Goa", "Karnataka"]}}
+- {q: "Kerala, Goa and Karnataka", t: union, s: {places: ["Kerala", "Goa", "Karnataka"]}}
+- {q: "Delhi, Haryana and Punjab", t: union, s: {places: ["Delhi", "Haryana", "Punjab"]}}
 - {q: "Kerala except Palakkad", t: difference, s: {a: "Kerala", b: "Palakkad"}}
 - {q: "South India excluding Kerala", t: difference, s: {a: {lex: south_india, text: "South India"}, b: "Kerala"}}
 - {q: "Karnataka without Bengaluru Urban", t: difference, s: {a: "Karnataka", b: "Bengaluru Urban"}}
@@ -114,7 +114,7 @@
 - {q: "hospitals within 2 km of coastal districts of Odisha", t: features_near, s: {category: "hospital", distance: 2000, region: {q: "coastal districts of Odisha", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Odisha"}}}}
 - {q: "schools in landlocked districts of Goa", t: features_in, s: {category: "school", region: {q: "landlocked districts of Goa", t: children_with_predicate, s: {pred: landlocked, level: district, parent: "Goa"}}}}
 - {q: "5 km around districts of Goa", t: buffer, s: {distance: 5000, target: {q: "districts of Goa", t: children, s: {level: district, parent: "Goa"}}}}
-- {q: "Kerala and coastal districts of Karnataka", t: union, s: {a: "Kerala", b: {q: "coastal districts of Karnataka", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Karnataka"}}}}
+- {q: "Kerala and coastal districts of Karnataka", t: union, s: {places: ["Kerala", {q: "coastal districts of Karnataka", t: children_with_predicate, s: {pred: coastal, level: district, parent: "Karnataka"}}]}}
 - {q: "South India except coastal states in India", t: difference, s: {a: {lex: south_india, text: "South India"}, b: {q: "coastal states in India", t: children_with_predicate, s: {pred: coastal, level: state, parent: "India"}}}}
 - {q: "districts of states that border Goa", t: children, s: {level: district, parent: {q: "states that border Goa", t: neighbors, s: {level: state, of: "Goa"}}}}
 - {q: "coastal districts of states that border Goa", t: children_with_predicate, s: {pred: coastal, level: district, parent: {q: "states that border Goa", t: neighbors, s: {level: state, of: "Goa"}}}}

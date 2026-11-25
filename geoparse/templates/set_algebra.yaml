@@ -2,26 +2,15 @@ family: set_algebra
 description: "A combination of two or more places or sets: X and Y together, X except Y, or the overlap of X and Y"
 templates:
   - id: union
-    description: "Two places or sets together, for example Kerala and Tamil Nadu"
-    examples: ["Kerala and Tamil Nadu", "Goa & Karnataka", "both Delhi and Haryana"]
+    description: "Two or more places or sets together, for example Kerala and Tamil Nadu, or Kerala, Goa and the coastal districts of Karnataka"
+    examples: ["Kerala and Tamil Nadu", "Goa & Karnataka", "Kerala, Goa and Karnataka", "Bavaria and the districts of Saxony"]
     slots:
-      a: {type: region}
-      b: {type: region}
+      places: {type: region}
     patterns:
-      - "{a} (and|&|plus|or|,|as well as|together with|along with|with) {b}"
-      - "both {a} and {b}"
-    dag: "Union(${a}, ${b})"
-
-  - id: union3
-    description: "Three places or sets together, for example Kerala, Goa and Karnataka"
-    examples: ["Kerala, Goa and Karnataka", "Delhi, Haryana, Punjab"]
-    slots:
-      a: {type: region}
-      b: {type: region}
-      c: {type: region}
-    patterns:
-      - "{a} , {b} [,] (and|&|,|or) {c}"
-    dag: "Union(Union(${a}, ${b}), ${c})"
+      - "{places}"
+      - "(union of|combine|both) {places}"
+      - "{places} (together|in one view|on one map|on the map)"
+    dag: "${places}"
 
   - id: difference
     description: "A place or set with another place or set removed, for example Kerala except one district"
