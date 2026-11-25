@@ -181,3 +181,22 @@ def test_frame_list_and_within(rules_parser):
     bad = Frame(template="lookup_place", slots={"anchor": "Jayanagar", "anchor.within": "Kerala"})
     assert rules_parser._within_faults(dec, ok) == []
     assert rules_parser._within_faults(dec, bad) == ["no place 'Jayanagar' is inside 'Kerala'"]
+
+
+@pytest.mark.skipif(not _t5_available(), reason="T5 model or runtime not available")
+@pytest.mark.xfail(strict=True, reason="known fault (plan-039 phase 4): T5 reads 'marina beach' as the beaches of 'marina', "
+                                      "and the fuzzy search finds 'Maria' in Madhya Pradesh")
+def test_marina_beach_is_not_maria():
+    p = _parser("rules", use_t5=True)
+    r = p.parse("chennai and 3 km around marina beach overlap")
+    assert r.ok, r.unsupported
+
+    def ids(n):
+        if isinstance(n, dict):
+            if n.get("op") == "Resolve" and n["args"].get("id"):
+                yield n["args"]["id"]
+            for v in n.get("args", {}).values():
+                yield from ids(v)
+
+    names = {d["name"] for d in p.store.describe(sorted(set(ids(r.dag)))).values()}
+    assert "Maria" not in names, names
