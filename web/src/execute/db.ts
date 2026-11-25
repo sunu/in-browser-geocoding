@@ -6,6 +6,49 @@ import { CountryStore } from "./store.ts";
 
 export interface Db { query(sql: string): Promise<any[]>; store?: CountryStore }
 
+/** One SQL statement of a query, for the result panel: its first rows (a temp table: the rows of the table). */
+export interface QueryRecord { sql: string; ms: number; count: number; rows: any[]; error?: string }
+
+const PREVIEW_ROWS = 20;
+const SKIP = /^\s*(DROP TABLE|CREATE OR REPLACE MACRO)\b/i;
+
+function small(v: any): any {
+  if (v instanceof Uint8Array) return "<binary>";
+  if (typeof v === "string" && v.length > 200) return `${v.slice(0, 200)}…`;
+  if (Array.isArray(v)) return v.map(small);
+  return v;
+}
+
+const preview = (rows: any[]) => rows.slice(0, PREVIEW_ROWS).map((r) => Object.fromEntries(Object.entries(r).map(([k, v]) => [k, small(v)])));
+
+/** A Db that adds each statement to `log`. The preview queries of a temp table go to `db`, not to the log. */
+export function logged(db: Db, log: QueryRecord[]): Db {
+  const query = async (sql: string) => {
+    if (SKIP.test(sql)) return db.query(sql);
+    const t0 = performance.now();
+    const rec: QueryRecord = { sql: sql.trim(), ms: 0, count: 0, rows: [] };
+    log.push(rec);
+    try {
+      const rs = await db.query(sql);
+      rec.ms = performance.now() - t0;
+      const table = /^\s*CREATE TEMP TABLE (\w+) AS/i.exec(sql)?.[1];
+      if (table) {
+        rec.count = Number((await db.query(`SELECT count(*) AS n FROM ${table}`))[0].n);
+        rec.rows = preview(await db.query(`SELECT COLUMNS(c -> c NOT IN ('geometry', 'gs')) FROM ${table} LIMIT ${PREVIEW_ROWS}`));
+      } else {
+        rec.count = rs.length;
+        rec.rows = preview(rs);
+      }
+      return rs;
+    } catch (e) {
+      rec.ms = performance.now() - t0;
+      rec.error = (e as Error).message;
+      throw e;
+    }
+  };
+  return { query, store: db.store };
+}
+
 function toPlain(v: any): any {
   if (typeof v === "bigint") return Number(v);
   if (v && typeof v === "object" && typeof v.toArray === "function" && !(v instanceof Uint8Array)) return Array.from(v.toArray(), toPlain);

@@ -3,7 +3,8 @@ import { onDownload, type Download } from "../core/progress.ts";
 import { load, type Geoparse } from "../geoparse.ts";
 import type { Result } from "../execute/executor.ts";
 import type { ParseResult } from "../parse/pipeline.ts";
-import { decisions, esc, headline, HOW_IT_WORKS, reading } from "./explain.ts";
+import { decisions, esc, headline, HOW_IT_WORKS, reading, sqlLog } from "./explain.ts";
+import type { QueryRecord } from "../execute/db.ts";
 
 const $ = (id: string) => document.getElementById(id)!;
 const status = $("status"), side = $("side"), q = $("q") as HTMLInputElement, go = $("go") as HTMLButtonElement;
@@ -152,11 +153,15 @@ async function runQuery_(text: string, id: number) {
   const b = map?.getBounds();
   const view = b ? [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()] : null;
   let p: ParseResult, r: Result | null = null;
+  let parseLog: QueryRecord[] = [], runLog: QueryRecord[] = [];
+  gp.queries.length = 0;
   try {
     p = await gp.parse(text, view);
+    parseLog = gp.queries.splice(0);
     if (p.ok) {
       setStep("Finding the places…", id);
       r = await gp.execute(p.dag, view);
+      runLog = gp.queries.splice(0);
     }
   } finally {
     if (id === current) $("busy").hidden = true;
@@ -183,6 +188,7 @@ async function runQuery_(text: string, id: number) {
     ${decisions(p.trace, gp.bundle)}
     ${p.dag ? `<h4>Plan</h4><p class="muted">The steps that make the answer. Each <code>op</code> is one step. Its <code>args</code> are its inputs; an input can be another step.</p>
       <pre>${esc(JSON.stringify(p.dag, null, 1))}</pre>` : ""}
+    ${sqlLog(parseLog, runLog)}
     <details><summary>Technical details</summary>
       <h4>Slots</h4><pre>${esc(JSON.stringify(p.slots, null, 1))}</pre>
       <table><tr><th>depth</th><th>decision</th><th>value</th><th>conf</th><th>impl</th><th>ms</th></tr>
@@ -287,7 +293,7 @@ const env = import.meta.env;
 const param = new URLSearchParams(location.search).get("data");
 const data = param ?? (env.VITE_DATA_URL || undefined);
 load("", progress, data,
-  { models: env.VITE_MODEL_URL || undefined, dataVersion: param ? "" : env.VITE_DATA_VERSION || "", preload: false }).then((g) => {
+  { models: env.VITE_MODEL_URL || undefined, dataVersion: param ? "" : env.VITE_DATA_VERSION || "", preload: false, logQueries: true }).then((g) => {
   gp = g;
   go.disabled = false;
   const total = [...files.values()].reduce((a, d) => a + d.loaded, 0);
