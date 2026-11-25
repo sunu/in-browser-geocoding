@@ -8,7 +8,7 @@ This directory is a TypeScript version of geoparse that runs entirely in a brows
 | Decisions | Local cross-encoder (int8 ONNX) and rules. No Jev (it needs an API key). |
 | Data | DuckDB-WASM with the spatial extension. Small tables are loaded at start; `places.parquet` and the world point files (`poi/`) are read with HTTP range requests. The world data loads the files of each country when a query needs them. |
 | Geocoder | Photon (from the browser) |
-| Map | MapLibre GL, OpenFreeMap basemap |
+| Map | MapLibre GL, VersaTiles basemap |
 
 ## Limits of this version
 
