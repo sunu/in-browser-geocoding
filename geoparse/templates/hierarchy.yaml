@@ -30,28 +30,19 @@ templates:
     dag: "Parent(${child}, level=${level})"
 
   - id: neighbors
-    description: "The divisions that share a border with a place, for example the states that border a state"
-    examples: ["states that border Karnataka", "districts adjacent to Pune", "neighbours of Kerala"]
+    description: "The divisions that share a border with a place or with any or all of several places, for example the states that border a state"
+    examples: ["states that border Karnataka", "countries bordering France or Germany", "states that border both Karnataka and Kerala"]
     slots:
       level: {type: admin_level, options_ref: admin_levels, optional: true, default: none}
+      quant: {type: quantifier, options_ref: quantifiers, optional: true, default: any}
       of: {type: region}
     patterns:
+      - "{level} (that|which) (border|borders|touch|touches|adjoin|adjoins) {quant} {of}"
+      - "{level} (bordering|adjoining|adjacent to|next to|touching) {quant} {of}"
       - "{level} (that|which) (border|borders|touch|touches|adjoin|adjoins|surround|surrounds) {of}"
       - "{level} (bordering|adjoining|adjacent to|next to|touching|surrounding|around|neighbouring|neighboring|sharing a border with|sharing border with) {of}"
       - "(neighbours|neighbors|neighbouring|neighboring|adjacent|bordering|surrounding) {level} (of|to) {of}"
       - "(neighbours|neighbors|neighbouring|neighboring|adjacent|bordering|surrounding) {level} {of}"
       - "(neighbours|neighbors|neighbouring regions|neighboring regions) of {of}"
       - "{of} (neighbours|neighbors|neighbouring|neighboring)"
-    dag: "Neighbors(${of}, level=${level})"
-
-  - id: neighbors_both
-    description: "The divisions that border both of two places"
-    examples: ["states that border both Karnataka and Kerala", "countries bordering both China and India"]
-    slots:
-      level: {type: admin_level, options_ref: admin_levels, optional: true, default: none}
-      a: {type: region}
-      b: {type: region}
-    patterns:
-      - "{level} (that|which) (border|touch) both {a} and {b}"
-      - "{level} (bordering|adjacent to|next to|touching) both {a} and {b}"
-    dag: "Common(Neighbors(${a}, level=${level}), Neighbors(${b}, level=${level}))"
+    dag: "Neighbors(${of}, level=${level}, quant=${quant})"

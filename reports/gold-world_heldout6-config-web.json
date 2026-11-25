@@ -1,0 +1,2531 @@
+{
+ "isolated": [
+  {
+   "id": "u001",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features",
+   "gold": "features",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u001",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 0.9944980000000001,
+   "n_options": 2
+  },
+  {
+   "id": "u001",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 0.697818,
+   "n_options": 2
+  },
+  {
+   "id": "u001",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": {
+    "category": "hospitals",
+    "region": "Pune or Mumbai"
+   },
+   "gold": {
+    "category": "hospitals",
+    "region": "Pune or Mumbai"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u001",
+   "decision": "fill_closed_slot.category",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "hospital",
+   "gold": "hospital",
+   "text": "hospitals",
+   "conf": 0.9999257500000001
+  },
+  {
+   "id": "u002",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 0.9867140000000001,
+   "n_options": 2
+  },
+  {
+   "id": "u002",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u002",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": false,
+   "got": "union",
+   "gold": "children",
+   "conf": 0.046580000000000066,
+   "n_options": 2
+  },
+  {
+   "id": "u002",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "districts",
+    "parent": "Kerala and Goa"
+   },
+   "gold": {
+    "level": "districts",
+    "parent": "Kerala and Goa"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u002",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "districts",
+   "conf": 1.0
+  },
+  {
+   "id": "u003",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "modifier",
+   "gold": "modifier",
+   "conf": 0.9644079999999999,
+   "n_options": 2
+  },
+  {
+   "id": "u003",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "buffer",
+   "gold": "buffer",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u003",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": "buffer",
+   "gold": "buffer",
+   "conf": 0.9060140000000001,
+   "n_options": 2
+  },
+  {
+   "id": "u003",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "modifier",
+   "correct": true,
+   "got": {
+    "distance": "5 km",
+    "target": "Lyon and Grenoble"
+   },
+   "gold": {
+    "distance": "5 km",
+    "target": "Lyon and Grenoble"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u004",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 0.986294,
+   "n_options": 2
+  },
+  {
+   "id": "u004",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 0.9979100000000001,
+   "n_options": 2
+  },
+  {
+   "id": "u004",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 0.49271349999999997,
+   "n_options": 3
+  },
+  {
+   "id": "u004",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "districts",
+    "pred": "coastal",
+    "parent": "Kerala, Karnataka and Goa"
+   },
+   "gold": {
+    "level": "districts",
+    "pred": "coastal",
+    "parent": "Kerala, Karnataka and Goa"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u004",
+   "decision": "fill_closed_slot.predicate",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "coastal",
+   "gold": "coastal",
+   "text": "coastal",
+   "conf": 0.9996124000000001
+  },
+  {
+   "id": "u004",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "districts",
+   "conf": 1.0
+  },
+  {
+   "id": "u005",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features",
+   "gold": "features",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u005",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 0.993924,
+   "n_options": 2
+  },
+  {
+   "id": "u005",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "features_in",
+   "gold": "features_in",
+   "conf": 0.753234,
+   "n_options": 2
+  },
+  {
+   "id": "u005",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": {
+    "category": "schools",
+    "region": "Madrid or Barcelona"
+   },
+   "gold": {
+    "category": "schools",
+    "region": "Madrid or Barcelona"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u005",
+   "decision": "fill_closed_slot.category",
+   "depth": 0,
+   "family": "features",
+   "correct": true,
+   "got": "school",
+   "gold": "school",
+   "text": "schools",
+   "conf": 0.999920125
+  },
+  {
+   "id": "u006",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": false,
+   "got": "lookup",
+   "gold": "set_algebra",
+   "conf": 0.967444,
+   "n_options": 2
+  },
+  {
+   "id": "u006",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "union",
+   "gold": "union",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u006",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": false,
+   "got": "lookup_place",
+   "gold": "union",
+   "conf": 0.20996199999999998,
+   "n_options": 2
+  },
+  {
+   "id": "u006",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": false,
+   "got": {
+    "a": "England and Wales",
+    "b": "England and Wales"
+   },
+   "gold": {
+    "a": "England",
+    "b": "Wales"
+   },
+   "conf": 0.952874,
+   "n_options": 2
+  },
+  {
+   "id": "u006",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "England",
+   "conf": 0.997764
+  },
+  {
+   "id": "u006",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Wales",
+   "conf": 0.99792
+  },
+  {
+   "id": "u007",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u007",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u007",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u007",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "countries",
+    "of": "France or Germany"
+   },
+   "gold": {
+    "level": "countries",
+    "of": "France or Germany"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u007",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "country",
+   "gold": "country",
+   "text": "countries",
+   "conf": 1.0
+  },
+  {
+   "id": "u008",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u008",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u008",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u008",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "countries",
+    "of": "France and Germany"
+   },
+   "gold": {
+    "level": "countries",
+    "of": "France and Germany"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u008",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "country",
+   "gold": "country",
+   "text": "countries",
+   "conf": 1.0
+  },
+  {
+   "id": "u009",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u009",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u009",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u009",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "countries",
+    "quant": "both",
+    "of": "France and Germany"
+   },
+   "gold": {
+    "level": "countries",
+    "quant": "both",
+    "of": "France and Germany"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u009",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "country",
+   "gold": "country",
+   "text": "countries",
+   "conf": 1.0
+  },
+  {
+   "id": "u009",
+   "decision": "fill_closed_slot.quantifier",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "all",
+   "gold": "all",
+   "text": "both",
+   "conf": 1.0
+  },
+  {
+   "id": "u010",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u010",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u010",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u010",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "countries",
+    "of": "France, Germany and Italy"
+   },
+   "gold": {
+    "level": "countries",
+    "of": "France, Germany and Italy"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u010",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "country",
+   "gold": "country",
+   "text": "countries",
+   "conf": 1.0
+  },
+  {
+   "id": "u011",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u011",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u011",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u011",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "countries",
+    "quant": "both",
+    "of": "Austria and Switzerland"
+   },
+   "gold": {
+    "level": "countries",
+    "quant": "both",
+    "of": "Austria and Switzerland"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u011",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "country",
+   "gold": "country",
+   "text": "countries",
+   "conf": 1.0
+  },
+  {
+   "id": "u011",
+   "decision": "fill_closed_slot.quantifier",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "all",
+   "gold": "all",
+   "text": "both",
+   "conf": 1.0
+  },
+  {
+   "id": "u012",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u012",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u012",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u012",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "quant": "both",
+    "of": "Karnataka and Tamil Nadu"
+   },
+   "gold": {
+    "level": "states",
+    "quant": "both",
+    "of": "Karnataka and Tamil Nadu"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u012",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 1.0
+  },
+  {
+   "id": "u012",
+   "decision": "fill_closed_slot.quantifier",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "all",
+   "gold": "all",
+   "text": "both",
+   "conf": 1.0
+  },
+  {
+   "id": "u013",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 0.993968,
+   "n_options": 2
+  },
+  {
+   "id": "u013",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u013",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": false,
+   "got": "union",
+   "gold": "neighbors",
+   "conf": 0.24130399999999996,
+   "n_options": 2
+  },
+  {
+   "id": "u013",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "of": "Karnataka or Kerala"
+   },
+   "gold": {
+    "level": "states",
+    "of": "Karnataka or Kerala"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u013",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 1.0
+  },
+  {
+   "id": "u014",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u014",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u014",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u014",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "quant": "either",
+    "of": "Nevada or Utah"
+   },
+   "gold": {
+    "level": "states",
+    "quant": "either",
+    "of": "Nevada or Utah"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u014",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 1.0
+  },
+  {
+   "id": "u014",
+   "decision": "fill_closed_slot.quantifier",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "any",
+   "gold": "any",
+   "text": "either",
+   "conf": 1.0
+  },
+  {
+   "id": "u015",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u015",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u015",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u015",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "districts",
+    "parent": "Karnataka",
+    "quant": "both",
+    "other": "Goa and Maharashtra"
+   },
+   "gold": {
+    "level": "districts",
+    "parent": "Karnataka",
+    "quant": "both",
+    "other": "Goa and Maharashtra"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u015",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "districts",
+   "conf": 1.0
+  },
+  {
+   "id": "u015",
+   "decision": "fill_closed_slot.quantifier",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "all",
+   "gold": "all",
+   "text": "both",
+   "conf": 1.0
+  },
+  {
+   "id": "u015",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Karnataka",
+   "conf": 0.996482
+  },
+  {
+   "id": "u016",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 0.9890460000000001,
+   "n_options": 2
+  },
+  {
+   "id": "u016",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u016",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 0.859016,
+   "n_options": 2
+  },
+  {
+   "id": "u016",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "districts",
+    "parent": "Karnataka",
+    "other": "Goa or Kerala"
+   },
+   "gold": {
+    "level": "districts",
+    "parent": "Karnataka",
+    "other": "Goa or Kerala"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u016",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "districts",
+   "conf": 1.0
+  },
+  {
+   "id": "u016",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Karnataka",
+   "conf": 0.996482
+  },
+  {
+   "id": "u017",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "relational",
+   "correct": true,
+   "got": "relational",
+   "gold": "relational",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u017",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "relational",
+   "correct": true,
+   "got": "shared_border",
+   "gold": "shared_border",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u017",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "relational",
+   "correct": true,
+   "got": "shared_border",
+   "gold": "shared_border",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u017",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "relational",
+   "correct": true,
+   "got": {
+    "places": "France, Switzerland and Germany"
+   },
+   "gold": {
+    "places": "France, Switzerland and Germany"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u018",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "relational",
+   "correct": true,
+   "got": "relational",
+   "gold": "relational",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u018",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "relational",
+   "correct": true,
+   "got": "shared_border",
+   "gold": "shared_border",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u018",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "relational",
+   "correct": true,
+   "got": "shared_border",
+   "gold": "shared_border",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u018",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "relational",
+   "correct": true,
+   "got": {
+    "places": "Spain and Portugal"
+   },
+   "gold": {
+    "places": "Spain and Portugal"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u019",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "relational",
+   "correct": true,
+   "got": "relational",
+   "gold": "relational",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u019",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "relational",
+   "correct": true,
+   "got": "shared_border",
+   "gold": "shared_border",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u019",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "relational",
+   "correct": true,
+   "got": "shared_border",
+   "gold": "shared_border",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u019",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "relational",
+   "correct": true,
+   "got": {
+    "distance": "10 km",
+    "places": "India, Nepal and Bhutan"
+   },
+   "gold": {
+    "distance": "10 km",
+    "places": "India, Nepal and Bhutan"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u020",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "attribute",
+   "gold": "attribute",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u020",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "children_top_per",
+   "gold": "children_top_per",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u020",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "children_top_per",
+   "gold": "children_top_per",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u020",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": {
+    "order": "largest",
+    "level": "district",
+    "per": "state",
+    "parent": "India"
+   },
+   "gold": {
+    "order": "largest",
+    "level": "district",
+    "per": "state",
+    "parent": "India"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u020",
+   "decision": "fill_closed_slot.rank_order",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "largest",
+   "gold": "largest",
+   "text": "largest",
+   "conf": 1.0
+  },
+  {
+   "id": "u020",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "district",
+   "conf": 1.0
+  },
+  {
+   "id": "u020",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "state",
+   "conf": 1.0
+  },
+  {
+   "id": "u020",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "India",
+   "conf": 0.998034
+  },
+  {
+   "id": "u021",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "attribute",
+   "gold": "attribute",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u021",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "children_top_per",
+   "gold": "children_top_per",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u021",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "children_top_per",
+   "gold": "children_top_per",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u021",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": {
+    "order": "smallest",
+    "level": "department",
+    "per": "region",
+    "parent": "France"
+   },
+   "gold": {
+    "order": "smallest",
+    "level": "department",
+    "per": "region",
+    "parent": "France"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u021",
+   "decision": "fill_closed_slot.rank_order",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "smallest",
+   "gold": "smallest",
+   "text": "smallest",
+   "conf": 1.0
+  },
+  {
+   "id": "u021",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "department",
+   "conf": 1.0
+  },
+  {
+   "id": "u021",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "region",
+   "conf": 1.0
+  },
+  {
+   "id": "u021",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "France",
+   "conf": 0.998218
+  },
+  {
+   "id": "u022",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "attribute",
+   "gold": "attribute",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u022",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "children_top_per",
+   "gold": "children_top_per",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u022",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "children_top_per",
+   "gold": "children_top_per",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u022",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": {
+    "order": "largest",
+    "level": "counties",
+    "per": "state",
+    "n": "2",
+    "parent": "the United States"
+   },
+   "gold": {
+    "order": "largest",
+    "level": "counties",
+    "per": "state",
+    "n": "2",
+    "parent": "the United States"
+   },
+   "conf": 0.969498,
+   "n_options": 2
+  },
+  {
+   "id": "u022",
+   "decision": "fill_closed_slot.rank_order",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "largest",
+   "gold": "largest",
+   "text": "largest",
+   "conf": 1.0
+  },
+  {
+   "id": "u022",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "counties",
+   "conf": 1.0
+  },
+  {
+   "id": "u022",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "state",
+   "conf": 1.0
+  },
+  {
+   "id": "u022",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "United States",
+   "conf": 0.997718
+  },
+  {
+   "id": "u023",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u023",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u023",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "neighbors",
+   "gold": "neighbors",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u023",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "countries",
+    "of": "Bosnia and Herzegovina or Serbia"
+   },
+   "gold": {
+    "level": "countries",
+    "of": "Bosnia and Herzegovina or Serbia"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u023",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "country",
+   "gold": "country",
+   "text": "countries",
+   "conf": 1.0
+  },
+  {
+   "id": "u024",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "set_algebra",
+   "gold": "set_algebra",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u024",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "union",
+   "gold": "union",
+   "conf": 0.997662,
+   "n_options": 2
+  },
+  {
+   "id": "u024",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "union",
+   "gold": "union",
+   "conf": 0.7721659999999999,
+   "n_options": 2
+  },
+  {
+   "id": "u024",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": {
+    "a": "Trinidad and Tobago",
+    "b": "Barbados"
+   },
+   "gold": {
+    "a": "Trinidad and Tobago",
+    "b": "Barbados"
+   },
+   "conf": 0.9319219999999999,
+   "n_options": 2
+  },
+  {
+   "id": "u024",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Trinidad and Tobago",
+   "conf": 0.997494
+  },
+  {
+   "id": "u024",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Barbados",
+   "conf": 0.998122
+  },
+  {
+   "id": "u025",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.982002,
+   "n_options": 2
+  },
+  {
+   "id": "u025",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u025",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 0.572066,
+   "n_options": 2
+  },
+  {
+   "id": "u025",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Bosnia and Herzegovina"
+   },
+   "gold": {
+    "anchor": "Bosnia and Herzegovina"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u025",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Bosnia and Herzegovina",
+   "conf": 0.8
+  },
+  {
+   "id": "u026",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 0.9845980000000001,
+   "n_options": 2
+  },
+  {
+   "id": "u026",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u026",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 0.5985339999999999,
+   "n_options": 2
+  },
+  {
+   "id": "u026",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Jammu and Kashmir"
+   },
+   "gold": {
+    "anchor": "Jammu and Kashmir"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u026",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Jammu and Kashmir",
+   "conf": 0.8
+  },
+  {
+   "id": "u027",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u027",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u027",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u027",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Andorra"
+   },
+   "gold": {
+    "anchor": "Andorra"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u027",
+   "decision": "select_source",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "overture",
+   "gold": "overture",
+   "text": "Andorra",
+   "conf": 0.8
+  },
+  {
+   "id": "u028",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "set_algebra",
+   "gold": "set_algebra",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "u028",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "union",
+   "gold": "union",
+   "conf": 0.99858,
+   "n_options": 2
+  },
+  {
+   "id": "u028",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": "union",
+   "gold": "union",
+   "conf": 0.935908,
+   "n_options": 2
+  },
+  {
+   "id": "u028",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": {
+    "a": "Kerala",
+    "b": "Tamil Nadu"
+   },
+   "gold": {
+    "a": "Kerala",
+    "b": "Tamil Nadu"
+   },
+   "conf": 0.91141,
+   "n_options": 2
+  },
+  {
+   "id": "u028",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Kerala",
+   "conf": 0.997534
+  },
+  {
+   "id": "u028",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "set_algebra",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Tamil Nadu",
+   "conf": 0.99729
+  }
+ ],
+ "pipeline": [
+  {
+   "id": "u001",
+   "query": "hospitals in Pune or Mumbai",
+   "family": "features",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.8225085735321045,
+   "model_calls": 9,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "features_in",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "2092 ids vs 2092"
+  },
+  {
+   "id": "u002",
+   "query": "districts of Kerala and Goa",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": false,
+   "ok": true,
+   "latency_s": 3.670567512512207,
+   "model_calls": 9,
+   "requests_in_sequence": 3,
+   "unsupported": null,
+   "got_template": "union",
+   "path": "complex",
+   "slots_ok": false,
+   "diffs": [
+    "template"
+   ],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "15 ids vs 17"
+  },
+  {
+   "id": "u003",
+   "query": "5 km around Lyon and Grenoble",
+   "family": "modifier",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.8153016567230225,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "buffer",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 502.671 vs 502.671"
+  },
+  {
+   "id": "u004",
+   "query": "coastal districts of Kerala, Karnataka and Goa",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.29850435256958,
+   "model_calls": 12,
+   "requests_in_sequence": 3,
+   "unsupported": null,
+   "got_template": "children_with_predicate",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "16 ids vs 16"
+  },
+  {
+   "id": "u005",
+   "query": "schools in Madrid or Barcelona",
+   "family": "features",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.6948678493499756,
+   "model_calls": 10,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "features_in",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "2466 ids vs 2466"
+  },
+  {
+   "id": "u006",
+   "query": "England and Wales",
+   "family": "set_algebra",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.112011194229126,
+   "model_calls": 14,
+   "requests_in_sequence": 3,
+   "unsupported": null,
+   "got_template": "union",
+   "path": "complex",
+   "slots_ok": false,
+   "diffs": [
+    "a: expected 'England', got {'list': ['England', 'Wales'], 'conj': 'and', 'quant': None}",
+    "b: expected 'Wales', got {'list': ['England', 'Wales'], 'conj': 'and', 'quant': None}"
+   ],
+   "dag_ok": false,
+   "exec_ok": true,
+   "exec_note": "2 ids vs 2"
+  },
+  {
+   "id": "u007",
+   "query": "countries bordering France or Germany",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.4054439067840576,
+   "model_calls": 7,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "12 ids vs 12"
+  },
+  {
+   "id": "u008",
+   "query": "countries bordering France and Germany",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.2975821495056152,
+   "model_calls": 8,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "12 ids vs 12"
+  },
+  {
+   "id": "u009",
+   "query": "countries that border both France and Germany",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.9435019493103027,
+   "model_calls": 8,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "3 ids vs 3"
+  },
+  {
+   "id": "u010",
+   "query": "countries that border France, Germany and Italy",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 4.577644109725952,
+   "model_calls": 10,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "14 ids vs 14"
+  },
+  {
+   "id": "u011",
+   "query": "countries bordering both Austria and Switzerland",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 3.2867448329925537,
+   "model_calls": 8,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "3 ids vs 3"
+  },
+  {
+   "id": "u012",
+   "query": "states that border both Karnataka and Tamil Nadu",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 5.067346572875977,
+   "model_calls": 8,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "2 ids vs 2"
+  },
+  {
+   "id": "u013",
+   "query": "states bordering Karnataka or Kerala",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 3.3145744800567627,
+   "model_calls": 8,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "6 ids vs 6"
+  },
+  {
+   "id": "u014",
+   "query": "states that border either Nevada or Utah",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 3.150716543197632,
+   "model_calls": 8,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "7 ids vs 7"
+  },
+  {
+   "id": "u015",
+   "query": "districts of Karnataka that border both Goa and Maharashtra",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 3.3648407459259033,
+   "model_calls": 10,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "u016",
+   "query": "districts of Karnataka that border Goa or Kerala",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.198056697845459,
+   "model_calls": 10,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "6 ids vs 6"
+  },
+  {
+   "id": "u017",
+   "query": "border between France, Switzerland and Germany",
+   "family": "relational",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.634071111679077,
+   "model_calls": 8,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "shared_border",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 10768.515 vs 10768.515"
+  },
+  {
+   "id": "u018",
+   "query": "border between Spain and Portugal",
+   "family": "relational",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.8928134441375732,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "shared_border",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 11130.811 vs 11130.811"
+  },
+  {
+   "id": "u019",
+   "query": "10 km zone along the border of India, Nepal and Bhutan",
+   "family": "relational",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.3872294425964355,
+   "model_calls": 8,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "shared_border",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "area 42169.292 vs 42169.292"
+  },
+  {
+   "id": "u020",
+   "query": "the largest district in each state of India",
+   "family": "attribute",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.9609370231628418,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children_top_per",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "37 ids vs 37"
+  },
+  {
+   "id": "u021",
+   "query": "the smallest department in each region of France",
+   "family": "attribute",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.08135724067688,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children_top_per",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "13 ids vs 13"
+  },
+  {
+   "id": "u022",
+   "query": "the 2 largest counties in each state of the United States",
+   "family": "attribute",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 3.2075092792510986,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_top_per",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "100 ids vs 100"
+  },
+  {
+   "id": "u023",
+   "query": "countries bordering Bosnia and Herzegovina or Serbia",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.872055768966675,
+   "model_calls": 7,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "neighbors",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "7 ids vs 7"
+  },
+  {
+   "id": "u024",
+   "query": "Trinidad and Tobago and Barbados",
+   "family": "set_algebra",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.5366766452789307,
+   "model_calls": 7,
+   "requests_in_sequence": 3,
+   "unsupported": null,
+   "got_template": "union",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "2 ids vs 2"
+  },
+  {
+   "id": "u025",
+   "query": "Bosnia and Herzegovina",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.6526548862457275,
+   "model_calls": 4,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "u026",
+   "query": "Jammu and Kashmir",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.725149393081665,
+   "model_calls": 3,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "u027",
+   "query": "Andorra",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.126023530960083,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "u028",
+   "query": "Kerala and Tamil Nadu",
+   "family": "set_algebra",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.3114888668060303,
+   "model_calls": 7,
+   "requests_in_sequence": 3,
+   "unsupported": null,
+   "got_template": "union",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "2 ids vs 2"
+  }
+ ],
+ "summary": {
+  "pick_family": {
+   "n": 28,
+   "correct": 27
+  },
+  "pick_template": {
+   "n": 28,
+   "correct": 28
+  },
+  "pick_template_flat": {
+   "n": 28,
+   "correct": 25
+  },
+  "pick_split": {
+   "n": 28,
+   "correct": 27
+  },
+  "is_subquery": {
+   "n": 11,
+   "correct": 11
+  },
+  "select_source": {
+   "n": 3,
+   "correct": 3
+  },
+  "fill_closed_slot.admin_level": {
+   "n": 19,
+   "correct": 19
+  },
+  "fill_closed_slot.category": {
+   "n": 2,
+   "correct": 2
+  },
+  "fill_closed_slot.predicate": {
+   "n": 1,
+   "correct": 1
+  },
+  "fill_closed_slot.quantifier": {
+   "n": 5,
+   "correct": 5
+  },
+  "fill_closed_slot.rank_order": {
+   "n": 3,
+   "correct": 3
+  },
+  "pipeline": {
+   "attribute": {
+    "n": 3,
+    "dag_ok": 3
+   },
+   "features": {
+    "n": 2,
+    "dag_ok": 2
+   },
+   "hierarchy": {
+    "n": 10,
+    "dag_ok": 9
+   },
+   "lookup": {
+    "n": 3,
+    "dag_ok": 3
+   },
+   "modifier": {
+    "n": 1,
+    "dag_ok": 1
+   },
+   "predicate_filter": {
+    "n": 3,
+    "dag_ok": 3
+   },
+   "relational": {
+    "n": 3,
+    "dag_ok": 3
+   },
+   "set_algebra": {
+    "n": 3,
+    "dag_ok": 2
+   },
+   "ALL": {
+    "n": 28,
+    "dag_ok": 26
+   }
+  }
+ }
+}

@@ -51,16 +51,14 @@ templates:
     dag: "Along(Layer(country_boundary), ${distance}, within=${region})"
 
   - id: shared_border
-    description: "The border line that two places share, or a strip along it"
-    examples: ["border between Spain and Portugal", "10 km zone along the border of India and Pakistan", "India Pakistan border"]
+    description: "The border line that two or more places share, or a strip along it"
+    examples: ["border between Spain and Portugal", "10 km zone along the border of India and Pakistan", "India Pakistan border",
+               "border between France, Switzerland and Germany"]
     slots:
       distance: {type: distance, default: policy.default_strip_m}
-      a: {type: region}
-      b: {type: region}
+      places: {type: region}
     patterns:
-      - "[the] (border|boundary|frontier) between {a} and {b}"
-      - "[the] (border|boundary|frontier) of {a} and {b}"
-      - "{distance} [zone|strip|belt|corridor] along the (border|boundary) between {a} and {b}"
-      - "{distance} [zone|strip|belt|corridor] along the (border|boundary) of {a} and {b}"
-      - "{a} {b} (border|boundary)"
-    dag: "Along(SharedBorder(${a}, ${b}), ${distance})"
+      - "[the] (border|boundary|frontier|borders|boundaries) (between|of|among) {places}"
+      - "{distance} [zone|strip|belt|corridor] along the (border|boundary|borders) (between|of|among) {places}"
+      - "{places} (border|boundary|borders)"
+    dag: "Along(SharedBorder(${places}), ${distance})"

@@ -4,6 +4,8 @@ Paraphrases (training):
   uv run python -m training.paraphrase para --n-seeds 3000 --per-seed 3
   uv run python -m training.paraphrase para --n-seeds 1700 --templates shared_border,natural_in --natural
     (seeds of some templates, or with a natural feature name in a slot; plan-027)
+  uv run python -m training.paraphrase para --n-seeds 1500 --lists
+    (seeds with a list of places, a quantifier or ranking per parent; plan-036)
 Test set (separate prompt and model, never used for training):
   uv run python -m training.paraphrase testset --per-template 15
 
@@ -49,7 +51,10 @@ Rules for slot values:
 - distance = <number in digits> <unit>, unit is one of: m, km, mi. Examples: "half a kilometre" -> 0.5 km; "2000 metres" -> 2000 m.
 - value = <number in digits> [<scale>], scale is one of: thousand, lakh, million, crore, billion. Examples: "ten lakh" -> 10 lakh; "1,000,000" -> 1000000; "a million" -> 1 million.
 - Leave out an optional slot that the query does not state.
-- Closed slots (level, pred, dir, category, attr, op) hold the words of the query that express them, for example pred = "near the sea"."""
+- Closed slots (level, pred, dir, category, attr, op) hold the words of the query that express them, for example pred = "near the sea".
+- A region slot can hold a list of places joined by "and", "or", "&" or commas, for example of = "Kerala, Goa and Karnataka".
+- quant holds the words that say "all of the places" or "any of them" ("both", "all of", "either"). Leave it out if the
+  query has no such word. Never add or remove "both", "all", "either" or "each": "and" alone and "both" mean different things."""
 
 
 def call(model: str, system: str, user: str, temperature: float = 0.9, retries: int = 3,
@@ -134,11 +139,22 @@ def natural_names() -> set[str]:
     return {r[0].lower() for r in con.execute("SELECT name FROM divisions WHERE subtype = 'natural'").fetchall()}
 
 
+QUANT_WORDS = re.compile(r"\b(both|either|all of|each of|all three|in common)\b", re.I)
+LIST_SLOT = re.compile(r" ; (?:of|other|places|region|parent|target|anchor) = [^;]*(?: and | or | & |, )", re.I)
+
+
+def has_list(r: dict) -> bool:
+    """A seed with a list of places in a slot, a quantifier, or ranking per parent (plan-036)."""
+    return "quant =" in r["frame"] or r["template"] == "children_top_per" or bool(LIST_SLOT.search(r["frame"]))
+
+
 def run_para(n_seeds: int, per_seed: int, batch: int, workers: int, seed: int, only: list[str] | None = None,
-             natural: bool = False) -> None:
+             natural: bool = False, lists: bool = False) -> None:
     rng = random.Random(seed)
     syn = [json.loads(l) for l in (DATA / "synthetic.jsonl").read_text().splitlines()]
     rng.shuffle(syn)
+    if lists:
+        syn = [r for r in syn if has_list(r)]
     if only or natural:
         names = natural_names() if natural else set()
 
@@ -179,7 +195,10 @@ def run_para(n_seeds: int, per_seed: int, batch: int, workers: int, seed: int, o
             q = re.sub(r"\s+", " ", str(it.get("query", ""))).strip()
             # An evaluation query is never a training example.
             if (f is None or f.template != sf.template or check_frame(f, q, templates) or quantities(f) != quantities(sf)
-                    or set(f.slots) != set(sf.slots) or not is_english(q) or q.lower() in evq):
+                    or set(f.slots) != set(sf.slots) or not is_english(q) or q.lower() in evq
+                    # A quantifier word that the seed does not have changes the meaning (plan-036).
+                    or ("quant" not in sf.slots and f.template in ("neighbors", "children_touching")
+                        and QUANT_WORDS.search(q))):
                 bad += 1
                 continue
             f = exact_spans(f, q)
@@ -273,6 +292,7 @@ def main() -> None:
     p.add_argument("--seed", type=int, default=11)
     p.add_argument("--templates", default="", help="only seeds of these templates (comma list)")
     p.add_argument("--natural", action="store_true", help="also seeds with a natural feature name in a slot")
+    p.add_argument("--lists", action="store_true", help="only seeds with a list of places, a quantifier or ranking per parent")
     t = sub.add_parser("testset")
     t.add_argument("--per-template", type=int, default=15)
     t.add_argument("--workers", type=int, default=8)
@@ -280,7 +300,7 @@ def main() -> None:
     args = ap.parse_args()
     if args.cmd == "para":
         run_para(args.n_seeds, args.per_seed, args.batch, args.workers, args.seed,
-                 [t for t in args.templates.split(",") if t], args.natural)
+                 [t for t in args.templates.split(",") if t], args.natural, args.lists)
     else:
         run_testset(args.per_template, args.workers, args.name)
 

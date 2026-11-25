@@ -131,6 +131,14 @@ rank_orders:
     description: "The smallest or the least (tiniest, least populous)"
     keywords: [smallest, tiniest, least, least populous, least populated, lowest, bottom, smallest by area]
 
+quantifiers:
+  any:
+    description: "Any one of the places (either, or): near at least one of them"
+    keywords: [either, any of, any one of, or, one of]
+  all:
+    description: "All of the places together (both, all of, each of): near every one of them"
+    keywords: [both, all, all of, each of, every one of, all the, common, in common, shared by, all three, all four]
+
 ops:
   gt:
     description: "Greater than (more than, over, above, at least, exceeding)"

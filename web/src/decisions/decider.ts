@@ -35,6 +35,8 @@ export class Decider {
   article = false;
   /** Names whose candidates were close (the chosen id: name, the close candidate ids); see Parser.siblingView. */
   closeAnchors = new Map<string, { name: string; cands: string[] }>();
+  /** Notes for the user about the reading of the query ("read as 'France or Germany'"). */
+  notes: string[] = [];
   dataLevelWords: Record<string, string[]> = {};
   constructor(public bundle: Bundle, public xenc: CrossEncoder) {}
 
@@ -142,6 +144,15 @@ export class Decider {
       const level = this.levelWord(text, opts);
       if (level) {
         const d: Decision<string> = { value: level, confidence: 1, impl: "keyword", trace: { view_country: this.viewCountry } };
+        this.record(`fill_closed_slot.${slotType}`, depth, { text, slot_type: slotType, query }, opts, d, 0);
+        return d;
+      }
+    }
+    if (ref === "quantifiers") {
+      // Port: "both", "either": the quantifier whose keyword is in the text with no typo, if exactly one has one.
+      const hits = Object.keys(opts).filter((k) => keywordHits(text, this.bundle.options.quantifiers?.[k]?.keywords ?? [], false));
+      if (hits.length === 1) {
+        const d: Decision<string> = { value: hits[0], confidence: 1, impl: "keyword", trace: {} };
         this.record(`fill_closed_slot.${slotType}`, depth, { text, slot_type: slotType, query }, opts, d, 0);
         return d;
       }

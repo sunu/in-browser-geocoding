@@ -49,7 +49,9 @@ CATALOG: dict[str, OpSpec] = {s.name: s for s in [
     OpSpec("Layer", (_a("name", "str", True, "layers"),), LAYER, "A spatial layer, for example the coastline."),
     OpSpec("Children", (_a("of", REGION), _a("level", "str", False, "admin_levels")), SET),
     OpSpec("Parent", (_a("of", SETLIKE), _a("level", "str", True, "admin_levels")), ENTITY),
-    OpSpec("Neighbors", (_a("of", SETLIKE), _a("level", "str", False, "admin_levels")), SET),
+    OpSpec("Neighbors", (_a("of", SETLIKE), _a("level", "str", False, "admin_levels"),
+                         _a("quant", "str", False, "quantifiers")), SET,
+           "The divisions near any member of a set (quant=any, the default) or near every member (quant=all)."),
     OpSpec("Filter", (_a("set", SETLIKE), _a("pred", PREDICATE)), SET),
     OpSpec("Buffer", (_a("of", REGION), _a("distance_m", "num")), GEOMETRY),
     OpSpec("Centroid", (_a("of", REGION),), GEOMETRY),
@@ -63,16 +65,16 @@ CATALOG: dict[str, OpSpec] = {s.name: s for s in [
     OpSpec("Features", (_a("category", "str", True, "categories"), _a("within", REGION)), SET),
     OpSpec("AttrFilter", (_a("set", SETLIKE), _a("attr", "str", True, "attrs"), _a("op", "str", True, "ops"),
                           _a("value", "num")), SET),
-    OpSpec("SharedBorder", (_a("a", REGION), _a("b", REGION)), GEOMETRY,
-           "The line where the boundaries of two places meet."),
+    OpSpec("SharedBorder", (_a("of", SETLIKE),), GEOMETRY,
+           "The lines where the boundaries of two or more places meet: the union over each pair of members."),
     OpSpec("Naturals", (_a("kind", "str", True, "natural_kinds"), _a("within", REGION, False)), SET,
            "The natural features of one kind that intersect a region (all of them without 'within')."),
     OpSpec("Top", (_a("set", SETLIKE), _a("by", "str", True, "rank_by"), _a("n", "num"),
-                   _a("order", "str", True, "rank_orders")), SET,
-           "The first n members of a set by area or population."),
+                   _a("order", "str", True, "rank_orders"), _a("per", "str", False, "admin_levels")), SET,
+           "The first n members of a set by area or population; with 'per', the first n inside each parent of that level."),
     OpSpec("Common", (_a("a", SETLIKE), _a("b", SETLIKE)), SET, "The members of both sets."),
     # Predicates
-    OpSpec("Touches", (_a("target", LINE),), PREDICATE),
+    OpSpec("Touches", (_a("target", LINE), _a("quant", "str", False, "quantifiers")), PREDICATE),
     OpSpec("Within", (_a("target", REGION),), PREDICATE),
     OpSpec("Intersects", (_a("target", REGION),), PREDICATE),
     OpSpec("WithinDistance", (_a("target", LINE), _a("distance_m", "num")), PREDICATE),
@@ -93,6 +95,7 @@ LAYERS = ["coastline", "country_boundary"]
 DIRECTION_MODES = ["part", "outside"]
 RANK_BY = ["area", "population"]
 RANK_ORDERS = ["largest", "smallest"]
+QUANTIFIERS = ["any", "all"]
 SOURCES = ["overture", "photon"]
 
 

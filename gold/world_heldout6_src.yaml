@@ -1,0 +1,59 @@
+# Held-out set for lists of places, the any/all quantifier and ranking per parent (plan-036, phase 0). Written on
+# 2026-11-22, before any code change of plan-036. Do not tune on these records. Same format as world_src.yaml, plus:
+#   - a region slot can be a list of names (["France", "Germany"]): the gold DAG is the Union of the names;
+#   - quant: any or all (neighbors, children_touching);
+#   - shared_border has one slot `places` (a list of 2 or more names);
+#   - children_top_per has the slot `per` (the admin level of the groups).
+# "and" with no "both" or "either" has the gold quant `any` (the plan-036 default).
+views:
+  IN: [68, 8, 97, 37]
+  FR: [-5, 41, 10, 51.5]
+  DE: [5.8, 47.2, 15.1, 55.1]
+  ES: [-9.3, 36, 3.3, 43.8]
+  US: [-125, 24, -66, 50]
+  GB: [-8.7, 49.8, 1.8, 60.9]
+  BA: [15.7, 42.5, 19.7, 45.3]
+  TT: [-62, 10, -59.4, 13.4]
+
+records:
+  # Lists in region slots (no quantifier)
+  - {cc: IN, q: "hospitals in Pune or Mumbai", t: features_in, s: {category: hospital, region: ["Pune", "Mumbai"]}}
+  - {cc: IN, q: "districts of Kerala and Goa", t: children, s: {level: district, parent: ["Kerala", "Goa"]}}
+  - {cc: FR, q: "5 km around Lyon and Grenoble", t: buffer, s: {distance: 5000, target: ["Lyon", "Grenoble"]}}
+  - {cc: IN, q: "coastal districts of Kerala, Karnataka and Goa", t: children_with_predicate, s: {pred: coastal, level: district, parent: ["Kerala", "Karnataka", "Goa"]}}
+  - {cc: ES, q: "schools in Madrid or Barcelona", t: features_in, s: {category: school, region: ["Madrid", "Barcelona"]}}
+  - {cc: GB, q: "England and Wales", t: union, s: {a: "England", b: "Wales"}, n: "Open error before plan-036 (T5 read one place)."}
+
+  # Neighbours: any and all
+  - {cc: FR, q: "countries bordering France or Germany", t: neighbors, s: {level: country, of: ["France", "Germany"], quant: any}}
+  - {cc: FR, q: "countries bordering France and Germany", t: neighbors, s: {level: country, of: ["France", "Germany"], quant: any}, n: "Plain 'and': the default reading is any."}
+  - {cc: FR, q: "countries that border both France and Germany", t: neighbors, s: {level: country, of: ["France", "Germany"], quant: all}}
+  - {cc: FR, q: "countries that border France, Germany and Italy", t: neighbors, s: {level: country, of: ["France", "Germany", "Italy"], quant: any}}
+  - {cc: DE, q: "countries bordering both Austria and Switzerland", t: neighbors, s: {level: country, of: ["Austria", "Switzerland"], quant: all}}
+  - {cc: IN, q: "states that border both Karnataka and Tamil Nadu", t: neighbors, s: {level: state, of: ["Karnataka", "Tamil Nadu"], quant: all}}
+  - {cc: IN, q: "states bordering Karnataka or Kerala", t: neighbors, s: {level: state, of: ["Karnataka", "Kerala"], quant: any}}
+  - {cc: US, q: "states that border either Nevada or Utah", t: neighbors, s: {level: state, of: ["Nevada", "Utah"], quant: any}}
+
+  # Children that touch: any and all
+  - {cc: IN, q: "districts of Karnataka that border both Goa and Maharashtra", t: children_touching, s: {level: district, parent: "Karnataka", other: ["Goa", "Maharashtra"], quant: all}}
+  - {cc: IN, q: "districts of Karnataka that border Goa or Kerala", t: children_touching, s: {level: district, parent: "Karnataka", other: ["Goa", "Kerala"], quant: any}}
+
+  # Shared borders of 2 or more places
+  - {cc: FR, q: "border between France, Switzerland and Germany", t: shared_border, s: {places: ["France", "Switzerland", "Germany"]}}
+  - {cc: ES, q: "border between Spain and Portugal", t: shared_border, s: {places: ["Spain", "Portugal"]}}
+  - {cc: IN, q: "10 km zone along the border of India, Nepal and Bhutan", t: shared_border, s: {distance: 10000, places: ["India", "Nepal", "Bhutan"]}, n: "Nepal and Bhutan share no border: the union of the pairs that share one."}
+
+  # Ranking per parent
+  - {cc: IN, q: "the largest district in each state of India", t: children_top_per, s: {n: 1, order: largest, by: area, level: district, per: state, parent: "India"}}
+  - {cc: FR, q: "the smallest department in each region of France", t: children_top_per, s: {n: 1, order: smallest, by: area, level: district, per: state, parent: "France"}}
+  - {cc: US, q: "the 2 largest counties in each state of the United States", t: children_top_per, s: {n: 2, order: largest, by: area, level: district, per: state, parent: "United States"}}
+
+  # Names with "and" inside a list
+  - {cc: BA, q: "countries bordering Bosnia and Herzegovina or Serbia", t: neighbors, s: {level: country, of: ["Bosnia and Herzegovina", "Serbia"], quant: any}}
+  - {cc: TT, q: "Trinidad and Tobago and Barbados", t: union, s: {a: "Trinidad and Tobago", b: "Barbados"}}
+
+  # Must not change
+  - {cc: BA, q: "Bosnia and Herzegovina", t: lookup_place, s: {anchor: "Bosnia and Herzegovina"}, src: {anchor: overture}}
+  - {cc: IN, q: "Jammu and Kashmir", t: lookup_place, s: {anchor: "Jammu and Kashmir"}, src: {anchor: overture}}
+  - {cc: ES, q: "Andorra", t: lookup_place, s: {anchor: "Andorra"}, src: {anchor: overture}}
+  - {cc: IN, q: "Kerala and Tamil Nadu", t: union, s: {a: "Kerala", b: "Tamil Nadu"}}

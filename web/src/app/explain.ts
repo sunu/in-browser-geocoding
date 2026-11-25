@@ -11,7 +11,7 @@ export const SLOT_LABELS: Record<string, string> = {
   anchor: "Place", region: "Place", parent: "Inside", child: "Place", of: "Next to", other: "Near or touching",
   target: "Place", a: "Place 1", b: "Place 2", c: "Place 3", level: "Kind of division", kind: "Kind of feature",
   category: "Kind of place", pred: "Property", dir: "Direction", distance: "Distance", attr: "Quantity", by: "Ranked by",
-  op: "Comparison", value: "Value", n: "How many", order: "Order",
+  op: "Comparison", value: "Value", n: "How many", order: "Order", per: "In each", quant: "Any or all", places: "Places",
 };
 
 /** Question of each decision type (the part of the name before the first dot). */
@@ -29,6 +29,8 @@ export const QUESTIONS: Record<string, (t: TraceRecord) => string> = {
   frame_override: (t) => `Does a rule change the form of “${t.inputs?.text}”?`,
   photon_boost: (t) => `Does the street search know “${t.inputs?.name}”?`,
   sibling_view: (t) => `Which “${t.inputs?.text}” is near the other places of the query?`,
+  list: (t) => `Is “${t.inputs?.text}” a list of places?`,
+  quantifier: (t) => (t.trace.from === "default" ? "Near any of the places, or near all of them?" : `Does “${t.inputs?.text}” mean any or all of the places?`),
 };
 
 const ANSWER_RULES: Record<string, (t: TraceRecord) => string> = {
@@ -37,6 +39,8 @@ const ANSWER_RULES: Record<string, (t: TraceRecord) => string> = {
   frame_override: (t) => `Yes: “${t.value}” in place of “${t.trace.from}”.`,
   photon_boost: (t) => (t.trace.error ? "The street search did not answer." : "Its answers change the order of the candidate places."),
   sibling_view: () => "A different candidate: the places of the query are nearer each other with it.",
+  list: (t) => `Yes: ${[t.value].flat().join(", ")}.`,
+  quantifier: (t) => (t.value === "all" ? "All of them." : t.trace.ambiguous ? "Any of them (“and” can mean both readings; say “both” for all of them)." : "Any of them."),
 };
 
 function who(impl: string): string {
@@ -79,6 +83,7 @@ function slotValue(v: any): string {
   if (v == null) return "";
   if (typeof v === "string" || typeof v === "number") return esc(v);
   if (v.q) return `“${esc(v.q)}” <span class="muted">(a description, read as its own question)</span>`;
+  if (Array.isArray(v.list)) return `${v.list.map(slotValue).join(v.conj === "or" ? " or " : ", ")} <span class="muted">(a list)</span>`;
   if (v.text) return esc(v.text);
   return esc(JSON.stringify(v));
 }

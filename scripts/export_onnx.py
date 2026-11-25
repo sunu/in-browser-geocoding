@@ -200,7 +200,7 @@ def export_xenc(d: Path) -> None:
     tok.save_pretrained(str(out))
     shutil.copy(d / "calibration.json", out / "calibration.json")
     (out / "inputs.json").write_text(json.dumps({"input_names": names, "max_length": 128}))
-    print("xenc:", {p.name: f"{p.stat().st_size / 1e6:.1f} MB" for p in sorted([*out.glob('*.onnx'), out / 'embed.bin'])})
+    print("xenc:", {p.name: f"{p.stat().st_size / 1e6:.1f} MB" for p in sorted(out.glob('*.onnx'))})
 
 
 def main() -> None:

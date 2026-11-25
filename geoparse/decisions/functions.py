@@ -37,6 +37,7 @@ INSTRUCTIONS = {
     "fill_closed_slot.op": "Which comparison does the text name?",
     "fill_closed_slot.natural_kind": "Which kind of natural feature does the text name?",
     "fill_closed_slot.rank_order": "Does the text ask for the largest or for the smallest?",
+    "fill_closed_slot.quantifier": "Does the text ask for places that match any one of the listed places, or all of them?",
 }
 
 IS_SUBQUERY_CRITERIA = {
@@ -85,6 +86,8 @@ class Decider:
         # Names whose candidates were close (the chosen id: name, type hint, context); see Parser._sibling_view.
         self.close_anchors: dict[str, dict[str, Any]] = {}
         self.data_level_words: dict[str, list[str]] = {}
+        # Notes for the user about the reading of the query ("read as 'France or Germany'").
+        self.notes: list[str] = []
 
     def fork(self) -> "Decider":
         """A Decider with the same providers and a new, empty trace. Use one fork for each parse."""
@@ -94,6 +97,7 @@ class Decider:
         d.run_id = uuid.uuid4().hex[:12]
         d.trace = []
         d.close_anchors = {}
+        d.notes = []
         d._lock = threading.Lock()
         d.view = None
         d.view_country = None
@@ -256,6 +260,15 @@ class Decider:
             level = self._level_word(text, opts)
             if level:
                 d = Decision[str](value=level, confidence=1.0, impl="keyword", trace={"view_country": self.view_country})
+                self._record(f"fill_closed_slot.{slot_type}", depth, {"text": text, "slot_type": slot_type, "query": query},
+                             opts, d, 0.0)
+                return d
+        if options_ref == "quantifiers":
+            # "both", "either": the quantifier whose keyword is in the text with no typo, if exactly one has one.
+            kws = option_keywords(options_ref)
+            hits = [k for k in opts if keyword_hits(text, kws.get(k, []), typo=False)]
+            if len(hits) == 1:
+                d = Decision[str](value=hits[0], confidence=1.0, impl="keyword", trace={})
                 self._record(f"fill_closed_slot.{slot_type}", depth, {"text": text, "slot_type": slot_type, "query": query},
                              opts, d, 0.0)
                 return d
