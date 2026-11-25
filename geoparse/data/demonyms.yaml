@@ -1,0 +1,461 @@
+# English demonyms of countries and first-level regions (Wikidata P1549) as names of the place.
+# Written by scripts/build_demonyms.py. Used only for the whole name text ("Indian", not "Indian Ocean").
+afghan: Afghanistan
+alabaman: Alabama
+alabamian: Alabama
+alabamians: Alabama
+alaskans: Alaska
+albanian: Albania
+albanians: Albania
+albertan: Alberta
+algerian: Algeria
+american: United States
+american samoan: American Samoa
+americans: United States
+andalusian: Andalusia
+andhraite: Andhra Pradesh
+andorran: Andorra
+angolan: Angola
+anguillan: Anguilla
+antiguan: Antigua and Barbuda
+argentine: Argentina
+argentinian: Argentina
+arkanite: Arkansas
+arkansan: Arkansas
+arkansans: Arkansas
+arkansawyan: Arkansas
+arkansawyans: Arkansas
+arkansawyer: Arkansas
+arkansawyers: Arkansas
+arkansian: Arkansas
+arkansians: Arkansas
+arkie: Arkansas
+arkies: Arkansas
+armenian: Armenia
+aruban: Aruba
+arunachali: Arunachal Pradesh
+assamese: Assam
+asturian: Asturias
+aussie: Australia
+aussies: Australia
+australian: Australia
+australians: Australia
+austrian: Austria
+azerbaijani: Azerbaijan
+azerbaijanis: Azerbaijan
+azeri: Azerbaijan
+azeris: Azerbaijan
+bahamian: The Bahamas
+bahraini: Bahrain
+balearic: Balearic Islands
+bangladeshi: Bangladesh
+barbadian: Barbados
+basotho: Lesotho
+batswana: Botswana
+bay stater: Massachusetts
+belarusian: Belarus
+belgian: Belgium
+belizean: Belize
+beninese: Benin
+berliner: Berlin
+berliners: Berlin
+bermudan: Bermuda
+bermudian: Bermuda
+bhutanese: Bhutan
+bihari: Bihar
+bissau-guinean: Guinea-Bissau
+bogotan: Bogotá
+bolivian: Bolivia
+bosnian: Bosnia and Herzegovina
+botswanan: Botswana
+botswanans: Botswana
+brazilian: Brazil
+brazilians: Brazil
+breton: Brittany
+british columbian: British Columbia
+briton: United Kingdom
+bulgarian: Bulgaria
+burkinabe: Burkina Faso
+burkinabè: Burkina Faso
+burkinabé: Burkina Faso
+burmese: Myanmar
+burundian: Burundi
+cabo verdean: Cape Verde
+calabrian: Calabria
+californian: California
+cambodian: Cambodia
+cameroonian: Cameroon
+canadian: Canada
+canadians: Canada
+canarian: Canary Islands
+cape verdean: Cape Verde
+catalan: Catalonia
+caymanian: Cayman Islands
+central african: Central African Republic
+chadian: Chad
+chamorro: Northern Mariana Islands
+chamorros: Northern Mariana Islands
+chhattisgarhi: Chhattisgarh
+chilean: Chile
+chinese: People's Republic of China
+chongqinger: Chongqing
+colombian: Colombia
+coloradan: Colorado
+coloradoan: Colorado
+comoran: Comoros
+comorans: Comoros
+comorian: Comoros
+comorians: Comoros
+connecticuter: Connecticut
+connecticutian: Connecticut
+corkonian: Cork
+costa rican: Costa Rica
+costa ricans: Costa Rica
+croatian: Croatia
+cuban: Cuba
+curaçaoan: Curaçao
+cypriot: Cyprus
+czech: Czech Republic
+dane: Denmark
+danes: Kingdom of Denmark
+danish: Denmark
+delawarean: Delaware
+djiboutian: Djibouti
+dutch: Netherlands
+east timorese: Timor-Leste
+ecuadoran: Ecuador
+ecuadorian: Ecuador
+egyptian: Egypt
+emaswati: Eswatini
+emirati: United Arab Emirates
+emiri: United Arab Emirates
+emirian: United Arab Emirates
+english: England
+equatoguinean: Equatorial Guinea
+equatorial guinean: Equatorial Guinea
+eritrean: Eritrea
+estonian: Estonia
+ethiopian: Ethiopia
+fijian: Fiji
+filipina: Philippines
+filipino: Philippines
+finn: Finland
+finnish: Finland
+floridan: Florida
+floridian: Florida
+french: France
+french guianese: French Guiana
+french polynesian: French Polynesia
+frisian: Friesland
+friuli venezia giulian: Friuli Venezia Giulia
+friuli venezia giulians: Friuli Venezia Giulia
+futunan: Wallis and Futuna
+gabonese: Gabon
+gagauzian: Gagauzia
+galician: Galicia
+gambian: The Gambia
+georgian: Georgia
+german: Germany
+ghanaian: Ghana
+goan: Goa
+granite stater: New Hampshire
+greek: Greece
+grenadian: Grenada
+guadeloupean: Guadeloupe
+guamanian: Guam
+guamanians: Guam
+guatemalan: Guatemala
+guianese: French Guiana
+guinea-bissauan: Guinea-Bissau
+guinean: Guinea
+gujarati: Gujarat
+guyanese: Guyana
+haitian: Haiti
+hamburger: Hamburg
+hanoians: Hanoi
+haryanvi: Haryana
+herzegovinian: Bosnia and Herzegovina
+himachali: Himachal Pradesh
+honduran: Honduras
+hongkonger: Hong Kong
+hoosier: Indiana
+hungarian: Hungary
+i-kiribati: Kiribati
+idahoan: Idaho
+illinoian: Illinois
+illinoisan: Illinois
+illinoisian: Illinois
+indian: India
+indonesian: Indonesia
+inner mongolian: Inner Mongolia
+iowan: Iowa
+iranian: Iran
+iraqi: Iraq
+irish: Ireland
+israeli: Israel
+israelis: Israel
+istanbulite: Istanbul
+italian: Italy
+ivoirian: Ivory Coast
+ivorian: Ivory Coast
+jakartan: Jakarta
+jamaican: Jamaica
+japanese: Japan
+jharkhandi: Jharkhand
+johorean: Johor
+jordanian: Jordan
+kansan: Kansas
+karnatakan: Karnataka
+kazakh: Kazakhstan
+kazakhstani: Kazakhstan
+kentuckian: Kentucky
+kenyan: Kenya
+keralite: Kerala
+kigalian: Kigali
+kittitian: Saint Kitts and Nevis
+kosovan: Kosovo
+kosovar: Kosovo
+kuwaiti: Kuwait
+kyrgyz: Kyrgyzstan
+kyrgyzstani: Kyrgyzstan
+lao: Laos
+laotian: Laos
+laotians: Laos
+latvian: Latvia
+latvians: Latvia
+lebanese: Lebanon
+liberian: Liberia
+libyan: Libya
+liechtensteiner: Liechtenstein
+liswati: Eswatini
+lithuanian: Lithuania
+louisianian: Louisiana
+lower austrian: Lower Austria
+luxembourgian: Luxembourg
+luxembourgish: Luxembourg
+macedonian: North Macedonia
+madhya pradeshi: Madhya Pradesh
+maharashtrian: Maharashtra
+mainer: Maine
+malagasy: Madagascar
+malawian: Malawi
+malaysian: Malaysia
+maldivian: Maldives
+malian: Mali
+maltese: Malta
+manipuri: Manipur
+manitoban: Manitoba
+marshallese: Marshall Islands
+marylander: Maryland
+massachusettsan: Massachusetts
+massachusite: Massachusetts
+mauritanian: Mauritania
+mauritian: Mauritius
+mexican: Mexico
+mexicans: Mexico
+michigander: Michigan
+michiganian: Michigan
+micronesian: Federated States of Micronesia
+minnesotan: Minnesota
+mississippian: Mississippi
+missourian: Missouri
+moldavian: Moldova
+moldovan: Moldova
+monacan: Monaco
+monegasque: Monaco
+mongol: Mongolia
+mongolian: Mongolia
+montanan: Montana
+montenegrin: Montenegro
+monégasque: Monaco
+moroccan: Morocco
+mosotho: Lesotho
+motswana: Botswana
+mozambican: Mozambique
+myanma: Myanmar
+namibian: Namibia
+nauruan: Nauru
+nebraskan: Nebraska
+nepalese: Nepal
+nepali: Nepal
+nevadan: Nevada
+nevadans: Nevada
+nevisian: Saint Kitts and Nevis
+new brunswicker: New Brunswick
+new caledonian: New Caledonia
+new caledonians: New Caledonia
+new hampshireman: New Hampshire
+new hampshirewoman: New Hampshire
+new hampshirite: New Hampshire
+new jerseyan: New Jersey
+new jerseyite: New Jersey
+new mexican: New Mexico
+new yorker: New York
+new zealander: New Zealand
+newfoundlander and labradorian: Newfoundland and Labrador
+ni-vanuatu: Vanuatu
+nicaraguan: Nicaragua
+nigerian: Nigeria
+nigerians: Nigeria
+nigerien: Niger
+niuean: Niue
+nonthaburian: Nonthaburi
+north carolinian: North Carolina
+north dakotan: North Dakota
+north korean: North Korea
+northern irish: Northern Ireland
+northern mariana islander: Northern Mariana Islands
+northern mariana islanders: Northern Mariana Islands
+northern marianan: Northern Mariana Islands
+northern marianans: Northern Mariana Islands
+northwest territorian: Northwest Territories
+norwegian: Norway
+nova scotian: Nova Scotia
+nunavummiuq: Nunavut
+nunavummiut: Nunavut
+nutmegger: Connecticut
+odishan: Odisha
+ohioan: Ohio
+oklahomie: Oklahoma
+omani: Oman
+ontarian: Ontario
+oregoner: Oregon
+oregonian: Oregon
+pakistani: Pakistan
+palauan: Palau
+panamanian: Panama
+papua new guinean: Papua New Guinea
+paraguayan: Paraguay
+pennsylvanian: Pennsylvania
+persian: Iran
+peruvian: Peru
+philippine: Philippines
+phnom penher: Phnom Penh
+piedmontese: Piedmont
+pitcairn islander: Pitcairn Islands
+polish: Poland
+portuguese: Portugal
+praguer: Prague
+prince edward islander: Prince Edward Island
+puducherrian: Puducherry
+punjabi: Punjab
+qatari: Qatar
+quebecer: Quebec
+quebecers: Quebec
+quebecker: Quebec
+quebeckers: Quebec
+rajasthani: Rajasthan
+rhode islander: Rhode Island
+romanian: Romania
+russian: Russia
+rwandan: Rwanda
+rwandese: Rwanda
+sabahan: Sabah
+saint lucian: Saint Lucia
+saint vincentian: Saint Vincent and the Grenadines
+saint vincentians: Saint Vincent and the Grenadines
+saint-martinois: Saint-Martin
+salvadoran: El Salvador
+sammarinese: San Marino
+samoan: Samoa
+santomean: São Tomé and Príncipe
+sao tomean: São Tomé and Príncipe
+sao tomeans: São Tomé and Príncipe
+sarawakian: Sarawak
+saskatchewanian: Saskatchewan
+scottish: Scotland
+senegalese: Senegal
+seoulite: Seoul
+serbian: Serbia
+seychellois: Seychelles
+seychelloise: Seychelles
+sichuanese: Sichuan
+sierra leonean: Sierra Leone
+sikkimese: Sikkim
+singaporean: Singapore
+slovak: Slovakia
+slovene: Slovenia
+slovenian: Slovenia
+solomon islander: Solomon Islands
+somali: Somalia
+somalian: Somalia
+south african: South Africa
+south carolinian: South Carolina
+south dakotan: South Dakota
+south georgian: South Georgia and the South Sandwich Islands
+south korean: South Korea
+south sandwich islander: South Georgia and the South Sandwich Islands
+south sudanese: South Sudan
+spaniard: Spain
+spanish: Spain
+sri lankan: Sri Lanka
+st. maartener: Sint Maarten
+styrian: Styria
+sudanese: Sudan
+surinamese: Suriname
+swazi: Eswatini
+swazis: Eswatini
+swedish: Sweden
+swiss: Switzerland
+syrian: Syria
+são toméan: São Tomé and Príncipe
+são toméans: São Tomé and Príncipe
+taiwanese: Taiwan
+tajikistani: Tajikistan
+tanzanian: Tanzania
+tejano: Texas
+tennessean: Tennessee
+texan: Texas
+texian: Texas
+texican: Texas
+thai: Thailand
+togolese: Togo
+tokyoite: Tokyo
+tongan: Tonga
+trinidadian: Trinidad and Tobago
+tripuran: Tripura
+tunisian: Tunisia
+turkish: Turkey
+turkmen: Turkmenistan
+turkmenistani: Turkmenistan
+turks and caicos islander: Turks and Caicos Islands
+tuvaluan: Tuvalu
+ugandan: Uganda
+uruguayan: Uruguay
+utahn: Utah
+uttar pradeshi: Uttar Pradesh
+uttarakhandi: Uttarakhand
+uzbek: Uzbekistan
+uzbekistani: Uzbekistan
+valencian: Valencian Community
+vanuatuan: Vanuatu
+vanuatuans: Vanuatu
+vatican: Vatican City
+venezuelan: Venezuela
+venezuelans: Venezuela
+vermonter: Vermont
+veszprémer: Veszprém
+victorian: Victoria
+victorians: Victoria
+viennese: Vienna
+vietnamese: Vietnam
+vincentian: Saint Vincent and the Grenadines
+vincentians: Saint Vincent and the Grenadines
+vincy: Saint Vincent and the Grenadines
+virginian: Virginia
+wakean: Wake Island
+wallisian: Wallis and Futuna
+washingtonian: Washington
+west bengali: West Bengal
+west virginian: West Virginia
+wisconsinite: Wisconsin
+wyomingian: Wyoming
+wyomingite: Wyoming
+yaracuyan: Yaracuy
+yemeni: Yemen
+yukoner: Yukon
+zambian: Zambia
+zambians: Zambia
+zamboangan: Zamboanga Peninsula
+zimbabwean: Zimbabwe
+zimbabweans: Zimbabwe

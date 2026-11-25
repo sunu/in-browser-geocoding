@@ -22,9 +22,12 @@ const COUNTRY_SUBTYPES = ["country", "dependency"];
 
 export class Gazetteer {
   aliases: Record<string, string>;
+  demonyms: Record<string, string>;
   constructor(public db: Db, public bundle: Bundle) {
     this.aliases = {};
     for (const [k, v] of Object.entries(bundle.aliases)) this.aliases[normName(k)] = normName(v);
+    this.demonyms = {};
+    for (const [k, v] of Object.entries(bundle.demonyms ?? {})) this.demonyms[normName(k)] = normName(v);
   }
 
   async describe(ids: string[]) {
@@ -104,14 +107,10 @@ export class Gazetteer {
     return Object.fromEntries(rs.map((r) => [r.id, Number(r.rk)]));
   }
 
-  /** Port of Store.search. fuzzy "only": the fuzzy matches also if there is an exact match. countries: only candidates in
-   * these countries (only their data is loaded). */
-  async search(name: string, opts: { typeHint?: string | null; context?: string | null; limit?: number; fuzzy?: boolean | "only"; view?: number[] | null; countries?: string[] | null; full?: boolean } = {}): Promise<Candidate[]> {
-    const { typeHint = null, context = null, limit = 8, fuzzy = true, view = null, countries = null, full = false } = opts;
-    // The name rows have the country: the country files to load come only from these countries.
-    const inCountries = countries?.length ? ` AND country IN (SELECT unnest(${list(countries)}))` : "";
+  /** The normalized name, the names to search (level word, natural kind, aliases, demonym) and the type hint of the name. */
+  private queryNames(name: string): { n: string; qList: string[]; hintFromName: string | null } | null {
     const n = normName(name.trim().replace(/^the\s+/i, ""));
-    if (!n) return [];
+    if (!n) return null;
     const levelWords = new Set(["district", "state", "city", "town", "taluk", "village"]);
     const words = n.split(" ");
     let hintFromName = words.length > 1 && levelWords.has(words[words.length - 1]) ? words[words.length - 1] : null;
@@ -129,6 +128,58 @@ export class Gazetteer {
       ws.forEach((w, i) => { if (w in this.aliases) qList.push([...ws.slice(0, i), this.aliases[w], ...ws.slice(i + 1)].join(" ")); });
       if (x in this.aliases) qList.push(this.aliases[x]);
     }
+    // Port: a demonym only for the whole name text ("Indian", not "Indian Ocean").
+    if (n in this.demonyms) qList.push(this.demonyms[n]);
+    return { n, qList, hintFromName };
+  }
+
+  /** search(name, { fuzzy: false }).length > 0, without the ranking: a frequent name ("Washington") has thousands of
+   * candidates. The answer does not depend on the map view. */
+  async exists(name: string): Promise<boolean> {
+    return (await this.exactSubtypes(name)).length > 0;
+  }
+
+  /** The subtypes of the candidates of search(name, { fuzzy: false }), without the ranking. */
+  async exactSubtypes(name: string): Promise<string[]> {
+    const qn = this.queryNames(name);
+    if (!qn) return [];
+    const base = this.bundle.config.policy;
+    const store = this.db.store;
+    const found = async (xs: string[]) => {
+      const keys = xs.map((x) => x.replaceAll(" ", ""));
+      let rows: any[];
+      if (store) {
+        await store.loadKeys(keys);
+        rows = await this.db.query(`SELECT DISTINCT n, country, subtype FROM name_rows WHERE key IN (SELECT unnest(${list(keys)}))`);
+        // As in search: a region needs its region code where the country policy says so (the code is in the divisions).
+        const coded = rows.filter((r) => r.subtype === "region" && countryPolicy(base, r.country).require_region_code);
+        if (coded.length) {
+          await store.ensureCountries(coded.map((r) => r.country));
+          const ok = new Set((await this.db.query(`SELECT n FROM divisions WHERE region IS NOT NULL
+            AND n IN (SELECT unnest([${coded.map((r) => r.n).join(", ")}]::INTEGER[]))`)).map((r) => r.n));
+          rows = rows.filter((r) => !coded.includes(r) || ok.has(r.n));
+        }
+      } else {
+        rows = (await this.db.query(`SELECT DISTINCT d.country, d.subtype, d.region FROM names n JOIN divisions d ON d.id = n.id
+          WHERE n.name_nospace IN (SELECT unnest(${list(keys)}))`))
+          .filter((r) => !(r.subtype === "region" && countryPolicy(base, r.country).require_region_code && !r.region));
+      }
+      return rows.map((r) => r.subtype as string);
+    };
+    // As in search: the names, the names with a region suffix, then (if none) the names with "district" or "city".
+    const out = [...(await found(qn.qList)), ...(await found(qn.qList.flatMap((x) => REGION_SUFFIXES.map((w) => `${x} ${w}`))))];
+    return [...new Set(out.length ? out : await found(qn.qList.flatMap((x) => [`${x} district`, `${x} city`])))];
+  }
+
+  /** Port of Store.search. fuzzy "only": the fuzzy matches also if there is an exact match. countries: only candidates in
+   * these countries (only their data is loaded). */
+  async search(name: string, opts: { typeHint?: string | null; context?: string | null; limit?: number; fuzzy?: boolean | "only"; view?: number[] | null; countries?: string[] | null; full?: boolean } = {}): Promise<Candidate[]> {
+    const { typeHint = null, context = null, limit = 8, fuzzy = true, view = null, countries = null, full = false } = opts;
+    // The name rows have the country: the country files to load come only from these countries.
+    const inCountries = countries?.length ? ` AND country IN (SELECT unnest(${list(countries)}))` : "";
+    const qn = this.queryNames(name);
+    if (!qn) return [];
+    const { n, qList, hintFromName } = qn;
     const { policy: base } = this.bundle.config;
     const ranking = base.ranking;
     const [vb, viewCountry] = await this.view(view);

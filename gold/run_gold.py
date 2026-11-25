@@ -40,7 +40,7 @@ def open_text(v: Any) -> str:
     if isinstance(v, dict):
         return v.get("text") or v.get("q") or ""
     if isinstance(v, list):
-        return " and ".join(v)
+        return " and ".join(open_text(x) for x in v)
     return v
 
 
@@ -50,7 +50,7 @@ LIST_LEAD = re.compile(r"^(both|either|all of the|all of|each of|any one of|any 
 def list_text_ok(seg: str, names: list[str]) -> bool:
     """A slot text that holds the gold list: the names in order, from the first to the last (plan-036)."""
     n = LIST_LEAD.sub("", ntext(seg))
-    parts = [ntext(x) for x in names]
+    parts = [ntext(open_text(x)) for x in names]
     pos = 0
     for p in parts:
         i = n.find(p, pos)
@@ -70,6 +70,8 @@ def slots_equal(t: str, got: dict[str, Any], gold: dict[str, Any]) -> tuple[bool
         g = gold.get(name, sd.default)
         r = got.get(name, sd.default)
         if sd.type in OPEN_TYPES:
+            if g is None and r is None:
+                continue
             if isinstance(g, dict) and "q" in g:
                 if not (isinstance(r, dict) and "t" in r and r["t"] == g["t"]):
                     diffs.append(f"{name}: expected sub-query {g['t']}, got {r!r}")
@@ -81,9 +83,19 @@ def slots_equal(t: str, got: dict[str, Any], gold: dict[str, Any]) -> tuple[bool
                 if not (isinstance(r, dict) and r.get("lex") == g["lex"]):
                     diffs.append(f"{name}: expected lexicon {g['lex']}, got {r!r}")
             elif isinstance(g, list):
-                got_list = [open_text(x) for x in r["list"]] if isinstance(r, dict) and "list" in r else None
-                if got_list is None or [ntext(x) for x in got_list] != [ntext(x) for x in g]:
+                got = r["list"] if isinstance(r, dict) and "list" in r else None
+                if got is None or len(got) != len(g):
                     diffs.append(f"{name}: expected list {g!r}, got {r!r}")
+                    continue
+                for i, (gx, rx) in enumerate(zip(g, got)):
+                    # A part of a list is a name or a sub-query (plan-038: "Kerala and coastal districts of Karnataka").
+                    if isinstance(gx, dict) and "q" in gx:
+                        if not (isinstance(rx, dict) and rx.get("t") == gx["t"]):
+                            diffs.append(f"{name}[{i}]: expected sub-query {gx['t']}, got {rx!r}")
+                        else:
+                            diffs += [f"{name}[{i}].{x}" for x in slots_equal(gx["t"], rx["s"], gx["s"])[1]]
+                    elif ntext(open_text(rx)) != ntext(open_text(gx)):
+                        diffs.append(f"{name}[{i}]: expected {gx!r}, got {rx!r}")
             else:
                 if not isinstance(r, str) or ntext(r) != ntext(g):
                     diffs.append(f"{name}: expected {g!r}, got {r!r}")
@@ -206,8 +218,8 @@ def eval_isolated(parser: Parser, dec: Decider, rec: dict[str, Any], text: str, 
 
     for name, sd in tpl.slots.items():
         if sd.type == "region" and tpl.family != "lookup":
-            v = slots[name]
-            if (isinstance(v, dict) and "lex" in v) or isinstance(v, list):
+            v = slots.get(name)
+            if v is None or (isinstance(v, dict) and "lex" in v) or isinstance(v, list):
                 # A list is found by a rule before the model (plan-036): no is_subquery question.
                 continue
             gold_sub = isinstance(v, dict) and "q" in v
@@ -277,7 +289,7 @@ def main() -> None:
     ap.add_argument("--no-ner", action="store_true")
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--tag", default="")
-    ap.add_argument("--set", default="gold", help="gold, heldout or world (world: GEOPARSE_SCOPE=world)")
+    ap.add_argument("--set", default="gold", help="gold, heldout, india_ref, world or world_heldoutN (world sets: GEOPARSE_SCOPE=world)")
     ap.add_argument("--setup", choices=["default", "web"], default="default",
                     help="web: as the browser version (T5 frames only, no split patterns, no NER)")
     ap.add_argument("--no-prune", action="store_true", help="the model sees every family and template")
@@ -305,6 +317,8 @@ def main() -> None:
     if not args.no_isolated:
         def one_iso(rec):
             out: list[dict[str, Any]] = []
+            if rec["dag"] is None:
+                return out
             dec = base.fork()
             dec.view_country = parser.store.view(rec.get("view"), parser.cfg)[1]
             dec.data_level_words = parser.store.level_words(dec.view_country)
@@ -334,7 +348,12 @@ def main() -> None:
                "requests_in_sequence": sequential_requests(p.trace),
                "unsupported": p.unsupported.model_dump() if p.unsupported else None,
                "got_template": p.template, "path": p.path}
-        if p.ok:
+        if rec["dag"] is None:
+            # A query that the parser must refuse: correct if the parse is not ok.
+            row["template_ok"] = row["slots_ok"] = row["dag_ok"] = not p.ok
+            if ex is not None:
+                row["exec_ok"] = not p.ok
+        elif p.ok:
             sok, diffs = slots_equal(rec["template"], p.slots, rec["slots"]) if p.template == rec["template"] else (False, ["template"])
             row["slots_ok"] = sok
             row["diffs"] = diffs

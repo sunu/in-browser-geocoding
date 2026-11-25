@@ -227,6 +227,8 @@ class Run {
   }
 
   async op_Children(a: any) {
+    // Port: a point from the geocoder is not an area: it has no divisions.
+    if (a.of?.op === "Resolve" && a.of.args?.source === "photon") throw new ExecError(`'${a.of.args.name}' is a point from the geocoder, not an area: it has no divisions inside it`);
     const parent = await this.eval(a.of);
     // Port: a set of divisions of the asked level ("countries of the Balkans") is the set (no country data to load).
     if (a.level && a.level !== "none") {

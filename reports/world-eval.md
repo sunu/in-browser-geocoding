@@ -338,3 +338,139 @@ Follow-ups (plan-037):
 - The gold DAG comparison ignores the order of the parts of a union. India gold DAG: 98/98.
 
 All other sets, JS parity (696/696, int8 683/696), executor 88/88 and the operator tests 15/15 did not change.
+
+## 11. Long lists, frames that drop names, the border with X in Y (plan-038)
+
+Changes (Python and the browser version):
+
+1. **Coverage check of frames.** A T5 frame that leaves out more exact place names of the query than the best frame
+   is not used ("states of France, Spain, Italy and Germany": the `union3` frame has no slot for Germany). If all
+   frames leave out a name of an administrative area, the result has a note. The words that are not place names come
+   from the templates and the options (`frame_words()`, in `bundle.json`). A frame with the same text in two region
+   slots is not used. A region slot takes a longer exact name of the query ("Aravalli" → "Aravalli range").
+2. **One union template.** `union` has one slot `places` (a list of 2 or more parts); `union3` is removed. A part can be
+   a sub-query ("Kerala and coastal districts of Karnataka"). New separators: "+", "plus", "along with", "together
+   with". In a list, a part with a comma is a name only if it is an exact qualified name.
+3. **The border with X in Y.** New template `border_with_in`: `Intersect(Along(SharedBorder(Y, X)), Y)`. "X in Y" with
+   two exact names, X not inside Y, is never a union: the result uses Y, with a note.
+4. **Models.** T5 v6 (val exact match 0.947) and cross-encoder v5. The generator has lists in parent slots, union lists
+   with sub-query parts, `border_with_in`, "X in Y" names and the world level words (regions, departments,
+   voivodeships, local government areas). A first T5 v6 without the world level words gave 5 errors in the world sets
+   ("regions of Italy" as a direction); the second run fixed them. These errors came from held-out sets 1 and 2; the
+   fix is general (the generator had only Indian level words). 2,158 new LLM paraphrases ($0.19).
+5. **Gold.** The union records of all sets use `places` lists; the gold DAGs did not change. The builder stores the
+   geometry of results without IDs (the border strips).
+
+Results (browser setup):
+
+| Set | Template | DAG | Executed result |
+|---|---|---|---|
+| Held-out 7 (73, new: long lists, parent lists, unions with sub-queries, frames that drop names, border with X in Y, anomalies), first run | 67/73 | 58/73 | 60/73 (82%) |
+| Held-out 6 | 28/28 | 28/28 | 28/28 (27/28 before) |
+| Held-out 5 | 24/24 | 24/24 | 24/24 (23/24 before) |
+| World | 70/70 | 70/70 | 70/70 (DAG 69/70 before) |
+| Held-out 1 to 4, India gold, India held-out | no change | no change | no change |
+
+JS parity: 696/696 (flat and country layout), int8 684/696, executor 88/88, operator tests 15/15. Browser smoke test
+(Chromium): the list cases and the 32 page examples, no console errors.
+
+Held-out 7 errors by cause:
+
+| Cause | Queries |
+|---|---|
+| A comma part read as a qualified name (a place with the first name exists inside the second) | Jalisco, Sonora and Chihuahua; border between France, Belgium and Luxembourg |
+| Typos in list names (the result is correct; the slot text keeps the typo) | Frnace, Spain and Itlay |
+| Direction words with a typo | nortern Spain; areas souht of Lyon |
+| "X in Y" inside other templates | 10 km around London in Ontario; schools in Union County in New Jersey |
+| Distributive reading against the data | the 3 largest states of Brazil and Argentina; states of the United States and Mexico; districts of Kerala and Coimbatore |
+| Other | Rome or Milan or Naples; hospitals in State College; schools near me in Pune; Kerala and Kerala; Richmond, Virginia |
+
+The India reference parse changed for 16 queries with the new models (by eye: 5 better, 9 worse, 2 the same). The
+worse ones: "states in India that touch Pakistan" (T5 puts the place in the predicate slot), "coastline buffer gujrat
+15 km" (a sub-query that does not get shorter), "Salt Lake Sector 5" and "Jayanagar 4th Block" (`is_subquery` reads
+numbers as a description), "districts around Gurugram that share a border with it", "Mysuru palace", and three typos.
+
+Open items, and the next plan (plan-039):
+
+- Most errors above come from rules in code that make a reading (the list split, the comma rule, "X in Y"). Plan-039
+  moves the list parts and the qualified names into the T5 frame format, keeps the rules that only reject frames, and
+  removes `is_subquery` for region slots. It also labels 200 India reference queries, so that "better or worse" is
+  measured.
+- "nortern Spain" covers 499,000 of the 506,000 km² of Spain (the direction part of a place with far islands).
+- In the world data with the IN view, "Punjab" gives the Pakistani Punjab first.
+
+## 12. Lists and qualified names in the frame; rules are verifiers only (plan-039)
+
+Principle: **the models propose, the code verifies, the data holds the facts.** The rule ledger is in `reports/rules.md`.
+
+Changes (Python and the browser version):
+
+1. **Verifiers** (phase 1). A frame is not used if a place name is in a closed slot, if an open slot is the whole text
+   (the sub-query does not get shorter), or if a closed slot text has no keyword of its options ("sex ratio" is not an
+   attribute; "palace" is not a category). The divisions of a geocoder point give an error message, not an empty set.
+2. **Frame format** (phase 2). A region slot lists its parts with " | " (`parent = France | Spain`). A qualifier is
+   `<slot>.within` (`anchor = Springfield ; anchor.within = Illinois`). Each part and each qualifier is a span of the
+   query. A name with a qualifier needs a candidate inside an exact match of the qualifier. "or" between two parts in the
+   query gives the conjunction.
+3. **Models** (phase 3). T5 v7 (val exact match 0.943) and cross-encoder v6. The generator writes the new format, the
+   demonyms of countries and regions (Wikidata P1549, 459 names in `geoparse/data/demonyms.yaml`, also used by the
+   gazetteer for the whole name text), numbered neighbourhood names, one-place `neighbors` forms, palace and fort
+   lookups, and typos in direction words. Two new verifiers: in a group of frames, the frame that covers more of the
+   query wins; a closed slot choice with no keyword in the text loses to the one option with a keyword.
+4. **Producer rules removed** (phase 4), each alone with all checks: the list split (`_list_parts`, `LIST_SEP`,
+   `LIST_MARKER`), "X in Y", the slot extension, the union separator check, the direction and level-or-distance
+   sub-query shortcuts. `is_subquery` for region slots is replaced by the top T5 frame of the slot text. A slot text
+   that is an exact place name is a place, also with a level word ("Pune district"). Parser code: Python 1192 → 1073
+   lines, TypeScript 855 → 747 lines.
+5. **Browser speed** (phase 5). The coverage check (plan-038) asked for a ranked gazetteer search only to know if a
+   name exists, and its cache key had the map view. "Washington" has thousands of candidates: 1 to 2.5 s for each
+   query. New: `Gazetteer.exists()` and `exactSubtypes()` (the exact keys without the ranking; the answer does not depend
+   on the view) and a cache for the qualified-name search. The results do not change (parity 696/696).
+
+Results (browser setup, executed result):
+
+| Set | Plan-039 start | End of plan-039 |
+|---|---|---|
+| `india_ref` (200 labelled reference queries, 157 executed) | 149/157 | 152/157 |
+| Held-out 8 (demonyms), first run in phase 0 | 8/19 | 18/19 |
+| Held-out 7 (long lists, frames that drop names) | 60/73 | 64/73 |
+| Held-out 1 to 6, world, India gold, India held-out | | no change |
+
+JS parity: fp32 696/696 (flat and country layout), int8 690/696 (684 at the start), executor 88/88, operator tests
+15/15. The retrain of phase 3 changed 16 of the 696 India reference parses (8 better, 4 worse, 4 the same result);
+the plan-038 retrain changed 16 (9 worse). Phase 4 changed 8 (6 by `is_subquery`, 2 refusal messages).
+
+Speed in the browser (Chromium, production builds, the same remote data; the deployed state against this branch).
+The time is from the click to the result, for the same query run three times in one page:
+
+| Query | Deployed, runs 2 and 3 | Plan-039, runs 2 and 3 |
+|---|---|---|
+| states that border Texas | 0.36–0.54 s | 0.28–0.34 s |
+| coastal states of Mexico | 0.95–1.11 s | 0.80–1.00 s |
+| cities in California with population over 1 million | 0.91–0.97 s | 0.68–0.75 s |
+| MG Road, Bangalore | 0.98–1.38 s | 1.35–1.44 s |
+| Washington DC | 1.07–1.32 s | 1.25–1.47 s |
+| districts of Kerala or Goa | 1.15–1.22 s | 1.53–1.55 s (the union of the parts takes 0.16 s more to execute) |
+
+The first run of a query loads data and name shards over the network, and it varies much (2.8 to 24.7 s for one query
+on the deployed page). The coverage check adds one name-shard load for a word that is not in a slot ("Road" in "MG
+Road, Bangalore": 1.7 s, one time). Node parity, median parse: int8 1.03 s (deployed state 0.98 to 0.99 s), fp32 1.21 s
+(1.18 to 1.20 s).
+
+Known faults:
+
+- "chennai and 3 km around marina beach overlap": T5 reads "marina beach" as the beaches of "marina", and the fuzzy
+  search finds "Maria" in Madhya Pradesh. Before plan-039 the geocoder found Marina Beach. Test:
+  `tests/test_pipeline.py::test_marina_beach_is_not_maria` (strict xfail).
+- "bewteen Lucknow and Kanpur", "btwn hyderabad and secunderabad": a union, not the area between. No typos of
+  "between" in the training data.
+- "upper northern portion of West Bengal" is the north of the north part. "banks on Park Street Kolkata" uses the
+  geocoder point as an area.
+- A verifier for "the divisions of a level inside a place of that level" was tried and removed: the level words of a
+  country ("provinces" in Italy are districts) are not known at the frame stage.
+
+Open items:
+
+- The lookup guard of a whole query and the parser without T5 still use `is_subquery`; the training data still has its
+  questions. `_qualified` and `_frame_override` are producer rules that plan-039 did not remove.
+- The first query in a country loads its data (3 to 5 s for India).

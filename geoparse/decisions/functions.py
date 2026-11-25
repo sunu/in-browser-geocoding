@@ -274,9 +274,20 @@ class Decider:
                 return d
         if allow_none:
             opts["none"] = none_desc if options_ref != "admin_levels" else option_descriptions(options_ref)["none"]
-        return self._choose(f"fill_closed_slot.{slot_type}", depth, {"text": text}, opts,
-                            {"options_ref": options_ref, "segment": text},
-                            {"text": text, "slot_type": slot_type, "query": query})
+        d = self._choose(f"fill_closed_slot.{slot_type}", depth, {"text": text}, opts,
+                         {"options_ref": options_ref, "segment": text},
+                         {"text": text, "slot_type": slot_type, "query": query})
+        # Check (plan-039): an option with no keyword in the text loses to the one option that has a keyword, with one
+        # typo allowed ("nortern" is north, not south).
+        kws = option_keywords(options_ref)
+        if options_ref != "admin_levels" and d.value != "none" and not keyword_hits(text, kws.get(d.value, [])):
+            hits = [k for k in opts if k != "none" and keyword_hits(text, kws.get(k, []))]
+            if len(hits) == 1:
+                d = Decision[str](value=hits[0], confidence=1.0, impl="keyword_check",
+                                  trace={"model": d.value, "model_confidence": d.confidence})
+                self._record(f"fill_closed_slot.{slot_type}", depth, {"text": text, "slot_type": slot_type, "query": query},
+                             opts, d, 0.0)
+        return d
 
     def _level_word(self, text: str, levels: dict[str, str]) -> str | None:
         """The level whose keyword is in the text with no typo, if exactly one level has one. The level words of

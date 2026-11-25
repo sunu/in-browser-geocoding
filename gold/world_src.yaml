@@ -30,7 +30,7 @@ records:
   - {cc: GB, q: "schools in Oxford", t: features_in, s: {category: "school", region: "Oxford"}}
   - {cc: GB, q: "5 km around York", t: buffer, s: {distance: 5000, target: "York"}, src: {target: overture}}
   - {cc: GB, q: "northern Scotland", t: direction_part, s: {dir: north, target: "Scotland"}, src: {target: overture}}
-  - {cc: GB, q: "England and Wales", t: union, s: {a: "England", b: "Wales"}}
+  - {cc: GB, q: "England and Wales", t: union, s: {places: ["England", "Wales"]}}
   - {cc: GB, q: "Edinburgh", t: lookup_place, s: {anchor: "Edinburgh"}, src: {anchor: overture}}
 
   # France
@@ -49,7 +49,7 @@ records:
   - {cc: DE, q: "schools in Munich", t: features_in, s: {category: "school", region: "Munich"}}
   - {cc: DE, q: "coastal states of Germany", t: children_with_predicate, s: {pred: coastal, level: state, parent: "Germany"}}
   - {cc: DE, q: "10 km around Cologne", t: buffer, s: {distance: 10000, target: "Cologne"}, src: {target: overture}}
-  - {cc: DE, q: "Berlin and Brandenburg", t: union, s: {a: "Berlin", b: "Brandenburg"}}
+  - {cc: DE, q: "Berlin and Brandenburg", t: union, s: {places: ["Berlin", "Brandenburg"]}}
 
   # Brazil
   - {cc: BR, q: "Recife", t: lookup_place, s: {anchor: "Recife"}, src: {anchor: overture}}
@@ -85,7 +85,7 @@ records:
   - {cc: NG, q: "coastal states of Nigeria", t: children_with_predicate, s: {pred: coastal, level: state, parent: "Nigeria"}}
   - {cc: NG, q: "hospitals in Abuja", t: features_in, s: {category: "hospital", region: "Abuja"}}
   - {cc: NG, q: "which state is Ibadan in", t: parent, s: {level: state, child: "Ibadan"}}
-  - {cc: NG, q: "Kano and Kaduna", t: union, s: {a: "Kano", b: "Kaduna"}}
+  - {cc: NG, q: "Kano and Kaduna", t: union, s: {places: ["Kano", "Kaduna"]}}
 
   # Mexico
   - {cc: MX, q: "Guadalajara", t: lookup_place, s: {anchor: "Guadalajara"}, src: {anchor: overture}}

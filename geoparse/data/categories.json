@@ -298,7 +298,8 @@
           "petrol pumps",
           "fuel station",
           "gas station",
-          "petrol bunk"
+          "petrol bunk",
+          "petrol bunks"
         ],
         "photon_tag": "amenity:fuel"
       },

@@ -309,6 +309,9 @@ class _Run:
     # ------------------------------------------------------------ hierarchy
 
     def op_Children(self, of: Any, level: str | None = None) -> str:
+        if isinstance(of, dict) and of.get("op") == "Resolve" and of["args"].get("source") == "photon":
+            # A point from the geocoder is not an area: it has no divisions ("Indian" found as a place, not India).
+            raise ExecutionError(f"'{of['args']['name']}' is a point from the geocoder, not an area: it has no divisions inside it")
         parent = self.eval(of)
         # A set of divisions of the asked level ("countries of the Balkans", a named set of countries): the set.
         if level and level != "none":

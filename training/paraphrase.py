@@ -53,6 +53,8 @@ Rules for slot values:
 - Leave out an optional slot that the query does not state.
 - Closed slots (level, pred, dir, category, attr, op) hold the words of the query that express them, for example pred = "near the sea".
 - A region slot can hold a list of places joined by "and", "or", "&" or commas, for example of = "Kerala, Goa and Karnataka".
+- union has one slot places with all the parts, for example places = "Kerala, Goa and the coastal districts of Karnataka".
+- "states of France, Spain and Italy" is the states of each name: children with parent = "France, Spain and Italy", not a union.
 - quant holds the words that say "all of the places" or "any of them" ("both", "all of", "either"). Leave it out if the
   query has no such word. Never add or remove "both", "all", "either" or "each": "and" alone and "both" mean different things."""
 

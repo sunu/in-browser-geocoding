@@ -2,7 +2,7 @@
 // T5 frames -> pick_family -> pick_template -> (viable splits) -> pick_split -> slots -> DAG, with recursion.
 import type { Bundle, SlotDef, Template } from "../core/bundle.ts";
 import { substitute, validate } from "../core/dsl.ts";
-import { distanceM, frameToMatch, frameToText, groupFrames, UNSUPPORTED, valueNum, type Match } from "../core/frames.ts";
+import { distanceM, findSpan, frameToMatch, frameToText, groupFrames, PART_SEP, slotParts, UNSUPPORTED, valueNum, WITHIN, type Frame, type Match } from "../core/frames.ts";
 import { keywordHits } from "../core/keywords.ts";
 import { lexiconMatch, norm, normalizeQuery } from "../core/text.ts";
 import { Decider, type TraceRecord } from "../decisions/decider.ts";
@@ -37,15 +37,10 @@ function fmt(x: number) { return x.toFixed(2); }
 
 // geoparse.parse.pipeline.AROUND_DEFAULT: the optional parent (first) without text is the countries around the
 // other slot (second).
-// geoparse.parse.pipeline.HAS_DISTANCE: a number with a distance unit in a text.
-const HAS_DISTANCE = /\b\d+(?:\.\d+)?\s*(?:km|kms|kilometres?|kilometers?|m|metres?|meters?|mi|miles?)\b/i;
 const AROUND_DEFAULT: Record<string, [string, string]> = { children_touching: ["parent", "other"], children_near: ["parent", "other"] };
-// geoparse.parse.pipeline.LIST_SEP and LIST_MARKER: lists of places in a slot; separators are whole words with spaces.
-const LIST_SEP = /\s*,\s*(?:(?:and|or|&)\s+)?|\s+(?:and|or|&|n|as well as)\s+/gi;
-const LIST_MARKER = /^(both|either|all of the|all of|each of|any one of|any of)\s+(.+)$/i;
-const LIST_MARKER_QUANT: Record<string, string> = { both: "all", "all of the": "all", "all of": "all", "each of": "all", either: "any",
-  "any one of": "any", "any of": "any" };
-const SPACE_LIST_TEMPLATES = new Set(["shared_border"]);
+// geoparse.parse.pipeline.SUB_LIST_TEMPLATES: list parts can be sub-queries ("Kerala and coastal districts of Karnataka").
+const SUB_LIST_TEMPLATES = new Set(["union"]);
+const WORD = /\p{L}[\p{L}\p{N}_'.-]*/gu;
 
 /** The cuts of n separators into k groups (indexes in order), fewest first. */
 function* combinations(n: number, k: number, start = 0): Generator<number[]> {
@@ -105,8 +100,17 @@ export class Parser {
 
   private async candidates(dec: Decider, text: string, depth: number) {
     const k = Number(this.bundle.config.t5.beams ?? 4);
-    const { frames, latency } = await this.t5.frames(text, k);
-    const groups = groupFrames(frames, text, this.templates, Number(this.bundle.config.t5.margin ?? 2));
+    // Port: the frames of a slot text are generated two times (the sub-query check, then the sub-query): one T5 call.
+    const key = `${k}|${text}`;
+    if (!this.t5Cache.has(key)) {
+      if (this.t5Cache.size > 256) this.t5Cache.clear();
+      this.t5Cache.set(key, await this.t5.frames(text, k));
+    }
+    const { frames: raw, latency } = this.t5Cache.get(key)!;
+    // Port: a union frame needs two or more parts ("madhya pradesh sans bhopal" is not a union).
+    const frames = raw.filter((f) => !SUB_LIST_TEMPLATES.has(f.template) || (f.slots.places ?? "").includes(PART_SEP));
+    const kept = await this.checked(dec, frames, text, depth);
+    const groups = await this.covering(dec, groupFrames(kept, text, this.templates, Number(this.bundle.config.t5.margin ?? 2)), text, depth);
     dec.record("generate_frames", depth, { text }, null,
       { value: groups.map(frameToText), impl: `t5:${this.t5.name}`, confidence: frames.length ? Math.exp(frames[0].score) : 0,
         trace: { beam: frames.map((f) => [frameToText(f), Math.round(f.score * 1e4) / 1e4]) } }, latency);
@@ -115,6 +119,136 @@ export class Parser {
     const out: Record<string, Match[]> = {};
     for (const f of groups) (out[f.template] ??= []).push(frameToMatch(f, text));
     return { cands: out, unsupported };
+  }
+
+  private exactCache = new Map<string, any>();
+  private existsCache = new Map<string, boolean>();
+  private insideCache = new Map<string, [string, string | boolean] | null>();
+  private t5Cache = new Map<string, { frames: Frame[]; latency: number }>();
+  private _frameWords: Set<string> | null = null;
+  private _nameStop: Set<string> | null = null;
+
+  private frameWords(): Set<string> { return this._frameWords ??= new Set(this.bundle.frame_words); }
+
+  /** Port of _name_stop: frame words and the words of the closed options. */
+  private nameStop(): Set<string> {
+    return this._nameStop ??= new Set([...this.frameWords(), ...this.setWords().flatMap((k) => norm(k).split(/\s+/))]);
+  }
+
+  /** Is the name an exact place name or a lexicon key? Cached for each name (the answer does not depend on the view). */
+  private async exists(name: string): Promise<boolean> {
+    const key = name.toLowerCase();
+    if (!this.existsCache.has(key)) {
+      if (this.existsCache.size > 2048) this.existsCache.clear();
+      this.existsCache.set(key, !!lexiconMatch(name, this.bundle) || (await this.gaz.exists(name)));
+    }
+    return this.existsCache.get(key)!;
+  }
+
+  /** Port of _exact: the top exact candidate of a name ("lexicon" for a lexicon key), or null. */
+  private async exact(dec: Decider, name: string): Promise<any> {
+    const key = `${name.toLowerCase()}|${(dec.view ?? []).join(",")}`;
+    if (!this.exactCache.has(key)) {
+      const c = await this.gaz.search(name, { fuzzy: false, limit: 1, view: dec.view });
+      this.exactCache.set(key, lexiconMatch(name, this.bundle) ? "lexicon" : (c[0] ?? null));
+    }
+    return this.exactCache.get(key);
+  }
+
+  /** Port of _dropped_names: the exact place names of the query in no slot of the frame (1 to 4 words, 4 or more letters). */
+  private async droppedNames(dec: Decider, f: Frame, text: string): Promise<string[]> {
+    // Port: a name in a closed slot is left out ("states that touch Pakistan": pred = touch Pakistan).
+    const t = this.templates[f.template];
+    const covered = Object.entries(f.slots).filter(([k]) => !t?.slots[k] || !CLOSED.has(t.slots[k].type)).flatMap(([, v]) => slotParts(v).map((p) => findSpan(text, p)));
+    const words = [...text.matchAll(WORD)].filter((m) => !covered.some((r) => r && r[0] <= m.index! && m.index! < r[1]));
+    const out: string[] = [];
+    const used = new Set<number>();
+    for (const n of [4, 3, 2, 1]) {
+      for (let i = 0; i + n <= words.length; i++) {
+        const ws = words.slice(i, i + n);
+        if (ws.some((_, j) => used.has(i + j))) continue;
+        // Port: only words next to each other in the query (no slot text between them).
+        if (ws.slice(1).some((b, j) => /[\p{L}\p{N}_]/u.test(text.slice(ws[j].index! + ws[j][0].length, b.index!)))) continue;
+        if (this.nameStop().has(ws[0][0].toLowerCase()) || this.nameStop().has(ws[n - 1][0].toLowerCase())) continue;
+        const name = text.slice(ws[0].index!, ws[n - 1].index! + ws[n - 1][0].length);
+        if ([...name].filter((ch) => /\p{L}/u.test(ch)).length < 4 || !(await this.exists(name))) continue;
+        out.push(name);
+        for (let j = 0; j < n; j++) used.add(i + j);
+      }
+    }
+    return out;
+  }
+
+  /** Port of _faults: an open slot that is the whole text of a template that is not a lookup or a list, or a closed slot text
+   * (not an admin level) with no keyword of its options. */
+  private faults(f: Frame, text: string): string[] {
+    const t = this.templates[f.template];
+    if (f.template === UNSUPPORTED || !t) return [];
+    const out: string[] = [];
+    for (const [k, v] of Object.entries(f.slots)) {
+      const sd = t.slots[k];
+      if (!sd) continue;
+      if (OPEN.has(sd.type) && t.family !== "lookup" && !SUB_LIST_TEMPLATES.has(t.id) && norm(v) === norm(text)) out.push(`the frame of '${text}' does not make it shorter`);
+      else if (CLOSED.has(sd.type) && sd.type !== "admin_level" && sd.options_ref) {
+        const kws = this.optionWords(sd.options_ref);
+        if (kws.length && !keywordHits(v, kws)) out.push(`the text '${v}' names no known ${sd.type}`);
+      }
+    }
+    return out;
+  }
+
+  /** Port of _checked: the frames with no fault; if none is left, the first fault is the reason of the refusal. */
+  private async checked(dec: Decider, frames: Frame[], text: string, depth: number): Promise<Frame[]> {
+    const faults: string[][] = [];
+    for (const f of frames) faults.push([...this.faults(f, text), ...(await this.withinFaults(dec, f))]);
+    const keep = frames.filter((_, i) => !faults[i].length);
+    if (keep.length < frames.length)
+      dec.recordStep("frame_check", depth, { text }, keep.map(frameToText), "rules",
+        { faults: Object.fromEntries(frames.map((f, i) => [frameToText(f), faults[i]]).filter(([, x]) => x.length)) });
+    if (frames.length && !keep.length) stop(faults.find((x) => x.length)![0], depth, text, "frame_check");
+    return keep;
+  }
+
+  /** Port of _within_faults: a slot with `<slot>.within` needs a candidate of each name inside an exact match of the qualifier. */
+  private async withinFaults(dec: Decider, f: Frame): Promise<string[]> {
+    const probe = dec.fork();  // Port: without steps in the trace
+    probe.view = dec.view;
+    const out: string[] = [];
+    for (const [k, w] of Object.entries(f.slots)) {
+      const base = k.slice(0, -WITHIN.length);
+      if (!k.endsWith(WITHIN) || !(base in f.slots)) continue;
+      for (const p of slotParts(f.slots[base])) if ((await this.inside(probe, p, [w], 0, false)) === null) out.push(`no place '${p}' is inside '${w}'`);
+    }
+    return out;
+  }
+
+  private optionWords(ref: string): string[] {
+    if (ref === "categories") return Object.values(this.bundle.categories).flatMap((g) => Object.values(g.items).flatMap((i) => i.keywords));
+    return Object.values<any>(this.bundle.options[ref] ?? {}).flatMap((v) => v.keywords ?? []);
+  }
+
+  /** Port of _covering: drop the frames that leave out more exact place names than the best frame; a note if all do. */
+  private async covering(dec: Decider, frames: Frame[], text: string, depth: number): Promise<Frame[]> {
+    if (!frames.length) return frames;
+    const dropped: string[][] = [];
+    for (const f of frames) dropped.push(await this.droppedNames(dec, f, text));
+    const least = Math.min(...dropped.map((d) => d.length));
+    const keep = frames.filter((_, i) => dropped[i].length === least);
+    if (keep.length < frames.length)
+      dec.recordStep("frame_coverage", depth, { text }, keep.map(frameToText), "rules",
+        { dropped: Object.fromEntries(frames.map((f, i) => [frameToText(f), dropped[i]]).filter(([, d]) => d.length)) });
+    if (least) {
+      const kept = dropped.filter((_, i) => dropped[i].length === least);
+      const common = kept[0].filter((n) => kept.every((d) => d.includes(n))).sort();
+      const noted = ["country", "dependency", "region", "county"];
+      for (const name of common) {
+        // The ranked search only if a candidate can give the note ("over" is a village: no note, no ranking).
+        if (!(await this.gaz.exactSubtypes(name)).some((t) => noted.includes(t))) continue;
+        const c = await this.exact(dec, name);
+        if (c && c !== "lexicon" && noted.includes(c.subtype)) dec.notes.push(`'${name}' is not used in the result`);
+      }
+    }
+    return keep;
   }
 
   private async parseLevel(dec: Decider, text: string, depth: number): Promise<[any, any]> {
@@ -172,9 +306,19 @@ export class Parser {
         return [{ op: "Resolve", args: { name, source: "overture", id: nat[0].id } }, { family: "lookup", template: "lookup_place", slots: { anchor: name } }];
       }
     }
-    if (tpl.family === "lookup" && alt !== "lookup_place" && !(await this.listParts(dec, text, false))) {
+    if (tpl.family === "lookup" && alt !== "lookup_place"
+        && !(cands[tpl.id] ?? []).some((m) => Object.keys(m.within ?? {}).length)) {
       const g = await dec.isSubquery(text, depth);
-      if (g.value || dec.below("is_subquery", g)) stop("the text is not one place name, and no other template matches", depth, text, "is_subquery");
+      if (g.value || dec.below("is_subquery", g)) {
+        const best = [...(cands[tpl.id] ?? [])].sort((a, b) => b.score - a.score)[0];
+        const name: string = best?.segments?.anchor || text;
+        const plural = Object.values<any>(this.bundle.options.admin_levels).flatMap((v) => v.keywords ?? [])
+          .some((k: string) => k.endsWith("s") && new RegExp(`\\b${k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i").test(name));
+        // Port: "which states touch the sea" is a set of places, not a name that the geocoder can find.
+        if (!this.geocoderAllowed(tpl, depth) || plural) stop("the text is not one place name, and no other template matches", depth, text, "is_subquery");
+        // Port: a place name that the local data does not explain: the geocoder searches the name of the frame.
+        return [this.photonFallback(dec, name, depth, "is_subquery"), { family: "lookup", template: "lookup_place", slots: { anchor: name } }];
+      }
     }
     let matches = [...(cands[tpl.id] ?? [])].sort((a, b) => b.score - a.score);
     if (!matches.length) stop(`template ${tpl.id} has no valid split`, depth, text, "pick_split");
@@ -256,7 +400,7 @@ export class Parser {
       if (!(name in m.segments) && AROUND_DEFAULT[tpl.id]?.[0] === name) { around = name; continue; }
       if (!(name in m.segments)) { values[name] = await this.defaultRegion(sd, dec); slots[name] = null; continue; }
       const hint = tpl.id === "neighbors" ? levelHint : null;
-      jobs[name] = this.region(dec, tpl, m.segments[name], text, depth, hint);
+      jobs[name] = this.region(dec, tpl, m.segments[name], text, depth, hint, false, m.within?.[name] ?? null);
     }
     const names = Object.keys(jobs);
     const results = await Promise.all(names.map((n) => jobs[n]));
@@ -313,7 +457,7 @@ export class Parser {
 
   /** Port of _frame_override: union for "A and B" that is not one exact name; a frame that covers the level words. */
   private async frameOverride(dec: Decider, text: string, tid: string, cands: Record<string, Match[]>, tscore: Record<string, number>, depth: number): Promise<string | null> {
-    const exactName = async (x: string) => (await this.gaz.search(x, { fuzzy: false, limit: 1, view: dec.view })).length > 0;
+    const exactName = (x: string) => this.gaz.exists(x);
     const m = text.trim().match(/^(.+?)\s+(?:and|&)\s+(.+)$/i);
     if (tid === "lookup_place" && m && "union" in cands && !(await exactName(text)) && (await exactName(m[1])) && (await exactName(m[2]))) {
       dec.recordStep("frame_override", depth, { text }, "union", "rules", { from: tid });
@@ -351,9 +495,23 @@ export class Parser {
     return null;
   }
 
-  private async region(dec: Decider, tpl: Template, text: string, query: string, depth: number, typeHint: string | null): Promise<[any, any]> {
+  private async region(dec: Decider, tpl: Template, text: string, query: string, depth: number, typeHint: string | null,
+                       part = false, within: string | null = null): Promise<[any, any]> {
+    if (text.includes(PART_SEP)) {
+      // Port: the parts of a list from the frame; "or" between two parts in the query is the conjunction.
+      const names = slotParts(text);
+      const r = names.map((p) => findSpan(query, p));
+      const gaps = r.slice(1).map((b, i) => (r[i] && b && r[i]![1] <= b[0] ? query.slice(r[i]![1], b[0]) : ""));
+      const conj = gaps.some((g) => /\bor\b/i.test(g)) ? "or" : "and";
+      return this.listRegion(dec, tpl, [names, conj], query, depth, typeHint, within);
+    }
     const article = /^the\s/i.test(text.trim());
     text = text.trim().replace(/^(the|a|an|whole|entire|all of|all of the|whole of)\s+/i, "");
+    if (within) {
+      const res = await this.inside(dec, text, [within], depth, false);
+      if (res === null) stop(`no place '${text}' is inside '${within}'`, depth, text);
+      return [res, text];
+    }
     // A named set first ("the Balkans" is the countries, not Natural Earth's Balkan Peninsula).
     const lex = lexiconMatch(text, this.bundle);
     if (lex) return [{ op: "LexiconSet", args: { key: lex } }, { lex, text }];
@@ -369,33 +527,14 @@ export class Parser {
     if (qual) return [qual, text];
     const isRegion = Object.values(tpl.slots).some((s) => s.type === "region") && tpl.family !== "lookup";
     const exact = await this.gaz.search(text, { typeHint, fuzzy: false, limit: 3, view: dec.view });
-    const lst = exact.length ? null : await this.listParts(dec, text, SPACE_LIST_TEMPLATES.has(tpl.id));
-    if (lst) return this.listRegion(dec, tpl, lst, query, depth, typeHint);
-    const rest = isRegion && !exact.length ? this.directionRest(text) : null;
-    if (rest && (await this.gaz.search(rest, { fuzzy: false, limit: 1, view: dec.view })).length) {
-      // "northern France": a direction word and a place name. A subquery, without the model.
-      dec.recordStep("is_subquery", depth, { text }, true, "rules", { direction_rest: rest });
-      if (depth + 1 > this.maxDepth) stop("depth limit", depth, text);
-      const [sub, info] = await this.parseLevel(dec, text, depth + 1);
-      return [sub, { q: text, t: info.template, s: info.slots }];
-    }
-    const levelWords = Object.values<any>(this.bundle.options.admin_levels).flatMap((v) => v.keywords ?? []);
-    if (isRegion && !exact.length && (keywordHits(text, levelWords, false) || HAS_DISTANCE.test(text))) {
-      // Port: a set by a level or a distance ("coastal districts of Odisha"), not a place name. A sub-query.
-      dec.recordStep("is_subquery", depth, { text }, true, "rules", { level_or_distance: true });
-      if (depth + 1 > this.maxDepth) stop("depth limit", depth, text);
-      const [sub, info] = await this.parseLevel(dec, text, depth + 1);
-      return [sub, { q: text, t: info.template, s: info.slots }];
-    }
-    if (isRegion && exact.length && !keywordHits(text, levelWords, false)) {
-      // Port: the whole text is an exact place name ("Western Ghats", "Northern Ireland"): a place, also with a direction word.
+    if (SUB_LIST_TEMPLATES.has(tpl.id) && !part) stop("a union needs two or more places", depth, text, "pick_split");
+    if (isRegion && exact.length) {
+      // Port: the whole text is an exact place name ("Western Ghats", "Pune district"): a place, also with a direction or level word.
       dec.recordStep("is_subquery", depth, { text }, false, "rules", { exact_name: true });
       return [await this.anchor(dec, tpl, text, query, depth, typeHint, exact), text];
     }
     if (isRegion) {
-      const d = await dec.isSubquery(text, depth);
-      if (dec.below("is_subquery", d)) stop(`low confidence for is_subquery (${fmt(d.confidence)})`, depth, text, "is_subquery");
-      if (d.value) {
+      if (await this.slotIsSubquery(dec, text, depth)) {
         if (depth + 1 > this.maxDepth) stop("depth limit", depth, text);
         const [sub, info] = await this.parseLevel(dec, text, depth + 1);
         return [sub, { q: text, t: info.template, s: info.slots }];
@@ -404,62 +543,43 @@ export class Parser {
     return [await this.anchor(dec, tpl, text, query, depth, typeHint, exact), text];
   }
 
-  /** Port of _list_parts: [names, conjunction, quantifier of a leading word] of a list of named sets or exact names; the
-   * cut with the fewest names wins ("Bosnia and Herzegovina and Croatia" is two names). null if not such a list. */
-  async listParts(dec: Decider, text: string, allowSpace: boolean): Promise<[string[], string, string | null] | null> {
-    let t = text.trim();
-    let marker: string | null = null;
-    const m = LIST_MARKER.exec(t);
-    if (m) { marker = LIST_MARKER_QUANT[m[1].toLowerCase()]; t = m[2]; }
-    let seps = [...t.matchAll(LIST_SEP)];
-    if (!seps.length && allowSpace) seps = [...t.matchAll(/\s+/g)];
-    // Port: commas alone are not a list ("Salt Lake, Kolkata" is a qualified name).
-    if (seps.length && seps.every((s) => s[0].trim() === ",") && !allowSpace) return null;
-    if (!seps.length || seps.length > 6) return null;
-    const known = new Map<string, boolean>();
-    const isName = async (p: string) => {
-      if (!known.has(p)) known.set(p, !!p && (!!lexiconMatch(p, this.bundle) || (await this.gaz.search(p, { fuzzy: false, limit: 1, view: dec.view })).length > 0));
-      return known.get(p)!;
-    };
-    for (let k = 1; k <= seps.length; k++) {
-      for (const cut of combinations(seps.length, k)) {
-        const parts: string[] = [];
-        let start = 0;
-        for (const i of cut) { parts.push(t.slice(start, seps[i].index!).trim()); start = seps[i].index! + seps[i][0].length; }
-        parts.push(t.slice(start).trim());
-        let ok = true;
-        for (const p of parts) if (!(await isName(p))) { ok = false; break; }
-        if (ok) return [parts, cut.some((i) => /\bor\b/i.test(seps[i][0])) ? "or" : "and", marker];
-      }
+  /** Port of _slot_is_subquery: a region slot text is a sub-query if its top T5 frame is not a lookup. */
+  private async slotIsSubquery(dec: Decider, text: string, depth: number): Promise<boolean> {
+    const probe = dec.fork();  // Port: without steps in the trace
+    probe.view = dec.view;
+    let top: string | undefined;
+    try {
+      const { cands } = await this.candidates(probe, text, depth + 1);
+      top = Object.keys(cands)[0];
+    } catch (e) {
+      if (!(e instanceof Stop)) throw e;
     }
-    return null;
+    const sub = !!top && top in this.templates && this.templates[top].family !== "lookup";
+    dec.recordStep("is_subquery", depth, { text }, sub, "t5", { template: top ?? null });
+    return sub;
   }
 
   /** Port of _list_region: the Union of the places of a list. */
-  private async listRegion(dec: Decider, tpl: Template, lst: [string[], string, string | null], query: string, depth: number,
-                           typeHint: string | null): Promise<[any, any]> {
-    const [names, conj, marker] = lst;
-    dec.recordStep("list", depth, { text: names.join(" | ") }, names, "rules", { conjunction: conj, quantifier: marker });
+  private async listRegion(dec: Decider, tpl: Template, lst: [string[], string], query: string, depth: number,
+                           typeHint: string | null, within: string | null = null): Promise<[any, any]> {
+    const [names, conj] = lst;
+    dec.recordStep("list", depth, { text: names.join(" | ") }, names, "rules", { conjunction: conj });
     let node: any = null;
     const infos: any[] = [];
     for (const p of names) {
-      const [dag, info] = await this.region(dec, tpl, p, query, depth, typeHint);
+      const [dag, info] = await this.region(dec, tpl, p, query, depth, typeHint, true, within);
       node = node === null ? dag : { op: "Union", args: { a: node, b: dag } };
       infos.push(info);
     }
-    return [node, { list: infos, conj, quant: marker }];
+    return [node, { list: infos, conj }];
   }
 
-  /** Port of _quantifier: a quantifier slot with no text gets the leading word of the list, else `any` (a note for a
-   * list joined by "and"). `any` is the operator default: the DAG has the argument only for `all`. */
+  /** Port of _quantifier: a quantifier slot with no text gets `any` (a note for a list joined by "and"). `any` is the operator default: the DAG has the argument only for `all`. */
   private quantifier(dec: Decider, tpl: Template, m: Match, values: Record<string, any>, slots: Record<string, any>, depth: number) {
     const q = Object.keys(tpl.slots).find((n) => tpl.slots[n].type === "quantifier");
     if (!q) return;
     const lst = Object.entries(slots).find(([n, s]) => OPEN.has(tpl.slots[n]?.type) && s && typeof s === "object" && "list" in s)?.[1];
-    if (!(q in m.segments) && lst?.quant) {
-      values[q] = slots[q] = lst.quant;
-      dec.recordStep("quantifier", depth, { text: lst.conj }, lst.quant, "rules", { from: "leading word" });
-    } else if (!(q in m.segments) && lst && lst.conj === "and" && values[q] === "any") {
+    if (!(q in m.segments) && lst && lst.conj === "and" && values[q] === "any") {
       dec.recordStep("quantifier", depth, { text: "and" }, "any", "rules", { from: "default", ambiguous: true });
       dec.notes.push("'and' between the places is read as 'or' (any of them); say 'both' or 'all of' for all of them");
     }
@@ -467,9 +587,9 @@ export class Parser {
   }
 
   /** Port of _qualified: "Paris, Texas" is the Paris inside an exact match of each later name, or null. */
-  private async qualified(dec: Decider, text: string, depth: number): Promise<any | null> {
+  private async qualified(dec: Decider, text: string, depth: number, exact = false): Promise<any | null> {
     let parts = text.split(",").map((p) => p.trim());
-    let exactOnly = false;
+    let exactOnly = exact;  // Port: exact: no fuzzy names (the list check)
     if (parts.length === 1) {
       // "Springfield in Illinois": exact names only, and not a set ("districts in Kerala", "hospitals in Pune").
       const m = text.trim().match(/^(.+?)\s+in\s+(.+)$/i);
@@ -478,8 +598,27 @@ export class Parser {
       exactOnly = true;
     }
     if (parts.length < 2 || parts.length > 3 || parts.some((p) => !p || /\band\b|&/i.test(p))) return null;
+    return this.inside(dec, parts[0], parts.slice(1), depth, exactOnly, text);
+  }
+
+  /** Port of _inside: the Resolve of the best candidate of `name` inside one exact match of each outer name, or null. */
+  private async inside(dec: Decider, name: string, outers: string[], depth: number, exactOnly = true, text: string | null = null): Promise<any | null> {
+    // The within verifier, _qualified and _region ask the same question: one search for each name, qualifiers and view.
+    const key = JSON.stringify([name, outers, exactOnly, dec.view]);
+    if (!this.insideCache.has(key)) {
+      if (this.insideCache.size > 512) this.insideCache.clear();
+      this.insideCache.set(key, await this.insideSearch(dec, name, outers, exactOnly));
+    }
+    const hit = this.insideCache.get(key)!;
+    if (!hit) return null;
+    const context = outers.join(", ");
+    dec.recordStep("qualified_name", depth, { text: text ?? `${name}, ${context}` }, hit[0], "rules", { name, context, fuzzy: hit[1] });
+    return { op: "Resolve", args: { name, source: "overture", id: hit[0], context } };
+  }
+
+  private async insideSearch(dec: Decider, name: string, outers: string[], exactOnly = true): Promise<[string, string | boolean] | null> {
     const outer: Set<string>[] = [];
-    for (const p of parts.slice(1)) {
+    for (const p of outers) {
       const ids = new Set((await this.gaz.search(p, { fuzzy: false, limit: 5, view: dec.view, full: true })).map((c) => c.id));
       if (!ids.size) return null;
       outer.push(ids);
@@ -487,13 +626,10 @@ export class Parser {
     // Port: search only in the countries of the outer places (the browser then loads only these countries).
     const outerIds = [...new Set(outer.flatMap((s) => [...s]))].sort();
     const countries = [...new Set(Object.values(await this.gaz.describe(outerIds)).map((d: any) => d.country).filter(Boolean))].sort() as string[];
-    const context = parts.slice(1).join(", ");
+    const context = outers.join(", ");
     for (const fuzzy of exactOnly ? [false] as const : [true, "only"] as const) {
-      for (const c of await this.gaz.search(parts[0], { context, limit: 20, fuzzy, view: dec.view, countries, full: true })) {
-        if (outer.every((ids) => c.ancestors.some((a) => ids.has(a)))) {
-          dec.recordStep("qualified_name", depth, { text }, c.id, "rules", { name: parts[0], context, fuzzy });
-          return { op: "Resolve", args: { name: parts[0], source: "overture", id: c.id, context } };
-        }
+      for (const c of await this.gaz.search(name, { context, limit: 20, fuzzy, view: dec.view, countries, full: true })) {
+        if (outer.every((ids) => c.ancestors.some((a) => ids.has(a)))) return [c.id, fuzzy];
       }
     }
     return null;
@@ -559,19 +695,32 @@ export class Parser {
     return null;
   }
 
-  private async anchor(dec: Decider, tpl: Template, text: string, query: string, depth: number, typeHint: string | null, exact: Candidate[]) {
+  private geocoderAllowed(tpl: Template, depth: number): boolean {
     const scope = this.bundle.config.geocoder?.anchor_scope ?? "simple_and_features";
-    const allowGeocoder = scope === "all" || (depth === 0 && GEOCODER_FAMILIES.has(tpl.family));
+    return scope === "all" || (depth === 0 && GEOCODER_FAMILIES.has(tpl.family));
+  }
+
+  private photonFallback(dec: Decider, text: string, depth: number, cause: string): Record<string, any> {
+    dec.recordStep("photon_fallback", depth, { text }, "photon", "rules", { cause });
+    dec.notes.push(`'${text}' is not a known place in the local data: the result is the geocoder's (Photon) match`);
+    return { op: "Resolve", args: { name: text, source: "photon" } };
+  }
+
+  private async anchor(dec: Decider, tpl: Template, text: string, query: string, depth: number, typeHint: string | null, exact: Candidate[]) {
+    const allowGeocoder = this.geocoderAllowed(tpl, depth);
     if (allowGeocoder) {
       const cands = exact.length ? exact : await this.gaz.search(text, { typeHint, limit: 3, view: dec.view });
       const top = cands[0];
       const sd = await dec.selectSource(text, { gazetteer_match: top?.description ?? null, gazetteer_top_score: top?.score ?? 0, gazetteer_top_subtype: top?.subtype ?? null }, depth);
-      if (dec.below("select_source", sd)) stop(`low confidence for select_source (${fmt(sd.confidence)})`, depth, text, "select_source");
+      if (dec.below("select_source", sd)) return this.photonFallback(dec, text, depth, "select_source");
       if (sd.value === "photon") return { op: "Resolve", args: { name: text, source: "photon" } };
     }
     // No NER spans in the browser version: the whole slot text is the anchor (bind_anchor is not asked).
     let cands = await this.gaz.search(text, { typeHint, limit: 6, view: dec.view });
-    if (!cands.length) stop(`cannot resolve '${text}' in the local extract`, depth, text);
+    if (!cands.length) {
+      if (allowGeocoder) return this.photonFallback(dec, text, depth, "no_local_match");
+      stop(`cannot resolve '${text}' in the local extract`, depth, text);
+    }
     cands = await this.photonBoost(dec, text, mergeNested(cands), depth);
     let chosen = cands[0];
     if (cands.length > 1 && cands[0].score - cands[1].score < this.bundle.config.policy.ranking.close_margin) {

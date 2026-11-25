@@ -1,0 +1,1944 @@
+{
+ "isolated": [
+  {
+   "id": "s001",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s001",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s001",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s001",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "parent": "Indian",
+    "other": "Nepal"
+   },
+   "gold": {
+    "level": "states",
+    "parent": "Indian",
+    "other": "Nepal"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s001",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 1.0
+  },
+  {
+   "id": "s001",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Indian",
+   "conf": 0.9975
+  },
+  {
+   "id": "s001",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Nepal",
+   "conf": 0.991182
+  },
+  {
+   "id": "s002",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s002",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s002",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s002",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "parent": "Indian",
+    "other": "Bangladesh"
+   },
+   "gold": {
+    "level": "states",
+    "parent": "Indian",
+    "other": "Bangladesh"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s002",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 1.0
+  },
+  {
+   "id": "s002",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Indian",
+   "conf": 0.9975
+  },
+  {
+   "id": "s002",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Bangladesh",
+   "conf": 0.996966
+  },
+  {
+   "id": "s003",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s003",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s003",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s003",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "regions",
+    "parent": "French"
+   },
+   "gold": {
+    "level": "regions",
+    "parent": "French"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s003",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "regions",
+   "conf": 1.0
+  },
+  {
+   "id": "s003",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "French",
+   "conf": 0.995488
+  },
+  {
+   "id": "s004",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s004",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s004",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s004",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "departments",
+    "parent": "French",
+    "other": "Spain"
+   },
+   "gold": {
+    "level": "departments",
+    "parent": "French",
+    "other": "Spain"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s004",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "departments",
+   "conf": 1.0
+  },
+  {
+   "id": "s004",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "French",
+   "conf": 0.995488
+  },
+  {
+   "id": "s004",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Spain",
+   "conf": 0.997292
+  },
+  {
+   "id": "s005",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s005",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 0.9863740000000001,
+   "n_options": 2
+  },
+  {
+   "id": "s005",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 0.1923220000000001,
+   "n_options": 2
+  },
+  {
+   "id": "s005",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "parent": "Mexican",
+    "other": "Texas"
+   },
+   "gold": {
+    "level": "states",
+    "parent": "Mexican",
+    "other": "Texas"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s005",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 1.0
+  },
+  {
+   "id": "s005",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Mexican",
+   "conf": 0.997168
+  },
+  {
+   "id": "s005",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Texas",
+   "conf": 0.997256
+  },
+  {
+   "id": "s006",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s006",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 0.9891000000000001,
+   "n_options": 2
+  },
+  {
+   "id": "s006",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 0.404088,
+   "n_options": 2
+  },
+  {
+   "id": "s006",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "parent": "mexican",
+    "other": "texas"
+   },
+   "gold": {
+    "level": "states",
+    "parent": "mexican",
+    "other": "texas"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s006",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 1.0
+  },
+  {
+   "id": "s006",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "mexican",
+   "conf": 0.997168
+  },
+  {
+   "id": "s006",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "texas",
+   "conf": 0.997256
+  },
+  {
+   "id": "s007",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s007",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s007",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s007",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "provinces",
+    "parent": "Spanish",
+    "other": "Portugal"
+   },
+   "gold": {
+    "level": "provinces",
+    "parent": "Spanish",
+    "other": "Portugal"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s007",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "provinces",
+   "conf": 1.0
+  },
+  {
+   "id": "s007",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Spanish",
+   "conf": 0.996306
+  },
+  {
+   "id": "s007",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Portugal",
+   "conf": 0.997466
+  },
+  {
+   "id": "s008",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s008",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s008",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s008",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "regions",
+    "parent": "Italian",
+    "other": "Switzerland"
+   },
+   "gold": {
+    "level": "regions",
+    "parent": "Italian",
+    "other": "Switzerland"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s008",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "regions",
+   "conf": 1.0
+  },
+  {
+   "id": "s008",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Italian",
+   "conf": 0.997116
+  },
+  {
+   "id": "s008",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Switzerland",
+   "conf": 0.99742
+  },
+  {
+   "id": "s009",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s009",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s009",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s009",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "provinces",
+    "parent": "Canadian",
+    "other": "Montana"
+   },
+   "gold": {
+    "level": "provinces",
+    "parent": "Canadian",
+    "other": "Montana"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s009",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "provinces",
+   "conf": 1.0
+  },
+  {
+   "id": "s009",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Canadian",
+   "conf": 0.99393
+  },
+  {
+   "id": "s009",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Montana",
+   "conf": 0.99718
+  },
+  {
+   "id": "s010",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s010",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s010",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s010",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "parent": "German"
+   },
+   "gold": {
+    "level": "states",
+    "parent": "German"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s010",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 1.0
+  },
+  {
+   "id": "s010",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "German",
+   "conf": 0.996202
+  },
+  {
+   "id": "s011",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s011",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s011",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s011",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "parent": "Nigerian",
+    "other": "Cameroon"
+   },
+   "gold": {
+    "level": "states",
+    "parent": "Nigerian",
+    "other": "Cameroon"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s011",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 1.0
+  },
+  {
+   "id": "s011",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Nigerian",
+   "conf": 0.996964
+  },
+  {
+   "id": "s011",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Cameroon",
+   "conf": 0.997064
+  },
+  {
+   "id": "s012",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s012",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 0.99491,
+   "n_options": 2
+  },
+  {
+   "id": "s012",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 0.8191600000000001,
+   "n_options": 2
+  },
+  {
+   "id": "s012",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "parent": "American",
+    "other": "Canada"
+   },
+   "gold": {
+    "level": "states",
+    "parent": "American",
+    "other": "Canada"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s012",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 1.0
+  },
+  {
+   "id": "s012",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "American",
+   "conf": 0.993748
+  },
+  {
+   "id": "s012",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Canada",
+   "conf": 0.996138
+  },
+  {
+   "id": "s013",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s013",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s013",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_with_predicate",
+   "gold": "children_with_predicate",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s013",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "pred": "coastal",
+    "parent": "Brazilian"
+   },
+   "gold": {
+    "level": "states",
+    "pred": "coastal",
+    "parent": "Brazilian"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s013",
+   "decision": "fill_closed_slot.predicate",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "coastal",
+   "gold": "coastal",
+   "text": "coastal",
+   "conf": 1.0
+  },
+  {
+   "id": "s013",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 1.0
+  },
+  {
+   "id": "s013",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Brazilian",
+   "conf": 0.99743
+  },
+  {
+   "id": "s014",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "attribute",
+   "gold": "attribute",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s014",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "children_attr",
+   "gold": "children_attr",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s014",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "children_attr",
+   "gold": "children_attr",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s014",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": {
+    "level": "states",
+    "op": "over",
+    "value": "5 million",
+    "attr": "population",
+    "parent": "Australian"
+   },
+   "gold": {
+    "level": "states",
+    "op": "over",
+    "value": "5 million",
+    "attr": "population",
+    "parent": "Australian"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s014",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "state",
+   "gold": "state",
+   "text": "states",
+   "conf": 1.0
+  },
+  {
+   "id": "s014",
+   "decision": "fill_closed_slot.attr",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "population",
+   "gold": "population",
+   "text": "population",
+   "conf": 1.0
+  },
+  {
+   "id": "s014",
+   "decision": "fill_closed_slot.op",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": "gt",
+   "gold": "gt",
+   "text": "over",
+   "conf": 0.992672
+  },
+  {
+   "id": "s014",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "attribute",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Australian",
+   "conf": 0.99669
+  },
+  {
+   "id": "s015",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s015",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 0.9789399999999999,
+   "n_options": 2
+  },
+  {
+   "id": "s015",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 0.2125760000000001,
+   "n_options": 2
+  },
+  {
+   "id": "s015",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "counties",
+    "parent": "Texan",
+    "other": "Mexico"
+   },
+   "gold": {
+    "level": "counties",
+    "parent": "Texan",
+    "other": "Mexico"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s015",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "counties",
+   "conf": 1.0
+  },
+  {
+   "id": "s015",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Texan",
+   "conf": 0.996694
+  },
+  {
+   "id": "s015",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Mexico",
+   "conf": 0.99736
+  },
+  {
+   "id": "s016",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "predicate_filter",
+   "gold": "predicate_filter",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s016",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 0.9923120000000001,
+   "n_options": 2
+  },
+  {
+   "id": "s016",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "children_touching",
+   "gold": "children_touching",
+   "conf": 0.4588779999999999,
+   "n_options": 2
+  },
+  {
+   "id": "s016",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": {
+    "level": "districts",
+    "parent": "Bavarian",
+    "other": "Austria"
+   },
+   "gold": {
+    "level": "districts",
+    "parent": "Bavarian",
+    "other": "Austria"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s016",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "districts",
+   "conf": 1.0
+  },
+  {
+   "id": "s016",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Bavarian",
+   "conf": 0.997424
+  },
+  {
+   "id": "s016",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "predicate_filter",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Austria",
+   "conf": 0.997212
+  },
+  {
+   "id": "s017",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s017",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s017",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s017",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "Indian Ocean"
+   },
+   "gold": {
+    "anchor": "Indian Ocean"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s018",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "hierarchy",
+   "gold": "hierarchy",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s018",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 0.9960640000000001,
+   "n_options": 2
+  },
+  {
+   "id": "s018",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "children",
+   "gold": "children",
+   "conf": 0.7861560000000001,
+   "n_options": 2
+  },
+  {
+   "id": "s018",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": {
+    "level": "counties",
+    "parent": "Indiana"
+   },
+   "gold": {
+    "level": "counties",
+    "parent": "Indiana"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s018",
+   "decision": "fill_closed_slot.admin_level",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": "district",
+   "gold": "district",
+   "text": "counties",
+   "conf": 1.0
+  },
+  {
+   "id": "s018",
+   "decision": "is_subquery",
+   "depth": 0,
+   "family": "hierarchy",
+   "correct": true,
+   "got": false,
+   "gold": false,
+   "text": "Indiana",
+   "conf": 0.997764
+  },
+  {
+   "id": "s019",
+   "decision": "pick_family",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup",
+   "gold": "lookup",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s019",
+   "decision": "pick_template",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s019",
+   "decision": "pick_template_flat",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": "lookup_place",
+   "gold": "lookup_place",
+   "conf": 1.0,
+   "n_options": 1
+  },
+  {
+   "id": "s019",
+   "decision": "pick_split",
+   "depth": 0,
+   "family": "lookup",
+   "correct": true,
+   "got": {
+    "anchor": "French Guiana"
+   },
+   "gold": {
+    "anchor": "French Guiana"
+   },
+   "conf": 1.0,
+   "n_options": 1
+  }
+ ],
+ "pipeline": [
+  {
+   "id": "s001",
+   "query": "Indian states bordering Nepal",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.0722110271453857,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "0 ids vs 5"
+  },
+  {
+   "id": "s002",
+   "query": "which Indian states border Bangladesh",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.6404800415039062,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "0 ids vs 5"
+  },
+  {
+   "id": "s003",
+   "query": "French regions",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.8222227096557617,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "1 ids vs 13"
+  },
+  {
+   "id": "s004",
+   "query": "French departments bordering Spain",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.3594551086425781,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "0 ids vs 5"
+  },
+  {
+   "id": "s005",
+   "query": "Mexican states bordering Texas",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.936682939529419,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "0 ids vs 4"
+  },
+  {
+   "id": "s006",
+   "query": "mexican states that touch texas",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.0963959693908691,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "0 ids vs 4"
+  },
+  {
+   "id": "s007",
+   "query": "Spanish provinces bordering Portugal",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.1915380954742432,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "0 ids vs 7"
+  },
+  {
+   "id": "s008",
+   "query": "Italian regions bordering Switzerland",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.0508129596710205,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "0 ids vs 4"
+  },
+  {
+   "id": "s009",
+   "query": "Canadian provinces bordering Montana",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.4848649501800537,
+   "model_calls": 8,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "0 ids vs 3"
+  },
+  {
+   "id": "s010",
+   "query": "German states",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.4174628257751465,
+   "model_calls": 4,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "16 ids vs 16"
+  },
+  {
+   "id": "s011",
+   "query": "Nigerian states bordering Cameroon",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.9266538619995117,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "5 ids vs 5"
+  },
+  {
+   "id": "s012",
+   "query": "American states bordering Canada",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.8886878490447998,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "0 ids vs 13"
+  },
+  {
+   "id": "s013",
+   "query": "coastal Brazilian states",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 0.9837219715118408,
+   "model_calls": 5,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children_with_predicate",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "17 ids vs 17"
+  },
+  {
+   "id": "s014",
+   "query": "Australian states with population over 5 million",
+   "family": "attribute",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.4149789810180664,
+   "model_calls": 6,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "children_attr",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "3 ids vs 3"
+  },
+  {
+   "id": "s015",
+   "query": "Texan counties bordering Mexico",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 2.138796806335449,
+   "model_calls": 8,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "14 ids vs 14"
+  },
+  {
+   "id": "s016",
+   "query": "Bavarian districts bordering Austria",
+   "family": "predicate_filter",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.385010004043579,
+   "model_calls": 7,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children_touching",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "14 ids vs 14"
+  },
+  {
+   "id": "s017",
+   "query": "Indian Ocean",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.0064289569854736,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "1 ids vs 1"
+  },
+  {
+   "id": "s018",
+   "query": "counties in Indiana",
+   "family": "hierarchy",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.470318078994751,
+   "model_calls": 6,
+   "requests_in_sequence": 2,
+   "unsupported": null,
+   "got_template": "children",
+   "path": "complex",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": true,
+   "exec_ok": true,
+   "exec_note": "92 ids vs 92"
+  },
+  {
+   "id": "s019",
+   "query": "French Guiana",
+   "family": "lookup",
+   "depth": 0,
+   "template_ok": true,
+   "ok": true,
+   "latency_s": 1.3611948490142822,
+   "model_calls": 3,
+   "requests_in_sequence": 1,
+   "unsupported": null,
+   "got_template": "lookup_place",
+   "path": "simple",
+   "slots_ok": true,
+   "diffs": [],
+   "dag_ok": false,
+   "exec_ok": false,
+   "exec_note": "1 ids vs 1"
+  }
+ ],
+ "summary": {
+  "pick_family": {
+   "n": 19,
+   "correct": 19
+  },
+  "pick_template": {
+   "n": 19,
+   "correct": 19
+  },
+  "pick_template_flat": {
+   "n": 19,
+   "correct": 19
+  },
+  "pick_split": {
+   "n": 19,
+   "correct": 19
+  },
+  "is_subquery": {
+   "n": 29,
+   "correct": 29
+  },
+  "fill_closed_slot.admin_level": {
+   "n": 17,
+   "correct": 17
+  },
+  "fill_closed_slot.attr": {
+   "n": 1,
+   "correct": 1
+  },
+  "fill_closed_slot.op": {
+   "n": 1,
+   "correct": 1
+  },
+  "fill_closed_slot.predicate": {
+   "n": 1,
+   "correct": 1
+  },
+  "pipeline": {
+   "attribute": {
+    "n": 1,
+    "dag_ok": 1
+   },
+   "hierarchy": {
+    "n": 3,
+    "dag_ok": 2
+   },
+   "lookup": {
+    "n": 2,
+    "dag_ok": 1
+   },
+   "predicate_filter": {
+    "n": 13,
+    "dag_ok": 4
+   },
+   "ALL": {
+    "n": 19,
+    "dag_ok": 8
+   }
+  }
+ }
+}

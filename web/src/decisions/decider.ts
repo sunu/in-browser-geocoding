@@ -158,7 +158,17 @@ export class Decider {
       }
     }
     if (allowNone) opts.none = ref !== "admin_levels" ? noneDesc : all.none;
-    return this.choose(`fill_closed_slot.${slotType}`, depth, { text }, opts, {}, { text, slot_type: slotType, query });
+    let d = await this.choose(`fill_closed_slot.${slotType}`, depth, { text }, opts, {}, { text, slot_type: slotType, query });
+    // Port: an option with no keyword in the text loses to the one option that has a keyword (one typo allowed).
+    const kw = (k: string): string[] => this.bundle.options[ref]?.[k]?.keywords ?? [];
+    if (ref !== "admin_levels" && d.value !== "none" && !keywordHits(text, kw(d.value))) {
+      const hits = Object.keys(opts).filter((k) => k !== "none" && keywordHits(text, kw(k)));
+      if (hits.length === 1) {
+        d = { value: hits[0], confidence: 1, impl: "keyword_check", trace: { model: d.value, model_confidence: d.confidence } };
+        this.record(`fill_closed_slot.${slotType}`, depth, { text, slot_type: slotType, query }, opts, d, 0);
+      }
+    }
+    return d;
   }
 
   /** Port of Decider._level_word: the level whose keyword is in the text with no typo, if exactly one level has one.

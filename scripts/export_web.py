@@ -29,7 +29,7 @@ from geoparse.decisions.functions import INSTRUCTIONS, IS_SUBQUERY_CRITERIA, NON
 from geoparse.dsl.schema import CATALOG, DIRECTION_MODES, LAYERS, PREDICATE_DAGS, QUANTIFIERS, RANK_BY, RANK_ORDERS, SOURCES
 from geoparse.options import categories, lexicon, options
 from geoparse.execute.data import local_level_words
-from geoparse.parse.pipeline import LEADING_FILLERS, STRUCTURE_LEVEL
+from geoparse.parse.pipeline import LEADING_FILLERS, STRUCTURE_LEVEL, frame_words
 from geoparse.templates.model import load_families
 
 WEB = REPO_ROOT / "web" / "public"
@@ -48,6 +48,7 @@ def export_bundle() -> None:
                                 "choices_ref": a.choices_ref} for a in spec.args], "out": spec.out}
                for name, spec in CATALOG.items()}
     aliases = yaml.safe_load((PACKAGE_DIR / "data" / "name_aliases.yaml").read_text()) or {}
+    demonyms = yaml.safe_load((PACKAGE_DIR / "data" / "demonyms.yaml").read_text()) or {}
     bundle = {
         "version": time.strftime("%Y-%m-%d %H:%M"),
         "config": load_config(),
@@ -57,6 +58,7 @@ def export_bundle() -> None:
         "categories": categories(),
         "lexicon": lexicon(),
         "aliases": {str(k): str(v) for k, v in aliases.items()},
+        "demonyms": {str(k): str(v) for k, v in demonyms.items()},
         "instructions": INSTRUCTIONS,
         "is_subquery_criteria": IS_SUBQUERY_CRITERIA,
         "none_option": NONE_OPTION,
@@ -71,6 +73,7 @@ def export_bundle() -> None:
         "rank_by": RANK_BY,
         "rank_orders": RANK_ORDERS,
         "quantifiers": QUANTIFIERS,
+        "frame_words": sorted(frame_words()),
     }
     WEB.mkdir(parents=True, exist_ok=True)
     (WEB / "bundle.json").write_text(json.dumps(bundle, ensure_ascii=False))

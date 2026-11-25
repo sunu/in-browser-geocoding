@@ -59,3 +59,30 @@ def test_group_frames_merges_closed_and_quantity_variants():
 def test_frame_to_match_uses_query_case():
     m = frame_to_match(Frame.from_text("children ; level = districts ; parent = kerala"), "districts of Kerala")
     assert m["segments"] == {"level": "districts", "parent": "Kerala"}
+
+
+def test_list_and_within_slots():
+    # plan-039: list parts with " | ", and a qualifier `<slot>.within`. Each part and the qualifier are spans.
+    q = "states of France, Spain or Italy"
+    f = Frame.from_text("children ; level = states ; parent = France | Spain | Italy")
+    assert check_frame(f, q, T) == []
+    assert frame_to_match(f, q.lower())["segments"]["parent"] == "france | spain | italy"
+    bad = Frame.from_text("children ; level = states ; parent = France | Germany")
+    assert any("Germany" in p for p in check_frame(bad, q, T))
+    assert "the same text in two region slots" in check_frame(
+        Frame.from_text("union ; places = France | France"), q, T)
+    assert check_frame(Frame.from_text("children ; level = states ; parent = Kerala | Kerala"), "states of Kerala and Kerala", T) == []
+    w = Frame.from_text("lookup_place ; anchor = Springfield ; anchor.within = Illinois")
+    assert check_frame(w, "Springfield, Illinois", T) == []
+    assert frame_to_match(w, "Springfield, Illinois")["within"] == {"anchor": "Illinois"}
+    assert any("unknown slot" in p for p in check_frame(
+        Frame.from_text("lookup_place ; anchor = Springfield ; level.within = Illinois"), "Springfield, Illinois", T))
+
+
+def test_group_prefers_the_frame_that_covers_more():
+    # plan-039: a near tie in a group goes to the frame that explains more of the query, with the best score.
+    q = "states bordering Rajasthan"
+    fs = [Frame.from_text("neighbors ; of = Rajasthan", score=-0.069),
+          Frame.from_text("neighbors ; level = states ; of = Rajasthan", score=-0.081)]
+    g = group_frames(fs, q, T, margin=2.0)
+    assert [f.to_text() for f in g] == ["neighbors ; level = states ; of = Rajasthan"] and g[0].score == -0.069
