@@ -122,6 +122,8 @@ export class Parser {
   }
 
   private exactCache = new Map<string, any>();
+  private existsCache = new Map<string, boolean>();
+  private insideCache = new Map<string, [string, string | boolean] | null>();
   private t5Cache = new Map<string, { frames: Frame[]; latency: number }>();
   private _frameWords: Set<string> | null = null;
   private _nameStop: Set<string> | null = null;
@@ -131,6 +133,16 @@ export class Parser {
   /** Port of _name_stop: frame words and the words of the closed options. */
   private nameStop(): Set<string> {
     return this._nameStop ??= new Set([...this.frameWords(), ...this.setWords().flatMap((k) => norm(k).split(/\s+/))]);
+  }
+
+  /** Is the name an exact place name or a lexicon key? Cached for each name (the answer does not depend on the view). */
+  private async exists(name: string): Promise<boolean> {
+    const key = name.toLowerCase();
+    if (!this.existsCache.has(key)) {
+      if (this.existsCache.size > 2048) this.existsCache.clear();
+      this.existsCache.set(key, !!lexiconMatch(name, this.bundle) || (await this.gaz.exists(name)));
+    }
+    return this.existsCache.get(key)!;
   }
 
   /** Port of _exact: the top exact candidate of a name ("lexicon" for a lexicon key), or null. */
@@ -159,7 +171,7 @@ export class Parser {
         if (ws.slice(1).some((b, j) => /[\p{L}\p{N}_]/u.test(text.slice(ws[j].index! + ws[j][0].length, b.index!)))) continue;
         if (this.nameStop().has(ws[0][0].toLowerCase()) || this.nameStop().has(ws[n - 1][0].toLowerCase())) continue;
         const name = text.slice(ws[0].index!, ws[n - 1].index! + ws[n - 1][0].length);
-        if ([...name].filter((ch) => /\p{L}/u.test(ch)).length < 4 || !(await this.exact(dec, name))) continue;
+        if ([...name].filter((ch) => /\p{L}/u.test(ch)).length < 4 || !(await this.exists(name))) continue;
         out.push(name);
         for (let j = 0; j < n; j++) used.add(i + j);
       }
@@ -228,9 +240,12 @@ export class Parser {
     if (least) {
       const kept = dropped.filter((_, i) => dropped[i].length === least);
       const common = kept[0].filter((n) => kept.every((d) => d.includes(n))).sort();
+      const noted = ["country", "dependency", "region", "county"];
       for (const name of common) {
+        // The ranked search only if a candidate can give the note ("over" is a village: no note, no ranking).
+        if (!(await this.gaz.exactSubtypes(name)).some((t) => noted.includes(t))) continue;
         const c = await this.exact(dec, name);
-        if (c && c !== "lexicon" && ["country", "dependency", "region", "county"].includes(c.subtype)) dec.notes.push(`'${name}' is not used in the result`);
+        if (c && c !== "lexicon" && noted.includes(c.subtype)) dec.notes.push(`'${name}' is not used in the result`);
       }
     }
     return keep;
@@ -442,7 +457,7 @@ export class Parser {
 
   /** Port of _frame_override: union for "A and B" that is not one exact name; a frame that covers the level words. */
   private async frameOverride(dec: Decider, text: string, tid: string, cands: Record<string, Match[]>, tscore: Record<string, number>, depth: number): Promise<string | null> {
-    const exactName = async (x: string) => (await this.gaz.search(x, { fuzzy: false, limit: 1, view: dec.view })).length > 0;
+    const exactName = (x: string) => this.gaz.exists(x);
     const m = text.trim().match(/^(.+?)\s+(?:and|&)\s+(.+)$/i);
     if (tid === "lookup_place" && m && "union" in cands && !(await exactName(text)) && (await exactName(m[1])) && (await exactName(m[2]))) {
       dec.recordStep("frame_override", depth, { text }, "union", "rules", { from: tid });
@@ -588,6 +603,20 @@ export class Parser {
 
   /** Port of _inside: the Resolve of the best candidate of `name` inside one exact match of each outer name, or null. */
   private async inside(dec: Decider, name: string, outers: string[], depth: number, exactOnly = true, text: string | null = null): Promise<any | null> {
+    // The within verifier, _qualified and _region ask the same question: one search for each name, qualifiers and view.
+    const key = JSON.stringify([name, outers, exactOnly, dec.view]);
+    if (!this.insideCache.has(key)) {
+      if (this.insideCache.size > 512) this.insideCache.clear();
+      this.insideCache.set(key, await this.insideSearch(dec, name, outers, exactOnly));
+    }
+    const hit = this.insideCache.get(key)!;
+    if (!hit) return null;
+    const context = outers.join(", ");
+    dec.recordStep("qualified_name", depth, { text: text ?? `${name}, ${context}` }, hit[0], "rules", { name, context, fuzzy: hit[1] });
+    return { op: "Resolve", args: { name, source: "overture", id: hit[0], context } };
+  }
+
+  private async insideSearch(dec: Decider, name: string, outers: string[], exactOnly = true): Promise<[string, string | boolean] | null> {
     const outer: Set<string>[] = [];
     for (const p of outers) {
       const ids = new Set((await this.gaz.search(p, { fuzzy: false, limit: 5, view: dec.view, full: true })).map((c) => c.id));
@@ -600,10 +629,7 @@ export class Parser {
     const context = outers.join(", ");
     for (const fuzzy of exactOnly ? [false] as const : [true, "only"] as const) {
       for (const c of await this.gaz.search(name, { context, limit: 20, fuzzy, view: dec.view, countries, full: true })) {
-        if (outer.every((ids) => c.ancestors.some((a) => ids.has(a)))) {
-          dec.recordStep("qualified_name", depth, { text: text ?? `${name}, ${context}` }, c.id, "rules", { name, context, fuzzy });
-          return { op: "Resolve", args: { name, source: "overture", id: c.id, context } };
-        }
+        if (outer.every((ids) => c.ancestors.some((a) => ids.has(a)))) return [c.id, fuzzy];
       }
     }
     return null;
