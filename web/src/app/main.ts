@@ -22,9 +22,10 @@ const EXAMPLES: [string, string[]][] = [
   ["Same name, other place", ["Paris, Texas"]],
 ];
 
-// Basemap: OpenFreeMap (free, no API key; data © OpenStreetMap contributors).
+// Basemap: VersaTiles (free, no API key; data © OpenStreetMap contributors). EasyPrivacy blocks the OpenFreeMap tiles
+// (easylist/easylist#26522).
 // Without WebGL there is no map; the queries and the result list still work.
-const STYLE = "https://tiles.openfreemap.org/styles/positron";
+const STYLE = "https://tiles.versatiles.org/assets/styles/gray/style.json";
 let map: maplibregl.Map | null = null;
 try {
   map = new maplibregl.Map({ container: "map", style: STYLE, center: [78.9, 22.5], zoom: 4 });
